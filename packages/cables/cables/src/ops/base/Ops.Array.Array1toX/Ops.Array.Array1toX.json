@@ -1,0 +1,79 @@
+{
+  "id": "6a8947be-79c8-4998-9853-1e0912654800",
+  "changelog": [
+    {
+      "message": "created op",
+      "author": "pandur",
+      "date": 1610634340065
+    },
+    {
+      "message": "Ops.User.pandur.Array1toX renamed to Ops.Array.Array1toX",
+      "author": "pandur",
+      "date": 1610637166092
+    }
+  ],
+  "authorName": "pandur",
+  "created": 1610634355312,
+  "layout": {
+    "portsIn": [
+      {
+        "type": 3,
+        "name": "Array1x"
+      },
+      {
+        "type": 0,
+        "name": "Format index",
+        "values": ["AB", "ABC", "ABCD"],
+        "subType": "integer"
+      },
+      {
+        "type": 0,
+        "name": "A index",
+        "values": ["Input", "index", "0-1", "-1-1", "0", "1"],
+        "subType": "integer"
+      },
+      {
+        "type": 0,
+        "name": "B index",
+        "values": ["Input", "index", "0-1", "-1-1", "0", "1"],
+        "subType": "integer"
+      },
+      {
+        "type": 0,
+        "name": "C index",
+        "values": ["Input", "index", "0-1", "-1-1", "0", "1"],
+        "subType": "integer"
+      },
+      {
+        "type": 0,
+        "name": "D index",
+        "values": ["Input", "index", "0-1", "-1-1", "0", "1"],
+        "subType": "integer"
+      }
+    ],
+    "portsOut": [
+      {
+        "type": 3,
+        "name": "Array3x"
+      },
+      {
+        "type": 0,
+        "name": "Total points",
+        "subType": "number"
+      },
+      {
+        "type": 0,
+        "name": "Array length",
+        "subType": "number"
+      }
+    ]
+  },
+  "summary": "convert an array1 to array2,3,4 by choosing content for new axis",
+  "issues": "",
+  "youtubeids": [],
+  "docs": {
+    "ports": []
+  },
+  "exampleProjectId": "omZrLu",
+  "license": "MIT"
+}

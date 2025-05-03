@@ -1,0 +1,66 @@
+{
+  "id": "f908fc2e-70b6-4ca4-8afd-4302b35ff570",
+  "changelog": [
+    {
+      "message": "created op",
+      "author": "pandur",
+      "date": 1611059265857
+    }
+  ],
+  "authorName": "pandur",
+  "created": 1611059280263,
+  "layout": {
+    "portsIn": [
+      {
+        "type": 5,
+        "name": "Key"
+      },
+      {
+        "type": 5,
+        "name": "String"
+      },
+      {
+        "type": 1,
+        "name": "Store"
+      }
+    ],
+    "portsOut": [
+      {
+        "type": 5,
+        "name": "Stored String"
+      },
+      {
+        "type": 0,
+        "name": "Storage Support",
+        "subType": "boolean"
+      }
+    ]
+  },
+  "summary": "Store and retreive a string in browser localstorage",
+  "docs": {
+    "ports": [
+      {
+        "name": "Key",
+        "text": "storage key"
+      },
+      {
+        "name": "String",
+        "text": "storage value"
+      },
+      {
+        "name": "Store",
+        "text": "trigger to store number"
+      },
+      {
+        "name": "Stored String",
+        "text": "the stored value"
+      },
+      {
+        "name": "Storage Support",
+        "text": "boolean to indicate browser support for localstorage"
+      }
+    ]
+  },
+  "exampleProjectId": "QKe58i",
+  "license": "MIT"
+}

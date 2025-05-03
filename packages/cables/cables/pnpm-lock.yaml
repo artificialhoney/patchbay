@@ -1,0 +1,47 @@
+lockfileVersion: "9.0"
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+  .:
+    dependencies:
+      "@cables/client":
+        specifier: workspace:*
+        version: link:../client
+      "@webgpu/types":
+        specifier: ^0.1.53
+        version: 0.1.60
+      git-last-commit:
+        specifier: 1.0.1
+        version: 1.0.1
+      gl-matrix:
+        specifier: 3.1.0
+        version: 3.1.0
+
+packages:
+  "@webgpu/types@0.1.60":
+    resolution:
+      {
+        integrity: sha512-8B/tdfRFKdrnejqmvq95ogp8tf52oZ51p3f4QD5m5Paey/qlX4Rhhy5Y8tgFMi7Ms70HzcMMw3EQjH/jdhTwlA==,
+      }
+
+  git-last-commit@1.0.1:
+    resolution:
+      {
+        integrity: sha512-FDSgeMqa7GnJDxt/q0AbrxbfeTyxp4ImxEw1e4nw6NUHA5FMhFUq33dTXI4Xdgcj1VQ1q5QLWF6WxFrJ8KCBOg==,
+      }
+
+  gl-matrix@3.1.0:
+    resolution:
+      {
+        integrity: sha512-526NA+3EA+ztAQi0IZpSWiM0fyQXIp7IbRvfJ4wS/TjjQD0uv0fVybXwwqqSOlq33UckivI0yMDlVtboWm3k7A==,
+      }
+
+snapshots:
+  "@webgpu/types@0.1.60": {}
+
+  git-last-commit@1.0.1: {}
+
+  gl-matrix@3.1.0: {}

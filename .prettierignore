@@ -1,0 +1,12 @@
+# Ignore all files in the following directories
+build
+coverage
+dist
+node_modules
+libs
+
+.patchbay
+*.frag
+
+# handlebars stuff
+packages/cables/ui/html/ui/footer.html

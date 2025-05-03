@@ -1,0 +1,30 @@
+{
+  "author": "55d744634cdc152216eb9aad",
+  "authorName": "pandur",
+  "id": "fc75b841-a55f-4474-8746-61218588598d",
+  "created": 1504850778646,
+  "layout": {
+    "portsIn": [
+      {
+        "type": 1,
+        "name": "Play"
+      },
+      {
+        "type": 1,
+        "name": "Pause"
+      }
+    ],
+    "portsOut": [
+      {
+        "type": 1,
+        "name": "Next"
+      }
+    ]
+  },
+  "summary": "start timeline",
+
+  "exampleProjectId": "3F6DOe",
+  "docs": {
+    "ports": []
+  }
+}

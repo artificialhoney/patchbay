@@ -1,0 +1,67 @@
+.cablesCssUi #cmdpalette {
+  position: absolute;
+  width: 500px;
+  left: 50%;
+  margin-left: -250px;
+  top: 100px;
+  border-radius: $border-radius-popups;
+
+  .input-container {
+    padding: 20px;
+
+    input {
+      margin-bottom: 0px;
+      padding-left: 10px;
+    }
+
+    .icon-x {
+      position: relative;
+      right: -11px;
+    }
+  }
+
+  .result {
+    padding-right: 20px;
+
+    .title {
+      position: relative;
+      top: -3px;
+      font-size: 20px;
+      color: $highlight-color;
+    }
+
+    .category {
+      position: relative;
+      top: -5px;
+    }
+
+    .icon {
+      margin-left: 10px;
+      margin-right: 10px;
+      margin-top: 5px;
+
+      &.bookmark {
+        float: right;
+      }
+    }
+
+    .hotkey {
+      position: relative;
+      top: 4px;
+      color: var(--color-07);
+      text-transform: uppercase;
+      float: right;
+      font-family: monospace;
+    }
+
+    &.selected {
+      background-color: $color-background-input;
+    }
+  }
+
+  .dyn {
+    .title {
+      color: var(--color-special) !important;
+    }
+  }
+}

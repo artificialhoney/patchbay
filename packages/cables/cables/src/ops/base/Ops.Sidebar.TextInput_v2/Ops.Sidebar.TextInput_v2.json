@@ -1,0 +1,117 @@
+{
+  "id": "6538a190-e73c-451b-964e-d010ee267aa9",
+  "changelog": [
+    {
+      "message": "created op",
+      "author": "pandur",
+      "date": 1570714576973
+    },
+    {
+      "message": "react properly to disconnecting parent",
+      "author": "stephan",
+      "date": 1643888164206
+    }
+  ],
+  "authorName": "pandur",
+  "created": 1570714614732,
+  "layout": {
+    "portsIn": [
+      {
+        "type": 2,
+        "name": "Link"
+      },
+      {
+        "type": 5,
+        "name": "Text"
+      },
+      {
+        "type": 5,
+        "name": "Default"
+      },
+      {
+        "type": 5,
+        "name": "Placeholder"
+      },
+      {
+        "type": 0,
+        "name": "Type index",
+        "subType": "integer"
+      },
+      {
+        "type": 0,
+        "name": "TextArea",
+        "subType": "boolean"
+      },
+      {
+        "type": 0,
+        "name": "Grey Out",
+        "subType": "boolean"
+      },
+      {
+        "type": 0,
+        "name": "Visible",
+        "subType": "boolean"
+      },
+      {
+        "type": 1,
+        "name": "Clear"
+      }
+    ],
+    "portsOut": [
+      {
+        "type": 2,
+        "name": "Children"
+      },
+      {
+        "type": 5,
+        "name": "Result"
+      },
+      {
+        "type": 0,
+        "name": "Focus",
+        "subType": "boolean"
+      }
+    ]
+  },
+  "summary": "Get a string from an sidebar input field",
+  "issues": "",
+
+  "youtubeids": [],
+  "docs": {
+    "ports": [
+      {
+        "name": "Link",
+        "text": "Where to attach the sidebar item to (Sidebar / Sidebar Group)"
+      },
+      {
+        "name": "Text",
+        "text": "The text label"
+      },
+      {
+        "name": "Default",
+        "text": "The default text in the input field"
+      },
+      {
+        "name": "TextArea",
+        "text": "Enables a multi line input field"
+      },
+      {
+        "name": "Grey Out",
+        "text": "Grey out text input area"
+      },
+      {
+        "name": "Visible",
+        "text": "Disable visibility for text input field"
+      },
+      {
+        "name": "Children",
+        "text": "In case you want to add other Sidebar items below"
+      },
+      {
+        "name": "Result",
+        "text": "The text which was entered in the input field"
+      }
+    ]
+  },
+  "exampleProjectId": "wa-KH-"
+}

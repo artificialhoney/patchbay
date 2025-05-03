@@ -1,0 +1,36 @@
+{
+  "name": "@cables/ui",
+  "private": true,
+  "version": "1.0.0",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@cables/api": "workspace:*",
+    "@cables/cables": "workspace:*",
+    "@cables/client": "workspace:*",
+    "chroma-js": "2.1.0",
+    "error-stack-parser": "2.1.4",
+    "gl-matrix": "3.1.0",
+    "intro.js": "2.9.0",
+    "izitoast": "1.1.4",
+    "loadjs": "4.3.0",
+    "marked": "12.0.2",
+    "moment-mini": "2.29.4",
+    "pako": "2.0.3",
+    "platform": "1.3.6",
+    "raphael": "2.2.0",
+    "socketcluster-client": "16.0.1",
+    "sortablejs": "1.15.2",
+    "tinysort": "3.2.8"
+  },
+  "scripts": {
+    "build": "pnpm run build:ui && pnpm run build:libs && pnpm run build:talker && pnpm run build:assets",
+    "build:ui": "rollup -c rollup.config.mjs",
+    "watch:ui": "rollup -c rollup.config.mjs -w",
+    "build:libs": "rollup -c rollup.config.libs.mjs",
+    "watch:libs": "rollup -c rollup.config.libs.mjs -w",
+    "build:talker": "rollup -c rollup.config.talker.mjs",
+    "watch:talker": "rollup -c rollup.config.talker.mjs -w",
+    "build:assets": "gulp"
+  }
+}

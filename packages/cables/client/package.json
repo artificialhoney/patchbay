@@ -1,0 +1,17 @@
+{
+  "name": "@cables/client",
+  "private": true,
+  "version": "1.0.0",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./src/client/index.js",
+      "default": "./src/client/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "talker.js": "^1.1.1"
+  }
+}
