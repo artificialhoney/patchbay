@@ -1,5 +1,7 @@
 linkWorkspacePackages: true
+
 sharedWorkspaceLockfile: false
+
 packages:
-  # Add paths to each package's folder, or glob patterns
-  - "packages/cables/*"
+  - packages/cables/*
+  - packages/patchbay/*

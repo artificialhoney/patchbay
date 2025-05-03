@@ -4,5 +4,5 @@ node_modules
 *.log
 
 .env
-.patchbay
+directus
 .DS_Store

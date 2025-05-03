@@ -1,7 +1,7 @@
 {
   "name": "patchbay",
   "version": "1.0.0",
-  "description": "A fork of the brilliant [cabels.gl](https://cabels.gl) application for maintaining and extending it to build a new robust full-stack.",
+  "description": "A fork of the brilliant cables.gl application for maintaining and extending it to build a new robust full-stack.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --check ./**",
@@ -11,7 +11,8 @@
     "clean:all": "rimraf packages/cables/*/dist",
     "build:all": "pnpm run clean:all && pnpm run --filter @cables/cables build && pnpm run --filter @cables/ui build && pnpm run --filter @cables/electron build",
     "start:electron": "pnpm run --filter @cables/electron start",
-    "start:stack": "mkdir -p ./.patchbay/{database,uploads,extensions,templates} && docker compose up -d"
+    "start:stack": "docker compose up -d",
+    "extension:create": "pnpm dlx create-directus-extension@latest"
   },
   "keywords": [],
   "author": "",
@@ -42,7 +43,8 @@
   },
   "workspaces": {
     "packages": [
-      "packages/cables/*"
+      "packages/cables/*",
+      "packages/patchbay/*"
     ]
   }
 }

@@ -1,6 +1,6 @@
 # patchbay
 
-> A fork of the brilliant [cabels.gl](https://cabels.gl) application for maintaining and extending it to build a new robust full-stack.
+> A fork of the brilliant [cables.gl](https://cables.gl) application for maintaining and extending it to build a new robust full-stack.
 
 ## Stack
 
@@ -36,6 +36,8 @@ Run the services stack:
 ```bash
 pnpm run start:stack
 ```
+
+Open <http://localhost:8055>.
 
 ## Clean Code
 

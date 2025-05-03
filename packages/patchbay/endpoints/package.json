@@ -1,0 +1,33 @@
+{
+  "name": "@patchbay/endpoints",
+  "description": "Please enter a description for your extension",
+  "icon": "extension",
+  "version": "1.0.0",
+  "type": "module",
+  "keywords": [
+    "directus",
+    "directus-extension",
+    "directus-extension-endpoint"
+  ],
+  "files": [
+    "dist"
+  ],
+  "directus:extension": {
+    "type": "endpoint",
+    "id": "patchbay-endpoints",
+    "path": "dist/index.js",
+    "source": "src/index.js",
+    "host": "^11.7.2",
+    "hidden": false
+  },
+  "scripts": {
+    "build": "directus-extension build",
+    "dev": "directus-extension build -w --no-minify",
+    "link": "directus-extension link",
+    "validate": "directus-extension validate",
+    "deploy": "mkdir -p ../../../directus/extensions/patchbay-endpoints && cp -rf dist package.json ../../../directus/extensions/patchbay-endpoints/"
+  },
+  "devDependencies": {
+    "@directus/extensions-sdk": "13.1.0"
+  }
+}
