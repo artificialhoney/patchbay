@@ -37,7 +37,7 @@ Run the services stack:
 pnpm run start:stack
 ```
 
-Open <http://localhost:8055>.
+Open <http://0.0.0.0:8055>.
 
 ## Clean Code
 
