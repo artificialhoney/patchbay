@@ -4,9 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  '@patchbay/endpoints': link:directus/extensions/patchbay-endpoints
-
 importers:
 
   .:

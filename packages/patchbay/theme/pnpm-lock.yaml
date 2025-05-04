@@ -11,6 +11,9 @@ importers:
       '@directus/extensions-sdk':
         specifier: 13.1.0
         version: 13.1.0(@types/node@22.15.3)(@unhead/vue@1.11.20(vue@3.5.13))(knex@3.1.0)(pinia@2.3.1(vue@3.5.13))(terser@5.39.0)
+      vue:
+        specifier: ^3.5.13
+        version: 3.5.13
 
 packages:
 

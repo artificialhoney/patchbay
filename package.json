@@ -12,7 +12,8 @@
     "build:all": "pnpm run clean:all && pnpm run --filter @cables/cables build && pnpm run --filter @cables/ui build && pnpm run --filter @cables/electron build",
     "start:electron": "pnpm run --filter @cables/electron start",
     "start:stack": "docker compose up -d",
-    "extension:create": "pnpm dlx create-directus-extension@latest"
+    "extensions:create": "pnpm dlx create-directus-extension@latest",
+    "extensions:deploy": "mkdir -p directus/extensions && cp -rf ./packages/patchbay/* ./directus/extensions/"
   },
   "keywords": [],
   "author": "",

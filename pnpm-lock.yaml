@@ -4,16 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  '@patchbay/endpoints': link:directus/extensions/patchbay-endpoints
-
 importers:
 
   .:
-    dependencies:
-      '@patchbay/endpoints':
-        specifier: link:directus/extensions/patchbay-endpoints
-        version: link:directus/extensions/patchbay-endpoints
     devDependencies:
       '@eslint/js':
         specifier: ^9.25.1

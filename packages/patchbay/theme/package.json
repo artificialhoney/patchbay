@@ -1,20 +1,20 @@
 {
-  "name": "@patchbay/endpoints",
+  "name": "@patchbay/theme",
   "description": "Please enter a description for your extension",
   "icon": "extension",
   "version": "1.0.0",
-  "type": "module",
   "keywords": [
     "directus",
     "directus-extension",
-    "directus-extension-endpoint"
+    "directus-extension-theme"
   ],
+  "type": "module",
   "files": [
     "dist"
   ],
   "directus:extension": {
-    "id": "@patchbay/enspoints",
-    "type": "endpoint",
+    "id": "@patchbay/theme",
+    "type": "theme",
     "path": "dist/index.js",
     "source": "src/index.js",
     "host": "^11.7.2",
@@ -27,6 +27,7 @@
     "validate": "directus-extension validate"
   },
   "devDependencies": {
-    "@directus/extensions-sdk": "13.1.0"
+    "@directus/extensions-sdk": "13.1.0",
+    "vue": "^3.5.13"
   }
 }

@@ -66,11 +66,8 @@ services:
 
       ADMIN_EMAIL: "${PATCHBAY_ADMIN_EMAIL:-admin@patchbay.io}"
       ADMIN_PASSWORD: "${PATCHBAY_ADMIN_PASSWORD:-patchbay}"
+      EXTENSIONS_AUTO_RELOAD: "${PATCHBAY_EXTENSIONS_AUTO_RELOAD:-false}"
 
       # Make sure to set this in production
       # (see https://docs.directus.io/self-hosted/config-options#general)
       # PUBLIC_URL: "https://directus.example.com"
-
-    # Environment variables can also be defined in a file (for example `.env`):
-    # env_file:
-    #	  - .env
