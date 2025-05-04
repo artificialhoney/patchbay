@@ -14,7 +14,9 @@
     "start:stack": "docker compose up -d",
     "extensions:create": "pnpm dlx create-directus-extension@latest",
     "extensions:build": "pnpm run --filter @patchbay/* build",
-    "extensions:deploy": "mkdir -p directus/extensions && cp -rf ./packages/patchbay/* ./directus/extensions/"
+    "extensions:deploy": "mkdir -p directus/extensions && cp -rf ./packages/patchbay/* ./directus/extensions/",
+    "directus:exec": "docker exec -it patchbay_directus",
+    "directus:snapshot": "pnpm directus:exec npx directus schema snapshot"
   },
   "keywords": [],
   "author": "",
