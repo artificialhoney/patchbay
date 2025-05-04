@@ -13,10 +13,8 @@
     "electron:start": "pnpm run --filter @cables/electron start",
     "stack:start": "docker compose up -d",
     "stack:restart": "docker compose restart",
+    "stack:stop": "docker compose stop",
     "stack:logs": "docker compose logs",
-    "extensions:create": "pnpm dlx create-directus-extension@latest",
-    "extensions:build": "pnpm run --filter @patchbay/* build",
-    "extensions:deploy": "mkdir -p directus/extensions && cp -rf ./packages/patchbay/* ./directus/extensions/",
     "directus:exec": "docker exec -it patchbay_directus",
     "directus:snapshot": "pnpm directus:exec npx directus schema snapshot"
   },

@@ -42,8 +42,8 @@ services:
       - 8055:8055
     volumes:
       - ${PATCHBAY_DATA_DIR:-./directus}/uploads:/directus/uploads
-      - ${PATCHBAY_DATA_DIR:-./directus}/extensions:/directus/extensions
       - ${PATCHBAY_DATA_DIR:-./directus}/templates:/directus/templates
+      - ./packages/patchbay/bundle:/directus/extensions/patchbay
     depends_on:
       database:
         condition: service_healthy
