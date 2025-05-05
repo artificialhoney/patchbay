@@ -23,7 +23,6 @@ services:
       retries: 5
       start_interval: 5s
       start_period: 30s
-
   cache:
     image: redis:6
     container_name: patchbay_redis
@@ -75,6 +74,7 @@ services:
       - 8080:80
     volumes:
       - extensions:/directus/extensions
+      - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - directus
 volumes:

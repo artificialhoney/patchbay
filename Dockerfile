@@ -4,6 +4,7 @@ RUN mkdir /opt/app
 WORKDIR /opt/app
 COPY . ./
 RUN rm -rf node_modules packages/*/*/node_modules
+RUN rm -rf packages/*/*/dist
 RUN pnpm install --frozen-lockfile
 RUN pnpm run --filter @patchbay/bundle build
 RUN pnpm run --filter @patchbay/ui build
