@@ -74,7 +74,7 @@ services:
     ports:
       - 8080:80
     volumes:
-      - extensions:/opt/patchbay/extensions
+      - extensions:/directus/extensions/patchbay
     depends_on:
       - directus
 volumes:

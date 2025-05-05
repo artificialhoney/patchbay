@@ -5,13 +5,14 @@ WORKDIR /opt/app
 COPY . ./
 RUN pnpm clean:all:deps
 RUN pnpm install --frozen-lockfile
-RUN pnpm run --filter @patchbay/bundle --filter @patchbay/ui build
+RUN pnpm run --filter @patchbay/bundle build
+RUN pnpm run --filter @patchbay/ui build
 
 FROM nginx:alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-RUN mkdir -p /opt/patchbay/extensions/bundle
+RUN mkdir -p /directus/extensions/patchbay
 RUN rm -rf /usr/share/nginx/html/*
 COPY --from=builder /opt/app/packages/patchbay/ui/dist/* /usr/share/nginx/html
-COPY --from=builder /opt/app/packages/patchbay/bundle/* /opt/patchbay/extensions/bundle
+COPY --from=builder /opt/app/packages/patchbay/bundle/* /directus/extensions/patchbay
 
 CMD ["nginx", "-g", "daemon off;"]
