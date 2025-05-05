@@ -2,12 +2,12 @@ import theme from "../theme/index.js";
 import logo from "../theme/reactor.svg.js";
 // import express from "express";
 
+const logoBase64 = `data:image/svg+xml;base64,${btoa(logo)}`;
+
 export default ({ filter, embed }) => {
   // init("app.before", ({ app }) => {
   //   app.use("/images", express.static("<path to your folder>"));
   // });
-
-  const logoBase64 = `data:image/svg+xml;base64,${btoa(logo)}`;
 
   embed(
     "head",
@@ -39,7 +39,7 @@ export default ({ filter, embed }) => {
   filter("settings.read", (input) => {
     input[0].project_name = "Patchbay";
     input[0].project_note =
-      "A fork of the brilliant [cables.gl](https://cables.gl) application for maintaining and extending it to build a new robust full-stack.";
+      "Fork of the brilliant [cables.gl](https://cables.gl) web application to extend and build a new full-stack platform.";
     input[0].project_color = theme.rules.primary;
     input[0].default_appearance = "dark";
     input[0].default_theme_dark = "@patchbay/theme";

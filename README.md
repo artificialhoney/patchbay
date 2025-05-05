@@ -1,6 +1,6 @@
 # patchbay
 
-> A fork of the brilliant [cables.gl](https://cables.gl) application for maintaining and extending it to build a new robust full-stack.
+> Fork of the brilliant [cables.gl](https://cables.gl) web application to extend and build a new full-stack platform.
 
 ## Stack
 

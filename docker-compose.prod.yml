@@ -38,12 +38,10 @@ services:
   directus:
     image: directus/directus:11.7.2
     container_name: patchbay_directus
-    ports:
-      - 8055:8055
     volumes:
       - ${PATCHBAY_DATA_DIR:-~/directus}/uploads:/directus/uploads
       - ${PATCHBAY_DATA_DIR:-~/directus}/templates:/directus/templates
-      - ./packages/patchbay/bundle:/directus/extensions/patchbay
+      - extensions:/directus/extensions
     depends_on:
       database:
         condition: service_healthy
@@ -66,4 +64,18 @@ services:
 
       ADMIN_EMAIL: "${PATCHBAY_ADMIN_EMAIL:-admin@patchbay.io}"
       ADMIN_PASSWORD: "${PATCHBAY_ADMIN_PASSWORD:-patchbay}"
-      EXTENSIONS_AUTO_RELOAD: "${PATCHBAY_EXTENSIONS_AUTO_RELOAD:-false}"
+
+      # Make sure to set this in production
+      # (see https://docs.directus.io/self-hosted/config-options#general)
+      # PUBLIC_URL: "https://directus.example.com/api"
+  patchbay:
+    image: artificialhoney/patchbay:latest
+    container_name: patchbay_app
+    ports:
+      - 8080:80
+    volumes:
+      - extensions:/opt/patchbay/extensions
+    depends_on:
+      - directus
+volumes:
+  extensions:
