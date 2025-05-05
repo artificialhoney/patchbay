@@ -37,6 +37,9 @@ export default ({ filter, embed }) => {
   );
 
   filter("settings.read", (input) => {
+    if (!input?.length) {
+      return input;
+    }
     input[0].project_name = "Patchbay";
     input[0].project_note =
       "Fork of the brilliant [cables.gl](https://cables.gl) web application to extend and build a new full-stack platform.";

@@ -10,9 +10,9 @@ RUN pnpm run --filter @patchbay/ui build
 
 FROM nginx:alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-RUN mkdir -p /directus/extensions/patchbay
-RUN rm -rf /usr/share/nginx/html/*
-COPY --from=builder /opt/app/packages/patchbay/ui/dist/* /usr/share/nginx/html
-COPY --from=builder /opt/app/packages/patchbay/bundle/* /directus/extensions/patchbay
+RUN mkdir -p /directus/extensions
+RUN rm -rf /usr/share/nginx/html
+COPY --from=builder /opt/app/packages/patchbay/ui/dist /usr/share/nginx/html
+COPY --from=builder /opt/app/packages/patchbay/bundle /directus/extensions/patchbay
 
 CMD ["nginx", "-g", "daemon off;"]
