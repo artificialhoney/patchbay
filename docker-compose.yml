@@ -1,7 +1,7 @@
 services:
-  database:
+  db:
     image: postgis/postgis:13-master
-    container_name: patchbay_postgis
+    container_name: patchbay_db
     # Required when running on platform other than amd64, like Apple M1/M2:
     # platform: linux/amd64
     volumes:
@@ -23,10 +23,9 @@ services:
       retries: 5
       start_interval: 5s
       start_period: 30s
-
   cache:
     image: redis:6
-    container_name: patchbay_redis
+    container_name: patchbay_cache
     healthcheck:
       test: ["CMD-SHELL", "[ $$(redis-cli ping) = 'PONG' ]"]
       interval: 10s
@@ -35,16 +34,16 @@ services:
       start_interval: 5s
       start_period: 30s
 
-  directus:
+  api:
     image: directus/directus:11.7.2
-    container_name: patchbay_directus
-    ports:
-      - 8055:8055
+    container_name: patchbay_api
     volumes:
+      - ${PATCHBAY_DATA_DIR:-~/directus}/extensions:/directus/extensions
       - ${PATCHBAY_DATA_DIR:-~/directus}/uploads:/directus/uploads
-      - ${PATCHBAY_DATA_DIR:-~/directus}/templates:/directus/templates
-      - ./packages/patchbay/bundle:/directus/extensions/patchbay
+      - ${PATCHBAY_DATA_DIR:-~/directus}/snapshots:/directus/snapshots
     depends_on:
+      patchbay:
+        condition: service_healthy
       database:
         condition: service_healthy
       cache:
@@ -66,4 +65,22 @@ services:
 
       ADMIN_EMAIL: "${PATCHBAY_ADMIN_EMAIL:-admin@patchbay.io}"
       ADMIN_PASSWORD: "${PATCHBAY_ADMIN_PASSWORD:-patchbay}"
-      EXTENSIONS_AUTO_RELOAD: "${PATCHBAY_EXTENSIONS_AUTO_RELOAD:-false}"
+
+      PUBLIC_URL: "http://localhost:8080/api"
+  patchbay:
+    container_name: patchbay_app
+    image: artificialhoney/patchbay:latest
+    ports:
+      - 8080:80
+    volumes:
+      - ${PATCHBAY_DATA_DIR:-~/directus}/extensions:/directus/extensions
+      - ${PATCHBAY_DATA_DIR:-~/directus}/uploads:/directus/uploads
+      - ${PATCHBAY_DATA_DIR:-~/directus}/snapshots:/directus/snapshots
+      - /var/run/docker.sock:/var/run/docker.sock
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_interval: 5s
+      start_period: 30s

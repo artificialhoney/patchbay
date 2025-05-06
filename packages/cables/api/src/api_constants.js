@@ -1,1 +1,1 @@
-export * from "../../../../shared_constants.json" with { type: "json" };
+export * from "../../shared_constants.json" with { type: "json" };
