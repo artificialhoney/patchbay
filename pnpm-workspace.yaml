@@ -3,15 +3,10 @@ sharedWorkspaceLockfile: true
 packages:
   - packages/cables/*
   - packages/patchbay/*
-  - docs
 
 ignoredBuiltDependencies:
-  - '@parcel/watcher'
+  - "@parcel/watcher"
   - electron
   - esbuild
   - sharp
   - vue-demi
-
-onlyBuiltDependencies:
-  - better-sqlite3
-  - shadcn-docs-nuxt

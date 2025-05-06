@@ -1,8 +1,3 @@
----
-title: Home
-navigation: true
----
-
 # Patchbay
 
 > The brilliant [cables.gl](https://cables.gl) app on a state of the art full-stack platform.
