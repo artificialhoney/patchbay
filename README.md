@@ -1,6 +1,11 @@
-# patchbay
+---
+title: Home
+navigation: true
+---
 
-> Fork of the brilliant [cables.gl](https://cables.gl) web application to extend and build a new full-stack platform.
+# Patchbay
+
+> The brilliant [cables.gl](https://cables.gl) app on a state of the art full-stack platform.
 
 ## Stack
 
@@ -50,11 +55,14 @@ pnpm run lint
 
 For commit hooking you can use [pre-commit](https://pre-commit.com/)!
 
+## Docker
+
 ## LICENSE
 
 The MIT License [MIT](LICENSE)
 
 Copyright (c) 2025 honeymachine.io
+
 Copyright (c) 2019-present undefined development
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of

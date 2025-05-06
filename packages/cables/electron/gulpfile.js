@@ -58,7 +58,7 @@ function _watch(done) {
   const watchOptions = { ignored: "./**/node_modules/" };
   watchers.push(
     gulp.watch(
-      ["../client/**/*.js", "../../../shared_constants.json"],
+      ["../client/**/*.js", "../api/shared_constants.json"],
       watchOptions,
       gulp.series(defaultSeries),
     ),

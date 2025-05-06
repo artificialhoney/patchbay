@@ -1,7 +1,6 @@
-linkWorkspacePackages: true
-
-sharedWorkspaceLockfile: false
+sharedWorkspaceLockfile: true
 
 packages:
   - packages/cables/*
   - packages/patchbay/*
+  - docs

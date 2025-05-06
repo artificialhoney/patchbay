@@ -4,13 +4,15 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - dev
+      - "*"
 
 jobs:
   docker:
     environment: docker.io
     name: Build and push Docker image
     runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: artificialhoney/patchbay
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,9 +29,24 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push
+      - name: Build, Tag, and push the Docker image - latest
+        if: ${{ github.ref_name == 'main' }}
+        env:
+          IMAGE_TAG: latest
         uses: docker/build-push-action@v6
         with:
+          file: ./docker/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: artificialhoney/patchbay:latest
+          tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+
+      - name: Build, Tag, and push the Docker image
+        if: ${{ github.ref_name != 'main' }}
+        env:
+          IMAGE_TAG: ${{ github.ref_name }}
+        uses: docker/build-push-action@v6
+        with:
+          file: ./docker/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
