@@ -42,9 +42,7 @@ services:
       - ${PATCHBAY_DATA_DIR:-~/directus}/uploads:/directus/uploads
       - ${PATCHBAY_DATA_DIR:-~/directus}/snapshots:/directus/snapshots
     depends_on:
-      patchbay:
-        condition: service_healthy
-      database:
+      db:
         condition: service_healthy
       cache:
         condition: service_healthy
@@ -52,7 +50,7 @@ services:
       SECRET: "${PATCHBAY_SECRET:-patchbay_super_secret}"
 
       DB_CLIENT: "pg"
-      DB_HOST: "database"
+      DB_HOST: "db"
       DB_PORT: "5432"
       DB_DATABASE: "${PATCHBAY_POSTGRES_DB:-patchbay}"
       DB_USER: "${PATCHBAY_POSTGRES_USER:-admin}"
@@ -66,12 +64,12 @@ services:
       ADMIN_EMAIL: "${PATCHBAY_ADMIN_EMAIL:-admin@patchbay.io}"
       ADMIN_PASSWORD: "${PATCHBAY_ADMIN_PASSWORD:-patchbay}"
 
-      PUBLIC_URL: "http://localhost:8080/api"
-  patchbay:
+      PUBLIC_URL: "http://localhost:3000/api"
+  app:
     container_name: patchbay_app
     image: artificialhoney/patchbay:latest
     ports:
-      - 8080:80
+      - 3000:3000
     volumes:
       - ${PATCHBAY_DATA_DIR:-~/directus}/extensions:/directus/extensions
       - ${PATCHBAY_DATA_DIR:-~/directus}/uploads:/directus/uploads

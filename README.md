@@ -19,38 +19,115 @@ pnpm i
 
 ## Development
 
-Build the standalone application with `pnpm`:
+Run the stack:
 
 ```bash
-pnpm run build:all
+pnpm dev
 ```
 
-Run the standalone electron app:
+Open <http://0.0.0.0:3000>.
 
-```bash
-pnpm run start:electron
+## Production
+
+Deploy the stack with `docker compose`:
+
+```yaml
+services:
+  db:
+    image: postgis/postgis:13-master
+    container_name: patchbay_db
+    # Required when running on platform other than amd64, like Apple M1/M2:
+    # platform: linux/amd64
+    volumes:
+      - ${PATCHBAY_DATA_DIR:-~/directus}/database:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: "${PATCHBAY_POSTGRES_USER:-admin}"
+      POSTGRES_PASSWORD: "${PATCHBAY_POSTGRES_PASSWORD:-patchbay}"
+      POSTGRES_DB: "${PATCHBAY_POSTGRES_DB:-patchbay}"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "pg_isready",
+          "--host=localhost",
+          "--username=${PATCHBAY_POSTGRES_USER:-admin}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_interval: 5s
+      start_period: 30s
+  cache:
+    image: redis:6
+    container_name: patchbay_cache
+    healthcheck:
+      test: ["CMD-SHELL", "[ $$(redis-cli ping) = 'PONG' ]"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_interval: 5s
+      start_period: 30s
+
+  api:
+    image: directus/directus:11.7.2
+    container_name: patchbay_api
+    volumes:
+      - ${PATCHBAY_DATA_DIR:-~/directus}/extensions:/directus/extensions
+      - ${PATCHBAY_DATA_DIR:-~/directus}/uploads:/directus/uploads
+      - ${PATCHBAY_DATA_DIR:-~/directus}/snapshots:/directus/snapshots
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+    environment:
+      SECRET: "${PATCHBAY_SECRET:-patchbay_super_secret}"
+
+      DB_CLIENT: "pg"
+      DB_HOST: "db"
+      DB_PORT: "5432"
+      DB_DATABASE: "${PATCHBAY_POSTGRES_DB:-patchbay}"
+      DB_USER: "${PATCHBAY_POSTGRES_USER:-admin}"
+      DB_PASSWORD: "${PATCHBAY_POSTGRES_PASSWORD:-patchbay}"
+
+      CACHE_ENABLED: "true"
+      CACHE_AUTO_PURGE: "true"
+      CACHE_STORE: "redis"
+      REDIS: "redis://cache:6379"
+
+      ADMIN_EMAIL: "${PATCHBAY_ADMIN_EMAIL:-admin@patchbay.io}"
+      ADMIN_PASSWORD: "${PATCHBAY_ADMIN_PASSWORD:-patchbay}"
+
+      PUBLIC_URL: "http://localhost:8080/api"
+  app:
+    container_name: patchbay_app
+    image: artificialhoney/patchbay:latest
+    ports:
+      - 3000:3000
+    volumes:
+      - ${PATCHBAY_DATA_DIR:-~/directus}/extensions:/directus/extensions
+      - ${PATCHBAY_DATA_DIR:-~/directus}/uploads:/directus/uploads
+      - ${PATCHBAY_DATA_DIR:-~/directus}/snapshots:/directus/snapshots
+      - /var/run/docker.sock:/var/run/docker.sock
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_interval: 5s
+      start_period: 30s
 ```
-
-Run the services stack:
-
-```bash
-pnpm run start:stack
-```
-
-Open <http://0.0.0.0:8055>.
 
 ## Clean Code
 
 Before you commit, run `prettier` and `eslint`:
 
 ```bash
-pnpm run format
-pnpm run lint
+pnpm format
+pnpm lint
 ```
 
 For commit hooking you can use [pre-commit](https://pre-commit.com/)!
-
-## Docker
 
 ## LICENSE
 

@@ -11,5 +11,11 @@ services:
     extends:
       file: docker-compose.yml
       service: api
+    environment:
+      PUBLIC_URL: "http://localhost:3000/api"
     env_file:
       - api.env
+    ports:
+      - 8055:8055
+    volumes:
+      - ./packages/patchbay/bundle:/directus/extensions/patchbay

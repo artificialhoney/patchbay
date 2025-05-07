@@ -5,8 +5,11 @@ packages:
   - packages/patchbay/*
 
 ignoredBuiltDependencies:
-  - "@parcel/watcher"
+  - '@parcel/watcher'
   - electron
   - esbuild
   - sharp
   - vue-demi
+
+onlyBuiltDependencies:
+  - better-sqlite3
