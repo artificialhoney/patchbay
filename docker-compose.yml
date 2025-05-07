@@ -76,7 +76,7 @@ services:
       - ${PATCHBAY_DATA_DIR:-~/directus}/snapshots:/directus/snapshots
       - /var/run/docker.sock:/var/run/docker.sock
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost"]
+      test: ["CMD", "wget", "-nv", "-t1", "--spider", "http://localhost:3000/"]
       interval: 10s
       timeout: 5s
       retries: 5

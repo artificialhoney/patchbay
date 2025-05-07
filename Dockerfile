@@ -14,6 +14,9 @@ WORKDIR /app
 # Copy the rest of the application files to the working directory
 COPY . ./
 
+# Clean node_modules
+RUN rm -rf node_modules && pnpm -r exec rm -rf node_modules
+
 ## Install dependencies
 RUN pnpm install --shamefully-hoist
 
