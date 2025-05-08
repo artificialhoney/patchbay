@@ -4,8 +4,6 @@ const { t } = useI18n({ useScope: "global" });
 
 import Hero from "@/components/blocks/Hero/Hero.vue";
 
-const { tr } = useI18n();
-
 const title = t("title");
 const description = t("description");
 
