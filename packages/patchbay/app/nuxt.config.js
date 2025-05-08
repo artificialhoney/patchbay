@@ -8,7 +8,7 @@ const prod = process.env.NODE_ENV === "production";
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: !prod },
-  modules: ["@nuxt/content", "shadcn-nuxt", "@vite-pwa/nuxt"],
+  modules: ["@nuxt/content", "shadcn-nuxt", "@vite-pwa/nuxt", "@nuxtjs/i18n"],
   app: {
     head: {
       htmlAttrs: { lang: "en" },
@@ -23,6 +23,10 @@ export default defineNuxtConfig({
         },
       ],
     },
+  },
+  i18n: {
+    defaultLocale: "en",
+    locales: [{ code: "en", name: "English", file: "en.json" }],
   },
   shadcn: {
     prefix: "",
@@ -82,8 +86,8 @@ export default defineNuxtConfig({
       periodicSyncForUpdates: 20,
     },
     devOptions: {
-      enabled: true,
-      suppressWarnings: true,
+      enabled: !prod,
+      suppressWarnings: prod,
       navigateFallback: "/",
       navigateFallbackAllowlist: [/^\/$/],
       type: "module",
