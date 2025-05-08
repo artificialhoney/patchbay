@@ -11,6 +11,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@cables/ui": "workspace:*",
     "@nuxt/content": "3.5.1",
     "@nuxtjs/i18n": "9.5.4",
     "@vite-pwa/nuxt": "1.0.0",

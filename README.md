@@ -1,7 +1,6 @@
 # <img src="packages/patchbay/bundle/assets/public-favicon.svg" alt="Patchbay" style="height: 2rem; margin-bottom: -0.25rem;" /> Patchbay [WIP](https://github.com/artificialhoney/patchbay)
 
 > The brilliant [cables.gl](https://cables.gl) app on a state of the art full-stack platform. [CHECK IT OUT](https://patchbay.honeymachine.io)
-
 ## Stack
 
 - Postgis DB
@@ -82,6 +81,7 @@ services:
     volumes:
       - ${PATCHBAY_DATA_DIR:-~/directus}/extensions:}:/app/directus/extensions
       - /var/run/docker.sock:/var/run/docker.sock
+
 ```
 
 ## Clean Code
@@ -120,3 +120,4 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
