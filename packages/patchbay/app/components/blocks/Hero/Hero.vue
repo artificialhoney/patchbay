@@ -59,7 +59,7 @@ const { badge, heading, description, buttons } = defineProps({
               variant="outline"
               class="w-full sm:w-auto"
             >
-              <NuxtLink :to="buttons.secondary.url" external>
+              <NuxtLink target="_blank" :to="buttons.secondary.url" external>
                 {{ buttons.secondary.text }}
               </NuxtLink>
             </Button>
