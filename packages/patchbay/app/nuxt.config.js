@@ -7,7 +7,7 @@ export default defineNuxtConfig({
     routeRules: {
       "/api/**": {
         proxy: {
-          to: "http://localhost:8055/**", // make sure this is an ENV driven variable if production does not match
+          to: `http://${process.env.NODE_ENV === "production" ? "api" : "localhost"}:8055/**`, // make sure this is an ENV driven variable if production does not match
         },
       },
     },
