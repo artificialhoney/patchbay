@@ -71,12 +71,21 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ${PATCHBAY_DATA_DIR:-~/directus}/extensions:/directus/extensions
-      - ${PATCHBAY_DATA_DIR:-~/directus}/uploads:/directus/uploads
-      - ${PATCHBAY_DATA_DIR:-~/directus}/snapshots:/directus/snapshots
+      - ${PATCHBAY_DATA_DIR:-~/directus}/extensions:}:/app/directus/extensions
       - /var/run/docker.sock:/var/run/docker.sock
     healthcheck:
-      test: ["CMD", "wget", "-nv", "-t1", "--spider", "http://localhost:3000/"]
+      test:
+        [
+          "CMD",
+          "wget",
+          "-nv",
+          "-t1",
+          "--spider",
+          "http://localhost:3000/",
+          "||",
+          "exit",
+          "1",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5

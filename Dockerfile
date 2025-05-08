@@ -20,6 +20,9 @@ RUN rm -rf node_modules && pnpm -r exec rm -rf node_modules
 ## Install dependencies
 RUN pnpm install --shamefully-hoist
 
+# Build the extension bundle
+RUN pnpm run -r --filter @patchbay/bundle build
+
 # Build the application
 RUN pnpm run -r --filter @patchbay/app build
 
@@ -34,6 +37,8 @@ WORKDIR /app
 
 # Copy the output from the build stage to the working directory
 COPY --from=build /app/packages/patchbay/app/.output ./
+RUN mkdir -p ./directus/extensions/patchbay
+COPY --from=build /app/packages/patchbay/bundle/ ./directus/extensions/patchbay
 
 # Copy entrypoint and make executable
 COPY ./entrypoint.sh /
