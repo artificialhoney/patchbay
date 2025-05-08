@@ -10,29 +10,9 @@ services:
       POSTGRES_USER: "${PATCHBAY_POSTGRES_USER:-admin}"
       POSTGRES_PASSWORD: "${PATCHBAY_POSTGRES_PASSWORD:-patchbay}"
       POSTGRES_DB: "${PATCHBAY_POSTGRES_DB:-patchbay}"
-    healthcheck:
-      test:
-        [
-          "CMD",
-          "pg_isready",
-          "--host=localhost",
-          "--username=${PATCHBAY_POSTGRES_USER:-admin}",
-        ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_interval: 5s
-      start_period: 30s
   cache:
     image: redis:6
     container_name: patchbay_cache
-    healthcheck:
-      test: ["CMD-SHELL", "[ $$(redis-cli ping) = 'PONG' ]"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_interval: 5s
-      start_period: 30s
 
   api:
     image: directus/directus:11.7.2
@@ -41,11 +21,6 @@ services:
       - ${PATCHBAY_DATA_DIR:-~/directus}/extensions:/directus/extensions
       - ${PATCHBAY_DATA_DIR:-~/directus}/uploads:/directus/uploads
       - ${PATCHBAY_DATA_DIR:-~/directus}/snapshots:/directus/snapshots
-    depends_on:
-      db:
-        condition: service_healthy
-      cache:
-        condition: service_healthy
     environment:
       SECRET: "${PATCHBAY_SECRET:-patchbay_super_secret}"
 
@@ -73,21 +48,3 @@ services:
     volumes:
       - ${PATCHBAY_DATA_DIR:-~/directus}/extensions:}:/app/directus/extensions
       - /var/run/docker.sock:/var/run/docker.sock
-    healthcheck:
-      test:
-        [
-          "CMD",
-          "wget",
-          "-nv",
-          "-t1",
-          "--spider",
-          "http://localhost:3000/",
-          "||",
-          "exit",
-          "1",
-        ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_interval: 5s
-      start_period: 30s

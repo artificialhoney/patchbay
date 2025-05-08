@@ -26,7 +26,8 @@
     "api:exec": "docker exec -it patchbay_api",
     "api:snapshot": "pnpm --silent api:exec npx directus schema snapshot > assets/patchbay_snapshot.yaml",
     "db:exec": "docker exec -it patchbay_db",
-    "db:dump": "pnpm --silent db:exec pg_dump --username admin patchbay > assets/patchbay_db.sql"
+    "db:dump": "pnpm --silent db:exec pg_dump --username admin patchbay > assets/patchbay_db.sql",
+    "docs:readme": "node ./scripts/nunchucks.mjs README.md.jinja > README.md"
   },
   "keywords": [],
   "author": "",
@@ -49,6 +50,7 @@
     "gulp-sass-no-nodesass": "^1.1.0",
     "gulp-svg-css": "^1.3.0",
     "gulp-svgmin": "^4.1.0",
+    "nunjucks": "^3.2.4",
     "prettier": "3.5.3",
     "rimraf": "^6.0.1",
     "rollup": "^4.40.1",
