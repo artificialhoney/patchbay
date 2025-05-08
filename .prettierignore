@@ -10,3 +10,6 @@ libs
 # handlebars stuff
 packages/cables/ui/html/ui/footer.html
 docs/content
+
+# generated
+README.md.jinja
