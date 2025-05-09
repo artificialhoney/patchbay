@@ -2,8 +2,8 @@
 import { useI18n } from "vue-i18n";
 const { t } = useI18n({ useScope: "global" });
 
-import Hero from "@/components/blocks/Hero/Hero.vue";
-import Footer from "@/components/blocks/Footer/Footer.vue";
+import Hero from "@/components/blocks/hero/Hero.vue";
+import Footer from "@/components/blocks/footer/Footer.vue";
 
 const title = t("title");
 const description = t("description");

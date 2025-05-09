@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "clean": "rimraf .output .nuxt .data ./node_modules/.cache",
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",

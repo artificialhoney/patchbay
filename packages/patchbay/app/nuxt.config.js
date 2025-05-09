@@ -8,7 +8,7 @@ const prod = process.env.NODE_ENV === "production";
 // eslint-disable-next-line no-undef
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
-  devtools: { enabled: !prod },
+  devtools: { enabled: false },
   modules: [
     "@nuxt/content",
     "shadcn-nuxt",
@@ -53,6 +53,7 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
   },
   pwa: {
+    enabled: prod,
     strategies: sw ? "injectManifest" : "generateSW",
     srcDir: sw ? "service-worker" : undefined,
     filename: sw ? "sw.ts" : undefined,
@@ -93,7 +94,7 @@ export default defineNuxtConfig({
       periodicSyncForUpdates: 20,
     },
     devOptions: {
-      enabled: !prod,
+      enabled: prod,
       suppressWarnings: prod,
       navigateFallback: "/",
       navigateFallbackAllowlist: [/^\/$/],

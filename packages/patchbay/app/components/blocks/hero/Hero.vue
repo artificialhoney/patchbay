@@ -1,7 +1,6 @@
 <script setup lang="js">
 import ProjectLogo from "~/assets/icons/project-logo.svg";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 const { badge, heading, description, buttons } = defineProps({
@@ -47,7 +46,7 @@ const { badge, heading, description, buttons } = defineProps({
           <div
             class="flex w-full flex-col justify-center gap-2 sm:flex-row lg:justify-start"
           >
-            <Button v-if="buttons?.primary" asChild class="w-full sm:w-auto">
+            <Button v-if="buttons?.primary" class="w-full sm:w-auto">
               <NuxtLink :to="buttons.primary.url">{{
                 buttons.primary.text
               }}</NuxtLink>
