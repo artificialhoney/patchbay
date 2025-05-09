@@ -5,10 +5,17 @@ const sw = process.env.SW === "true";
 const prod = process.env.NODE_ENV === "production";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
+// eslint-disable-next-line no-undef
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: !prod },
-  modules: ["@nuxt/content", "shadcn-nuxt", "@vite-pwa/nuxt", "@nuxtjs/i18n"],
+  modules: [
+    "@nuxt/content",
+    "shadcn-nuxt",
+    "@vite-pwa/nuxt",
+    "@nuxtjs/i18n",
+    "nuxt-svgo",
+  ],
   app: {
     head: {
       htmlAttrs: { lang: "en" },

@@ -1,5 +1,5 @@
 <script setup lang="js">
-// import { ArrowRight, ArrowUpRight } from "lucide-vue-next";
+import ProjectLogo from "~/assets/icons/project-logo.svg";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -31,15 +31,13 @@ const { badge, heading, description, buttons } = defineProps({
 </script>
 
 <template>
-  <section class="py-32">
-    <div class="container mx-auto">
+  <section class="py-4 md:py-32">
+    <div class="container mx-auto max-w-screen-xl">
       <div class="grid items-center gap-8 lg:grid-cols-2">
         <div
           class="flex flex-col items-center text-center lg:items-start lg:text-left"
         >
-          <Badge v-if="logo" variant="outline">
-            <img src="/icon/favicon.png" class="w-16 h-16" />
-          </Badge>
+          <ProjectLogo v-if="logo" class="text-7xl text-primary"></ProjectLogo>
           <h1 class="my-6 text-4xl font-bold text-pretty lg:text-6xl">
             {{ heading }}
           </h1>

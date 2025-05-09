@@ -3,6 +3,7 @@ import { useI18n } from "vue-i18n";
 const { t } = useI18n({ useScope: "global" });
 
 import Hero from "@/components/blocks/Hero/Hero.vue";
+import Footer from "@/components/blocks/Footer/Footer.vue";
 
 const title = t("title");
 const description = t("description");
@@ -29,4 +30,5 @@ useSeoMeta({
     :description="description"
     :buttons="buttons"
   ></Hero>
+  <Footer></Footer>
 </template>
