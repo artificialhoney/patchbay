@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     "@vite-pwa/nuxt",
     "@nuxtjs/i18n",
     "nuxt-svgo",
+    "@pinia/nuxt",
   ],
   app: {
     head: {

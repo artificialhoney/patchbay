@@ -7,3 +7,5 @@ node_modules
 *.env
 directus
 .DS_Store
+
+README.md

@@ -49,6 +49,7 @@ repos:
     hooks:
       - id: readme
         name: README.md
-        entry: pnpm docs:readme
+        entry: bash ./scripts/post-commit.sh
         files: ^README.md.jinja$
         language: system
+        stages: [post-commit]
