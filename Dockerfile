@@ -39,7 +39,8 @@ WORKDIR /app
 COPY --from=build /app/packages/patchbay/app/.output ./
 COPY ./assets/api/ ./api
 COPY ./assets/db/ ./db
-COPY --from=build /app/packages/patchbay/bundle/ ./api/extension
+RUN mkdir -p ./api/extensions
+COPY --from=build /app/packages/patchbay/bundle/ ./api/extensions/patchbay
 
 # Copy entrypoint and make executable
 COPY ./entrypoint.sh /

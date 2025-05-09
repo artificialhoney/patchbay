@@ -51,5 +51,5 @@ repos:
         name: README.md
         entry: bash ./scripts/post-commit.sh
         files: ^README.md.jinja$
-        language: system
-        stages: [post-commit]
+        language: script
+        stages: [pre-push]
