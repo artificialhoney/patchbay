@@ -146,7 +146,7 @@ fields:
       interface: select-dropdown-m2o
       note: null
       options:
-        template: '{{avatar}} {{first_name}} {{last_name}}'
+        template: "{{avatar}} {{first_name}} {{last_name}}"
       readonly: true
       required: false
       sort: 3
@@ -357,4 +357,3 @@ relations:
       constraint_name: patches_user_created_foreign
       on_update: NO ACTION
       on_delete: NO ACTION
-[1G[0K\[1G[0K

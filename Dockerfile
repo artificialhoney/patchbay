@@ -37,8 +37,9 @@ WORKDIR /app
 
 # Copy the output from the build stage to the working directory
 COPY --from=build /app/packages/patchbay/app/.output ./
-RUN mkdir -p ./directus/extensions/patchbay
-COPY --from=build /app/packages/patchbay/bundle/ ./directus/extensions/patchbay
+COPY ./assets/api/ ./api
+COPY ./assets/db/ ./db
+COPY --from=build /app/packages/patchbay/bundle/ ./api/extension
 
 # Copy entrypoint and make executable
 COPY ./entrypoint.sh /

@@ -58,7 +58,7 @@ CREATE EXTENSION IF NOT EXISTS fuzzystrmatch WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION fuzzystrmatch; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION fuzzystrmatch; Type: COMMENT; Schema: -; Owner:
 --
 
 COMMENT ON EXTENSION fuzzystrmatch IS 'determine similarities and distance between strings';
@@ -72,7 +72,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner:
 --
 
 COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
@@ -86,7 +86,7 @@ CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder WITH SCHEMA tiger;
 
 
 --
--- Name: EXTENSION postgis_tiger_geocoder; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION postgis_tiger_geocoder; Type: COMMENT; Schema: -; Owner:
 --
 
 COMMENT ON EXTENSION postgis_tiger_geocoder IS 'PostGIS tiger geocoder and reverse geocoder';
@@ -100,7 +100,7 @@ CREATE EXTENSION IF NOT EXISTS postgis_topology WITH SCHEMA topology;
 
 
 --
--- Name: EXTENSION postgis_topology; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION postgis_topology; Type: COMMENT; Schema: -; Owner:
 --
 
 COMMENT ON EXTENSION postgis_topology IS 'PostGIS topology spatial types and functions';
@@ -1042,6 +1042,8 @@ COPY public.directus_activity (id, action, "user", "timestamp", ip, user_agent, 
 28	delete	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-05 20:14:32.861+00	172.18.0.5	Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0	directus_files	9b53dc0d-fb02-4c85-87c8-791de0c38511	http://localhost:8080
 29	update	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-05 20:14:44.07+00	172.18.0.5	Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0	directus_files	5f0f0d68-d296-4e5c-aef5-51ab39136181	http://localhost:8080
 30	update	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-05 20:14:44.072+00	172.18.0.5	Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0	directus_files	79179a80-2583-42e4-8f73-ebbbc5752b98	http://localhost:8080
+31	login	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-09 22:28:47.994+00	127.0.0.1	Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0	directus_users	c98c06cc-00a7-4916-b81f-e6d192d57165	http://localhost:3000
+32	update	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-09 22:30:11.478+00	127.0.0.1	Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0	directus_settings	1	http://localhost:3000
 \.
 
 
@@ -1312,6 +1314,7 @@ COPY public.directus_revisions (id, activity, collection, item, data, delta, par
 24	27	directus_settings	1	{"id":1,"project_name":"Directus","project_url":null,"project_color":"#07F78C","project_logo":"79179a80-2583-42e4-8f73-ebbbc5752b98","public_foreground":null,"public_background":null,"public_note":"Fork of the brilliant [cables.gl](https://cables.gl) web application to extend and build a new full-stack platform.","auth_login_attempts":25,"auth_password_policy":null,"storage_asset_transform":"all","storage_asset_presets":null,"custom_css":null,"storage_default_folder":null,"basemaps":null,"mapbox_key":null,"module_bar":null,"project_descriptor":null,"default_language":"en-US","custom_aspect_ratios":null,"public_favicon":"5f0f0d68-d296-4e5c-aef5-51ab39136181","default_appearance":"dark","default_theme_light":null,"theme_light_overrides":null,"default_theme_dark":"@patchbay/theme","theme_dark_overrides":null,"report_error_url":null,"report_bug_url":null,"report_feature_url":null,"public_registration":false,"public_registration_verify_email":true,"public_registration_role":null,"public_registration_email_filter":null,"visual_editor_urls":null}	{"public_note":"Fork of the brilliant [cables.gl](https://cables.gl) web application to extend and build a new full-stack platform."}	\N	\N
 25	29	directus_files	5f0f0d68-d296-4e5c-aef5-51ab39136181	{"id":"5f0f0d68-d296-4e5c-aef5-51ab39136181","storage":"local","filename_disk":"5f0f0d68-d296-4e5c-aef5-51ab39136181.svg","filename_download":"public-favicon.svg","title":"Public Favicon","type":"image/svg+xml","folder":"59a4908b-d34d-4e0a-80e4-77a979bbab42","uploaded_by":"c98c06cc-00a7-4916-b81f-e6d192d57165","created_on":"2025-05-05T20:13:00.317Z","modified_by":"c98c06cc-00a7-4916-b81f-e6d192d57165","modified_on":"2025-05-05T20:14:44.068Z","charset":null,"filesize":"946","width":null,"height":null,"duration":null,"embed":null,"description":null,"location":null,"tags":null,"metadata":null,"focal_point_x":null,"focal_point_y":null,"tus_id":null,"tus_data":null,"uploaded_on":"2025-05-05T20:13:00.322Z"}	{"folder":"59a4908b-d34d-4e0a-80e4-77a979bbab42","modified_by":"c98c06cc-00a7-4916-b81f-e6d192d57165","modified_on":"2025-05-05T20:14:44.068Z"}	\N	\N
 26	30	directus_files	79179a80-2583-42e4-8f73-ebbbc5752b98	{"id":"79179a80-2583-42e4-8f73-ebbbc5752b98","storage":"local","filename_disk":"79179a80-2583-42e4-8f73-ebbbc5752b98.svg","filename_download":"project-logo.svg","title":"Project Logo","type":"image/svg+xml","folder":"59a4908b-d34d-4e0a-80e4-77a979bbab42","uploaded_by":"c98c06cc-00a7-4916-b81f-e6d192d57165","created_on":"2025-05-05T20:10:09.226Z","modified_by":"c98c06cc-00a7-4916-b81f-e6d192d57165","modified_on":"2025-05-05T20:14:44.068Z","charset":null,"filesize":"943","width":null,"height":null,"duration":null,"embed":null,"description":null,"location":null,"tags":null,"metadata":null,"focal_point_x":null,"focal_point_y":null,"tus_id":null,"tus_data":null,"uploaded_on":"2025-05-05T20:10:09.231Z"}	{"folder":"59a4908b-d34d-4e0a-80e4-77a979bbab42","modified_by":"c98c06cc-00a7-4916-b81f-e6d192d57165","modified_on":"2025-05-05T20:14:44.068Z"}	\N	\N
+27	32	directus_settings	1	{"id":1,"project_name":"Directus","project_url":null,"project_color":"#07F78C","project_logo":"79179a80-2583-42e4-8f73-ebbbc5752b98","public_foreground":null,"public_background":null,"public_note":"Fork of the brilliant [The brilliant [cables.gl](https://cables.gl) app on a state of the art full-stack platform..gl](https://cables.gl) web application to extend and build a new full-stack platform.","auth_login_attempts":25,"auth_password_policy":null,"storage_asset_transform":"all","storage_asset_presets":null,"custom_css":null,"storage_default_folder":null,"basemaps":null,"mapbox_key":null,"module_bar":null,"project_descriptor":null,"default_language":"en-US","custom_aspect_ratios":null,"public_favicon":"5f0f0d68-d296-4e5c-aef5-51ab39136181","default_appearance":"dark","default_theme_light":null,"theme_light_overrides":null,"default_theme_dark":"@patchbay/theme","theme_dark_overrides":null,"report_error_url":null,"report_bug_url":null,"report_feature_url":null,"public_registration":false,"public_registration_verify_email":true,"public_registration_role":null,"public_registration_email_filter":null,"visual_editor_urls":null}	{"public_note":"Fork of the brilliant [The brilliant [cables.gl](https://cables.gl) app on a state of the art full-stack platform..gl](https://cables.gl) web application to extend and build a new full-stack platform."}	\N	\N
 \.
 
 
@@ -1329,8 +1332,8 @@ COPY public.directus_roles (id, name, icon, description, parent) FROM stdin;
 --
 
 COPY public.directus_sessions (token, "user", expires, ip, user_agent, share, origin, next_token) FROM stdin;
-5SWmKlpur1jh6Xe-LXQoqLxbP_7ILDUjOjchfR48D37niEGI7yTZYite1XU6fmJ7	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-05 19:58:46.898+00	172.18.0.5	Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0	\N	http://localhost:8080	v-hkiC-u7mCQz3meiIAszTF1SZaTVA750R5yK_7JICVm2hGl54LbeDyfh60t2S5v
-v-hkiC-u7mCQz3meiIAszTF1SZaTVA750R5yK_7JICVm2hGl54LbeDyfh60t2S5v	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-06 19:58:36.898+00	172.18.0.5	Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0	\N	http://localhost:8080	\N
+s7omK8mjaWTEn1Ii8RFj8M1CoZU7xUN7XAIMdVbTgerb1lnz1x6tlWkNHXx59moB	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-09 22:29:35.132+00	127.0.0.1	Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0	\N	http://localhost:3000	ow7Lnz7XCdnOT4oMsIXjMD1Ew7rG3Pz9Ax1LLz3WAuKenv-KAN85XHCe9uDrNjzf
+ow7Lnz7XCdnOT4oMsIXjMD1Ew7rG3Pz9Ax1LLz3WAuKenv-KAN85XHCe9uDrNjzf	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-10 22:29:25.131+00	127.0.0.1	Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0	\N	http://localhost:3000	\N
 \.
 
 
@@ -1339,7 +1342,7 @@ v-hkiC-u7mCQz3meiIAszTF1SZaTVA750R5yK_7JICVm2hGl54LbeDyfh60t2S5v	c98c06cc-00a7-4
 --
 
 COPY public.directus_settings (id, project_name, project_url, project_color, project_logo, public_foreground, public_background, public_note, auth_login_attempts, auth_password_policy, storage_asset_transform, storage_asset_presets, custom_css, storage_default_folder, basemaps, mapbox_key, module_bar, project_descriptor, default_language, custom_aspect_ratios, public_favicon, default_appearance, default_theme_light, theme_light_overrides, default_theme_dark, theme_dark_overrides, report_error_url, report_bug_url, report_feature_url, public_registration, public_registration_verify_email, public_registration_role, public_registration_email_filter, visual_editor_urls) FROM stdin;
-1	Directus	\N	#07F78C	79179a80-2583-42e4-8f73-ebbbc5752b98	\N	\N	Fork of the brilliant [cables.gl](https://cables.gl) web application to extend and build a new full-stack platform.	25	\N	all	\N	\N	\N	\N	\N	\N	\N	en-US	\N	5f0f0d68-d296-4e5c-aef5-51ab39136181	dark	\N	\N	@patchbay/theme	\N	\N	\N	\N	f	t	\N	\N	\N
+1	Directus	\N	#07F78C	79179a80-2583-42e4-8f73-ebbbc5752b98	\N	\N	Fork of the brilliant [The brilliant [cables.gl](https://cables.gl) app on a state of the art full-stack platform..gl](https://cables.gl) web application to extend and build a new full-stack platform.	25	\N	all	\N	\N	\N	\N	\N	\N	\N	en-US	\N	5f0f0d68-d296-4e5c-aef5-51ab39136181	dark	\N	\N	@patchbay/theme	\N	\N	\N	\N	f	t	\N	\N	\N
 \.
 
 
@@ -1364,7 +1367,7 @@ COPY public.directus_translations (id, language, key, value) FROM stdin;
 --
 
 COPY public.directus_users (id, first_name, last_name, email, password, location, title, description, tags, avatar, language, tfa_secret, status, role, token, last_access, last_page, provider, external_identifier, auth_data, email_notifications, appearance, theme_dark, theme_light, theme_light_overrides, theme_dark_overrides) FROM stdin;
-c98c06cc-00a7-4916-b81f-e6d192d57165	Admin	User	admin@patchbay.io	$argon2id$v=19$m=65536,t=3,p=4$nKQOujMqpGhnLfQUPIl5Jw$1wBi19y6x1rvw/waVtefgOYZxjbcEagIabxZ5zHFp2g	\N	\N	\N	\N	\N	\N	\N	active	4b92eda1-d0dd-4c1c-9d61-bd4c6c0760d5	\N	2025-05-05 19:58:36.904+00	/files/folders/59a4908b-d34d-4e0a-80e4-77a979bbab42	default	\N	\N	t	\N	\N	\N	\N	\N
+c98c06cc-00a7-4916-b81f-e6d192d57165	Admin	User	admin@patchbay.io	$argon2id$v=19$m=65536,t=3,p=4$nKQOujMqpGhnLfQUPIl5Jw$1wBi19y6x1rvw/waVtefgOYZxjbcEagIabxZ5zHFp2g	\N	\N	\N	\N	\N	\N	\N	active	4b92eda1-d0dd-4c1c-9d61-bd4c6c0760d5	\N	2025-05-09 22:29:25.136+00	/settings/appearance	default	\N	\N	t	\N	\N	\N	\N	\N
 \.
 
 
@@ -1452,7 +1455,7 @@ COPY topology.layer (topology_id, layer_id, schema_name, table_name, feature_col
 -- Name: directus_activity_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.directus_activity_id_seq', 30, true);
+SELECT pg_catalog.setval('public.directus_activity_id_seq', 32, true);
 
 
 --
@@ -1494,7 +1497,7 @@ SELECT pg_catalog.setval('public.directus_relations_id_seq', 1, true);
 -- Name: directus_revisions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.directus_revisions_id_seq', 26, true);
+SELECT pg_catalog.setval('public.directus_revisions_id_seq', 27, true);
 
 
 --
@@ -2145,4 +2148,3 @@ ALTER TABLE ONLY public.patches
 --
 -- PostgreSQL database dump complete
 --
-

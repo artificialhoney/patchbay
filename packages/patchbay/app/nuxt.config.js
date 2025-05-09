@@ -42,7 +42,7 @@ export default defineNuxtConfig({
   },
   nitro: {
     routeRules: {
-      "/api/**": {
+      "/patchbay/**": {
         proxy: {
           to: `http://${prod ? "api" : "localhost"}:8055/**`, // make sure this is an ENV driven variable if production does not match
         },

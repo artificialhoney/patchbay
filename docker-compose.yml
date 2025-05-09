@@ -6,6 +6,7 @@ services:
     # platform: linux/amd64
     volumes:
       - ${PATCHBAY_DATA_DIR:-~/directus}/database:/var/lib/postgresql/data
+      - ${PATCHBAY_SEED_VOLUME:-seed}:/docker-entrypoint-initdb.d
     environment:
       POSTGRES_USER: "${PATCHBAY_POSTGRES_USER:-admin}"
       POSTGRES_PASSWORD: "${PATCHBAY_POSTGRES_PASSWORD:-patchbay}"
@@ -18,9 +19,8 @@ services:
     image: directus/directus:11.7.2
     container_name: patchbay_api
     volumes:
-      - ${PATCHBAY_DATA_DIR:-~/directus}/extensions:/directus/extensions
-      - ${PATCHBAY_DATA_DIR:-~/directus}/uploads:/directus/uploads
-      - ${PATCHBAY_DATA_DIR:-~/directus}/snapshots:/directus/snapshots
+      - ${PATCHBAY_EXTENSION_VOLUME:-extension}:/directus/extensions/patchbay
+      - ${PATCHBAY_UPLOADS_VOLUME:-uploads}:/directus/uploads
     environment:
       SECRET: "${PATCHBAY_SECRET:-patchbay_super_secret}"
 
@@ -39,12 +39,19 @@ services:
       ADMIN_EMAIL: "${PATCHBAY_ADMIN_EMAIL:-admin@patchbay.io}"
       ADMIN_PASSWORD: "${PATCHBAY_ADMIN_PASSWORD:-patchbay}"
 
-      PUBLIC_URL: "http://localhost:3000/api"
+      PUBLIC_URL: "http://localhost:3000/patchbay"
+      ROOT_REDIRECT: "/patchbay"
   app:
     container_name: patchbay_app
     image: artificialhoney/patchbay:latest
     ports:
       - 3000:3000
     volumes:
-      - ${PATCHBAY_DATA_DIR:-~/directus}/extensions:}:/app/directus/extensions
+      - ${PATCHBAY_EXTENSION_VOLUME:-extension}:/app/api/extension
+      - ${PATCHBAY_UPLOADS_VOLUME:-uploads}:/app/api/uploads
+      - ${PATCHBAY_SEED_VOLUME:-seed}:/app/db
       - /var/run/docker.sock:/var/run/docker.sock
+volumes:
+  uploads:
+  extension:
+  seed:

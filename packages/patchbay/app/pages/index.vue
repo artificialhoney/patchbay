@@ -24,11 +24,13 @@ useSeoMeta({
 </script>
 
 <template>
-  <Hero
-    logo
-    :heading="title"
-    :description="description"
-    :buttons="buttons"
-  ></Hero>
-  <Footer></Footer>
+  <div class="px-4">
+    <Hero
+      logo
+      :heading="title"
+      :description="description"
+      :buttons="buttons"
+    ></Hero>
+    <Footer></Footer>
+  </div>
 </template>
