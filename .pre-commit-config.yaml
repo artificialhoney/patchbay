@@ -50,6 +50,5 @@ repos:
       - id: readme
         name: README.md
         entry: bash ./scripts/post-commit.sh
-        files: ^README.md.jinja$
-        language: script
-        stages: [pre-push]
+        files: ^(README.md.jinja|docker-compose.yml)$
+        language: system

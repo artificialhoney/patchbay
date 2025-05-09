@@ -1,9 +1,10 @@
 # <img src="packages/patchbay/bundle/assets/public-favicon.svg" alt="Patchbay" style="height: 2rem; margin-bottom: 0;" /> Patchbay [WIP](https://github.com/artificialhoney/patchbay)
+
 > The brilliant [cables.gl](https://cables.gl) app on a state of the art full-stack platform. [CHECK IT OUT](https://patchbay.honeymachine.io)
 
 ## Stack
 
-- Postgis DB
+- Postgres DB
 - Redis Cache
 - Directus HeadlessCMS
 - Patchbay App
@@ -18,7 +19,7 @@ pnpm i
 
 ## Development
 
-Run the stack:
+Run the stack.
 
 ```bash
 pnpm dev
@@ -39,6 +40,7 @@ services:
     # platform: linux/amd64
     volumes:
       - ${PATCHBAY_DATA_DIR:-~/directus}/database:/var/lib/postgresql/data
+      - ${PATCHBAY_SEED_VOLUME:-seed}:/docker-entrypoint-initdb.d
     environment:
       POSTGRES_USER: "${PATCHBAY_POSTGRES_USER:-admin}"
       POSTGRES_PASSWORD: "${PATCHBAY_POSTGRES_PASSWORD:-patchbay}"
@@ -51,9 +53,8 @@ services:
     image: directus/directus:11.7.2
     container_name: patchbay_api
     volumes:
-      - ${PATCHBAY_DATA_DIR:-~/directus}/extensions:/directus/extensions
-      - ${PATCHBAY_DATA_DIR:-~/directus}/uploads:/directus/uploads
-      - ${PATCHBAY_DATA_DIR:-~/directus}/snapshots:/directus/snapshots
+      - ${PATCHBAY_EXTENSION_VOLUME:-extensions}:/directus/extensions
+      - ${PATCHBAY_UPLOADS_VOLUME:-uploads}:/directus/uploads
     environment:
       SECRET: "${PATCHBAY_SECRET:-patchbay_super_secret}"
 
@@ -72,15 +73,22 @@ services:
       ADMIN_EMAIL: "${PATCHBAY_ADMIN_EMAIL:-admin@patchbay.io}"
       ADMIN_PASSWORD: "${PATCHBAY_ADMIN_PASSWORD:-patchbay}"
 
-      PUBLIC_URL: "http://localhost:3000/api"
+      PUBLIC_URL: "http://localhost:3000/patchbay"
+      ROOT_REDIRECT: "/patchbay"
   app:
     container_name: patchbay_app
     image: artificialhoney/patchbay:latest
     ports:
       - 3000:3000
     volumes:
-      - ${PATCHBAY_DATA_DIR:-~/directus}/extensions:}:/app/directus/extensions
+      - ${PATCHBAY_EXTENSIONS_VOLUME:-extensions}:/app/api/extensions
+      - ${PATCHBAY_UPLOADS_VOLUME:-uploads}:/app/api/uploads
+      - ${PATCHBAY_SEED_VOLUME:-seed}:/app/db
       - /var/run/docker.sock:/var/run/docker.sock
+volumes:
+  uploads:
+  extensions:
+  seed:
 
 ```
 
@@ -93,7 +101,7 @@ pnpm format
 pnpm lint
 ```
 
-For commit hooking you can use [pre-commit](https://pre-commit.com/)!
+For commit hooking you can use [pre-commit](https://pre-commit.com/).
 
 ## LICENSE
 
@@ -120,3 +128,4 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+

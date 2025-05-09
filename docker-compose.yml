@@ -19,7 +19,7 @@ services:
     image: directus/directus:11.7.2
     container_name: patchbay_api
     volumes:
-      - ${PATCHBAY_EXTENSION_VOLUME:-extension}:/directus/extensions/patchbay
+      - ${PATCHBAY_EXTENSION_VOLUME:-extensions}:/directus/extensions
       - ${PATCHBAY_UPLOADS_VOLUME:-uploads}:/directus/uploads
     environment:
       SECRET: "${PATCHBAY_SECRET:-patchbay_super_secret}"
@@ -47,11 +47,11 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ${PATCHBAY_EXTENSION_VOLUME:-extension}:/app/api/extension
+      - ${PATCHBAY_EXTENSIONS_VOLUME:-extensions}:/app/api/extensions
       - ${PATCHBAY_UPLOADS_VOLUME:-uploads}:/app/api/uploads
       - ${PATCHBAY_SEED_VOLUME:-seed}:/app/db
       - /var/run/docker.sock:/var/run/docker.sock
 volumes:
   uploads:
-  extension:
+  extensions:
   seed:
