@@ -40,7 +40,7 @@ services:
     # platform: linux/amd64
     volumes:
       - ${PATCHBAY_DATA_DIR:-~/directus}/database:/var/lib/postgresql/data
-      - ${PATCHBAY_SEED_VOLUME:-seed}:/docker-entrypoint-initdb.d
+      - ${PATCHBAY_DB_VOLUME:-db}:/docker-entrypoint-initdb.d
     environment:
       POSTGRES_USER: "${PATCHBAY_POSTGRES_USER:-admin}"
       POSTGRES_PASSWORD: "${PATCHBAY_POSTGRES_PASSWORD:-patchbay}"
@@ -55,6 +55,7 @@ services:
     volumes:
       - ${PATCHBAY_EXTENSIONS_VOLUME:-extensions}:/directus/extensions
       - ${PATCHBAY_UPLOADS_VOLUME:-uploads}:/directus/uploads
+      - ${PATCHBAY_SNAPSHOTS_VOLUME:-snapshots}:/directus/snapshots
     environment:
       SECRET: "${PATCHBAY_SECRET:-patchbay_super_secret}"
 
@@ -81,13 +82,15 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ${PATCHBAY_EXTENSIONS_VOLUME:-extensions}:/app/api/extensions
-      - ${PATCHBAY_UPLOADS_VOLUME:-uploads}:/app/api/uploads
-      - ${PATCHBAY_SEED_VOLUME:-seed}:/app/db
+      - ${PATCHBAY_EXTENSIONS_VOLUME:-extensions}:/opt/patchbay/api/extensions
+      - ${PATCHBAY_UPLOADS_VOLUME:-uploads}:/opt/patchbay/api/uploads
+      - ${PATCHBAY_SNAPSHOTS_VOLUME:-snapshots}:/opt/patchbay/api/snapshots
+      - ${PATCHBAY_DB_VOLUME:-seed}:/opt/patchbay/db
 volumes:
   uploads:
   extensions:
-  seed:
+  snapshots:
+  db:
 
 ```
 
