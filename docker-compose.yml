@@ -50,7 +50,6 @@ services:
       - ${PATCHBAY_EXTENSIONS_VOLUME:-extensions}:/app/api/extensions
       - ${PATCHBAY_UPLOADS_VOLUME:-uploads}:/app/api/uploads
       - ${PATCHBAY_SEED_VOLUME:-seed}:/app/db
-      - /var/run/docker.sock:/var/run/docker.sock
 volumes:
   uploads:
   extensions:
