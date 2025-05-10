@@ -44,7 +44,7 @@ COPY --from=build /app/assets/api/uploads api/uploads
 COPY --from=build /app/assets/api/snapshots api/snapshots
 
 # Copy entrypoint and make executable
-COPY ./entrypoint.sh /
+COPY --from=build /app/entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 
 # Define environment variables
