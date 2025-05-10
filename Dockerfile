@@ -12,7 +12,7 @@ RUN corepack enable
 WORKDIR /app
 
 # Copy the rest of the application files to the working directory
-COPY . ./
+COPY .. ./
 
 # Clean node_modules
 RUN rm -rf node_modules && pnpm -r exec rm -rf node_modules
@@ -32,18 +32,18 @@ FROM node:${NODE_VERSION}-slim
 # Install dumb init
 RUN apt-get update && apt-get install -y ca-certificates dumb-init
 
-WORKDIR /app
+WORKDIR /opt/patchbay
 
 # Copy static assets
 COPY --from=build /app/assets/api api
 COPY --from=build /app/assets/db db
 # Copy the output from the build stage to the working directory
-COPY --from=build /app/packages/patchbay/app/.output .
+COPY --from=build /app/packages/patchbay/app/.output app
 COPY --from=build /app/packages/patchbay/bundle api/extensions
 
 # Copy entrypoint and make executable
-COPY --from=build /app/entrypoint.sh /
-RUN chmod +x /entrypoint.sh
+COPY --from=build /app/entrypoint.sh .
+RUN chmod +x ./entrypoint.sh
 
 # Define environment variables
 ENV HOST=0.0.0.0

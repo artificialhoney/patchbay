@@ -1,3 +1,3 @@
 #!/bin/bash
 
-node /app/server/index.mjs
+node ./app/server/index.mjs
