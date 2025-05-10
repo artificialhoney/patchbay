@@ -19,7 +19,7 @@ services:
     image: directus/directus:11.7.2
     container_name: patchbay_api
     volumes:
-      - ${PATCHBAY_EXTENSION_VOLUME:-extensions}:/directus/extensions
+      - ${PATCHBAY_EXTENSIONS_VOLUME:-extensions}:/directus/extensions
       - ${PATCHBAY_UPLOADS_VOLUME:-uploads}:/directus/uploads
     environment:
       SECRET: "${PATCHBAY_SECRET:-patchbay_super_secret}"

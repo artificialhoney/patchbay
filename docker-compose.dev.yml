@@ -15,3 +15,5 @@ services:
       - api.env
     ports:
       - 8055:8055
+    volumes:
+      - ./packages/patchbay/bundle:/directus/extensions/patchbay
