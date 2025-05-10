@@ -56,7 +56,6 @@ services:
     container_name: patchbay_api
     volumes:
       - ${PATCHBAY_EXTENSIONS_VOLUME:-extensions}:/directus/extensions
-      - ${PATCHBAY_UPLOADS_VOLUME:-uploads}:/directus/uploads
       - ${PATCHBAY_SNAPSHOTS_VOLUME:-snapshots}:/directus/snapshots
     environment:
       SECRET: "${PATCHBAY_SECRET:-patchbay_super_secret}"
@@ -89,11 +88,9 @@ services:
       - 3000:3000
     volumes:
       - ${PATCHBAY_EXTENSIONS_VOLUME:-extensions}:/opt/patchbay/extensions
-      - ${PATCHBAY_UPLOADS_VOLUME:-uploads}:/opt/patchbay/uploads
       - ${PATCHBAY_SNAPSHOTS_VOLUME:-snapshots}:/opt/patchbay/snapshots
       - ${PATCHBAY_DB_VOLUME:-db}:/opt/patchbay/db
 volumes:
-  uploads:
   extensions:
   snapshots:
   db:

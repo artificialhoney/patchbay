@@ -24,7 +24,7 @@
     "stack:logs:prod": "docker compose logs",
     "stack:down:prod": "docker compose down",
     "api:exec": "docker exec -it patchbay_api",
-    "api:snapshot": "pnpm --silent api:exec npx directus schema snapshot > assets/snapshots/patchbay_snapshot.yaml",
+    "api:snapshot": "pnpm --silent api:exec npx directus schema snapshot > assets/api/snapshots/patchbay_snapshot.yaml",
     "db:exec": "docker exec -it patchbay_db",
     "db:dump": "pnpm --silent db:exec pg_dump --username admin patchbay > assets/db/init.sql",
     "docs:readme": "node ./scripts/nunchucks.mjs README.md.jinja > README.md"

@@ -10,7 +10,7 @@ const description = t("description");
 
 const buttons = {
   primary: { text: t("patch"), url: "/patch" },
-  secondary: { text: t("admin"), url: "/api/admin" },
+  secondary: { text: t("admin"), url: "/patchbay/admin" },
 };
 
 useSeoMeta({
