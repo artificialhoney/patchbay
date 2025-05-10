@@ -45,6 +45,8 @@ services:
       POSTGRES_USER: "${PATCHBAY_POSTGRES_USER:-admin}"
       POSTGRES_PASSWORD: "${PATCHBAY_POSTGRES_PASSWORD:-patchbay}"
       POSTGRES_DB: "${PATCHBAY_POSTGRES_DB:-patchbay}"
+    depends_on:
+      - app
   cache:
     image: redis:6
     container_name: patchbay_cache
@@ -76,6 +78,10 @@ services:
 
       PUBLIC_URL: "http://localhost:3000/patchbay"
       ROOT_REDIRECT: "/patchbay"
+    depends_on:
+      - app
+      - db
+      - cache
   app:
     container_name: patchbay_app
     image: artificialhoney/patchbay:latest

@@ -39,7 +39,7 @@ COPY ./assets/db db
 
 # Copy the output from the build stage to the working directory
 COPY --from=build /app/packages/patchbay/app/.output app
-COPY --from=build /app/packages/patchbay/bundle extensions
+COPY --from=build /app/packages/patchbay/bundle extensions/patchbay
 
 # Copy entrypoint and make executable
 COPY ./entrypoint.sh .
