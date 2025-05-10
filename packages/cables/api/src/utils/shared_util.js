@@ -21,7 +21,7 @@ export default class SharedUtil {
   /**
    * @abstract
    */
-  // eslint-disable-next-line getter-return,no-empty-function
+  // eslint-disable-next-line getter-return
   get utilName() {}
 
   /**

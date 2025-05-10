@@ -11,6 +11,8 @@
     "chroma-js": "2.1.0",
     "error-stack-parser": "2.1.4",
     "gl-matrix": "3.1.0",
+    "handlebars": "4.7.8",
+    "highlight.js": "11.6.0",
     "intro.js": "2.9.0",
     "izitoast": "1.1.4",
     "lit": "^3.3.0",
@@ -22,7 +24,8 @@
     "raphael": "2.2.0",
     "socketcluster-client": "16.0.1",
     "sortablejs": "1.15.2",
-    "tinysort": "3.2.8"
+    "tinysort": "3.2.8",
+    "undo-manager": "^1.1.1"
   },
   "scripts": {
     "build": "pnpm run build:ui && pnpm run build:libs && pnpm run build:talker && pnpm run build:assets",

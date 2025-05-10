@@ -69,7 +69,7 @@ export default class LogFilter extends Events {
       this._warned = true;
       console.log(
         "[logging] some console messages are not printed - [ctrl/cmd+p logging] to change logging settings",
-      ); // eslint-disable-line
+      );
     }
 
     if (options.level > 0) should = true;

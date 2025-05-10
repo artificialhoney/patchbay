@@ -864,7 +864,7 @@ var IWantHue = (function () {
             }
 
             // Cleaning up free samples
-            /* eslint-disable */
+
             freeColorSamples = freeColorSamples.filter(function(color) {
               return (
                 color[0] !== colors[j][0] ||
@@ -872,7 +872,7 @@ var IWantHue = (function () {
                 color[2] !== colors[j][2]
               )
             });
-            /* eslint-enable */
+
           }
         }
       }

@@ -212,7 +212,7 @@ class Mesh extends CgMesh {
     if (!array) return;
 
     if (this.#cgl.debugOneFrame) {
-      console.log("_bufferArray", array.length, attr.name); // eslint-disable-line
+      console.log("_bufferArray", array.length, attr.name);
     }
 
     if (!(array instanceof Float32Array)) {
@@ -226,7 +226,7 @@ class Mesh extends CgMesh {
             "_bufferArray create new float32array",
             array.length,
             attr.name,
-          ); // eslint-disable-line
+          );
         }
 
         if (array.length > 10000) {

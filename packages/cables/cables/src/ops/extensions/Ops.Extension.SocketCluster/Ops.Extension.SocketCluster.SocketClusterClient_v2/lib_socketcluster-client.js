@@ -3130,7 +3130,6 @@
              * @author   Feross Aboukhadijeh <https://feross.org>
              * @license  MIT
              */
-            /* eslint-disable no-proto */
 
             "use strict";
 
@@ -3483,7 +3482,6 @@
 
             function SlowBuffer(length) {
               if (+length != length) {
-                // eslint-disable-line eqeqeq
                 length = 0;
               }
               return Buffer.alloc(+length);
@@ -5246,7 +5244,7 @@
             }
             function numberIsNaN(obj) {
               // For IE11 support
-              return obj !== obj; // eslint-disable-line no-self-compare
+              return obj !== obj;
             }
 
             // Create lookup table for `toString('hex')`
@@ -7228,7 +7226,7 @@
 
           if (getRandomValues) {
             // WHATWG crypto RNG - http://wiki.whatwg.org/wiki/Crypto
-            var rnds8 = new Uint8Array(16); // eslint-disable-line no-undef
+            var rnds8 = new Uint8Array(16);
 
             module.exports = function whatwgRNG() {
               getRandomValues(rnds8);

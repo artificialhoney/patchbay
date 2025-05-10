@@ -75,10 +75,10 @@
 	  this.sourceIndex = 0;
 	  this.tag = 0;
 	  this.bitcount = 0;
-	  
+
 	  this.dest = dest;
 	  this.destLen = 0;
-	  
+
 	  this.ltree = new Tree();  /* dynamic length/symbol tree */
 	  this.dtree = new Tree();  /* dynamic distance tree */
 	}
@@ -220,7 +220,7 @@
 	    d.tag |= d.source[d.sourceIndex++] << d.bitcount;
 	    d.bitcount += 8;
 	  }
-	  
+
 	  var sum = 0, cur = 0, len = 0;
 	  var tag = d.tag;
 
@@ -233,7 +233,7 @@
 	    sum += t.table[len];
 	    cur -= t.table[len];
 	  } while (cur >= 0);
-	  
+
 	  d.tag = tag;
 	  d.bitcount -= len;
 
@@ -344,7 +344,7 @@
 	function tinf_inflate_uncompressed_block(d) {
 	  var length, invlength;
 	  var i;
-	  
+
 	  /* unread from bitbuffer */
 	  while (d.bitcount > 8) {
 	    d.sourceIndex--;
@@ -417,7 +417,7 @@
 	    else
 	      { return d.dest.subarray(0, d.destLen); }
 	  }
-	  
+
 	  return d.dest;
 	}
 
@@ -11540,7 +11540,7 @@
 	        });
 	    });
 
-	    if (!!events) {
+	    if (events) {
 	        coreEvents.forEach(function (eventId) {
 	            var event = events[eventId];
 	            if (typeof event === 'function') {
@@ -11806,7 +11806,7 @@
 	 */
 	Tokenizer.prototype.getContext = function (contextName) {
 	    var context = this.registeredContexts[contextName];
-	    return !!context ? context : null;
+	    return context ? context : null;
 	};
 
 	/**
@@ -11816,7 +11816,7 @@
 	 */
 	Tokenizer.prototype.on = function(eventName, eventHandler) {
 	    var event = this.events[eventName];
-	    if (!!event) {
+	    if (event) {
 	        return event.subscribe(eventHandler);
 	    } else {
 	        return null;
@@ -11847,7 +11847,7 @@
 	 * TODO: call tokenize on registration to update context ranges with the new context.
 	 */
 	Tokenizer.prototype.registerContextChecker = function(contextName, contextStartCheck, contextEndCheck) {
-	    if (!!this.getContext(contextName)) { return {
+	    if (this.getContext(contextName)) { return {
 	        FAIL:
 	        ("context name '" + contextName + "' is already registered.")
 	    }; }
@@ -11885,7 +11885,7 @@
 	 */
 	Tokenizer.prototype.getContextRanges = function(contextName) {
 	    var context = this.getContext(contextName);
-	    if (!!context) {
+	    if (context) {
 	        return context.ranges;
 	    } else {
 	        return { FAIL: ("context checker '" + contextName + "' is not registered.") };
@@ -12252,7 +12252,7 @@
 	            return script.script.defaultLangSys.featureIndexes;
 	        } else {
 	            var langSysRecords = script.langSysRecords;
-	            if (!!langSysRecords) {
+	            if (langSysRecords) {
 	                for (var j = 0; j < langSysRecords.length; j++) {
 	                    var langSysRecord = langSysRecords[j];
 	                    if (langSysRecord.tag === scriptTag) {

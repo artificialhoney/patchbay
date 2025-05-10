@@ -56,7 +56,7 @@ var isNode = function () {
     } else {
         root.resemble = factory();
     }
-})(this /* eslint-disable-line no-invalid-this*/, function () {
+})(this  , function () {
     "use strict";
 
     var Img;
@@ -64,7 +64,7 @@ var isNode = function () {
     var loadNodeCanvasImage;
 
     if (isNode()) {
-        Canvas = require("canvas"); // eslint-disable-line global-require
+        Canvas = require("canvas");
         Img = Canvas.Image;
         loadNodeCanvasImage = Canvas.loadImage;
     } else {

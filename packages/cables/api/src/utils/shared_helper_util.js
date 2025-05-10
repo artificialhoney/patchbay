@@ -250,7 +250,7 @@ export default class SharedHelperUtil extends SharedUtil {
             ? temporary
             : temporary + 1;
         temporary = array[index];
-        // eslint-disable-next-line no-multi-assign,no-nested-ternary
+
         result = array[index] =
           temporary > result
             ? temporary2 > result

@@ -1227,7 +1227,7 @@ var BezierFactory = (function () {
 (function () {
   var lastTime = 0;
   var vendors = ['ms', 'moz', 'webkit', 'o'];
-  for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) { // eslint-disable-line no-plusplus
+  for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
     window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
     window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
   }
@@ -1474,29 +1474,29 @@ function bezFunction() {
     var u0 = 1 - t0;
     var u1 = 1 - t1;
     var u0u0u0 = u0 * u0 * u0;
-    var t0u0u0_3 = t0 * u0 * u0 * 3; // eslint-disable-line camelcase
-    var t0t0u0_3 = t0 * t0 * u0 * 3; // eslint-disable-line camelcase
+    var t0u0u0_3 = t0 * u0 * u0 * 3;
+    var t0t0u0_3 = t0 * t0 * u0 * 3;
     var t0t0t0 = t0 * t0 * t0;
     //
     var u0u0u1 = u0 * u0 * u1;
-    var t0u0u1_3 = t0 * u0 * u1 + u0 * t0 * u1 + u0 * u0 * t1; // eslint-disable-line camelcase
-    var t0t0u1_3 = t0 * t0 * u1 + u0 * t0 * t1 + t0 * u0 * t1; // eslint-disable-line camelcase
+    var t0u0u1_3 = t0 * u0 * u1 + u0 * t0 * u1 + u0 * u0 * t1;
+    var t0t0u1_3 = t0 * t0 * u1 + u0 * t0 * t1 + t0 * u0 * t1;
     var t0t0t1 = t0 * t0 * t1;
     //
     var u0u1u1 = u0 * u1 * u1;
-    var t0u1u1_3 = t0 * u1 * u1 + u0 * t1 * u1 + u0 * u1 * t1; // eslint-disable-line camelcase
-    var t0t1u1_3 = t0 * t1 * u1 + u0 * t1 * t1 + t0 * u1 * t1; // eslint-disable-line camelcase
+    var t0u1u1_3 = t0 * u1 * u1 + u0 * t1 * u1 + u0 * u1 * t1;
+    var t0t1u1_3 = t0 * t1 * u1 + u0 * t1 * t1 + t0 * u1 * t1;
     var t0t1t1 = t0 * t1 * t1;
     //
     var u1u1u1 = u1 * u1 * u1;
-    var t1u1u1_3 = t1 * u1 * u1 + u1 * t1 * u1 + u1 * u1 * t1; // eslint-disable-line camelcase
-    var t1t1u1_3 = t1 * t1 * u1 + u1 * t1 * t1 + t1 * u1 * t1; // eslint-disable-line camelcase
+    var t1u1u1_3 = t1 * u1 * u1 + u1 * t1 * u1 + u1 * u1 * t1;
+    var t1t1u1_3 = t1 * t1 * u1 + u1 * t1 * t1 + t1 * u1 * t1;
     var t1t1t1 = t1 * t1 * t1;
     for (i = 0; i < len; i += 1) {
-      bezierSegmentPoints[i * 4] = math.round((u0u0u0 * pt1[i] + t0u0u0_3 * pt3[i] + t0t0u0_3 * pt4[i] + t0t0t0 * pt2[i]) * 1000) / 1000; // eslint-disable-line camelcase
-      bezierSegmentPoints[i * 4 + 1] = math.round((u0u0u1 * pt1[i] + t0u0u1_3 * pt3[i] + t0t0u1_3 * pt4[i] + t0t0t1 * pt2[i]) * 1000) / 1000; // eslint-disable-line camelcase
-      bezierSegmentPoints[i * 4 + 2] = math.round((u0u1u1 * pt1[i] + t0u1u1_3 * pt3[i] + t0t1u1_3 * pt4[i] + t0t1t1 * pt2[i]) * 1000) / 1000; // eslint-disable-line camelcase
-      bezierSegmentPoints[i * 4 + 3] = math.round((u1u1u1 * pt1[i] + t1u1u1_3 * pt3[i] + t1t1u1_3 * pt4[i] + t1t1t1 * pt2[i]) * 1000) / 1000; // eslint-disable-line camelcase
+      bezierSegmentPoints[i * 4] = math.round((u0u0u0 * pt1[i] + t0u0u0_3 * pt3[i] + t0t0u0_3 * pt4[i] + t0t0t0 * pt2[i]) * 1000) / 1000;
+      bezierSegmentPoints[i * 4 + 1] = math.round((u0u0u1 * pt1[i] + t0u0u1_3 * pt3[i] + t0t0u1_3 * pt4[i] + t0t0t1 * pt2[i]) * 1000) / 1000;
+      bezierSegmentPoints[i * 4 + 2] = math.round((u0u1u1 * pt1[i] + t0u1u1_3 * pt3[i] + t0t1u1_3 * pt4[i] + t0t1t1 * pt2[i]) * 1000) / 1000;
+      bezierSegmentPoints[i * 4 + 3] = math.round((u1u1u1 * pt1[i] + t1u1u1_3 * pt3[i] + t1t1u1_3 * pt4[i] + t1t1t1 * pt2[i]) * 1000) / 1000;
     }
 
     return bezierSegmentPoints;
@@ -2174,11 +2174,11 @@ var FontManager = (function () {
     }
     if (((typeof char === 'string' && char.charCodeAt(0) !== 13) || !char)
             && console
-            && console.warn // eslint-disable-line no-console
+            && console.warn
             && !this._warned
     ) {
       this._warned = true;
-      console.warn('Missing character from exported characters list: ', char, style, font); // eslint-disable-line no-console
+      console.warn('Missing character from exported characters list: ', char, style, font);
     }
     return emptyChar;
   }
@@ -4963,7 +4963,7 @@ var assetLoader = (function () {
     try {
       // This crashes on Android WebView prior to KitKat
       xhr.responseType = 'json';
-    } catch (err) {} // eslint-disable-line no-empty
+    } catch (err) {}
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
@@ -5957,7 +5957,7 @@ TextProperty.prototype.completeTextData = function (documentData) {
     letters.push({
       l: cLength, an: cLength, add: currentSize, n: newLineFlag, anIndexes: [], val: val, line: currentLine, animatorJustifyOffset: 0,
     });
-    if (anchorGrouping == 2) { // eslint-disable-line eqeqeq
+    if (anchorGrouping == 2) {
       currentSize += cLength;
       if (val === '' || val === ' ' || i === len - 1) {
         if (val === '' || val === ' ') {
@@ -5972,7 +5972,7 @@ TextProperty.prototype.completeTextData = function (documentData) {
         index += 1;
         currentSize = 0;
       }
-    } else if (anchorGrouping == 3) { // eslint-disable-line eqeqeq
+    } else if (anchorGrouping == 3) {
       currentSize += cLength;
       if (val === '' || i === len - 1) {
         if (val === '') {
@@ -6035,7 +6035,7 @@ TextProperty.prototype.completeTextData = function (documentData) {
     for (i = 0; i < len; i += 1) {
       letterData = letters[i];
       letterData.anIndexes[j] = ind;
-      if ((based == 1 && letterData.val !== '') || (based == 2 && letterData.val !== '' && letterData.val !== ' ') || (based == 3 && (letterData.n || letterData.val == ' ' || i == len - 1)) || (based == 4 && (letterData.n || i == len - 1))) { // eslint-disable-line eqeqeq
+      if ((based == 1 && letterData.val !== '') || (based == 2 && letterData.val !== '' && letterData.val !== ' ') || (based == 3 && (letterData.n || letterData.val == ' ' || i == len - 1)) || (based == 4 && (letterData.n || i == len - 1))) {
         if (animatorData.s.rn === 1) {
           indexes.push(ind);
         }
@@ -6048,7 +6048,7 @@ TextProperty.prototype.completeTextData = function (documentData) {
     if (animatorData.s.rn === 1) {
       for (i = 0; i < len; i += 1) {
         letterData = letters[i];
-        if (currentInd != letterData.anIndexes[j]) { // eslint-disable-line eqeqeq
+        if (currentInd != letterData.anIndexes[j]) {
           currentInd = letterData.anIndexes[j];
           newInd = indexes.splice(Math.floor(Math.random() * indexes.length), 1)[0];
         }
@@ -6193,7 +6193,7 @@ var TextSelectorProp = (function () {
           mult = 0;
         } else {
           ind = min(max(0, ind + 0.5 - s), e - s);
-          mult = (1 + (Math.cos((Math.PI + Math.PI * 2 * (ind) / (e - s))))) / 2; // eslint-disable-line
+          mult = (1 + (Math.cos((Math.PI + Math.PI * 2 * (ind) / (e - s))))) / 2;
         }
         mult = easer(mult);
       } else {
@@ -6572,7 +6572,7 @@ BaseRenderer.prototype.buildElementParenting = function (element, parentName, hi
   var i = 0;
   var len = layers.length;
   while (i < len) {
-    if (layers[i].ind == parentName) { // eslint-disable-line eqeqeq
+    if (layers[i].ind == parentName) {
       if (!elements[i] || elements[i] === true) {
         this.buildItem(i);
         this.addPendingElement(element);
@@ -8761,15 +8761,15 @@ SVGBaseElement.prototype = {
     var fil;
     var gg;
     if (this.data.td) {
-      if (this.data.td == 3 || this.data.td == 1) { // eslint-disable-line eqeqeq
+      if (this.data.td == 3 || this.data.td == 1) {
         var masker = createNS('mask');
         masker.setAttribute('id', this.layerId);
-        masker.setAttribute('mask-type', this.data.td == 3 ? 'luminance' : 'alpha'); // eslint-disable-line eqeqeq
+        masker.setAttribute('mask-type', this.data.td == 3 ? 'luminance' : 'alpha');
         masker.appendChild(this.layerElement);
         layerElementParent = masker;
         this.globalData.defs.appendChild(masker);
         // This is only for IE and Edge when mask if of type alpha
-        if (!featureSupport.maskType && this.data.td == 1) { // eslint-disable-line eqeqeq
+        if (!featureSupport.maskType && this.data.td == 1) {
           masker.setAttribute('mask-type', 'luminance');
           filId = createElementID();
           fil = filtersFactory.createFilter(filId);
@@ -8781,7 +8781,7 @@ SVGBaseElement.prototype = {
           masker.appendChild(gg);
           gg.setAttribute('filter', 'url(' + locationHref + '#' + filId + ')');
         }
-      } else if (this.data.td == 2) { // eslint-disable-line eqeqeq
+      } else if (this.data.td == 2) {
         var maskGroup = createNS('mask');
         maskGroup.setAttribute('id', this.layerId);
         maskGroup.setAttribute('mask-type', 'alpha');
@@ -9989,8 +9989,8 @@ SVGGaussianBlurEffect.prototype.renderFrame = function (forceRender) {
     //   3 -> vertical only
     //
     var dimensions = this.filterManager.effectElements[1].p.v;
-    var sigmaX = (dimensions == 3) ? 0 : sigma; // eslint-disable-line eqeqeq
-    var sigmaY = (dimensions == 2) ? 0 : sigma; // eslint-disable-line eqeqeq
+    var sigmaX = (dimensions == 3) ? 0 : sigma;
+    var sigmaY = (dimensions == 2) ? 0 : sigma;
 
     this.feGaussianBlur.setAttribute('stdDeviation', sigmaX + ' ' + sigmaY);
 
@@ -9998,7 +9998,7 @@ SVGGaussianBlurEffect.prototype.renderFrame = function (forceRender) {
     //
     //   0 -> off -> duplicate
     //   1 -> on  -> wrap
-    var edgeMode = (this.filterManager.effectElements[2].p.v == 1) ? 'wrap' : 'duplicate'; // eslint-disable-line eqeqeq
+    var edgeMode = (this.filterManager.effectElements[2].p.v == 1) ? 'wrap' : 'duplicate';
     this.feGaussianBlur.setAttribute('edgeMode', edgeMode);
   }
 };
@@ -10811,7 +10811,7 @@ CVShapeElement.prototype.createStyleElement = function (data, transforms) {
   if (data.ty === 'st' || data.ty === 'gs') {
     styleElem.lc = this.lcEnum[data.lc] || 'round';
     styleElem.lj = this.ljEnum[data.lj] || 'round';
-    if (data.lj == 1) { // eslint-disable-line eqeqeq
+    if (data.lj == 1) {
       styleElem.ml = data.ml;
     }
     elementData.w = PropertyFactory.getProp(this, data.w, 0, null, this);
@@ -11749,14 +11749,14 @@ HShapeElement.prototype.tempBoundingBox = {
 HShapeElement.prototype.getBoundsOfCurve = function (p0, p1, p2, p3) {
   var bounds = [[p0[0], p3[0]], [p0[1], p3[1]]];
 
-  for (var a, b, c, t, b2ac, t1, t2, i = 0; i < 2; ++i) { // eslint-disable-line no-plusplus
+  for (var a, b, c, t, b2ac, t1, t2, i = 0; i < 2; ++i) {
     b = 6 * p0[i] - 12 * p1[i] + 6 * p2[i];
     a = -3 * p0[i] + 9 * p1[i] - 9 * p2[i] + 3 * p3[i];
     c = 3 * p1[i] - 3 * p0[i];
 
-    b |= 0; // eslint-disable-line no-bitwise
-    a |= 0; // eslint-disable-line no-bitwise
-    c |= 0; // eslint-disable-line no-bitwise
+    b |= 0;
+    a |= 0;
+    c |= 0;
 
     if (a === 0 && b === 0) {
       //
@@ -12675,28 +12675,28 @@ AnimationItem.prototype.setData = function (wrapper, animationData) {
   };
   var wrapperAttributes = wrapper.attributes;
 
-  params.path = wrapperAttributes.getNamedItem('data-animation-path') // eslint-disable-line no-nested-ternary
+  params.path = wrapperAttributes.getNamedItem('data-animation-path')
     ? wrapperAttributes.getNamedItem('data-animation-path').value
-    : wrapperAttributes.getNamedItem('data-bm-path') // eslint-disable-line no-nested-ternary
+    : wrapperAttributes.getNamedItem('data-bm-path')
       ? wrapperAttributes.getNamedItem('data-bm-path').value
       : wrapperAttributes.getNamedItem('bm-path')
         ? wrapperAttributes.getNamedItem('bm-path').value
         : '';
-  params.animType = wrapperAttributes.getNamedItem('data-anim-type') // eslint-disable-line no-nested-ternary
+  params.animType = wrapperAttributes.getNamedItem('data-anim-type')
     ? wrapperAttributes.getNamedItem('data-anim-type').value
-    : wrapperAttributes.getNamedItem('data-bm-type') // eslint-disable-line no-nested-ternary
+    : wrapperAttributes.getNamedItem('data-bm-type')
       ? wrapperAttributes.getNamedItem('data-bm-type').value
-      : wrapperAttributes.getNamedItem('bm-type') // eslint-disable-line no-nested-ternary
+      : wrapperAttributes.getNamedItem('bm-type')
         ? wrapperAttributes.getNamedItem('bm-type').value
-        : wrapperAttributes.getNamedItem('data-bm-renderer') // eslint-disable-line no-nested-ternary
+        : wrapperAttributes.getNamedItem('data-bm-renderer')
           ? wrapperAttributes.getNamedItem('data-bm-renderer').value
           : wrapperAttributes.getNamedItem('bm-renderer')
             ? wrapperAttributes.getNamedItem('bm-renderer').value
             : 'canvas';
 
-  var loop = wrapperAttributes.getNamedItem('data-anim-loop') // eslint-disable-line no-nested-ternary
+  var loop = wrapperAttributes.getNamedItem('data-anim-loop')
     ? wrapperAttributes.getNamedItem('data-anim-loop').value
-    : wrapperAttributes.getNamedItem('data-bm-loop') // eslint-disable-line no-nested-ternary
+    : wrapperAttributes.getNamedItem('data-bm-loop')
       ? wrapperAttributes.getNamedItem('data-bm-loop').value
       : wrapperAttributes.getNamedItem('bm-loop')
         ? wrapperAttributes.getNamedItem('bm-loop').value
@@ -12708,25 +12708,25 @@ AnimationItem.prototype.setData = function (wrapper, animationData) {
   } else if (loop !== '') {
     params.loop = parseInt(loop, 10);
   }
-  var autoplay = wrapperAttributes.getNamedItem('data-anim-autoplay') // eslint-disable-line no-nested-ternary
+  var autoplay = wrapperAttributes.getNamedItem('data-anim-autoplay')
     ? wrapperAttributes.getNamedItem('data-anim-autoplay').value
-    : wrapperAttributes.getNamedItem('data-bm-autoplay') // eslint-disable-line no-nested-ternary
+    : wrapperAttributes.getNamedItem('data-bm-autoplay')
       ? wrapperAttributes.getNamedItem('data-bm-autoplay').value
       : wrapperAttributes.getNamedItem('bm-autoplay')
         ? wrapperAttributes.getNamedItem('bm-autoplay').value
         : true;
   params.autoplay = autoplay !== 'false';
 
-  params.name = wrapperAttributes.getNamedItem('data-name') // eslint-disable-line no-nested-ternary
+  params.name = wrapperAttributes.getNamedItem('data-name')
     ? wrapperAttributes.getNamedItem('data-name').value
-    : wrapperAttributes.getNamedItem('data-bm-name') // eslint-disable-line no-nested-ternary
+    : wrapperAttributes.getNamedItem('data-bm-name')
       ? wrapperAttributes.getNamedItem('data-bm-name').value
       : wrapperAttributes.getNamedItem('bm-name')
         ? wrapperAttributes.getNamedItem('bm-name').value
         : '';
-  var prerender = wrapperAttributes.getNamedItem('data-anim-prerender') // eslint-disable-line no-nested-ternary
+  var prerender = wrapperAttributes.getNamedItem('data-anim-prerender')
     ? wrapperAttributes.getNamedItem('data-anim-prerender').value
-    : wrapperAttributes.getNamedItem('data-bm-prerender') // eslint-disable-line no-nested-ternary
+    : wrapperAttributes.getNamedItem('data-bm-prerender')
       ? wrapperAttributes.getNamedItem('data-bm-prerender').value
       : wrapperAttributes.getNamedItem('bm-prerender')
         ? wrapperAttributes.getNamedItem('bm-prerender').value
@@ -12892,7 +12892,7 @@ AnimationItem.prototype.setSubframe = function (flag) {
 };
 
 AnimationItem.prototype.gotoFrame = function () {
-  this.currentFrame = this.isSubframeEnabled ? this.currentRawFrame : ~~this.currentRawFrame; // eslint-disable-line no-bitwise
+  this.currentFrame = this.isSubframeEnabled ? this.currentRawFrame : ~~this.currentRawFrame;
 
   if (this.timeCompleted !== this.totalFrames && this.currentFrame > this.timeCompleted) {
     this.currentFrame = this.timeCompleted;
@@ -13034,7 +13034,7 @@ AnimationItem.prototype.advanceTime = function (value) {
     }
   } else if (nextValue < 0) {
     if (!this.checkSegments(nextValue % this.totalFrames)) {
-      if (this.loop && !(this.playCount-- <= 0 && this.loop !== true)) { // eslint-disable-line no-plusplus
+      if (this.loop && !(this.playCount-- <= 0 && this.loop !== true)) {
         this.setCurrentRawFrameValue(this.totalFrames + (nextValue % this.totalFrames));
         if (!this._completedLoop) {
           this._completedLoop = true;
@@ -13355,7 +13355,7 @@ var Expressions = (function () {
 
 expressionsPlugin = Expressions;
 
-/* eslint-disable camelcase, no-unused-vars */
+/* eslint-disable no-unused-vars */
 /* global BMMath, BezierFactory, createTypedArray, degToRads, shapePool */
 
 var ExpressionManager = (function () {
@@ -13770,7 +13770,7 @@ var ExpressionManager = (function () {
 
     var scoped_bm_rt;
     // val = val.replace(/(\\?"|')((http)(s)?(:\/))?\/.*?(\\?"|')/g, "\"\""); // deter potential network calls
-    var expression_function = eval('[function _expression_function(){' + val + ';scoped_bm_rt=$bm_rt}]')[0]; // eslint-disable-line no-eval
+    var expression_function = eval('[function _expression_function(){' + val + ';scoped_bm_rt=$bm_rt}]')[0];
     var numKeys = property.kf ? data.k.length : 0;
 
     var active = !this.data || this.data.hd !== true;
@@ -14197,12 +14197,12 @@ initialDefaultFrame, shapePool, ShapePropertyFactory, bez, extendPrototype, Expr
     if (type === 'pingpong') {
       var iterations = Math.floor((currentFrame - firstKeyFrame) / cycleDuration);
       if (iterations % 2 !== 0) {
-          return this.getValueAtTime(((cycleDuration - (currentFrame - firstKeyFrame) % cycleDuration + firstKeyFrame)) / this.comp.globalData.frameRate, 0); // eslint-disable-line
+          return this.getValueAtTime(((cycleDuration - (currentFrame - firstKeyFrame) % cycleDuration + firstKeyFrame)) / this.comp.globalData.frameRate, 0);
       }
     } else if (type === 'offset') {
       var initV = this.getValueAtTime(firstKeyFrame / this.comp.globalData.frameRate, 0);
       var endV = this.getValueAtTime(lastKeyFrame / this.comp.globalData.frameRate, 0);
-        var current = this.getValueAtTime(((currentFrame - firstKeyFrame) % cycleDuration + firstKeyFrame) / this.comp.globalData.frameRate, 0); // eslint-disable-line
+        var current = this.getValueAtTime(((currentFrame - firstKeyFrame) % cycleDuration + firstKeyFrame) / this.comp.globalData.frameRate, 0);
       var repeats = Math.floor((currentFrame - firstKeyFrame) / cycleDuration);
       if (this.pv.length) {
         ret = new Array(initV.length);
@@ -14220,13 +14220,13 @@ initialDefaultFrame, shapePool, ShapePropertyFactory, bez, extendPrototype, Expr
         ret = new Array(lastValue.length);
         len = ret.length;
         for (i = 0; i < len; i += 1) {
-            ret[i] = lastValue[i] + (lastValue[i] - nextLastValue[i]) * ((currentFrame - lastKeyFrame) / this.comp.globalData.frameRate) / 0.0005; // eslint-disable-line
+            ret[i] = lastValue[i] + (lastValue[i] - nextLastValue[i]) * ((currentFrame - lastKeyFrame) / this.comp.globalData.frameRate) / 0.0005;
         }
         return ret;
       }
       return lastValue + (lastValue - nextLastValue) * (((currentFrame - lastKeyFrame)) / 0.001);
     }
-      return this.getValueAtTime((((currentFrame - firstKeyFrame) % cycleDuration + firstKeyFrame)) / this.comp.globalData.frameRate, 0); // eslint-disable-line
+      return this.getValueAtTime((((currentFrame - firstKeyFrame) % cycleDuration + firstKeyFrame)) / this.comp.globalData.frameRate, 0);
 
   }
 
@@ -14263,7 +14263,7 @@ initialDefaultFrame, shapePool, ShapePropertyFactory, bez, extendPrototype, Expr
     if (type === 'pingpong') {
       var iterations = Math.floor((firstKeyFrame - currentFrame) / cycleDuration);
       if (iterations % 2 === 0) {
-          return this.getValueAtTime((((firstKeyFrame - currentFrame) % cycleDuration + firstKeyFrame)) / this.comp.globalData.frameRate, 0); // eslint-disable-line
+          return this.getValueAtTime((((firstKeyFrame - currentFrame) % cycleDuration + firstKeyFrame)) / this.comp.globalData.frameRate, 0);
       }
     } else if (type === 'offset') {
       var initV = this.getValueAtTime(firstKeyFrame / this.comp.globalData.frameRate, 0);
@@ -14292,7 +14292,7 @@ initialDefaultFrame, shapePool, ShapePropertyFactory, bez, extendPrototype, Expr
       }
       return firstValue + ((firstValue - nextFirstValue) * (firstKeyFrame - currentFrame)) / 0.001;
     }
-      return this.getValueAtTime(((cycleDuration - ((firstKeyFrame - currentFrame) % cycleDuration + firstKeyFrame))) / this.comp.globalData.frameRate, 0); // eslint-disable-line
+      return this.getValueAtTime(((cycleDuration - ((firstKeyFrame - currentFrame) % cycleDuration + firstKeyFrame))) / this.comp.globalData.frameRate, 0);
 
   }
 
@@ -14555,9 +14555,9 @@ initialDefaultFrame, shapePool, ShapePropertyFactory, bez, extendPrototype, Expr
     },
     vectorOnPath: function (perc, time, vectorType) {
       // perc doesn't use triple equality because it can be a Number object as well as a primitive.
-      if (perc == 1) { // eslint-disable-line eqeqeq
+      if (perc == 1) {
         perc = this.v.c;
-      } else if (perc == 0) { // eslint-disable-line eqeqeq
+      } else if (perc == 0) {
         perc = 0.999;
       }
       var pt1 = this.pointOnPath(perc, time);
@@ -15276,9 +15276,9 @@ var TextExpressionInterface = (function () {
         var stringValue = elem.textProperty.currentData.t;
         if (stringValue !== _prevValue) {
           elem.textProperty.currentData.t = _prevValue;
-          _sourceText = new String(stringValue); // eslint-disable-line no-new-wrappers
+          _sourceText = new String(stringValue);
           // If stringValue is an empty string, eval returns undefined, so it has to be returned as a String primitive
-          _sourceText.value = stringValue || new String(stringValue); // eslint-disable-line no-new-wrappers
+          _sourceText.value = stringValue || new String(stringValue);
         }
         return _sourceText;
       },
@@ -15893,7 +15893,7 @@ var ExpressionPropertyInterface = (function () {
       } else {
         value = property.keyframes[pos - 2].s;
       }
-      var valueProp = type === 'unidimensional' ? new Number(value) : Object.assign({}, value); // eslint-disable-line no-new-wrappers
+      var valueProp = type === 'unidimensional' ? new Number(value) : Object.assign({}, value);
       valueProp.time = property.keyframes[pos - 1].t / property.elem.comp.globalData.frameRate;
       valueProp.value = type === 'unidimensional' ? value[0] : value;
       return valueProp;
@@ -15910,7 +15910,7 @@ var ExpressionPropertyInterface = (function () {
     }
     var mult = 1 / property.mult;
     var val = property.pv * mult;
-    var expressionValue = new Number(val); // eslint-disable-line no-new-wrappers
+    var expressionValue = new Number(val);
     expressionValue.value = val;
     completeProperty(expressionValue, property, 'unidimensional');
 
@@ -15920,7 +15920,7 @@ var ExpressionPropertyInterface = (function () {
       }
       val = property.v * mult;
       if (expressionValue.value !== val) {
-        expressionValue = new Number(val); // eslint-disable-line no-new-wrappers
+        expressionValue = new Number(val);
         expressionValue.value = val;
         completeProperty(expressionValue, property, 'unidimensional');
       }
@@ -15970,7 +15970,7 @@ var ExpressionPropertyInterface = (function () {
 /* exported TextExpressionSelectorProp */
 
 (function () {
-  var TextExpressionSelectorProp = (function () { // eslint-disable-line no-unused-vars
+  var TextExpressionSelectorProp = (function () {
     function getValueProxy(index, total) {
       this.textIndex = index + 1;
       this.textTotal = total;
@@ -16004,7 +16004,7 @@ var ExpressionPropertyInterface = (function () {
   var propertyGetTextProp = TextSelectorProp.getTextSelectorProp;
   TextSelectorProp.getTextSelectorProp = function (elem, data, arr) {
     if (data.t === 1) {
-      return new TextExpressionSelectorPropFactory(elem, data, arr); // eslint-disable-line no-undef
+      return new TextExpressionSelectorPropFactory(elem, data, arr);
     }
     return propertyGetTextProp(elem, data, arr);
   };
@@ -16224,7 +16224,7 @@ function getQueryVariable(variable) {
   var vars = queryString.split('&');
   for (var i = 0; i < vars.length; i += 1) {
     var pair = vars[i].split('=');
-    if (decodeURIComponent(pair[0]) == variable) { // eslint-disable-line eqeqeq
+    if (decodeURIComponent(pair[0]) == variable) {
       return decodeURIComponent(pair[1]);
     }
   }
@@ -16240,7 +16240,7 @@ if (standalone) {
   var myScript = scripts[index] || {
     src: '',
   };
-  queryString = myScript.src.replace(/^[^\?]+\??/, ''); // eslint-disable-line no-useless-escape
+  queryString = myScript.src.replace(/^[^\?]+\??/, '');
   renderer = getQueryVariable('renderer');
 }
 var readyStateCheckInterval = setInterval(checkReady, 100);

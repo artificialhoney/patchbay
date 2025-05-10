@@ -2751,7 +2751,7 @@
             } else {
                 duration.milliseconds = input;
             }
-        } else if (!!(match = aspNetRegex.exec(input))) {
+        } else if (match = aspNetRegex.exec(input)) {
             sign = (match[1] === '-') ? -1 : 1;
             duration = {
                 y  : 0,
@@ -2761,7 +2761,7 @@
                 s  : toInt(match[SECOND])      * sign,
                 ms : toInt(match[MILLISECOND]) * sign
             };
-        } else if (!!(match = isoRegex.exec(input))) {
+        } else if (match = isoRegex.exec(input)) {
             sign = (match[1] === '-') ? -1 : 1;
             duration = {
                 y : parseIso(match[2], sign),

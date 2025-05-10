@@ -6,7 +6,7 @@ import { UtilProvider } from "./util_provider.js";
 /**
  * @abstract
  */
-/* eslint-disable no-console */
+
 export default class SharedLogger extends SharedUtil {
   constructor(utilProvider) {
     super(utilProvider);

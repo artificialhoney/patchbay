@@ -437,7 +437,7 @@ if (!window.CABLES || (window.CABLES && !window.CABLES.UI))
         exports.toString = toString;
         // Sourced from lodash
         // https://github.com/bestiejs/lodash/blob/master/LICENSE.txt
-        /* eslint-disable func-style */
+
         let isFunction = function isFunction(value) {
           return typeof value === "function";
         };
@@ -452,8 +452,6 @@ if (!window.CABLES || (window.CABLES && !window.CABLES.UI))
           };
         }
         exports.isFunction = isFunction;
-
-        /* eslint-enable func-style */
 
         /* istanbul ignore next */
         let isArray =
@@ -2260,7 +2258,7 @@ if (!window.CABLES || (window.CABLES && !window.CABLES.UI))
               logger.lookupLevel(logger.level) <= level
             ) {
               let method = logger.methodMap[level];
-              // eslint-disable-next-line no-console
+
               if (!console[method]) {
                 method = "log";
               }
@@ -2275,7 +2273,7 @@ if (!window.CABLES || (window.CABLES && !window.CABLES.UI))
                 message[_key - 1] = arguments[_key];
               }
 
-              console[method].apply(console, message); // eslint-disable-line no-console
+              console[method].apply(console, message);
             }
           },
         };
@@ -2314,7 +2312,7 @@ if (!window.CABLES || (window.CABLES && !window.CABLES.UI))
           defaultMethodWhiteList.__lookupGetter__ = false;
 
           let defaultPropertyWhiteList = _Object$create(null);
-          // eslint-disable-next-line no-proto
+
           defaultPropertyWhiteList.__proto__ = false;
 
           return {
@@ -6467,8 +6465,6 @@ if (!window.CABLES || (window.CABLES && !window.CABLES.UI))
       },
       /* 90 */
       /***/ function (module, exports, __webpack_require__) {
-        /* eslint-disable new-cap */
-
         let _Object$create = __webpack_require__(74).default;
 
         let _interopRequireDefault = __webpack_require__(1).default;
@@ -6561,7 +6557,6 @@ if (!window.CABLES || (window.CABLES && !window.CABLES.UI))
 
           compileProgram: function compileProgram(program) {
             let childCompiler = new this.compiler(),
-              // eslint-disable-line new-cap
               result = childCompiler.compile(program, this.options),
               guid = this.guid++;
 
@@ -7291,7 +7286,7 @@ if (!window.CABLES || (window.CABLES && !window.CABLES.UI))
               };
 
               if (this.decorators) {
-                ret.main_d = this.decorators; // eslint-disable-line camelcase
+                ret.main_d = this.decorators;
                 ret.useDecorators = true;
               }
 
@@ -7706,7 +7701,6 @@ if (!window.CABLES || (window.CABLES && !window.CABLES.UI))
 
             let len = parts.length;
             for (; i < len; i++) {
-              /* eslint-disable no-loop-func */
               this.replaceStack(function (current) {
                 let lookup = _this2.nameLookup(current, parts[i], type);
                 // We want to ensure that zero and false are handled properly if the context (falsy flag)
@@ -7718,7 +7712,6 @@ if (!window.CABLES || (window.CABLES && !window.CABLES.UI))
                   return [" && ", lookup];
                 }
               });
-              /* eslint-enable no-loop-func */
             }
           },
 
@@ -8079,7 +8072,7 @@ if (!window.CABLES || (window.CABLES && !window.CABLES.UI))
 
             for (let i = 0, l = children.length; i < l; i++) {
               child = children[i];
-              compiler = new this.compiler(); // eslint-disable-line new-cap
+              compiler = new this.compiler();
 
               let existing = this.matchExistingProgram(child);
 

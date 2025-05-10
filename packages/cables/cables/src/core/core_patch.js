@@ -211,7 +211,7 @@ export class Patch extends Events {
       this.timer.play();
     }
 
-    console.log("made with https://cables.gl"); // eslint-disable-line
+    console.log("made with https://cables.gl");
   }
 
   isPlaying() {
@@ -1415,7 +1415,6 @@ export class Patch extends Events {
       return;
     }
     console.groupCollapsed(
-      // eslint-disable-line
       "trigger port stack " +
         this._triggerStack[this._triggerStack.length - 1].op.objName +
         "." +
@@ -1433,8 +1432,8 @@ export class Patch extends Events {
       );
     }
 
-    console.table(rows); // eslint-disable-line
-    console.groupEnd(); // eslint-disable-line
+    console.table(rows);
+    console.groupEnd();
   }
 
   /**

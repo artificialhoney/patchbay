@@ -45,7 +45,11 @@ const { isMobile } = useSidebar();
             class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
           >
             <Avatar class="h-8 w-8 rounded-lg">
-              <AvatarImage :src="user.avatar" :alt="user.name" />
+              <AvatarImage
+                :src="user.avatar"
+                :alt="user.name"
+                v-if="user.avatar"
+              />
               <AvatarFallback class="rounded-lg">P</AvatarFallback>
             </Avatar>
             <div class="grid flex-1 text-left text-sm leading-tight">

@@ -2041,9 +2041,9 @@ export default class Gui extends Events {
         "This is a backup version, saving will overwrite the current version!",
       );
 
-    console.log("start up times:"); // eslint-disable-line no-console
-    console.table(CABLESUILOADER.startup.log); // eslint-disable-line no-console
-    console.groupEnd(); // eslint-disable-line no-console
+    console.log("start up times:");
+    console.table(CABLESUILOADER.startup.log);
+    console.groupEnd();
 
     if (this.isRemoteClient) this._log.logGui("REMOTE CLIENT SESSION");
 

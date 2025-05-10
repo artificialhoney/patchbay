@@ -472,7 +472,7 @@
             try {
                 return input$f.format.named(css);
             } catch (e) {
-                // eslint-disable-next-line
+
             }
         }
 
@@ -3378,7 +3378,7 @@
         deltaHp = abs(deltaHp) <= 180 ? deltaHp : h2p <= h1p ? deltaHp + 360 : deltaHp - 360;
         deltaHp = 2*sqrt(C1p*C2p)*sin(deg2rad(deltaHp)/2);
         var deltaL = L2 - L1;
-        var deltaCp = C2p - C1p;    
+        var deltaCp = C2p - C1p;
         var sl = 1 + (0.015*pow(avgL - 50, 2))/sqrt(20 + pow(avgL - 50, 2));
         var sc = 1 + 0.045*avgCp;
         var sh = 1 + 0.015*avgCp*T;

@@ -252,7 +252,7 @@ class HandlebarsHelper {
     html = html || "";
     let link = "/op/";
     if (CABLES && CABLES.platform) link = CABLES.platform.getCablesUrl() + link;
-    // eslint-disable-next-line no-useless-escape
+
     const urlPattern =
       /\b(?:Ops\.)[a-z0-9-+&@#\/%?=~_|!:,.;]*[a-z0-9-+&@#\/%=~_|]/gim;
     let replaceValue = '<a href="' + link + '$&">$&</a>';

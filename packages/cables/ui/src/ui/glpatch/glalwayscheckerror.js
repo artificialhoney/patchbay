@@ -32,17 +32,16 @@ export default class GlAlwaysCheckError {
         }
         if (error == gl.NO_ERROR) errStr = "NO_ERROR";
 
-        // eslint-disable-next-line no-console
         console.warn("GL ERROR " + self._count + "th command: ", funcName);
-        // eslint-disable-next-line no-console
+
         console.log("arguments", arguments);
-        // eslint-disable-next-line no-console
+
         console.log("gl error [" + self._cgl.canvas.id + "]: ", error, errStr);
-        // eslint-disable-next-line no-console
+
         console.log(new Error().stack);
 
         const error2 = self._glGetError();
-        // eslint-disable-next-line no-console
+
         console.log("err after", error2);
       }
 

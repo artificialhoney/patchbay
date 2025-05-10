@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-undef
-const undo = new UndoManager();
+const undo = new window.UndoManager();
 
 export default undo;

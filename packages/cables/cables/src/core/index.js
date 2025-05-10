@@ -135,4 +135,4 @@ if (
     return !this;
   })()
 )
-  console.warn("not in strict mode: index core"); // eslint-disable-line
+  console.warn("not in strict mode: index core");

@@ -27,7 +27,7 @@ export const onLoadingAssetsFinished = null; // deprecated / remove later
  * @param {MouseEvent} event
  * @return {Number} normalized delta
  */
-export const isWindows = window.navigator.userAgent.includes("Windows");
+export const isWindows = window.navigator?.userAgent.includes("Windows");
 const getWheelDelta_ = function (event) {
   let normalized;
   if (event.wheelDelta) {
@@ -70,7 +70,6 @@ const htmlEscapes = {
 const reUnescapedHtml = /[&<>"']/g;
 const reHasUnescapedHtml = RegExp(reUnescapedHtml.source);
 
-/*  eslint-disable */
 export const escapeHTML = function (string) {
   return string && reHasUnescapedHtml.test(string)
     ? string.replace(reUnescapedHtml, function (chr) {
@@ -78,4 +77,3 @@ export const escapeHTML = function (string) {
       })
     : string || "";
 };
-/* eslint-enable */

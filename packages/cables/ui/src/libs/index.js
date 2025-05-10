@@ -7,20 +7,20 @@ import moment from "moment-mini";
 import pako from "pako";
 import socketClusterClient from "socketcluster-client";
 import ErrorStackParser from "error-stack-parser";
-import  "tinysort";
+import "tinysort";
 import Sortable from "sortablejs";
 import platform from "platform";
 import Raphael from "raphael";
 
 import QRCode from "./qrcode.js";
-import Handlebars from "./handlebars.cjs";
-import hljs from "./highlight_min.cjs";
-import colorrick from "./colorrick.cjs";
+import Handlebars from "handlebars";
+import hljs from "highlight.js";
+import ColorRick from "./colorrick.js";
 import MathParser from "./mathparser.js";
-import UndoManager from "./undomanager.js";
+import UndoManager from "undo-manager";
 
 window.chroma = chroma;
-window.ColorRick = colorrick;
+window.ColorRick = ColorRick;
 window.Handlebars = Handlebars;
 window.hljs = hljs;
 window.introJs = introJs;

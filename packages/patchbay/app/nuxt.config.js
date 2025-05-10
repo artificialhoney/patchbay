@@ -1,5 +1,6 @@
 import process from "node:process";
 import tailwindcss from "@tailwindcss/vite";
+import stringImport from "rollup-plugin-string-import";
 
 const sw = process.env.SW === "true";
 const prod = process.env.NODE_ENV === "production";
@@ -50,8 +51,23 @@ export default defineNuxtConfig({
     },
   },
   css: ["~/assets/css/tailwind.css"],
+  build: {
+    transpile: ["@cables/ui"],
+  },
   vite: {
-    plugins: [tailwindcss()],
+    optimizeDeps: {
+      include: ["@cables/ui"],
+    },
+    plugins: [
+      // nodeResolve(),
+      tailwindcss(),
+      stringImport({
+        include: ["**/*.txt", "**/*.wgsl", "**/*.frag", "**/*.vert"],
+      }),
+    ],
+    define: {
+      global: {},
+    },
   },
   pwa: {
     enabled: prod,
