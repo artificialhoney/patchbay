@@ -58,4 +58,4 @@ ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 # or if you use --rewrite or other cli flags
 # ENTRYPOINT ["dumb-init", "--rewrite", "2:3", "--"]
 
-CMD ["/entrypoint.sh"]
+CMD ["./entrypoint.sh"]
