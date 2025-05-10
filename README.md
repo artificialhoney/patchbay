@@ -82,10 +82,10 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ${PATCHBAY_EXTENSIONS_VOLUME:-extensions}:/opt/patchbay/api/extensions
-      - ${PATCHBAY_UPLOADS_VOLUME:-uploads}:/opt/patchbay/api/uploads
-      - ${PATCHBAY_SNAPSHOTS_VOLUME:-snapshots}:/opt/patchbay/api/snapshots
-      - ${PATCHBAY_DB_VOLUME:-seed}:/opt/patchbay/db
+      - ${PATCHBAY_EXTENSIONS_VOLUME:-extensions}:/opt/patchbay/extensions
+      - ${PATCHBAY_UPLOADS_VOLUME:-uploads}:/opt/patchbay/uploads
+      - ${PATCHBAY_SNAPSHOTS_VOLUME:-snapshots}:/opt/patchbay/snapshots
+      - ${PATCHBAY_DB_VOLUME:-db}:/opt/patchbay/db
 volumes:
   uploads:
   extensions:

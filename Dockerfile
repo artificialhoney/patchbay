@@ -35,12 +35,15 @@ RUN apt-get update && apt-get install -y ca-certificates dumb-init
 WORKDIR /opt/patchbay
 
 # Copy static assets
-COPY --from=build /app/assets/api api
+COPY --from=build /app/assets/api/uploads uploads
+COPY --from=build /app/assets/api/extensions extensions
+COPY --from=build /app/assets/api/snapshots shanpshots
 COPY --from=build /app/assets/db db
+
 # Copy the output from the build stage to the working directory
 COPY --from=build /app/packages/patchbay/app/.output app
-COPY --from=build /app/packages/patchbay/bundle bundle
-RUN cp -rf ./bundle ./api/extensions/patchbay
+COPY --from=build /app/packages/patchbay/bundle extensions
+
 # Copy entrypoint and make executable
 COPY --from=build /app/entrypoint.sh .
 RUN chmod +x ./entrypoint.sh
