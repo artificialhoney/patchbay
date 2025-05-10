@@ -42,6 +42,7 @@ COPY --from=build /app/packages/patchbay/bundle api/extensions/patchbay
 # Copy static assets
 COPY --from=build /app/assets/api/uploads api/uploads
 COPY --from=build /app/assets/api/snapshots api/snapshots
+COPY --from=build /app/assets/db db
 
 # Copy entrypoint and make executable
 COPY --from=build /app/entrypoint.sh /
