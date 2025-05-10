@@ -12,10 +12,7 @@ RUN corepack enable
 WORKDIR /app
 
 # Copy the rest of the application files to the working directory
-COPY .. ./
-
-# Clean node_modules
-RUN rm -rf node_modules && pnpm -r exec rm -rf node_modules
+COPY . ./
 
 ## Install dependencies
 RUN pnpm install --shamefully-hoist
@@ -45,7 +42,7 @@ COPY --from=build /app/packages/patchbay/app/.output app
 COPY --from=build /app/packages/patchbay/bundle extensions
 
 # Copy entrypoint and make executable
-COPY --from=build /app/entrypoint.sh .
+COPY ./entrypoint.sh .
 RUN chmod +x ./entrypoint.sh
 
 # Define environment variables
