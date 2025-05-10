@@ -5,6 +5,7 @@ repos:
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
+        exclude: ^README.md*$
       - id: mixed-line-ending
       - id: check-added-large-files
 
@@ -12,7 +13,7 @@ repos:
     rev: "v3.1.0"
     hooks:
       - id: prettier
-        exclude: ^README.md.jinja$
+        exclude: ^README.md*$
 
   - repo: local
     hooks:

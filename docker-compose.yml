@@ -11,8 +11,6 @@ services:
       POSTGRES_USER: "${PATCHBAY_POSTGRES_USER:-admin}"
       POSTGRES_PASSWORD: "${PATCHBAY_POSTGRES_PASSWORD:-patchbay}"
       POSTGRES_DB: "${PATCHBAY_POSTGRES_DB:-patchbay}"
-    depends_on:
-      - app
   cache:
     image: redis:6
     container_name: patchbay_cache
@@ -23,6 +21,7 @@ services:
     volumes:
       - ${PATCHBAY_EXTENSIONS_VOLUME:-extensions}:/directus/extensions
       - ${PATCHBAY_SNAPSHOTS_VOLUME:-snapshots}:/directus/snapshots
+      - ${PATCHBAY_DATA_DIR:-~/directus}/uploads:/directus/uploads
     environment:
       SECRET: "${PATCHBAY_SECRET:-patchbay_super_secret}"
 
@@ -43,10 +42,6 @@ services:
 
       PUBLIC_URL: "http://localhost:3000/patchbay"
       ROOT_REDIRECT: "/patchbay"
-    depends_on:
-      - app
-      - db
-      - cache
   app:
     container_name: patchbay_app
     image: artificialhoney/patchbay:latest
