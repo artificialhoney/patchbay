@@ -32,14 +32,17 @@ FROM node:${NODE_VERSION}-slim
 # Install dumb init
 RUN apt-get update && apt-get install -y ca-certificates dumb-init
 
+WORKDIR /
+
 RUN mkdir -p /app/api/extensions/patchbay
 
 # Copy the output from the build stage to the working directory
 COPY --from=build /app/packages/patchbay/app/.output /app
 COPY --from=build /app/packages/patchbay/bundle/dist /app/api/extensions/patchbay
-COPY ./packages/patchbay/bundle/package.json /app/api/extensions/patchbay
-COPY ./assets/api/uploads /app/api/uploads
-COPY ./assets/api/snapshots /app/api/snapshots
+# Copy static assets
+COPY /app/packages/patchbay/bundle/package.json /app/api/extensions/patchbay
+COPY /app/assets/api/uploads /app/api/uploads
+COPY /app/assets/api/snapshots /app/api/snapshots
 
 # Copy entrypoint and make executable
 COPY ./entrypoint.sh /
