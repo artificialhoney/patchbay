@@ -39,8 +39,8 @@ COPY --from=build /app/assets/api api
 COPY --from=build /app/assets/db db
 # Copy the output from the build stage to the working directory
 COPY --from=build /app/packages/patchbay/app/.output app
-COPY --from=build /app/packages/patchbay/bundle api/extensions/patchbay
-
+COPY --from=build /app/packages/patchbay/bundle bundle
+RUN cp -rf ./bundle ./api/extensions/patchbay
 # Copy entrypoint and make executable
 COPY --from=build /app/entrypoint.sh .
 RUN chmod +x ./entrypoint.sh
