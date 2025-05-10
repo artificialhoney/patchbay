@@ -35,10 +35,10 @@ RUN apt-get update && apt-get install -y ca-certificates dumb-init
 WORKDIR /opt/patchbay
 
 # Copy static assets
-COPY --from=build /app/assets/api/uploads uploads
-COPY --from=build /app/assets/api/extensions extensions
-COPY --from=build /app/assets/api/snapshots shanpshots
-COPY --from=build /app/assets/db db
+COPY ./assets/api/uploads uploads
+COPY ./assets/api/extensions extensions
+COPY ./assets/api/snapshots snapshots
+COPY ./assets/db db
 
 # Copy the output from the build stage to the working directory
 COPY --from=build /app/packages/patchbay/app/.output app
