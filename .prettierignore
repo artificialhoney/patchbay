@@ -8,7 +8,7 @@ libs
 *.frag
 
 # handlebars stuff
-packages/cables/ui/html/ui/footer.html
+packages/cables/ui/html/ui/footer.*
 docs/content
 
 # generated

@@ -9,7 +9,7 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "pnpm -r --filter @cables/ui build && nuxt prepare"
   },
   "dependencies": {
     "@cables/ui": "workspace:*",

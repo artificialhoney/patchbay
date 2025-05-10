@@ -1,0 +1,23 @@
+import { html, css, LitElement } from "lit";
+
+export class CablesWebComponent extends LitElement {
+  static styles = css`
+    {{ style }}
+  `;
+
+  static properties = {
+    name: { type: String },
+  };
+
+  constructor() {
+    super();
+  }
+
+  render() {
+    return html`
+      {{ html }}
+    `;
+  }
+}
+
+customElements.define("cables-ui", CablesWebComponent);
