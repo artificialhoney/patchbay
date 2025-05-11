@@ -1,7 +1,7 @@
 import chroma from "chroma-js";
 import loadjs from "loadjs";
 import introJs from "intro.js";
-import iziToast from "izitoast";
+import { iziToast } from "./izitoast.js";
 import { marked } from "marked";
 import moment from "moment-mini";
 import pako from "pako";

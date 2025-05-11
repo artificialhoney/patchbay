@@ -54,12 +54,16 @@ export default defineNuxtConfig({
   build: {
     transpile: ["@cables/ui"],
   },
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tag) => ["cables-ui"].includes(tag),
+    },
+  },
   vite: {
     optimizeDeps: {
       include: ["@cables/ui"],
     },
     plugins: [
-      // nodeResolve(),
       tailwindcss(),
       stringImport({
         include: ["**/*.txt", "**/*.wgsl", "**/*.frag", "**/*.vert"],

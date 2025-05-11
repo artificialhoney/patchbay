@@ -82,7 +82,7 @@ export default class LibLoader {
         }
 
         if (libType === "module") {
-          import(/* webpackIgnore: true */ scriptSrc)
+          import(/* @vite-ignore */ scriptSrc)
             .then((importedModule) => {
               if (moduleExport) {
                 if (!window.hasOwnProperty(moduleExport))

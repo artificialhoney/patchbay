@@ -1,6 +1,4 @@
 import { html, css, LitElement } from "lit";
-import "../libs/index.js";
-import "../ui/index.js";
 
 export class CablesWebComponent extends LitElement {
   static styles = css`
@@ -13734,6 +13732,13 @@ WARNING: CONTAINS SLIGHT MODIFICATIONS
 <div id="testcontent"></div>
 
     `;
+  }
+
+  async connectedCallback() {
+    super.connectedCallback();
+    if (process.client) {
+      await import("../ui/index.js");
+    }
   }
 }
 
