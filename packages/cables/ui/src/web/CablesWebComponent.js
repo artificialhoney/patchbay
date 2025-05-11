@@ -13737,6 +13737,7 @@ WARNING: CONTAINS SLIGHT MODIFICATIONS
   async connectedCallback() {
     super.connectedCallback();
     if (process.client) {
+      await import("../libs/index.js");
       await import("../ui/index.js");
     }
   }

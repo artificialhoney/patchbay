@@ -128,9 +128,7 @@ export class CglContext extends CgContext {
     return this.mMatrix;
   }
 
-  set mvMatrix(
-    m, // deprecate
-  ) {
+  set mvMatrix(m) {
     this.mMatrix = m;
   }
 
