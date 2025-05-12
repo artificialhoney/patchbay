@@ -1,12 +1,11 @@
-import { TalkerAPI } from "@cables/client";
-import cablesElectron from "./cables_init.js";
+import CablesPatchbay from "./cables.js";
 
 /**
  * @name EditorParams
  * @type {object}
  * @property {{}} config config options for the ui
- * @property {boolean} config.isTrustedPatch does the user have write permission in the patch, always true in cablesElectron
- * @property {string} config.platformClass the platform class to use in the ui, allows for hooks and overrides in community vs cablesElectron
+ * @property {boolean} config.isTrustedPatch does the user have write permission in the patch, always true in CablesPatchbay.cablesPatchbay
+ * @property {string} config.platformClass the platform class to use in the ui, allows for hooks and overrides in community vs CablesPatchbay.cablesPatchbay
  * @property {string} config.urlCables url used for links to outside the sandbox on community platform
  * @property {string} config.urlSandbox url used for links to inside the sandbox on community platform
  * @property {{}} config.user current user object
@@ -20,21 +19,22 @@ import cablesElectron from "./cables_init.js";
  * @property {boolean} config.remoteClient are we a remote client?
  * @property {{}} config.buildInfo buildinfo for the currently running version
  * @property {{}} config.patchConfig configuration handed over to the loaded patch
- * @property {boolean} config.patchConfig.allowEdit is the user allowed to edit the pacht, always true in cablesElectron
+ * @property {boolean} config.patchConfig.allowEdit is the user allowed to edit the pacht, always true in CablesPatchbay.cablesPatchbay
  * @property {string} config.patchConfig.prefixAssetPath where to look for assets that are set to relative paths in the project
  */
 
 /**
- * cables editor instance for electron cablesElectron version
+ * cables editor instance for patchbay CablesPatchbay.cablesPatchbay version
  * handles ipc messages from and to the ui
  *
  * @param {EditorParams} params
  */
-export default class ElectronEditor {
+export default class PatchbayEditor {
   constructor(params) {
     this.config = params.config;
-    const frame = document.getElementById("editorIframe");
-    this._talker = new TalkerAPI(frame.contentWindow);
+    // const frame = document.getElementById("editorIframe");
+    // this._talker = new TalkerAPI(frame.contentWindow);
+    this._talker = params.talker;
     this._patchId = this.config.patchId;
 
     window.addEventListener("unhandledrejection", (e) => {
@@ -45,14 +45,17 @@ export default class ElectronEditor {
       this._talker.send("logError", { level: "error", message: e.error });
     });
 
-    window.ipcRenderer.on("talkerMessage", (_event, data) => {
-      this._talker.send(data.cmd, data.data);
-    });
+    CablesPatchbay.cablesPatchbay.ipcRenderer.on(
+      "talkerMessage",
+      (_event, data) => {
+        this._talker.send(data.cmd, data.data);
+      },
+    );
 
     /**
      * send patch config to ui
      *
-     * @name ElectronEditor#requestPatchData
+     * @name PatchbayEditor#requestPatchData
      * @param {*} data unused
      * @param {function} next callback
      * @listens TalkerAPI#requestPatchData
@@ -64,7 +67,7 @@ export default class ElectronEditor {
     /**
      * notify ui of patch name change
      *
-     * @name ElectronEditor#updatePatchName
+     * @name PatchbayEditor#updatePatchName
      * @param {{}} data
      * @param {string} data.name the new patch name
      * @param {function} next callback
@@ -77,7 +80,7 @@ export default class ElectronEditor {
     /**
      * reload the page
      *
-     * @name ElectronEditor#reload
+     * @name PatchbayEditor#reload
      * @param {*} data unused
      * @param {function} next unused
      * @listens TalkerAPI#reload
@@ -89,7 +92,7 @@ export default class ElectronEditor {
     /**
      * upload a file via the ui
      *
-     * @name ElectronEditor#fileUploadStr
+     * @name PatchbayEditor#fileUploadStr
      * @param {*} data
      * @param {string} data.fileStr the file content as data-url
      * @param {string} data.filename the name of the file
@@ -116,7 +119,7 @@ export default class ElectronEditor {
     /**
      * update a file from the ui (e.g. edit a textfile)
      *
-     * @name ElectronEditor#updateFile
+     * @name PatchbayEditor#updateFile
      * @param {*} data
      * @param {string} data.content raw content of the file written to disk (e.g. ASCII)
      * @param {string} data.filename the name of the file
@@ -145,9 +148,13 @@ export default class ElectronEditor {
             message: error.msg || error,
           });
         } else {
-          if (window.cablesElectron && window.cablesElectron.gui && r) {
-            window.cablesElectron.gui.patchView.addAssetOpAuto(r);
-            window.cablesElectron.gui.fileManagerEditor.editAssetTextFile(
+          if (
+            CablesPatchbay.cablesPatchbay &&
+            CablesPatchbay.cablesPatchbay.gui &&
+            r
+          ) {
+            CablesPatchbay.cablesPatchbay.gui.patchView.addAssetOpAuto(r);
+            CablesPatchbay.cablesPatchbay.gui.fileManagerEditor.editAssetTextFile(
               "file:" + r,
               "text",
             );
@@ -175,13 +182,15 @@ export default class ElectronEditor {
         html +=
           'Enter <a href="https://docs.npmjs.com/cli/v10/commands/npm-install">package.json</a> location (git, npm, thz, url, ...):';
 
-        new cablesElectron.CABLES.UI.ModalDialog({
+        new CablesPatchbay.cablesPatchbay.CABLES.UI.ModalDialog({
           prompt: true,
           title: "Install ops from package",
           html: html,
           promptOk: (packageLocation) => {
             const loadingModal =
-              cablesElectron.gui.startModalLoading("Installing ops...");
+              CablesPatchbay.cablesPatchbay.gui.startModalLoading(
+                "Installing ops...",
+              );
             const packageOptions = {
               targetDir: opTargetDir,
               package: packageLocation,
@@ -207,14 +216,15 @@ export default class ElectronEditor {
                 loadingModal.setTask("done");
                 if (next) next(_err, r);
                 setTimeout(() => {
-                  cablesElectron.gui.endModalLoading();
+                  CablesPatchbay.cablesPatchbay.gui.endModalLoading();
                 }, 3000);
               }
             });
           },
         });
 
-        const dirSelect = cablesElectron.editorWindow.ele.byId("opTargetDir");
+        const dirSelect =
+          CablesPatchbay.cablesPatchbay.editorWindow.ele.byId("opTargetDir");
         if (dirSelect) {
           dirSelect.addEventListener("change", () => {
             opTargetDir = dirSelect.value;
@@ -286,7 +296,7 @@ export default class ElectronEditor {
     Object.keys(this._talkerTopics).forEach((talkerTopic) => {
       this._talker.addEventListener(talkerTopic, (data, next) => {
         const topicConfig = this._talkerTopics[talkerTopic];
-        window.ipcRenderer
+        CablesPatchbay.cablesPatchbay.ipcRenderer
           .invoke("talkerMessage", talkerTopic, data, topicConfig)
           .then((r) => {
             const error = r && r.hasOwnProperty("error") ? r : null;
@@ -302,7 +312,7 @@ export default class ElectronEditor {
   }
 
   /**
-   * make a call to a method in electron_api
+   * make a call to a method in patchbay_api
    *
    * @param cmd
    * @param data
@@ -310,7 +320,7 @@ export default class ElectronEditor {
    */
   api(cmd, data, next) {
     const topicConfig = this._talkerTopics[cmd];
-    window.ipcRenderer
+    CablesPatchbay.cablesPatchbay.ipcRenderer
       .invoke("talkerMessage", cmd, data, topicConfig)
       .then((r) => {
         const error = r && r.hasOwnProperty("error") ? r : null;

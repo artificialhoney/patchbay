@@ -52,7 +52,7 @@ export default defineNuxtConfig({
   },
   css: ["~/assets/css/tailwind.css"],
   build: {
-    transpile: ["@cables/ui"],
+    transpile: ["@cables/ui", "@cables/client"],
   },
   vue: {
     compilerOptions: {
@@ -61,7 +61,7 @@ export default defineNuxtConfig({
   },
   vite: {
     optimizeDeps: {
-      include: ["@cables/ui"],
+      include: ["@cables/ui", "@cables/client"],
     },
     plugins: [
       tailwindcss(),

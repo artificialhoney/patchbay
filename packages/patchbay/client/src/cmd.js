@@ -1,11 +1,11 @@
-import cablesElectron from "./cables_init.js";
+import CablesPatchbay from "./cables.js";
 
-const CABLES_CMD_ELECTRON = {};
-const CABLES_CMD_ELECTRON_OVERRIDES = {};
-const CMD_ELECTRON_COMMANDS = [];
+const CABLES_CMD_PATCHBAY = {};
+const CABLES_CMD_PATCHBAY_OVERRIDES = {};
+const CMD_PATCHBAY_COMMANDS = [];
 
-CABLES_CMD_ELECTRON.openOpDir = (opId = null, opName = null) => {
-  const gui = cablesElectron.gui;
+CABLES_CMD_PATCHBAY.openOpDir = (opId = null, opName = null) => {
+  const gui = CablesPatchbay.cablesPatchbay.gui;
   if (gui) {
     let options = { opId: opId, opName: opName };
     if (!opId && !opName) {
@@ -16,27 +16,39 @@ CABLES_CMD_ELECTRON.openOpDir = (opId = null, opName = null) => {
         opName: ops[0].name,
       };
     }
-    cablesElectron.editor.api("openOpDir", options, (_err, r) => {});
+    CablesPatchbay.cablesPatchbay.editor.api(
+      "openOpDir",
+      options,
+      (_err, r) => {},
+    );
   }
 };
 
-CABLES_CMD_ELECTRON.openProjectDir = () => {
-  cablesElectron.editor.api("openProjectDir", {}, (_err, r) => {});
+CABLES_CMD_PATCHBAY.openProjectDir = () => {
+  CablesPatchbay.cablesPatchbay.editor.api(
+    "openProjectDir",
+    {},
+    (_err, r) => {},
+  );
 };
 
-CABLES_CMD_ELECTRON.openFileManager = (url = null) => {
+CABLES_CMD_PATCHBAY.openFileManager = (url = null) => {
   const data = {};
   if (url) data.url = url;
-  cablesElectron.editor.api("openFileManager", data, (_err, r) => {});
+  CablesPatchbay.cablesPatchbay.editor.api(
+    "openFileManager",
+    data,
+    (_err, r) => {},
+  );
 };
 
-CABLES_CMD_ELECTRON.collectAssets = () => {
+CABLES_CMD_PATCHBAY.collectAssets = () => {
   const loadingModal =
-    cablesElectron.gui.startModalLoading("Copying assets...");
+    CablesPatchbay.cablesPatchbay.gui.startModalLoading("Copying assets...");
   let closeTimeout = 2000;
-  cablesElectron.editor.api("collectAssets", {}, (_err, r) => {
+  CablesPatchbay.cablesPatchbay.editor.api("collectAssets", {}, (_err, r) => {
     if (!_err) {
-      const ops = cablesElectron.gui.corePatch().ops;
+      const ops = CablesPatchbay.cablesPatchbay.gui.corePatch().ops;
       const oldNew = r.data;
       if (oldNew) {
         const assetPorts = [];
@@ -64,7 +76,7 @@ CABLES_CMD_ELECTRON.collectAssets = () => {
               }
             });
           });
-          cablesElectron.gui.setStateUnsaved();
+          CablesPatchbay.cablesPatchbay.gui.setStateUnsaved();
         } else {
           loadingModal.setTask("nothing to copy");
         }
@@ -78,15 +90,16 @@ CABLES_CMD_ELECTRON.collectAssets = () => {
       closeTimeout = 5000;
     }
     setTimeout(() => {
-      cablesElectron.gui.endModalLoading();
+      CablesPatchbay.cablesPatchbay.gui.endModalLoading();
     }, closeTimeout);
   });
 };
 
-CABLES_CMD_ELECTRON.collectOps = () => {
-  const loadingModal = cablesElectron.gui.startModalLoading("Copying ops...");
+CABLES_CMD_PATCHBAY.collectOps = () => {
+  const loadingModal =
+    CablesPatchbay.cablesPatchbay.gui.startModalLoading("Copying ops...");
   let closeTimeout = 2000;
-  cablesElectron.editor.api("collectOps", {}, (_err, r) => {
+  CablesPatchbay.cablesPatchbay.editor.api("collectOps", {}, (_err, r) => {
     if (!_err && r && r.data) {
       const oldNames = Object.keys(r.data);
       if (r && oldNames.length > 0) {
@@ -98,7 +111,7 @@ CABLES_CMD_ELECTRON.collectOps = () => {
         loadingModal.setTask("nothing to copy");
       }
       setTimeout(() => {
-        cablesElectron.gui.endModalLoading();
+        CablesPatchbay.cablesPatchbay.gui.endModalLoading();
       }, closeTimeout);
     } else {
       loadingModal.setTask("failed to copy ops");
@@ -106,18 +119,18 @@ CABLES_CMD_ELECTRON.collectOps = () => {
       loadingModal.setTask(_err);
       closeTimeout = 5000;
       setTimeout(() => {
-        cablesElectron.gui.endModalLoading();
+        CablesPatchbay.cablesPatchbay.gui.endModalLoading();
       }, closeTimeout);
     }
   });
 };
 
-CABLES_CMD_ELECTRON.manageOpDirs = () => {
-  cablesElectron.openOpDirsTab();
+CABLES_CMD_PATCHBAY.manageOpDirs = () => {
+  CablesPatchbay.cablesPatchbay.openOpDirsTab();
 };
 
-CABLES_CMD_ELECTRON.copyOpDirToClipboard = (opId = null) => {
-  const gui = cablesElectron.gui;
+CABLES_CMD_PATCHBAY.copyOpDirToClipboard = (opId = null) => {
+  const gui = CablesPatchbay.cablesPatchbay.gui;
   if (gui) {
     if (!opId) {
       const ops = gui.patchView.getSelectedOps();
@@ -127,36 +140,42 @@ CABLES_CMD_ELECTRON.copyOpDirToClipboard = (opId = null) => {
     const modulePath = window.ipcRenderer.sendSync("getOpDir", { opId: opId });
     if (modulePath) {
       navigator.clipboard.writeText(modulePath);
-      cablesElectron.editor.notify("Op path copied to clipboard");
+      CablesPatchbay.cablesPatchbay.editor.notify(
+        "Op path copied to clipboard",
+      );
     }
   }
 };
 
-CABLES_CMD_ELECTRON_OVERRIDES.PATCH = {};
-CABLES_CMD_ELECTRON_OVERRIDES.PATCH.saveAs = () => {
-  let patchName = cablesElectron.gui.project()
-    ? cablesElectron.gui.project().name
+CABLES_CMD_PATCHBAY_OVERRIDES.PATCH = {};
+CABLES_CMD_PATCHBAY_OVERRIDES.PATCH.saveAs = () => {
+  let patchName = CablesPatchbay.cablesPatchbay.gui.project()
+    ? CablesPatchbay.cablesPatchbay.gui.project().name
     : null;
-  cablesElectron.editor.api(
+  CablesPatchbay.cablesPatchbay.editor.api(
     "saveProjectAs",
     { name: patchName },
     (_err, r) => {},
   );
 };
-CABLES_CMD_ELECTRON_OVERRIDES.PATCH.uploadFileDialog = () => {
-  cablesElectron.editor.api("selectFile", {}, (_err, filepath) => {
-    if (!_err && filepath) {
-      const gui = cablesElectron.gui;
-      if (gui) gui.patchView.addAssetOpAuto(filepath);
-    }
-  });
+CABLES_CMD_PATCHBAY_OVERRIDES.PATCH.uploadFileDialog = () => {
+  CablesPatchbay.cablesPatchbay.editor.api(
+    "selectFile",
+    {},
+    (_err, filepath) => {
+      if (!_err && filepath) {
+        const gui = CablesPatchbay.cablesPatchbay.gui;
+        if (gui) gui.patchView.addAssetOpAuto(filepath);
+      }
+    },
+  );
 };
-CABLES_CMD_ELECTRON_OVERRIDES.PATCH.newPatch = () => {
-  cablesElectron.editor.api("newPatch", {}, (_err, r) => {});
+CABLES_CMD_PATCHBAY_OVERRIDES.PATCH.newPatch = () => {
+  CablesPatchbay.cablesPatchbay.editor.api("newPatch", {}, (_err, r) => {});
 };
 
-CABLES_CMD_ELECTRON_OVERRIDES.PATCH.renameOp = (opName = null) => {
-  const gui = cablesElectron.gui;
+CABLES_CMD_PATCHBAY_OVERRIDES.PATCH.renameOp = (opName = null) => {
+  const gui = CablesPatchbay.cablesPatchbay.gui;
   if (gui) {
     if (!opName) {
       const ops = gui.patchView.getSelectedOps();
@@ -170,84 +189,88 @@ CABLES_CMD_ELECTRON_OVERRIDES.PATCH.renameOp = (opName = null) => {
   }
 };
 
-CABLES_CMD_ELECTRON_OVERRIDES.RENDERER = {};
-CABLES_CMD_ELECTRON_OVERRIDES.RENDERER.fullscreen = () => {
-  cablesElectron.editor.api("cycleFullscreen", {}, (_err, r) => {});
+CABLES_CMD_PATCHBAY_OVERRIDES.RENDERER = {};
+CABLES_CMD_PATCHBAY_OVERRIDES.RENDERER.fullscreen = () => {
+  CablesPatchbay.cablesPatchbay.editor.api(
+    "cycleFullscreen",
+    {},
+    (_err, r) => {},
+  );
 };
 
 const CABLES_CMD_COMMAND_OVERRIDES = [
   {
     cmd: "save patch as...",
-    func: CABLES_CMD_ELECTRON_OVERRIDES.PATCH.saveAs,
+    func: CABLES_CMD_PATCHBAY_OVERRIDES.PATCH.saveAs,
   },
   {
     cmd: "upload file dialog",
-    func: CABLES_CMD_ELECTRON_OVERRIDES.PATCH.uploadFileDialog,
+    func: CABLES_CMD_PATCHBAY_OVERRIDES.PATCH.uploadFileDialog,
   },
   {
     cmd: "create new patch",
-    func: CABLES_CMD_ELECTRON_OVERRIDES.PATCH.newPatch,
+    func: CABLES_CMD_PATCHBAY_OVERRIDES.PATCH.newPatch,
   },
   {
     cmd: "rename op",
-    func: CABLES_CMD_ELECTRON_OVERRIDES.PATCH.renameOp,
+    func: CABLES_CMD_PATCHBAY_OVERRIDES.PATCH.renameOp,
   },
 ];
 
-CMD_ELECTRON_COMMANDS.push(
+CMD_PATCHBAY_COMMANDS.push(
   {
     cmd: "collect assets into patch dir",
     category: "patch",
-    func: CABLES_CMD_ELECTRON.collectAssets,
+    func: CABLES_CMD_PATCHBAY.collectAssets,
     icon: "file",
   },
   {
     cmd: "collect ops into patch dir",
     category: "ops",
-    func: CABLES_CMD_ELECTRON.collectOps,
+    func: CABLES_CMD_PATCHBAY.collectOps,
     icon: "op",
   },
   {
     cmd: "manage op directories",
     category: "ops",
-    func: CABLES_CMD_ELECTRON.manageOpDirs,
+    func: CABLES_CMD_PATCHBAY.manageOpDirs,
     icon: "folder",
   },
   {
     cmd: "install ops from package.json",
     category: "ops",
-    func: CABLES_CMD_ELECTRON.addOpPackage,
+    func: CABLES_CMD_PATCHBAY.addOpPackage,
     icon: "op",
   },
   {
     cmd: "copy op dir to clipboard",
     category: "ops",
-    func: CABLES_CMD_ELECTRON.copyOpDirToClipboard,
+    func: CABLES_CMD_PATCHBAY.copyOpDirToClipboard,
     icon: "op",
   },
   {
     cmd: "open op directory",
     category: "ops",
-    func: CABLES_CMD_ELECTRON.openOpDir,
+    func: CABLES_CMD_PATCHBAY.openOpDir,
     icon: "folder",
   },
   {
     cmd: "open project directory",
     category: "patch",
-    func: CABLES_CMD_ELECTRON.openProjectDir,
+    func: CABLES_CMD_PATCHBAY.openProjectDir,
     icon: "folder",
   },
   {
     cmd: "open os file manager",
     category: "cables",
-    func: CABLES_CMD_ELECTRON.openFileManager,
+    func: CABLES_CMD_PATCHBAY.openFileManager,
     icon: "folder",
   },
 );
 
 export default {
-  commands: CMD_ELECTRON_COMMANDS,
-  functions: CABLES_CMD_ELECTRON,
-  functionOverrides: CABLES_CMD_ELECTRON_OVERRIDES,
+  commands: CMD_PATCHBAY_COMMANDS,
+  functions: CABLES_CMD_PATCHBAY,
+  functionOverrides: CABLES_CMD_PATCHBAY_OVERRIDES,
   commandOverrides: CABLES_CMD_COMMAND_OVERRIDES,
 };

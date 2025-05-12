@@ -1,30 +1,35 @@
 import { Logger } from "@cables/client";
-import ElectronEditor from "./electron_editor.js";
-import electronCommands from "./cmd_electron.js";
+import PatchbayEditor from "./editor.js";
+import patchbayCommands from "./cmd.js";
 
 /**
- * frontend class for cablesElectron
+ * frontend class for cablesPatchbay
  * initializes the ui, starts the editor and adds functions custom to this platform
  */
-export default class CablesElectron {
-  constructor() {
-    this._logger = new Logger("electron");
-    this._electron = window.nodeRequire("electron");
-    this._importSync = window.nodeRequire("import-sync");
+export default class CablesPatchbay {
+  static cablesPatchbay = null;
+  constructor(patchbay, talker, editorElement) {
+    CablesPatchbay.cablesPatchbay = this;
 
-    window.ipcRenderer = this._electron.ipcRenderer; // needed to have ipcRenderer in electron_editor.js
+    this._logger = new Logger("patchbay");
+    this._patchbay = patchbay;
+    // this._importSync = importSync;
+    this._editorElement = editorElement;
+    this._talker = talker;
+
+    this.ipcRenderer = this._patchbay.ipcRenderer; // needed to have ipcRenderer in patchbay_editor.js
     this._settings =
-      this._electron.ipcRenderer.sendSync("platformSettings") || {};
+      this._patchbay.ipcRenderer.sendSync("platformSettings") || {};
     this._usersettings = this._settings.userSettings;
     delete this._settings.userSettings;
-    this._config = this._electron.ipcRenderer.sendSync("cablesConfig") || {};
-    this.editorIframe = null;
+    this._config = this._patchbay.ipcRenderer.sendSync("cablesConfig") || {};
+    // this._editorElement = null;
 
     this._startUpLogItems =
-      this._electron.ipcRenderer.sendSync("getStartupLog") || [];
+      this._patchbay.ipcRenderer.sendSync("getStartupLog") || [];
 
     if (!this._config.isPackaged)
-      window.ELECTRON_DISABLE_SECURITY_WARNINGS = true;
+      window.PATCHBAY_DISABLE_SECURITY_WARNINGS = true;
 
     this._loadedModules = {};
   }
@@ -44,7 +49,7 @@ export default class CablesElectron {
    * @type {{}|null}
    */
   get editorWindow() {
-    return this.editorIframe.contentWindow;
+    return this._editorElement.contentWindow;
   }
 
   /**
@@ -69,14 +74,13 @@ export default class CablesElectron {
    * initialize the editor, wait for core and ui to be ready, add
    * custom functionality
    */
-  init() {
-    this.editorIframe = document.getElementById("editorIframe");
+  async init() {
     let src = this._config.uiIndexHtml + window.location.search;
     if (window.location.hash) {
       src += window.location.hash;
     }
-    this.editorIframe.src = src;
-    this.editorIframe.onload = () => {
+    this._editorElement.src = src;
+    this._editorElement.onload = () => {
       if (this.editorWindow) {
         const waitForAce = this.editorWindow.waitForAce;
         this.editorWindow.waitForAce = () => {
@@ -84,7 +88,7 @@ export default class CablesElectron {
 
           this._incrementStartup();
           this._logStartup("checking/installing op dependencies...");
-          this._electron.ipcRenderer
+          this._patchbay.ipcRenderer
             .invoke("talkerMessage", "installProjectDependencies")
             .then((npmResult) => {
               this.editorWindow.CABLESUILOADER.cfg.patchConfig.onError = (
@@ -107,7 +111,7 @@ export default class CablesElectron {
                   const opName = dirParts[opNameIndex];
                   const packageName = dirParts[opNameIndex + 2];
                   const onClick =
-                    "CABLES.CMD.ELECTRON.openOpDir('', '" + opName + "');";
+                    "CABLES.CMD.PATCHBAY.openOpDir('', '" + opName + "');";
 
                   const msg =
                     'try running this <a onclick="' +
@@ -118,7 +122,7 @@ export default class CablesElectron {
                     "`npm --prefix ./ install " + packageName + "`",
                   );
                   this._log.error(
-                    '`npx "@electron/rebuild" -v ' + process.versions.electron,
+                    '`npx "@patchbay/rebuild" -v ' + process.versions.patchbay,
                   );
                 }
               };
@@ -163,11 +167,11 @@ export default class CablesElectron {
         if (this.editorWindow.loadjs) {
           this.editorWindow.loadjs.ready(
             "cables_core",
-            this._coreReady.bind(this),
+            async () => await this._coreReady(),
           );
           this.editorWindow.loadjs.ready(
             "cablesuinew",
-            this._uiReady.bind(this),
+            async () => await this._uiReady(),
           );
         }
       }
@@ -196,11 +200,11 @@ export default class CablesElectron {
       false,
     );
 
-    this.editor = new ElectronEditor({
+    this.editor = new PatchbayEditor({
       config: {
         ...this._settings,
         isTrustedPatch: true,
-        platformClass: "PlatformElectron",
+        platformClass: "PlatformPatchbay",
         urlCables: "cables://",
         urlSandbox: "cables://",
         communityUrl: this._config.communityUrl,
@@ -220,6 +224,7 @@ export default class CablesElectron {
           paths: this._settings.paths,
         },
       },
+      talker: this._talker,
     });
   }
 
@@ -227,12 +232,16 @@ export default class CablesElectron {
     if (this.CABLES) this.CABLES.platform.openOpDirsTab();
   }
 
-  _coreReady() {
+  async _coreReady() {
     if (this.CABLES) {
       if (this.CABLES.Op) {
-        const cablesElectron = this;
-        this.CABLES.Op.prototype.require = function (moduleName) {
-          return cablesElectron._opRequire(moduleName, this, cablesElectron);
+        const cablesPatchbay = this;
+        this.CABLES.Op.prototype.require = async function (moduleName) {
+          return await cablesPatchbay._opRequire(
+            moduleName,
+            this,
+            cablesPatchbay,
+          );
         };
       }
     }
@@ -242,19 +251,19 @@ export default class CablesElectron {
     if (this.CABLES) {
       this.CABLES.UI.DEFAULTOPNAMES.defaultOpFallback =
         this.CABLES.UI.DEFAULTOPNAMES.HttpRequest;
-      this.CABLES.CMD.ELECTRON = electronCommands.functions;
+      this.CABLES.CMD.PATCHBAY = patchbayCommands.functions;
       this.CABLES.CMD.commands = this.CABLES.CMD.commands.concat(
-        electronCommands.commands,
+        patchbayCommands.commands,
       );
       Object.assign(
         this.CABLES.CMD.PATCH,
-        electronCommands.functionOverrides.PATCH,
+        patchbayCommands.functionOverrides.PATCH,
       );
       Object.assign(
         this.CABLES.CMD.RENDERER,
-        electronCommands.functionOverrides.RENDERER,
+        patchbayCommands.functionOverrides.RENDERER,
       );
-      const commandOverrides = electronCommands.commandOverrides;
+      const commandOverrides = patchbayCommands.commandOverrides;
       this.CABLES.CMD.commands.forEach((command) => {
         const commandOverride = commandOverrides.find((override) => {
           return override.cmd === command.cmd;
@@ -266,9 +275,9 @@ export default class CablesElectron {
     }
   }
 
-  _opRequire(moduleName, op, thisClass) {
+  async _opRequire(moduleName, op, thisClass) {
     if (op) op.setUiError("oprequire", null);
-    if (moduleName === "electron") return thisClass._electron;
+    if (moduleName === "patchbay") return thisClass._patchbay;
     if (this._loadedModules[moduleName]) return this._loadedModules[moduleName];
 
     let modulePath = null;
@@ -276,36 +285,50 @@ export default class CablesElectron {
 
     try {
       // load module by directory name
-      modulePath = window.ipcRenderer.sendSync("getOpModuleDir", {
+      modulePath = this._patchbay.ipcRenderer.sendSync("getOpModuleDir", {
         opName: op.objName,
         opId: op.opId,
         moduleName: moduleName,
       });
-      this._loadedModules[moduleName] = window.nodeRequire(modulePath);
+      this._loadedModules[moduleName] = await import(
+        /* @vite-ignore */ modulePath
+      );
       return this._loadedModules[moduleName];
     } catch (ePath) {
       try {
         // load module by resolved filename from package.json
-        moduleFile = window.ipcRenderer.sendSync("getOpModuleLocation", {
-          opName: op.objName,
-          opId: op.opId,
-          moduleName: moduleName,
-        });
-        this._loadedModules[moduleName] = window.nodeRequire(moduleFile);
+        moduleFile = this._patchbay.ipcRenderer.sendSync(
+          "getOpModuleLocation",
+          {
+            opName: op.objName,
+            opId: op.opId,
+            moduleName: moduleName,
+          },
+        );
+        this._loadedModules[moduleName] = await import(
+          /* @vite-ignore */ moduleFile
+        );
         return this._loadedModules[moduleName];
       } catch (eFile) {
         try {
           // load module by module name
-          this._loadedModules[moduleName] = window.nodeRequire(moduleName);
+          this._loadedModules[moduleName] = await import(
+            /* @vite-ignore */ moduleName
+          );
           return this._loadedModules[moduleName];
         } catch (eName) {
           try {
-            moduleFile = window.ipcRenderer.sendSync("getOpModuleLocation", {
-              opName: op.objName || op.name,
-              opId: op.opId,
-              moduleName: moduleName,
-            });
-            this._loadedModules[moduleName] = this._importSync(moduleFile);
+            moduleFile = this._patchbay.ipcRenderer.sendSync(
+              "getOpModuleLocation",
+              {
+                opName: op.objName || op.name,
+                opId: op.opId,
+                moduleName: moduleName,
+              },
+            );
+            this._loadedModules[moduleName] = await import(
+              /* @vite-ignore */ moduleFile
+            );
             return this._loadedModules[moduleName];
           } catch (eImport) {
             let errorMessage =
