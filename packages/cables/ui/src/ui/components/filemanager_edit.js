@@ -1,5 +1,5 @@
 import { editorSession } from "../elements/tabpanel/editor_session.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { platform } from "../platform.js";
 import EditorTab from "./tabs/tab_editor.js";
 
@@ -17,7 +17,7 @@ export default class FileManagerEditor {
   }
 
   editAssetTextFile(filename, syntax, patchId) {
-    patchId = patchId || gui.project()._id;
+    patchId = patchId || Gui.gui.project()._id;
     let url = filename;
     if (!filename.startsWith("file:")) {
       url = platform.getSandboxUrl() + "/assets/" + patchId + "/" + filename;
@@ -47,7 +47,7 @@ export default class FileManagerEditor {
             editorSession.remove(editorObj.type, editorObj.name);
         },
         onSave: function (setStatus, content) {
-          gui.jobs().start({
+          Gui.gui.jobs().start({
             id: "saveeditorcontent" + filename,
             title: "saving file " + filename,
           });
@@ -59,17 +59,17 @@ export default class FileManagerEditor {
               content: content,
             },
             (err3, res3) => {
-              gui.savedState.setSaved("editorOnChangeFile");
-              gui.jobs().finish("saveeditorcontent" + filename);
+              Gui.gui.savedState.setSaved("editorOnChangeFile");
+              Gui.gui.jobs().finish("saveeditorcontent" + filename);
               setStatus("saved");
             },
           );
         },
         onChange: function (ev) {
-          gui.savedState.setUnSaved("editorOnChangeFile");
+          Gui.gui.savedState.setUnSaved("editorOnChangeFile");
         },
         onFinished: () => {
-          // gui.mainTabs.activateTabByName(name);
+          // Gui.gui.mainTabs.activateTabByName(name);
         },
       });
     });

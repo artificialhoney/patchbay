@@ -151,7 +151,7 @@ export class TlTitle extends Events {
 
   updateColor() {
     // if (this.op)
-    //     this.setIsCurrent(gui.patchView.isCurrentOp(this.op));
+    //     this.setIsCurrent(Gui.gui.patchView.isCurrentOp(this.op));
   }
 
   dispose() {

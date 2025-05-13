@@ -1,4 +1,4 @@
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { notify, notifyWarn } from "../elements/notification.js";
 import ModalDialog from "../dialogs/modaldialog.js";
 import { platform } from "../platform.js";
@@ -12,12 +12,12 @@ export default class ScUi {
   _registerEventListeners() {
     if (!this._connection) return;
 
-    if (gui.isRemoteClient) {
+    if (Gui.gui.isRemoteClient) {
       this._connection.on("createdSubPatchOp", (_msg) => {
         platform.talkerAPI.send("reload");
       });
     } else {
-      gui.on("createdSubPatchOp", (newOp, subPatchId) => {
+      Gui.gui.on("createdSubPatchOp", (newOp, subPatchId) => {
         this._connection.sendControl("createdSubPatchOp", {
           opId: newOp.opId,
           opName: newOp.objName,
@@ -46,15 +46,15 @@ export default class ScUi {
   _patchOpSaved(payload) {
     const data = payload.data || {};
     if (!payload.isOwn) {
-      gui.serverOps.addOpIdChangedOnServer(data.opId, data);
+      Gui.gui.serverOps.addOpIdChangedOnServer(data.opId, data);
 
       let opNames = "";
-      for (let i in gui.serverOps.opIdsChangedOnServer) {
-        opNames += gui.serverOps.opIdsChangedOnServer[i].opName + " ";
+      for (let i in Gui.gui.serverOps.opIdsChangedOnServer) {
+        opNames += Gui.gui.serverOps.opIdsChangedOnServer[i].opName + " ";
       }
 
-      if (!gui.isRemoteClient)
-        gui.restriction.setMessage(
+      if (!Gui.gui.isRemoteClient)
+        Gui.gui.restriction.setMessage(
           "cablesupdate",
           "Some ops in this patch have changed: " +
             opNames +
@@ -77,9 +77,9 @@ export default class ScUi {
         new ModalDialog(modalOptions);
       } else if (data.updated) {
         const serverDate = moment(data.updated);
-        const localDate = moment(gui.patchView.store.getServerDate());
+        const localDate = moment(Gui.gui.patchView.store.getServerDate());
         if (serverDate.isAfter(localDate))
-          gui.patchView.store.setServerDate(data.updated);
+          Gui.gui.patchView.store.setServerDate(data.updated);
       }
     } else {
       if (!data.error) {
@@ -95,7 +95,7 @@ export default class ScUi {
   _backupCreated(payload) {
     const data = payload.data || {};
     if (payload.isOwn) {
-      gui.jobs().finish("patchCreateBackup");
+      Gui.gui.jobs().finish("patchCreateBackup");
       if (data.error) {
         notifyWarn("Backup failed! " + data.msg);
       } else {

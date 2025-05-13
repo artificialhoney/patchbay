@@ -1,5 +1,5 @@
 import { Events } from "@cables/client";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 
 /**
  * tab panel to debug patchfield gl Op rendering
@@ -12,7 +12,7 @@ export default class GlOpWatcher extends Events {
   constructor(tabs) {
     super();
 
-    this._glPatch = gui.patchView.patchRenderer;
+    this._glPatch = Gui.gui.patchView.patchRenderer;
     this._tabs = tabs;
     this._tab = new CABLES.UI.Tab("GlOp", {
       icon: "op",
@@ -25,10 +25,10 @@ export default class GlOpWatcher extends Events {
     this._op = null;
     this._glop = null;
     this.rebuildHtml();
-    this.setOp(gui.opParams.op);
+    this.setOp(Gui.gui.opParams.op);
 
-    gui.opParams.on("opSelected", () => {
-      this.setOp(gui.opParams.op);
+    Gui.gui.opParams.on("opSelected", () => {
+      this.setOp(Gui.gui.opParams.op);
     });
 
     setInterval(this.rebuildHtml.bind(this), 100);

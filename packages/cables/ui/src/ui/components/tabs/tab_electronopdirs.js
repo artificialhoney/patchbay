@@ -2,7 +2,7 @@ import { ele, Logger } from "@cables/client";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import ModalDialog from "../../dialogs/modaldialog.js";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 import { platform } from "../../platform.js";
 
 export default class ElectronOpDirs {
@@ -132,15 +132,15 @@ export default class ElectronOpDirs {
   _loadOpsInDirs() {
     platform.talkerAPI.send(
       "getOpDocsAll",
-      { projectId: gui.patchId },
+      { projectId: Gui.gui.patchId },
       (_err, _data) => {
         if (_err) {
           this._log.error("preloading error", _err);
         } else {
-          if (gui.opDocs) {
-            gui.opDocs.addOpDocs(_data.opDocs);
+          if (Gui.gui.opDocs) {
+            Gui.gui.opDocs.addOpDocs(_data.opDocs);
           }
-          gui.opSelect().reload();
+          Gui.gui.opSelect().reload();
         }
       },
       (response) => {

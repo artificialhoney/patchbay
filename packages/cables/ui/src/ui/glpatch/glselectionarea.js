@@ -1,5 +1,5 @@
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 
 /**
  * selection area, when dragging the mouse on the patchfield
@@ -24,7 +24,9 @@ export default class GlSelectionArea {
   }
 
   updateTheme() {
-    this._selectRect.setColorArray(gui.theme.colors_patch.patchSelectionArea);
+    this._selectRect.setColorArray(
+      Gui.gui.theme.colors_patch.patchSelectionArea,
+    );
   }
 
   get w() {
@@ -63,7 +65,7 @@ export default class GlSelectionArea {
     this._x += this._w;
     this._y += this._h;
     this._w = this._h = 0;
-    gui.emitEvent("hideSelectionArea");
+    Gui.gui.emitEvent("hideSelectionArea");
   }
 
   /**

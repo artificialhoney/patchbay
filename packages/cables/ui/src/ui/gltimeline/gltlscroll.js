@@ -1,7 +1,7 @@
 import { Events, Logger } from "@cables/client";
 import GlRect from "../gldraw/glrect.js";
 import { glTlDragArea } from "./gltldragarea.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 
 export class glTlScroll extends Events {
   /** @type {GlRect} */
@@ -100,7 +100,8 @@ export class glTlScroll extends Events {
 
     this.#dragBar.set(x, 0, pixelVisible);
 
-    let cx = gui.corePatch().timer.getTime() * this._glTl.view.pixelPerSecond;
+    let cx =
+      Gui.gui.corePatch().timer.getTime() * this._glTl.view.pixelPerSecond;
     this.#glRectCursor.setPosition(cx, 0);
   }
 

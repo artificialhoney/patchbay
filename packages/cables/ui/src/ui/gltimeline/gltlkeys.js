@@ -6,7 +6,7 @@ import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
 import undo from "../utils/undo.js";
 import { glTlAnimLine } from "./gltlanimline.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { GlTlView } from "./gltlview.js";
 
 /**
@@ -99,7 +99,7 @@ export class glTlKeys extends Events {
   }
 
   isCurrentOp() {
-    let isCurrentOp = gui.patchView.isCurrentOp(this.#port.op);
+    let isCurrentOp = Gui.gui.patchView.isCurrentOp(this.#port.op);
     return isCurrentOp;
   }
 

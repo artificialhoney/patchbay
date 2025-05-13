@@ -1,6 +1,6 @@
 import { Events } from "@cables/client";
 import { PatchConnectionReceiver } from "./patchconnection.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 
 export default class PacoConnector extends Events {
   constructor(connection, paco) {
@@ -37,7 +37,11 @@ export default class PacoConnector extends Events {
 
   receive(pacoMsg) {
     if (!this._receiver) {
-      this._receiver = new PatchConnectionReceiver(gui.corePatch(), {}, this);
+      this._receiver = new PatchConnectionReceiver(
+        Gui.gui.corePatch(),
+        {},
+        this,
+      );
     }
 
     // wait for initial patch sync before handling other messages

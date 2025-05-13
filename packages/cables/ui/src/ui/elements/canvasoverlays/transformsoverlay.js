@@ -1,4 +1,4 @@
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 import TransformsIcon from "./transformsicon.js";
 
 export default class TransformsOverlay {
@@ -10,7 +10,7 @@ export default class TransformsOverlay {
   }
 
   _cleanUp(diff) {
-    if (!gui || gui.isRemoteClient) return;
+    if (!gui || Gui.gui.isRemoteClient) return;
 
     diff = diff || 500;
     for (const i in this._transforms) {
@@ -24,10 +24,10 @@ export default class TransformsOverlay {
   click(screenPos) {
     const activateTransform = (op, id) => {
       this._lastClicked = id;
-      gui.patchView.setCurrentSubPatch(op.uiAttribs.subPatch || 0);
-      gui.patchView.centerSelectOp(id);
-      gui.opParams.show(id);
-      gui.patchView.focus();
+      Gui.gui.patchView.setCurrentSubPatch(op.uiAttribs.subPatch || 0);
+      Gui.gui.patchView.centerSelectOp(id);
+      Gui.gui.opParams.show(id);
+      Gui.gui.patchView.focus();
     };
 
     let found = [];
@@ -51,7 +51,7 @@ export default class TransformsOverlay {
     if (i > found.length - 1) i = 0;
 
     const trans = this._transforms[found[i]];
-    const op = gui.corePatch().getOpById(trans.id);
+    const op = Gui.gui.corePatch().getOpById(trans.id);
 
     activateTransform(op, trans.id);
   }
@@ -65,7 +65,7 @@ export default class TransformsOverlay {
    * @param {number} z
    */
   add(cgl, id, x, y, z) {
-    if (gui.isRemoteClient) return;
+    if (Gui.gui.isRemoteClient) return;
     this._transforms[id] = this._transforms[id] || new TransformsIcon(cgl, id);
     this._transforms[id].setPos(x, y, z);
 
@@ -77,7 +77,7 @@ export default class TransformsOverlay {
   }
 
   updateVisibility() {
-    this.setVisible(gui.shouldDrawOverlay);
+    this.setVisible(Gui.gui.shouldDrawOverlay);
   }
 
   setVisible(b) {

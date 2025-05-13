@@ -1,5 +1,5 @@
 import Tab from "../../elements/tabpanel/tab.js";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 
 export default class MetaOpParams {
   constructor(tabs) {
@@ -28,7 +28,7 @@ export default class MetaOpParams {
 
     if (this._prevTab) this._tabs.activateTab(this._prevTab.id);
 
-    if (b === undefined) b = !gui.showTwoMetaPanels();
+    if (b === undefined) b = !Gui.gui.showTwoMetaPanels();
 
     if (b === false) {
       this._prevTab = this._tabs.getActiveTab();
@@ -41,6 +41,6 @@ export default class MetaOpParams {
 
   show() {
     this._tab.html('<div id="options_meta"></div>');
-    if (window.gui) gui.opParams.refresh();
+    if (window.gui) Gui.gui.opParams.refresh();
   }
 }

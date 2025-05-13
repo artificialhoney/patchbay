@@ -1,6 +1,6 @@
 import defaultOps from "../../defaultops.js";
 import Tab from "../../elements/tabpanel/tab.js";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 
 /**
  * tab panel to profile and analyze GPU performance
@@ -38,10 +38,10 @@ export default class GpuProfiler {
     const glQueryExt = gui
       .corePatch()
       .cgl.gl.getExtension("EXT_disjoint_timer_query_webgl2");
-    if (glQueryExt) gui.corePatch().cgl.profileData.doProfileGlQuery = true;
+    if (glQueryExt) Gui.gui.corePatch().cgl.profileData.doProfileGlQuery = true;
 
-    gui.corePatch().on("performance", this.update.bind(this));
-    gui.corePatch().cgl.profileData.glQueryData = {};
+    Gui.gui.corePatch().on("performance", this.update.bind(this));
+    Gui.gui.corePatch().cgl.profileData.glQueryData = {};
     this.update();
   }
 
@@ -63,7 +63,7 @@ export default class GpuProfiler {
       }
     }
 
-    const glQueryData = gui.corePatch().cgl.profileData.glQueryData;
+    const glQueryData = Gui.gui.corePatch().cgl.profileData.glQueryData;
 
     if (glQueryData) {
       let arr = [];
@@ -109,16 +109,16 @@ export default class GpuProfiler {
         html += "<td>";
         if (arr[i].shaderOp)
           html +=
-            "<a onclick=\"gui.patchView.focusOpAnim('" +
+            "<a onclick=\"Gui.gui.patchView.focusOpAnim('" +
             arr[i].shaderOp +
-            "');gui.patchView.centerSelectOp('" +
+            "');Gui.gui.patchView.centerSelectOp('" +
             arr[i].shaderOp +
             '\');" class="button" >shader</a></td>';
         if (arr[i].shaderOp)
           html +=
-            "<a onclick=\"gui.patchView.focusOpAnim('" +
+            "<a onclick=\"Gui.gui.patchView.focusOpAnim('" +
             arr[i].meshOp +
-            "');gui.patchView.centerSelectOp('" +
+            "');Gui.gui.patchView.centerSelectOp('" +
             arr[i].meshOp +
             '\');" class="button" >mesh</a></td>';
 

@@ -5,9 +5,9 @@ import ModalDialog from "../dialogs/modaldialog.js";
 import text from "../text.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import opNames from "../opnameutils.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { platform } from "../platform.js";
-import { userSettings } from "./usersettings.js";
+import UserSettings from "./usersettings.js";
 
 /**
  * manage files/assets of the patch
@@ -19,21 +19,21 @@ export default class FileManager {
   constructor(cb, userInteraction) {
     this._log = new Logger("filemanager");
     this._filterType = null;
-    this._manager = new ItemManager("Files", gui.mainTabs);
+    this._manager = new ItemManager("Files", Gui.gui.mainTabs);
     this._filePortEle = null;
     this._firstTimeOpening = true;
     this._refreshDelay = null;
     this._orderReverse = false;
-    this._order = userSettings.get("filemanager_order") || "name";
+    this._order = UserSettings.userSettings.get("filemanager_order") || "name";
     this._files = [];
 
-    gui.maintabPanel.show(userInteraction);
-    userSettings.set("fileManagerOpened", true);
+    Gui.gui.maintabPanel.show(userInteraction);
+    UserSettings.userSettings.set("fileManagerOpened", true);
 
     CABLES.DragNDrop.loadImage();
 
     this._manager.setDisplay(
-      userSettings.get("filemanager_display") || "icons",
+      UserSettings.userSettings.get("filemanager_display") || "icons",
     );
 
     this.reload(cb);
@@ -43,20 +43,20 @@ export default class FileManager {
     });
 
     this._manager.addEventListener("close", () => {
-      userSettings.set("fileManagerOpened", false);
-      gui.fileManager = null;
+      UserSettings.userSettings.set("fileManagerOpened", false);
+      Gui.gui.fileManager = null;
     });
 
     if (platform.frontendOptions.isElectron)
-      gui.on("patchsaved", () => {
+      Gui.gui.on("patchsaved", () => {
         if (!ele.byId("filemanagercontainer")) return;
-        gui.refreshFileManager();
+        Gui.gui.refreshFileManager();
       });
   }
 
   show(userInteraction) {
-    gui.maintabPanel.show(userInteraction);
-    gui.maintabPanel.show(true);
+    Gui.gui.maintabPanel.show(userInteraction);
+    Gui.gui.maintabPanel.show(true);
   }
 
   refresh() {
@@ -81,7 +81,7 @@ export default class FileManager {
       this._filePortEle = portEle;
       this._filePortOp = op;
 
-      gui.fileManager.setFilter("");
+      Gui.gui.fileManager.setFilter("");
     }
     this.updateHeader();
   }
@@ -92,7 +92,7 @@ export default class FileManager {
     this._fileSource = this._fileSource || "patch";
     // if (this._firstTimeOpening) this._fileSource = "patch";
 
-    if (gui.isGuestEditor()) {
+    if (Gui.gui.isGuestEditor()) {
       this._buildHtml();
       return;
     }
@@ -102,7 +102,7 @@ export default class FileManager {
       eleContent.innerHTML =
         '<div class="loading" style="margin-top:50px;"></div>';
 
-    gui.jobs().start({
+    Gui.gui.jobs().start({
       id: "getFileList",
       title: "Loading file list",
     });
@@ -110,7 +110,7 @@ export default class FileManager {
     this._getFilesFromSource(this._fileSource, (files) => {
       if (!files) files = [];
       const patchFiles = files.filter((file) => {
-        return file.projectId && file.projectId === gui.project()._id;
+        return file.projectId && file.projectId === Gui.gui.project()._id;
       });
 
       this._firstTimeOpening = false;
@@ -118,7 +118,7 @@ export default class FileManager {
 
       this._buildHtml();
       if (cb) cb();
-      gui.jobs().finish("getFileList");
+      Gui.gui.jobs().finish("getFileList");
     });
   }
 
@@ -256,7 +256,7 @@ export default class FileManager {
           uploadText +=
             '<a class="button-small" onclick="CABLES.CMD.PATCH.uploadFileDialog();">Upload files</a> or ';
           uploadText +=
-            'use files from our <a class="button-small" onclick="gui.fileManager.setSource(\'lib\');">Library</a>';
+            'use files from our <a class="button-small" onclick="Gui.gui.fileManager.setSource(\'lib\');">Library</a>';
         } else {
           uploadText =
             '<br/><br/><br/><br/><div class="text-center">Patch does not use any files, yet!<br/><br/>';
@@ -279,7 +279,7 @@ export default class FileManager {
     else this._orderReverse = !this._orderReverse;
 
     this._order = o;
-    userSettings.set("filemanager_order", this._order);
+    UserSettings.userSettings.set("filemanager_order", this._order);
     this._buildHtml();
   }
 
@@ -308,27 +308,27 @@ export default class FileManager {
     if (this._fileSource === "patch") {
       this._selectFile(filename);
     } else {
-      if (filename.indexOf(gui.project()._id) > -1) {
+      if (filename.indexOf(Gui.gui.project()._id) > -1) {
         this.setSource("patch", () => {
           this._selectFile(filename);
         });
       }
     }
-    gui.maintabPanel.show(true);
+    Gui.gui.maintabPanel.show(true);
 
     const item = this._manager.getItemByTitleContains(filename);
     if (item && !item.isLibraryFile) this.setDetail([item]);
   }
 
   setDisplay(type) {
-    userSettings.set("filemanager_display", type);
+    UserSettings.userSettings.set("filemanager_display", type);
     this._manager.setDisplay(type);
     this._manager.setItems();
     this.updateHeader();
   }
 
   updateHeader(detailItems) {
-    if (gui.isGuestEditor()) {
+    if (Gui.gui.isGuestEditor()) {
       if (ele.byId("itemmanager_header"))
         ele.byId("itemmanager_header").innerHTML = text.guestHint;
       return;
@@ -373,7 +373,7 @@ export default class FileManager {
     if (detailItems.length === 1) {
       const detailItem = detailItems[0];
       const itemId = detailItem.id;
-      let projectId = gui.project()._id;
+      let projectId = Gui.gui.project()._id;
       if (detailItem.isReference && detailItem.file)
         projectId = detailItem.file.projectId;
       const filename = detailItem.file ? detailItem.file.p : null;
@@ -413,7 +413,7 @@ export default class FileManager {
             if (platform.frontendOptions.isElectron) assetPath = r.path;
 
             html = getHandleBarHtml("filemanager_details", {
-              projectId: gui.project()._id,
+              projectId: Gui.gui.project()._id,
               file: r,
               source: this._fileSource,
               isEditable: editable,
@@ -501,24 +501,27 @@ export default class FileManager {
             editEle.addEventListener("click", (e) => {
               let fileName = r.fileDb.fileName;
               if (platform.frontendOptions.isElectron) fileName = r.path;
-              gui.fileManagerEditor.editAssetTextFile(fileName, r.fileDb.type);
+              Gui.gui.fileManagerEditor.editAssetTextFile(
+                fileName,
+                r.fileDb.type,
+              );
             });
           }
 
           const delEle = document.getElementById("filedelete" + itemId);
           if (delEle) {
             delEle.addEventListener("click", (e) => {
-              const loadingModal = gui.startModalLoading(
+              const loadingModal = Gui.gui.startModalLoading(
                 "Checking asset dependencies",
               );
               loadingModal.setTask("Checking patches and ops...");
               const fullName =
-                "/assets/" + gui.project()._id + "/" + r.fileDb.fileName;
+                "/assets/" + Gui.gui.project()._id + "/" + r.fileDb.fileName;
               platform.talkerAPI.send(
                 "checkNumAssetPatches",
                 { filenames: [fullName] },
                 (countErr, countRes) => {
-                  gui.endModalLoading();
+                  Gui.gui.endModalLoading();
                   let content = "";
                   let allowDelete = true;
                   if (countRes && countRes.data) {
@@ -558,7 +561,7 @@ export default class FileManager {
                   let title = "Really delete this file?";
                   let okButton = null;
 
-                  if (gui.project().summary.visibility == "public")
+                  if (Gui.gui.project().summary.visibility == "public")
                     content +=
                       '<div class="error warning-error warning-error-level2 text-center"><br/><br/>this asset is in a public patch, please make sure your patch continues to work!<br/><br/><br/></div>';
 
@@ -605,7 +608,7 @@ export default class FileManager {
       );
 
       if (this._filePortEle) {
-        gui.savedState.setUnSaved(
+        Gui.gui.savedState.setUnSaved(
           "filemanager",
           this._filePortOp.getSubPatch(),
         );
@@ -621,7 +624,7 @@ export default class FileManager {
               detailItems[0].p +
               '" style="max-width:100%;margin-top:10px;"/>';
 
-        gui.opParams.show(this._filePortOp);
+        Gui.gui.opParams.show(this._filePortOp);
       }
     } else if (detailItems.length > 1) {
       let allSize = 0;
@@ -661,7 +664,7 @@ export default class FileManager {
             fullNames.push(detailItem.p);
           }
 
-          const loadingModal = gui.startModalLoading(
+          const loadingModal = Gui.gui.startModalLoading(
             "Checking asset dependencies",
           );
           loadingModal.setTask("Checking patches and ops...");
@@ -669,12 +672,13 @@ export default class FileManager {
             "checkNumAssetPatches",
             { filenames: fullNames },
             (countErr, countRes) => {
-              gui.endModalLoading();
+              Gui.gui.endModalLoading();
               let content = "";
               let allowDelete = true;
               let showAssets = false;
               if (countRes && countRes.data) {
-                const projectId = gui.project().shortId || gui.project()._id;
+                const projectId =
+                  Gui.gui.project().shortId || Gui.gui.project()._id;
                 if (countRes.data.countPatches > 1) {
                   let linkText = countRes.data.countPatches + " other patch";
                   if (countRes.data.countPatches > 1) linkText += "es";
@@ -770,19 +774,19 @@ export default class FileManager {
         platform.talkerAPI.send("createFile", { name: fn }, (err, res) => {
           if (err) {
             notifyError("Error: " + err.msg);
-            gui.refreshFileManager();
+            Gui.gui.refreshFileManager();
             return;
           }
           if (res) notify("file created");
-          gui.refreshFileManager();
+          Gui.gui.refreshFileManager();
         });
       },
     });
   }
 
   uploadFile(filename, content, cb) {
-    gui.jobs().finish("uploadfile" + filename);
-    gui.jobs().start({
+    Gui.gui.jobs().finish("uploadfile" + filename);
+    Gui.gui.jobs().start({
       id: "uploadfile" + filename,
       title: "uploading file " + filename,
     });
@@ -794,16 +798,16 @@ export default class FileManager {
         filename: filename,
       },
       (err3, res3) => {
-        gui.savedState.setSaved("editorOnChangeFile");
-        gui.jobs().finish("uploadfile" + filename);
-        gui.refreshFileManager();
+        Gui.gui.savedState.setSaved("editorOnChangeFile");
+        Gui.gui.jobs().finish("uploadfile" + filename);
+        Gui.gui.refreshFileManager();
         if (cb) cb(err3, res3);
       },
     );
   }
 
   replaceAssetPorts(search, replace, cb = null) {
-    const ops = gui.corePatch().ops;
+    const ops = Gui.gui.corePatch().ops;
     let numPorts = 0;
     for (let i = 0; i < ops.length; i++) {
       for (let j = 0; j < ops[i].portsIn.length; j++) {
@@ -856,8 +860,8 @@ export default class FileManager {
             );
           }
         }
-        gui.opParams.refresh();
-        gui.refreshFileManager();
+        Gui.gui.opParams.refresh();
+        Gui.gui.refreshFileManager();
       },
     );
   }

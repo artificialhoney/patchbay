@@ -3,7 +3,7 @@ import PacoConnector from "./sc_paconnector.js";
 
 import ScState from "./sc_state.js";
 import ScUiMultiplayer from "./sc_ui_multiplayer.js";
-import Gui, { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { PatchConnectionSender } from "./patchconnection.js";
 import Chat from "../components/tabs/tab_chat.js";
 import { platform } from "../platform.js";
@@ -31,7 +31,7 @@ export default class ScConnection extends Events {
 
     this._paco = null;
     this._pacoEnabled = false;
-    this._patchConnection = new PatchConnectionSender(gui.corePatch());
+    this._patchConnection = new PatchConnectionSender(Gui.gui.corePatch());
     this._pacoSynced = false;
     this._pacoChannel = null;
     this._pacoLoopReady = false;
@@ -44,12 +44,12 @@ export default class ScConnection extends Events {
       this._init((isActive) => {
         let showMultiplayerUi = isActive && this.multiplayerCapable;
         if (this.showGuestUsers) showMultiplayerUi = true;
-        if (gui.isRemoteClient) showMultiplayerUi = false;
+        if (Gui.gui.isRemoteClient) showMultiplayerUi = false;
 
         this._scUi = new ScUi(this);
         if (showMultiplayerUi) {
           this._multiplayerUi = new ScUiMultiplayer(this);
-          this._chat = new Chat(gui.mainTabs, this);
+          this._chat = new Chat(Gui.gui.mainTabs, this);
         }
       });
     }
@@ -62,10 +62,10 @@ export default class ScConnection extends Events {
   get showGuestUsers() {
     return (
       gui &&
-      gui.project() &&
-      gui.project() &&
-      gui.project().settings &&
-      gui.project().visibility === "public"
+      Gui.gui.project() &&
+      Gui.gui.project() &&
+      Gui.gui.project().settings &&
+      Gui.gui.project().visibility === "public"
     );
   }
 
@@ -238,7 +238,7 @@ export default class ScConnection extends Events {
 
   _reconnectViewer(startSessionListener) {
     if (startSessionListener) this._state.off(startSessionListener);
-    gui.setRestriction(Gui.RESTRICT_MODE_FULL);
+    Gui.gui.setRestriction(Gui.gui.RESTRICT_MODE_FULL);
     this.client.isPilot = true;
     this.client.following = null;
     this.client.inMultiplayerSession = true;
@@ -296,7 +296,7 @@ export default class ScConnection extends Events {
         this._patchConnection.connectors.push(this._paco);
       }
 
-      const json = gui.corePatch().serialize({ asObject: true });
+      const json = Gui.gui.corePatch().serialize({ asObject: true });
       const payload = {
         patch: JSON.stringify(json),
         requestedBy: requestedBy,
@@ -304,11 +304,11 @@ export default class ScConnection extends Events {
       };
       this._paco.send(CABLES.PACO_LOAD, payload);
       this._pacoSynced = true;
-      if (gui.scene().timer) {
+      if (Gui.gui.scene().timer) {
         this.sendUi("timelineControl", {
           command: "setPlay",
-          value: gui.scene().timer.isPlaying(),
-          time: gui.scene().timer.getTime(),
+          value: Gui.gui.scene().timer.isPlaying(),
+          time: Gui.gui.scene().timer.getTime(),
         });
       }
       this.state.emitEvent("patchSynchronized");
@@ -364,7 +364,7 @@ export default class ScConnection extends Events {
     this._send(this.patchChannelName, "chat", {
       name: "chatmsg",
       text,
-      username: gui.user.username,
+      username: Gui.gui.user.username,
     });
   }
 
@@ -467,7 +467,7 @@ export default class ScConnection extends Events {
         );
         for await (const msg of userChannel) {
           if (msg && msg.data) {
-            gui.updateActivityFeedIcon(msg.data);
+            Gui.gui.updateActivityFeedIcon(msg.data);
           }
         }
       })();
@@ -550,29 +550,29 @@ export default class ScConnection extends Events {
   }
 
   _sendPing(startedSession = false) {
-    const x = gui.patchView.patchRenderer.viewBox
-      ? gui.patchView.patchRenderer.viewBox.mousePatchX
+    const x = Gui.gui.patchView.patchRenderer.viewBox
+      ? Gui.gui.patchView.patchRenderer.viewBox.mousePatchX
       : null;
-    const y = gui.patchView.patchRenderer.viewBox
-      ? gui.patchView.patchRenderer.viewBox.mousePatchY
+    const y = Gui.gui.patchView.patchRenderer.viewBox
+      ? Gui.gui.patchView.patchRenderer.viewBox.mousePatchY
       : null;
-    const subPatch = gui.patchView.getCurrentSubPatch();
-    const zoom = gui.patchView.patchRenderer.viewBox
-      ? gui.patchView.patchRenderer.viewBox.zoom
+    const subPatch = Gui.gui.patchView.getCurrentSubPatch();
+    const zoom = Gui.gui.patchView.patchRenderer.viewBox
+      ? Gui.gui.patchView.patchRenderer.viewBox.zoom
       : null;
-    const scrollX = gui.patchView.patchRenderer.viewBox
-      ? gui.patchView.patchRenderer.viewBox.scrollX
+    const scrollX = Gui.gui.patchView.patchRenderer.viewBox
+      ? Gui.gui.patchView.patchRenderer.viewBox.scrollX
       : null;
-    const scrollY = gui.patchView.patchRenderer.viewBox
-      ? gui.patchView.patchRenderer.viewBox.scrollY
+    const scrollY = Gui.gui.patchView.patchRenderer.viewBox
+      ? Gui.gui.patchView.patchRenderer.viewBox.scrollY
       : null;
 
     const payload = {
-      username: gui.user.usernameLowercase,
-      userid: gui.user.id,
+      username: Gui.gui.user.usernameLowercase,
+      userid: Gui.gui.user.id,
       connectedSince: this._connectedSince,
       inSessionSince: this._inSessionSince,
-      isRemoteClient: gui.isRemoteClient,
+      isRemoteClient: Gui.gui.isRemoteClient,
       inMultiplayerSession: this.client.inMultiplayerSession,
       multiplayerCapable: this.multiplayerCapable,
       startedSession: startedSession,
@@ -621,7 +621,7 @@ export default class ScConnection extends Events {
         };
 
         this.emitEvent("netActivityOut");
-        const perf = gui.uiProfiler.start("[sc] send");
+        const perf = Gui.gui.uiProfiler.start("[sc] send");
         const scTopic = channel + "/" + topic;
         this._logVerbose("send:", scTopic, finalPayload);
         this._socket.transmitPublish(scTopic, finalPayload);
@@ -641,7 +641,7 @@ export default class ScConnection extends Events {
     if (
       msg.data &&
       msg.data.senderEditorId &&
-      msg.data.senderEditorId === gui.editorSessionId
+      msg.data.senderEditorId === Gui.gui.editorSessionId
     )
       msg.isOwn = true;
 
@@ -656,7 +656,7 @@ export default class ScConnection extends Events {
     if (
       msg.data &&
       msg.data.senderEditorId &&
-      msg.data.senderEditorId === gui.editorSessionId
+      msg.data.senderEditorId === Gui.gui.editorSessionId
     )
       msg.isOwn = true;
 
@@ -686,7 +686,7 @@ export default class ScConnection extends Events {
           this._synchronizePatch(msg.data, msg.data.vars.forceResync);
         }
       } else {
-        const perf = gui.uiProfiler.start("[sc] paco receive");
+        const perf = Gui.gui.uiProfiler.start("[sc] paco receive");
         this._paco.receive(msg.data);
         perf.finish();
         this._pacoSynced = true;
@@ -714,15 +714,15 @@ export default class ScConnection extends Events {
     if (!this._paco) return;
     this._pacoSynced = false;
     this.state.emitEvent("startPatchSync");
-    const perf = gui.uiProfiler.start("[sc] paco sync");
-    const cbId = gui.corePatch().on("patchLoadEnd", () => {
+    const perf = Gui.gui.uiProfiler.start("[sc] paco sync");
+    const cbId = Gui.gui.corePatch().on("patchLoadEnd", () => {
       this._log.verbose("patchloadend in paco");
-      gui.corePatch().off(cbId);
+      Gui.gui.corePatch().off(cbId);
       this._pacoSynced = true;
       this.state.emitEvent("patchSynchronized");
       perf.finish();
     });
-    gui.patchView.clearPatch();
+    Gui.gui.patchView.clearPatch();
     this._paco.receive(data);
   }
 
@@ -732,7 +732,7 @@ export default class ScConnection extends Events {
     if (
       msg.data &&
       msg.data.senderEditorId &&
-      msg.data.senderEditorId === gui.editorSessionId
+      msg.data.senderEditorId === Gui.gui.editorSessionId
     )
       msg.isOwn = true;
 
@@ -779,7 +779,7 @@ export default class ScConnection extends Events {
     if (
       msg.data &&
       msg.data.senderEditorId &&
-      msg.data.senderEditorId === gui.editorSessionId
+      msg.data.senderEditorId === Gui.gui.editorSessionId
     )
       msg.isOwn = true;
 
@@ -793,7 +793,7 @@ export default class ScConnection extends Events {
     if (
       msg.data &&
       msg.data.senderEditorId &&
-      msg.data.senderEditorId === gui.editorSessionId
+      msg.data.senderEditorId === Gui.gui.editorSessionId
     )
       msg.isOwn = true;
 

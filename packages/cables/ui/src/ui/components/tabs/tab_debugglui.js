@@ -1,5 +1,5 @@
 import Tab from "../../elements/tabpanel/tab.js";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 
 export default class GlDebugTab {
   constructor(tabs) {
@@ -15,7 +15,7 @@ export default class GlDebugTab {
     tabs.addTab(this._tab, true);
     this.show();
 
-    gui.patchView._patchRenderer._cgl.profileData.doProfileGlQuery = true;
+    Gui.gui.patchView._patchRenderer._cgl.profileData.doProfileGlQuery = true;
   }
 
   show() {
@@ -23,24 +23,25 @@ export default class GlDebugTab {
 
     let html = '<div class="tabContentScrollContainer"><table>';
 
-    for (const i in gui.patchView._patchRenderer._cgl.profileData.glQueryData) {
+    for (const i in Gui.gui.patchView._patchRenderer._cgl.profileData
+      .glQueryData) {
       html +=
         "<tr><td>" +
         i +
         ":</td><td> " +
-        gui.patchView._patchRenderer._cgl.profileData.glQueryData[i].time +
+        Gui.gui.patchView._patchRenderer._cgl.profileData.glQueryData[i].time +
         "</td></tr>";
     }
     html += "</table>";
     html += "<br/><br/>";
 
     html += "<table>";
-    for (const i in gui.patchView._patchRenderer.debugData) {
+    for (const i in Gui.gui.patchView._patchRenderer.debugData) {
       html +=
         "<tr><td>" +
         i +
         ":</td><td>" +
-        gui.patchView._patchRenderer.debugData[i] +
+        Gui.gui.patchView._patchRenderer.debugData[i] +
         "</td></tr>";
     }
 

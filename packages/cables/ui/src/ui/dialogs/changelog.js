@@ -1,7 +1,7 @@
 import { Logger } from "@cables/client";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { platform } from "../platform.js";
-import { userSettings } from "../components/usersettings.js";
+import UserSettings from "../components/usersettings.js";
 
 /**
  * show a toast when cables changelog is new
@@ -25,12 +25,12 @@ export default class ChangelogToast {
 
       let firstTime = false;
 
-      if (!userSettings.get("changelogLastView")) {
+      if (!UserSettings.userSettings.get("changelogLastView")) {
         firstTime = true;
         this._log.log("first time changelog!");
       }
 
-      userSettings.set("changelogLastView", obj.ts);
+      UserSettings.userSettings.set("changelogLastView", obj.ts);
 
       if (!obj.items || obj.items.length === 0) {
         cb(null);
@@ -67,12 +67,12 @@ export default class ChangelogToast {
   }
 
   show() {
-    if (gui.isRemoteClient) return;
+    if (Gui.gui.isRemoteClient) return;
 
     const url = platform.getCablesUrl() + "/changelog?iframe=true";
     const gotoUrl = platform.getCablesUrl() + "/changelog";
 
-    gui.mainTabs.addIframeTab(
+    Gui.gui.mainTabs.addIframeTab(
       "changelog",
       url,
       { icon: "book-open", closable: true, gotoUrl: gotoUrl },

@@ -1,6 +1,6 @@
 import { Events } from "@cables/client";
 import { Anim } from "@cables/cables";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { platform } from "../platform.js";
 
 export default class GlCursor extends Events {
@@ -40,7 +40,7 @@ export default class GlCursor extends Events {
 
     this._cursorRect.setColor(1, 1, 1, 1);
 
-    gui.on("multiUserSubpatchChanged", (_clientId, _subPatch) => {
+    Gui.gui.on("multiUserSubpatchChanged", (_clientId, _subPatch) => {
       this._subPatch = _subPatch;
 
       if (_clientId == this._clientId) {
@@ -78,7 +78,7 @@ export default class GlCursor extends Events {
 
     if (
       performance.now() - this._lastMovement > 10000 ||
-      gui.patchView.getCurrentSubPatch() != this._subPatch
+      Gui.gui.patchView.getCurrentSubPatch() != this._subPatch
     ) {
       this._avatarEle.style.display = "none";
       this._cursorRect.visible = false;
@@ -110,16 +110,16 @@ export default class GlCursor extends Events {
     else {
       this._animX.clear(this._glPatch.time);
       this._animY.clear(this._glPatch.time);
-      const netCursorDelay = gui.socket
-        ? gui.socket.netMouseCursorDelay / 1000
+      const netCursorDelay = Gui.gui.socket
+        ? Gui.gui.socket.netMouseCursorDelay / 1000
         : 0;
       this._animX.setValue(this._glPatch.time + netCursorDelay, x);
       this._animY.setValue(this._glPatch.time + netCursorDelay, y);
       this.updateAnim();
     }
 
-    if (gui.socket && !this._userId) {
-      this._userId = gui.socket.state.getUserId(this._clientId);
+    if (Gui.gui.socket && !this._userId) {
+      this._userId = Gui.gui.socket.state.getUserId(this._clientId);
       if (this._userId)
         this._avatarEle.style["background-image"] =
           "url(" +

@@ -17,10 +17,10 @@ import subPatchOpUtil from "../subpatchop_util.js";
 import uiconfig from "../uiconfig.js";
 import namespace from "../namespaceutils.js";
 import opNames from "../opnameutils.js";
-import Gui, { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { platform } from "../platform.js";
 
-import { userSettings } from "./usersettings.js";
+import UserSettings from "./usersettings.js";
 import { PortDir, portType } from "../core_constants.js";
 import GlPatch from "../glpatch/glpatch.js";
 import { UiOp } from "../core_extend_op.js";
@@ -69,22 +69,22 @@ export default class PatchView extends Events {
 
     corepatch.on(CABLES.Patch.EVENT_OP_ADDED, (op) => {
       if (!undo.paused())
-        gui.savedState.setUnSaved("onOpAdd", op.getSubPatch());
+        Gui.gui.savedState.setUnSaved("onOpAdd", op.getSubPatch());
     });
     corepatch.on(CABLES.Patch.EVENT_OP_DELETED, (op) => {
       if (!undo.paused())
-        gui.savedState.setUnSaved("onOpDelete", op.getSubPatch());
+        Gui.gui.savedState.setUnSaved("onOpDelete", op.getSubPatch());
     });
     corepatch.on("onLink", (p1, p2) => {
       if (!undo.paused())
-        gui.savedState.setUnSaved(
+        Gui.gui.savedState.setUnSaved(
           "onLink",
           p1.op.getSubPatch() || p2.op.getSubPatch(),
         );
     });
     corepatch.on("onUnLink", (p1, p2) => {
       if (!undo.paused())
-        gui.savedState.setUnSaved(
+        Gui.gui.savedState.setUnSaved(
           "onUnLink",
           p1.op.getSubPatch() || p2.op.getSubPatch(),
         );
@@ -121,11 +121,11 @@ export default class PatchView extends Events {
   //         if (!op.uiAttribs.history) op.uiAttribs.history = {};
   //         op.uiAttribs.history.createdAt = Date.now();
   //         op.uiAttribs.history.createdBy = {
-  //             "name": gui.user.usernameLowercase
+  //             "name": Gui.gui.user.usernameLowercase
   //         };
   //         op.uiAttribs.history.lastInteractionAt = Date.now();
   //         op.uiAttribs.history.lastInteractionBy = {
-  //             "name": gui.user.usernameLowercase
+  //             "name": Gui.gui.user.usernameLowercase
   //         };
   //     }
   // }
@@ -135,18 +135,18 @@ export default class PatchView extends Events {
    */
   focusSubpatchOp(subPatchId) {
     this._log.log("dupe focusSubpatchOp1");
-    const outerOp = gui.corePatch().getSubPatchOuterOp(subPatchId);
-    gui.patchView.setCurrentSubPatch(outerOp.uiAttribs.subPatch);
+    const outerOp = Gui.gui.corePatch().getSubPatchOuterOp(subPatchId);
+    Gui.gui.patchView.setCurrentSubPatch(outerOp.uiAttribs.subPatch);
     console.log("lala", outerOp.opId);
-    gui.patchView.centerSelectOp(outerOp.opId);
+    Gui.gui.patchView.centerSelectOp(outerOp.opId);
   }
 
   /**
    * @param {String} subPatchId
    */
   clickSubPatchNav(subPatchId) {
-    gui.patchView.setCurrentSubPatch(subPatchId);
-    gui.patchParamPanel.show(true);
+    Gui.gui.patchView.setCurrentSubPatch(subPatchId);
+    Gui.gui.patchParamPanel.show(true);
     this.focus();
   }
 
@@ -167,19 +167,19 @@ export default class PatchView extends Events {
           opname: opname,
         },
         undo() {
-          const newop = gui.corePatch().addOp(opname, op.uiAttribs, _opid);
+          const newop = Gui.gui.corePatch().addOp(opname, op.uiAttribs, _opid);
           if (newop) {
             for (const i in oldValues) {
               const port = newop.getPortByName(i);
               if (port) {
                 port.set(oldValues[i]);
-                gui.emitEvent("portValueEdited", newop, port, oldValues[i]);
+                Gui.gui.emitEvent("portValueEdited", newop, port, oldValues[i]);
               }
             }
           }
         },
         redo() {
-          gui.corePatch().deleteOp(_opid, false);
+          Gui.gui.corePatch().deleteOp(_opid, false);
         },
       });
     })(op.objName, op.id);
@@ -192,7 +192,7 @@ export default class PatchView extends Events {
       return;
     }
 
-    const perf = gui.uiProfiler.start("[patchview] setproject");
+    const perf = Gui.gui.uiProfiler.start("[patchview] setproject");
     this._p.logStartup("gui set project");
 
     if (proj && proj.ui) {
@@ -209,22 +209,22 @@ export default class PatchView extends Events {
           proj.ui.renderer.h = 360;
         }
 
-        gui.rendererWidth = proj.ui.renderer.w;
-        gui.rendererHeight = proj.ui.renderer.h;
-        gui.corePatch().cgl.canvasScale = proj.ui.renderer.s || 1;
-        gui.setLayout();
+        Gui.gui.rendererWidth = proj.ui.renderer.w;
+        Gui.gui.rendererHeight = proj.ui.renderer.h;
+        Gui.gui.corePatch().cgl.canvasScale = proj.ui.renderer.s || 1;
+        Gui.gui.setLayout();
       }
 
-      gui.setTimeLineLength(proj.ui.timeLineLength);
+      Gui.gui.setTimeLineLength(proj.ui.timeLineLength);
     }
 
-    gui.setProject(proj);
+    Gui.gui.setProject(proj);
 
     this._patchRenderer.setProject(proj);
 
     this.store.setServerDate(proj.updated);
 
-    if (gui.isRemoteClient) {
+    if (Gui.gui.isRemoteClient) {
       if (cb) cb();
       return;
     }
@@ -232,37 +232,42 @@ export default class PatchView extends Events {
     perf.finish();
 
     this._p.logStartup("loadProjectDependencies...");
-    gui.serverOps.loadProjectDependencies(proj, (project) => {
+    Gui.gui.serverOps.loadProjectDependencies(proj, (project) => {
       this._p.logStartup("loadProjectDependencies done");
       this._p.logStartup("deserialize...");
 
-      const perf3 = gui.uiProfiler.start("[core] deserialize");
-      gui.corePatch().deSerialize(project);
+      const perf3 = Gui.gui.uiProfiler.start("[core] deserialize");
+      Gui.gui.corePatch().deSerialize(project);
       perf3.finish();
 
-      const perf2 = gui.uiProfiler.start("[patchview] setproject2");
+      const perf2 = Gui.gui.uiProfiler.start("[patchview] setproject2");
 
       this._p.logStartup("deserialize done");
 
       undo.clear();
 
-      const ops = gui.corePatch().ops;
-      if (!gui.isRemoteClient) {
+      const ops = Gui.gui.corePatch().ops;
+      if (!Gui.gui.isRemoteClient) {
         for (let i = 0; i < ops.length; i++)
           if (ops[i].uiAttribs.selected) this.selectOpId(ops[i].id);
 
-        if (!this._showingNavHelperEmpty && gui.corePatch().ops.length == 0) {
+        if (
+          !this._showingNavHelperEmpty &&
+          Gui.gui.corePatch().ops.length == 0
+        ) {
           this._showingNavHelperEmpty = true;
           ele.show(ele.byId("patchnavhelperEmpty"));
         }
       }
 
-      gui.patchView.checkPatchOutdated();
+      Gui.gui.patchView.checkPatchOutdated();
 
-      if (gui.project() && gui.project().ui)
-        gui.metaTexturePreviewer.deserialize(gui.project().ui.texPreview);
+      if (Gui.gui.project() && Gui.gui.project().ui)
+        Gui.gui.metaTexturePreviewer.deserialize(
+          Gui.gui.project().ui.texPreview,
+        );
 
-      gui.patchView.removeLostSubpatches();
+      Gui.gui.patchView.removeLostSubpatches();
 
       perf2.finish();
 
@@ -288,7 +293,7 @@ export default class PatchView extends Events {
     el.style.display = "block";
 
     this._patchRenderer = this._pvRenderers[id];
-    gui.setLayout();
+    Gui.gui.setLayout();
   }
 
   updateBoundingRect() {
@@ -310,8 +315,8 @@ export default class PatchView extends Events {
     if (!op || !op.uiAttribs) return;
     let count = 0;
     let collided = {};
-    for (let j = 0; j < gui.corePatch().ops.length; j++) {
-      const b = gui.corePatch().ops[j];
+    for (let j = 0; j < Gui.gui.corePatch().ops.length; j++) {
+      const b = Gui.gui.corePatch().ops[j];
       if (!b || !b.uiAttribs || b.deleted || b == op) continue;
       if (b.uiAttribs.subPatch != op.uiAttribs.subPatch) continue;
       if (!b.uiAttribs.translate) continue;
@@ -366,7 +371,7 @@ export default class PatchView extends Events {
 
             op.setUiAttrib({ translate: { x: x, y: y } });
 
-            gui.patchView.testCollision(op);
+            Gui.gui.patchView.testCollision(op);
 
             found = true;
             count++;
@@ -397,7 +402,7 @@ export default class PatchView extends Events {
   }
 
   addAssetOpAuto(filename, event) {
-    if (window.gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
+    if (window.Gui.gui.getRestriction() < Gui.gui.RESTRICT_MODE_FULL) return;
 
     const ops = opNames.getOpsForFilename(filename);
 
@@ -423,8 +428,8 @@ export default class PatchView extends Events {
     coord.y = Snap.snapOpPosY(coord.y);
     uiAttr.translate = { x: coord.x, y: coord.y };
 
-    gui.serverOps.loadOpDependencies(opname, () => {
-      const op = gui.corePatch().addOp(opname, uiAttr);
+    Gui.gui.serverOps.loadOpDependencies(opname, () => {
+      const op = Gui.gui.corePatch().addOp(opname, uiAttr);
 
       for (let i = 0; i < op.portsIn.length; i++)
         if (op.portsIn[i].uiAttribs.display == "file")
@@ -436,9 +441,9 @@ export default class PatchView extends Events {
   }
 
   addOp(opname, options) {
-    gui.jobs().start({ id: "loadOpDependencies" });
-    gui.serverOps.loadOpDependencies(opname, () => {
-      gui.jobs().finish("loadOpDependencies");
+    Gui.gui.jobs().start({ id: "loadOpDependencies" });
+    Gui.gui.serverOps.loadOpDependencies(opname, () => {
+      Gui.gui.jobs().finish("loadOpDependencies");
 
       options = options || {};
       const uiAttribs = options.uiAttribs || {};
@@ -523,9 +528,13 @@ export default class PatchView extends Events {
               port1.links[il].remove();
           }
 
-          gui.corePatch().link(op, foundPort1.getName(), op1, port1.getName());
+          Gui.gui
+            .corePatch()
+            .link(op, foundPort1.getName(), op1, port1.getName());
 
-          gui.corePatch().link(op, foundPort2.getName(), op2, port2.getName());
+          Gui.gui
+            .corePatch()
+            .link(op, foundPort2.getName(), op2, port2.getName());
         }
       }
 
@@ -534,13 +543,13 @@ export default class PatchView extends Events {
   }
 
   addOpAndLink(opname, opid, portname, cb) {
-    const oldOp = gui.corePatch().getOpById(opid);
+    const oldOp = Gui.gui.corePatch().getOpById(opid);
     const trans = {
       x: oldOp.uiAttribs.translate.x,
       y: oldOp.uiAttribs.translate.y - gluiconfig.newOpDistanceY,
     };
 
-    gui.patchView.addOp(opname, {
+    Gui.gui.patchView.addOp(opname, {
       onOpAdd: (newOp) => {
         let newPort = newOp.getFirstOutPortByType(
           oldOp.getPortByName(portname).type,
@@ -550,7 +559,7 @@ export default class PatchView extends Events {
             oldOp.getPortByName(portname).type,
           );
 
-        gui.corePatch().link(oldOp, portname, newOp, newPort.name);
+        Gui.gui.corePatch().link(oldOp, portname, newOp, newPort.name);
 
         newOp.setUiAttrib({
           translate: trans,
@@ -579,30 +588,30 @@ export default class PatchView extends Events {
       const html = getHandleBarHtml("params_ops", {
         isDevEnv: platform.isDevEnv(),
         config: platform.cfg,
-        showDevInfos: userSettings.get("devinfos"),
+        showDevInfos: UserSettings.userSettings.get("devinfos"),
         bounds: this.getSelectionBounds(),
         numOps: numops,
         mulSubs: mulSubs,
       });
 
-      gui.opParams.clear();
+      Gui.gui.opParams.clear();
 
-      ele.byId(gui.getParamPanelEleId()).innerHTML = html;
-      gui.setTransformGizmo(null);
-      gui.showInfo(text.patchSelectedMultiOps);
+      ele.byId(Gui.gui.getParamPanelEleId()).innerHTML = html;
+      Gui.gui.setTransformGizmo(null);
+      Gui.gui.showInfo(text.patchSelectedMultiOps);
     } else {
       this.showDefaultPanel();
     }
   }
 
   showDefaultPanel() {
-    gui.setTransformGizmo(null);
-    gui.opParams.clear();
-    gui.patchParamPanel.show();
+    Gui.gui.setTransformGizmo(null);
+    Gui.gui.opParams.clear();
+    Gui.gui.patchParamPanel.show();
   }
 
   selectAllOpsSubPatch(subPatch, noUnselect) {
-    const ops = gui.corePatch().getSubPatchOps(subPatch);
+    const ops = Gui.gui.corePatch().getSubPatchOps(subPatch);
     for (let i = 0; i < ops.length; i++) {
       const op = ops[i];
       if (op) {
@@ -622,11 +631,11 @@ export default class PatchView extends Events {
   }
 
   checkPatchOutdated() {
-    const perf = gui.uiProfiler.start("checkpatcherrors");
+    const perf = Gui.gui.uiProfiler.start("checkpatcherrors");
     this.hasOldOps = false;
 
     for (let i = 0; i < this._p.ops.length; i++) {
-      const doc = gui.opDocs.getOpDocByName(this._p.ops[i].objName);
+      const doc = Gui.gui.opDocs.getOpDocByName(this._p.ops[i].objName);
 
       if (
         (doc && doc.oldVersion) ||
@@ -649,24 +658,24 @@ export default class PatchView extends Events {
   }
 
   checkPatchErrors() {
-    if (gui.unload) return;
-    const perf = gui.uiProfiler.start("checkpatcherrors");
+    if (Gui.gui.unload) return;
+    const perf = Gui.gui.uiProfiler.start("checkpatcherrors");
     const hadErrors = this.hasUiErrors;
     this.hasUiErrors = false;
 
     let isExamplePatch = false;
-    if (gui.project().summary)
+    if (Gui.gui.project().summary)
       isExamplePatch =
-        gui.project().summary.isBasicExample ||
-        (gui.project().summary.exampleForOps &&
-          gui.project().summary.exampleForOps.length > 0);
+        Gui.gui.project().summary.isBasicExample ||
+        (Gui.gui.project().summary.exampleForOps &&
+          Gui.gui.project().summary.exampleForOps.length > 0);
 
     if (!this._checkErrorTimeout) {
-      gui.patchView.checkPatchOutdated(); // first time also check outdated ops..
+      Gui.gui.patchView.checkPatchOutdated(); // first time also check outdated ops..
       if (isExamplePatch) CABLES.CMD.PATCH.clearOpTitles(); // examples should not have edited op titles...
     }
 
-    const ops = gui.corePatch().ops;
+    const ops = Gui.gui.corePatch().ops;
     for (let i = 0; i < ops.length; i++)
       if (ops[i].uiAttribs && ops[i].uiAttribs.uierrors)
         for (let j = 0; j < ops[i].uiAttribs.uierrors.length; j++)
@@ -676,13 +685,13 @@ export default class PatchView extends Events {
           }
 
     if (hadErrors != this.hasUiErrors)
-      gui.corePatch().emitEvent("warningErrorIconChange");
+      Gui.gui.corePatch().emitEvent("warningErrorIconChange");
 
     let showAttentionIcon = this.hasUiErrors;
 
     if (
       this.hasOldOps &&
-      (gui.project().summary.isBasicExample || isExamplePatch)
+      (Gui.gui.project().summary.isBasicExample || isExamplePatch)
     )
       showAttentionIcon = true;
 
@@ -697,7 +706,7 @@ export default class PatchView extends Events {
     const elIcon = ele.byId("nav-item-error-icon");
     if (showAttentionIcon) elIcon.style["background-color"] = "red";
 
-    if (wasHidden != elError.classList.contains("hidden")) gui.setLayout();
+    if (wasHidden != elError.classList.contains("hidden")) Gui.gui.setLayout();
 
     perf.finish();
     this._checkErrorTimeout = setTimeout(
@@ -727,7 +736,7 @@ export default class PatchView extends Events {
 
   getSubPatchBounds(subPatchId) {
     if (subPatchId == undefined) subPatchId = this.getCurrentSubPatch();
-    const perf = gui.uiProfiler.start("patch.getSubPatchBounds");
+    const perf = Gui.gui.uiProfiler.start("patch.getSubPatchBounds");
     const ops = this._p.ops;
     const theOps = [];
 
@@ -907,7 +916,7 @@ export default class PatchView extends Events {
   }
 
   getSelectedOpsIds() {
-    const perf = gui.uiProfiler.start("patchview getSelectedOpsIds");
+    const perf = Gui.gui.uiProfiler.start("patchview getSelectedOpsIds");
     const ops = [];
 
     for (let i = 0; i < this._p.ops.length; i++)
@@ -922,7 +931,7 @@ export default class PatchView extends Events {
    * @returns {Array<UiOp>}
    */
   getSelectedOps() {
-    const perf = gui.uiProfiler.start("patchview getSelectedOps");
+    const perf = Gui.gui.uiProfiler.start("patchview getSelectedOps");
     const ops = [];
 
     for (let i = 0; i < this._p.ops.length; i++)
@@ -987,7 +996,7 @@ export default class PatchView extends Events {
   }
 
   deleteSelectedOps() {
-    if (window.gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
+    if (window.Gui.gui.getRestriction() < Gui.gui.RESTRICT_MODE_FULL) return;
 
     const undoGroup = undo.startGroup();
     const ids = [];
@@ -1021,10 +1030,10 @@ export default class PatchView extends Events {
       undo.add({
         title: "paste op",
         undo() {
-          gui.corePatch().deleteOp(opid, true);
+          Gui.gui.corePatch().deleteOp(opid, true);
         },
         redo() {
-          gui.corePatch().addOp(defaultOps.defaultOpNames.uiArea, {
+          Gui.gui.corePatch().addOp(defaultOps.defaultOpNames.uiArea, {
             translate: trans,
             area: {
               w: Snap.snapOpPosX(bounds.maxX - bounds.minX + 2.75 * padding),
@@ -1042,7 +1051,7 @@ export default class PatchView extends Events {
 
     const selectedOps = this.getSelectedOps();
 
-    gui.serverOps.loadOpDependencies(opname, () => {
+    Gui.gui.serverOps.loadOpDependencies(opname, () => {
       const bounds = this.getSelectionBounds();
       let trans = {
         x: bounds.minX + (bounds.maxX - bounds.minX) / 2,
@@ -1134,7 +1143,7 @@ export default class PatchView extends Events {
         // }, 100);
       }
 
-      gui.patchView.setCurrentSubPatch(this.getCurrentSubPatch());
+      Gui.gui.patchView.setCurrentSubPatch(this.getCurrentSubPatch());
       this._p.emitEvent("subpatchCreated");
     });
   }
@@ -1212,14 +1221,14 @@ export default class PatchView extends Events {
   getSubPatchName(subpatch) {
     if (subpatch == 0) return "Main";
 
-    const op = gui.corePatch().getSubPatchOuterOp(subpatch);
+    const op = Gui.gui.corePatch().getSubPatchOuterOp(subpatch);
     if (!op) return null;
     return op.name;
   }
 
   getSubpatchPathArray(subId, arr) {
     arr = arr || [];
-    const ops = gui.corePatch().ops;
+    const ops = Gui.gui.corePatch().ops;
     for (let i = 0; i < ops.length; i++) {
       if (ops[i].isSubPatchOp() && ops[i].patchId) {
         if (ops[i].patchId.get() == subId) {
@@ -1246,7 +1255,7 @@ export default class PatchView extends Events {
   removeLostSubpatches() {
     let countSubs = {};
     let foundSubPatchOps = {};
-    const ops = gui.corePatch().ops;
+    const ops = Gui.gui.corePatch().ops;
 
     for (let i = 0; i < ops.length; i++) {
       if (!ops[i] || !ops[i].uiAttribs) continue;
@@ -1279,7 +1288,7 @@ export default class PatchView extends Events {
     let foundPatchIds = [];
     const foundBlueprints = {};
     let subPatches = [];
-    const ops = gui.corePatch().ops;
+    const ops = Gui.gui.corePatch().ops;
 
     for (let i = 0; i < ops.length; i++) {
       if (ops[i].uiAttribs.hidden) continue;
@@ -1375,7 +1384,7 @@ export default class PatchView extends Events {
    * @returns {UiOp}
    */
   getSubPatchOuterOp(subPatchId) {
-    return gui.corePatch().getSubPatchOuterOp(subPatchId);
+    return Gui.gui.corePatch().getSubPatchOuterOp(subPatchId);
   }
 
   /**
@@ -1390,7 +1399,7 @@ export default class PatchView extends Events {
 
     const names = this.getSubpatchPathArray(currentSubPatch);
 
-    let str = '<a onclick="gui.patchView.setCurrentSubPatch(0)">Main</a> ';
+    let str = '<a onclick="Gui.gui.patchView.setCurrentSubPatch(0)">Main</a> ';
 
     for (let i = names.length - 1; i >= 0; i--) {
       if (i >= 0) str += '<span class="sparrow">&rsaquo;</span>';
@@ -1398,7 +1407,7 @@ export default class PatchView extends Events {
         str +=
           '<a class="' +
           names[i].type +
-          '" onclick="gui.patchView.focusSubpatchOp(\'' +
+          '" onclick="Gui.gui.patchView.focusSubpatchOp(\'' +
           names[i].id +
           '\');"><span class="icon icon-op" style="vertical-align: sub;"></span> ' +
           names[i].name +
@@ -1407,7 +1416,7 @@ export default class PatchView extends Events {
         str +=
           '<a class="' +
           names[i].type +
-          '" onclick="gui.patchView.clickSubPatchNav(\'' +
+          '" onclick="Gui.gui.patchView.clickSubPatchNav(\'' +
           names[i].id +
           "');\">" +
           names[i].name +
@@ -1437,16 +1446,16 @@ export default class PatchView extends Events {
           blueprintPatchId +
           "', '_blank');";
         if (
-          gui.patchId === blueprintPatchId ||
-          gui.project().shortId === blueprintPatchId
+          Gui.gui.patchId === blueprintPatchId ||
+          Gui.gui.project().shortId === blueprintPatchId
         ) {
           bpText = "Go to subpatch";
           let subpatchId = names[0].blueprintLocalSubpatch;
           if (subpatchId)
             bpClick =
-              "gui.patchView.setCurrentSubPatch('" +
+              "Gui.gui.patchView.setCurrentSubPatch('" +
               subpatchId +
-              "');CABLES.CMD.UI.centerPatchOps();gui.patchParamPanel.show();";
+              "');CABLES.CMD.UI.centerPatchOps();Gui.gui.patchParamPanel.show();";
         }
         str +=
           '<a style="margin:0;" target="_blank" onclick="' +
@@ -1455,13 +1464,13 @@ export default class PatchView extends Events {
           bpText +
           "</a>";
 
-        gui.restriction.setMessage(
+        Gui.gui.restriction.setMessage(
           "blueprint",
           "This is a blueprint subpatch, changes will not be saved!",
         );
       }
     } else {
-      gui.restriction.setMessage("blueprint", null);
+      Gui.gui.restriction.setMessage("blueprint", null);
     }
 
     document.getElementById("subpatch_breadcrumb").innerHTML = str;
@@ -1596,7 +1605,7 @@ export default class PatchView extends Events {
     const ser = this.serializeOps(selectedOps);
     const ops = ser.ops;
     ops.forEach((op) => {
-      op.objName = gui.serverOps.getOpNameByIdentifier(op.opId);
+      op.objName = Gui.gui.serverOps.getOpNameByIdentifier(op.opId);
     });
 
     const objStr = JSON.stringify({
@@ -1642,7 +1651,7 @@ export default class PatchView extends Events {
     if (!pastedJson || !pastedJson.ops) return;
 
     if (currentSubPatch) {
-      const subOuter = gui.patchView.getSubPatchOuterOp(currentSubPatch);
+      const subOuter = Gui.gui.patchView.getSubPatchOuterOp(currentSubPatch);
       if (subOuter && subOuter.objName) {
         for (let i = 0; i < pastedJson.ops.length; i++) {
           const pastedOp = pastedJson.ops[i];
@@ -1661,7 +1670,7 @@ export default class PatchView extends Events {
     }
 
     let focusSubpatchop = null;
-    gui.serverOps.loadProjectDependencies(pastedJson, (project) => {
+    Gui.gui.serverOps.loadProjectDependencies(pastedJson, (project) => {
       // change ids
       project = CABLES.Patch.replaceOpIds(project, {
         parentSubPatchId: oldSub,
@@ -1695,7 +1704,7 @@ export default class PatchView extends Events {
           ) {
             let x = project.ops[i].uiAttribs.translate.x + mouseX - minx;
             let y = project.ops[i].uiAttribs.translate.y + mouseY - miny;
-            if (userSettings.get("snapToGrid2")) {
+            if (UserSettings.userSettings.get("snapToGrid2")) {
               x = Snap.snapOpPosX(x);
               y = Snap.snapOpPosY(y);
             }
@@ -1707,17 +1716,17 @@ export default class PatchView extends Events {
             undo.add({
               title: "paste op",
               undo() {
-                gui.corePatch().deleteOp(opid, true);
+                Gui.gui.corePatch().deleteOp(opid, true);
               },
               redo() {
-                gui.patchView.clipboardPaste(e);
+                Gui.gui.patchView.clipboardPaste(e);
               },
             });
           })(project.ops[i].id);
         }
       }
       notify("Pasted " + project.ops.length + " ops");
-      gui.corePatch().deSerialize(project);
+      Gui.gui.corePatch().deSerialize(project);
       this.isPasting = false;
 
       if (focusSubpatchop) this.patchRenderer.focusOpAnim(focusSubpatchop.id);
@@ -1731,7 +1740,7 @@ export default class PatchView extends Events {
 
   addSpaceBetweenOpsX() {
     const bounds = this.getSelectionBounds(0);
-    const ops = gui.patchView.getSelectedOps();
+    const ops = Gui.gui.patchView.getSelectedOps();
     const centerX = (bounds.minX + bounds.maxX) / 2;
     const undoGroup = undo.startGroup();
 
@@ -1748,7 +1757,7 @@ export default class PatchView extends Events {
 
   addSpaceBetweenOpsY() {
     const bounds = this.getSelectionBounds(0);
-    const ops = gui.patchView.getSelectedOps();
+    const ops = Gui.gui.patchView.getSelectedOps();
     const centerY = (bounds.minY + bounds.maxY) / 2;
     const undoGroup = undo.startGroup();
 
@@ -1932,7 +1941,8 @@ export default class PatchView extends Events {
 
       let avg = sum / ops.length;
 
-      if (userSettings.get("snapToGrid2")) avg = Snap.snapOpPosX(avg);
+      if (UserSettings.userSettings.get("snapToGrid2"))
+        avg = Snap.snapOpPosX(avg);
 
       for (j in ops) this.setOpPos(ops[j], avg, ops[j].uiAttribs.translate.y);
     }
@@ -1947,7 +1957,8 @@ export default class PatchView extends Events {
 
       let avg = sum / ops.length;
 
-      if (userSettings.get("snapToGrid2")) avg = Snap.snapOpPosY(avg);
+      if (UserSettings.userSettings.get("snapToGrid2"))
+        avg = Snap.snapOpPosY(avg);
 
       for (j in ops) this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, avg);
     }
@@ -2004,13 +2015,13 @@ export default class PatchView extends Events {
         const changedOps = [];
         for (let j = 0; j < opPositions.length; j++) {
           const obj = opPositions[j];
-          const op = gui.corePatch().getOpById(obj.id);
-          gui.patchView.setOpPos(op, obj.x, obj.y);
+          const op = Gui.gui.corePatch().getOpById(obj.id);
+          Gui.gui.patchView.setOpPos(op, obj.x, obj.y);
           changedOps.push(op);
         }
       },
       redo() {
-        // gui.scene().addOp(objName, op.uiAttribs, opid);
+        // Gui.gui.scene().addOp(objName, op.uiAttribs, opid);
       },
     });
   }
@@ -2027,7 +2038,7 @@ export default class PatchView extends Events {
   }
 
   unlinkPort(opid, portid) {
-    const op = gui.corePatch().getOpById(opid);
+    const op = Gui.gui.corePatch().getOpById(opid);
     const p = op.getPortById(portid);
 
     if (!p) {
@@ -2155,10 +2166,10 @@ export default class PatchView extends Events {
   }
 
   setCurrentSubPatch(subpatch, next) {
-    gui.restriction.setMessage("subpatchref", null);
+    Gui.gui.restriction.setMessage("subpatchref", null);
     if (subpatch != 0) {
       const outerOp = this.getSubPatchOuterOp(subpatch);
-      const ops = gui.savedState.getUnsavedPatchSubPatchOps();
+      const ops = Gui.gui.savedState.getUnsavedPatchSubPatchOps();
 
       for (let i = 0; i < ops.length; i++) {
         if (
@@ -2168,9 +2179,9 @@ export default class PatchView extends Events {
           ops[i].op != outerOp
         ) {
           let subid = ops[i].subId;
-          gui.restriction.setMessage(
+          Gui.gui.restriction.setMessage(
             "subpatchref",
-            "changed reference in patch: a unsaved reference of this subpatch ops exists in your patch. <br/>saving this can will overwrite references!<br/><a class='link' onclick='gui.patchView.setCurrentSubPatch(\"" +
+            "changed reference in patch: a unsaved reference of this subpatch ops exists in your patch. <br/>saving this can will overwrite references!<br/><a class='link' onclick='Gui.gui.patchView.setCurrentSubPatch(\"" +
               subid +
               "\")'>goto patch</a>",
           );
@@ -2180,13 +2191,13 @@ export default class PatchView extends Events {
 
     if (this._patchRenderer.setCurrentSubPatch) {
       this._patchRenderer.setCurrentSubPatch(subpatch, () => {
-        gui.patchView.updateSubPatchBreadCrumb(subpatch);
+        Gui.gui.patchView.updateSubPatchBreadCrumb(subpatch);
         if (ele.byId("subpatchlist")) this.showDefaultPanel(); // update subpatchlist because its already visible
         if (next) next();
       });
     } else this._log.warn("patchRenderer has no function setCurrentSubPatch");
 
-    gui.corePatch().emitEvent("subpatchesChanged");
+    Gui.gui.corePatch().emitEvent("subpatchesChanged");
   }
 
   focusOp(opid) {
@@ -2221,9 +2232,9 @@ export default class PatchView extends Events {
   centerSelectOp(opid) {
     this.setSelectedOpById(opid);
     this._patchRenderer.viewBox.centerSelectedOps();
-    console.log(gui.patchView.getSelectedOps());
-    if (gui.patchView.getSelectedOps().length == 1)
-      this.focusOpAnim(gui.patchView.getSelectedOps()[0].id);
+    console.log(Gui.gui.patchView.getSelectedOps());
+    if (Gui.gui.patchView.getSelectedOps().length == 1)
+      this.focusOpAnim(Gui.gui.patchView.getSelectedOps()[0].id);
     this.focus();
   }
 
@@ -2241,14 +2252,14 @@ export default class PatchView extends Events {
    * @param {String} id
    */
   selectChilds(id) {
-    const op = gui.corePatch().getOpById(id);
+    const op = Gui.gui.corePatch().getOpById(id);
     op.selectChilds();
   }
 
   setUnsaved() {
-    // gui.setStateUnsaved({ "subPatch": this.getCurrentSubPatch });
-    // gui.savedState.setUnSaved("patchview??", this.getCurrentSubPatch());
-    gui.savedState.setUnSaved("patchview??");
+    // Gui.gui.setStateUnsaved({ "subPatch": this.getCurrentSubPatch });
+    // Gui.gui.savedState.setUnSaved("patchview??", this.getCurrentSubPatch());
+    Gui.gui.savedState.setUnSaved("patchview??");
   }
 
   _portValidate(p1, p2) {
@@ -2335,15 +2346,15 @@ export default class PatchView extends Events {
 
   refreshCurrentOpParamsByPort(p1, p2) {
     if (this.isCurrentOp(p2.op) || this.isCurrentOp(p1.op))
-      gui.opParams.refresh();
+      Gui.gui.opParams.refresh();
   }
 
   isCurrentOp(op) {
-    return gui.opParams.isCurrentOp(op);
+    return Gui.gui.opParams.isCurrentOp(op);
   }
 
   isCurrentOpId(opid) {
-    return gui.opParams.isCurrentOpId(opid);
+    return Gui.gui.opParams.isCurrentOpId(opid);
   }
 
   copyOpInputPorts(origOp, newOp) {
@@ -2359,12 +2370,12 @@ export default class PatchView extends Events {
   }
 
   downGradeOp(opid, opname) {
-    if (!gui.opDocs.getOpDocByName(opname)) {
+    if (!Gui.gui.opDocs.getOpDocByName(opname)) {
       notify("op has no versions....");
       return;
     }
 
-    const versions = gui.opDocs.getOpDocByName(opname).versions;
+    const versions = Gui.gui.opDocs.getOpDocByName(opname).versions;
     if (versions.length > 1) {
       let name = versions[0].name;
       for (let i = 0; i < versions.length; i++) {
@@ -2381,7 +2392,7 @@ export default class PatchView extends Events {
   }
 
   replaceOpCheck(opid, newOpObjName) {
-    gui.serverOps.loadOpDependencies(newOpObjName, () => {
+    Gui.gui.serverOps.loadOpDependencies(newOpObjName, () => {
       this.addOp(newOpObjName, {
         onOpAdd: (newOp) => {
           const origOp = this._p.getOpById(opid);
@@ -2435,7 +2446,7 @@ export default class PatchView extends Events {
           htmlList += "</table>";
 
           if (allFine) {
-            gui.patchView.replaceOp(opid, newOpObjName);
+            Gui.gui.patchView.replaceOp(opid, newOpObjName);
             return;
             // html += "All old ports are available in the new op, it should be safe to replace with new version. Make sure you test if it behaves the same, very accurately.<br/><br/>";
           } else {
@@ -2445,19 +2456,20 @@ export default class PatchView extends Events {
           }
 
           html +=
-            "<br/><a onClick=\"gui.patchView.replaceOp('" +
+            "<br/><a onClick=\"Gui.gui.patchView.replaceOp('" +
             opid +
             "','" +
             newOpObjName +
-            '\');gui.closeModal();" class="bluebutton">Really Upgrade</a>';
-          html += '<a onClick="gui.closeModal();" class="button">Cancel</a>';
+            '\');Gui.gui.closeModal();" class="bluebutton">Really Upgrade</a>';
+          html +=
+            '<a onClick="Gui.gui.closeModal();" class="button">Cancel</a>';
 
           setTimeout(() => {
             this.setSelectedOpById(origOp.id);
           }, 100);
 
           this.selectOpId(newOp.id);
-          gui.opParams.show(newOp.id);
+          Gui.gui.opParams.show(newOp.id);
           this._patchRenderer.focusOpAnim(newOp.id);
 
           new ModalDialog({ html: html });
@@ -2467,7 +2479,7 @@ export default class PatchView extends Events {
   }
 
   replaceOp(opid, newOpObjName, cb = null) {
-    gui.serverOps.loadOpDependencies(newOpObjName, () => {
+    Gui.gui.serverOps.loadOpDependencies(newOpObjName, () => {
       this.addOp(newOpObjName, {
         onOpAdd: (newOp) => {
           const origOp = this._p.getOpById(opid);
@@ -2550,20 +2562,24 @@ export default class PatchView extends Events {
   // }
 
   toggleVisibility() {
-    gui.patchView.element.classList.toggle("hidden");
-    gui.patchView.patchRenderer.vizLayer._eleCanvas.classList.toggle("hidden");
-    gui.emitEvent("canvasModeChange");
+    Gui.gui.patchView.element.classList.toggle("hidden");
+    Gui.gui.patchView.patchRenderer.vizLayer._eleCanvas.classList.toggle(
+      "hidden",
+    );
+    Gui.gui.emitEvent("canvasModeChange");
   }
 
   setVisibility(b) {
     if (b) {
-      gui.patchView.element.classList.remove("hidden");
-      gui.patchView.patchRenderer.vizLayer._eleCanvas.classList.remove(
+      Gui.gui.patchView.element.classList.remove("hidden");
+      Gui.gui.patchView.patchRenderer.vizLayer._eleCanvas.classList.remove(
         "hidden",
       );
     } else {
-      gui.patchView.element.classList.add("hidden");
-      gui.patchView.patchRenderer.vizLayer._eleCanvas.classList.add("hidden");
+      Gui.gui.patchView.element.classList.add("hidden");
+      Gui.gui.patchView.patchRenderer.vizLayer._eleCanvas.classList.add(
+        "hidden",
+      );
     }
   }
 
@@ -2574,11 +2590,11 @@ export default class PatchView extends Events {
       text: "Enter a custom title for this port",
       promptValue: oldtitle,
       promptOk: function (name) {
-        const op = gui.corePatch().getOpById(opId);
+        const op = Gui.gui.corePatch().getOpById(opId);
         const p = op.getPort(portName);
         p.setUiAttribs({ title: name });
 
-        gui.opParams.show(opId);
+        Gui.gui.opParams.show(opId);
       },
     });
   }
@@ -2657,7 +2673,7 @@ export default class PatchView extends Events {
     const suggestions = [
       {
         cb: () => {
-          gui.patchView.suggestionBetweenTwoOps(op2, op1);
+          Gui.gui.patchView.suggestionBetweenTwoOps(op2, op1);
         },
         name: "OUT: " + op1.getTitle(),
         classname: "",
@@ -2696,7 +2712,7 @@ export default class PatchView extends Events {
       const sugIn = [
         {
           cb: () => {
-            gui.patchView.suggestionBetweenTwoOps(op2, op1);
+            Gui.gui.patchView.suggestionBetweenTwoOps(op2, op1);
           },
           name: '<span class="icon icon-op"></span>IN: ' + op2.getTitle(),
           classname: "",
@@ -2717,12 +2733,14 @@ export default class PatchView extends Events {
       }
 
       if (sugIn.length == 1) {
-        gui.corePatch().link(p.op, p.name, sugIn[0].p.op, sugIn[0].p.name);
+        Gui.gui.corePatch().link(p.op, p.name, sugIn[0].p.op, sugIn[0].p.name);
         return;
       }
 
       new SuggestionDialog(sugIn, op2, mouseEvent, null, function (sid) {
-        gui.corePatch().link(p.op, p.name, sugIn[sid].p.op, sugIn[sid].p.name);
+        Gui.gui
+          .corePatch()
+          .link(p.op, p.name, sugIn[sid].p.op, sugIn[sid].p.name);
       });
     };
 
@@ -2761,11 +2779,11 @@ export default class PatchView extends Events {
         title: "reset defaultvalue",
         undo() {
           p.set(oldValue);
-          gui.opParams.show(op);
+          Gui.gui.opParams.show(op);
         },
         redo() {
           p.set(p.defaultValue);
-          gui.opParams.show(op);
+          Gui.gui.opParams.show(op);
         },
       });
 
@@ -2777,19 +2795,19 @@ export default class PatchView extends Events {
           op.portsIn[i].set(op.portsIn[i].defaultValue);
     }
 
-    gui.opParams.show(op);
+    Gui.gui.opParams.show(op);
   }
 
   // getSubPatchIdFromBlueprintOpId(opid)
   // {
-  //     const ops = gui.corePatch().ops;
+  //     const ops = Gui.gui.corePatch().ops;
   //     for (let i = 0; i < ops.length; i++)
   //         if (ops[i].uiAttribs && ops[i].uiAttribs.blueprintSubpatch && ops[i].id == opid)
   //             return ops[i].uiAttribs.blueprintSubpatch;
   // }
 
   getBlueprintOpFromBlueprintSubpatchId(bpSubpatchId) {
-    const ops = gui.corePatch().ops;
+    const ops = Gui.gui.corePatch().ops;
     for (let i = 0; i < ops.length; i++)
       if (
         ops[i].uiAttribs &&
@@ -2801,7 +2819,7 @@ export default class PatchView extends Events {
 
   getAllOpsInBlueprint(subid) {
     const foundOps = [];
-    const ops = gui.corePatch().ops;
+    const ops = Gui.gui.corePatch().ops;
     for (let i = 0; i < ops.length; i++) {
       if (
         ops[i].isInBlueprint2() == subid ||
@@ -2814,7 +2832,7 @@ export default class PatchView extends Events {
 
   getAllSubPatchOps(subid) {
     const foundOps = [];
-    const ops = gui.corePatch().ops;
+    const ops = Gui.gui.corePatch().ops;
     for (let i = 0; i < ops.length; i++) {
       if (ops[i] && ops[i].uiAttribs && ops[i].uiAttribs.subPatch == subid)
         foundOps.push(ops[i]);
@@ -2825,7 +2843,10 @@ export default class PatchView extends Events {
   setExposedPortOrder(port, dir) {
     const ports = this.getSubPatchExposedPorts(port.op.uiAttribs.subPatch);
 
-    gui.savedState.setUnSaved("exposedPortOrder", port.op.uiAttribs.subPatch);
+    Gui.gui.savedState.setUnSaved(
+      "exposedPortOrder",
+      port.op.uiAttribs.subPatch,
+    );
 
     function move(arr, from, to) {
       arr.splice(to, 0, arr.splice(from, 1)[0]);
@@ -2838,8 +2859,10 @@ export default class PatchView extends Events {
 
     const exposeOp = this.getSubPatchOuterOp(port.op.uiAttribs.subPatch);
 
-    if (gui.opParams.op == exposeOp)
-      gui.opParams.show(this.getSubPatchOuterOp(port.op.uiAttribs.subPatch).id);
+    if (Gui.gui.opParams.op == exposeOp)
+      Gui.gui.opParams.show(
+        this.getSubPatchOuterOp(port.op.uiAttribs.subPatch).id,
+      );
     exposeOp.emitEvent("portOrderChanged");
     exposeOp.emitEvent("glportOrderChanged");
   }
@@ -2883,17 +2906,17 @@ export default class PatchView extends Events {
 
   highlightExamplePatchOps() {
     if (
-      gui.project().summary &&
-      gui.project().summary.exampleForOps &&
-      gui.project().summary.exampleForOps.length > 0
+      Gui.gui.project().summary &&
+      Gui.gui.project().summary.exampleForOps &&
+      Gui.gui.project().summary.exampleForOps.length > 0
     ) {
-      const ops = gui.corePatch().ops;
+      const ops = Gui.gui.corePatch().ops;
       for (let i = 0; i < ops.length; i++) ops[i].setUiAttribs({ color: null });
 
-      for (let j = 0; j < gui.project().summary.exampleForOps.length; j++) {
+      for (let j = 0; j < Gui.gui.project().summary.exampleForOps.length; j++) {
         const opz = gui
           .corePatch()
-          .getOpsByObjName(gui.project().summary.exampleForOps[j]);
+          .getOpsByObjName(Gui.gui.project().summary.exampleForOps[j]);
         for (let k = 0; k < opz.length; k++) {
           // const opname = opz[k];
           opz[k].setUiAttribs({ color: "#5dc0fd" });
@@ -2950,14 +2973,17 @@ export default class PatchView extends Events {
   }
 
   localizeBlueprints() {
-    const patch = gui.corePatch();
+    const patch = Gui.gui.corePatch();
     const ops = patch.ops;
     const relevantOps = ops.filter((op) => {
       if (!op.isSubPatchOp()) return false;
       const port = op.getPortByName("externalPatchId");
       if (port) {
         const portValue = port.get();
-        if (portValue !== gui.patchId && portValue !== gui.project().shortId)
+        if (
+          portValue !== Gui.gui.patchId &&
+          portValue !== Gui.gui.project().shortId
+        )
           return true;
       }
       return false;
@@ -2981,10 +3007,10 @@ export default class PatchView extends Events {
         }
       }
     });
-    gui.patchView.replacePortValues(
+    Gui.gui.patchView.replacePortValues(
       localizable,
       "externalPatchId",
-      gui.project().shortId,
+      Gui.gui.project().shortId,
     );
   }
 
@@ -2999,7 +3025,7 @@ export default class PatchView extends Events {
   }
 
   getBlueprintOpsForSubPatches(subpatchIds, localOnly = false) {
-    const patch = gui.corePatch();
+    const patch = Gui.gui.corePatch();
     const ops = patch.ops;
     return ops.filter((op) => {
       if (!op.isSubPatchOp()) return false;
@@ -3010,8 +3036,8 @@ export default class PatchView extends Events {
           const patchId = patchIdPort.get();
           isLocal =
             patchId &&
-            (patchId === gui.project().shortId ||
-              patchId === gui.project()._id);
+            (patchId === Gui.gui.project().shortId ||
+              patchId === Gui.gui.project()._id);
         } else {
           return false;
         }
@@ -3028,7 +3054,7 @@ export default class PatchView extends Events {
   }
 
   getPatchOpsUsedInPatch() {
-    const patch = gui.corePatch();
+    const patch = Gui.gui.corePatch();
     const ops = patch.ops;
     return ops.filter((op) => {
       return namespace.isPatchOp(op.objName);
@@ -3036,7 +3062,7 @@ export default class PatchView extends Events {
   }
 
   getUserOpsUsedInPatch() {
-    const patch = gui.corePatch();
+    const patch = Gui.gui.corePatch();
     const ops = patch.ops;
     return ops.filter((op) => {
       return namespace.isUserOp(op.objName);

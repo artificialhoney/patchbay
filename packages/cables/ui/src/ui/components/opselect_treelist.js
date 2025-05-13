@@ -1,5 +1,5 @@
 import GlPatch from "../glpatch/glpatch.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 
 /**
  * tree view for namespaces in op select dialog
@@ -48,7 +48,7 @@ export default class OpTreeList {
       Math.round(color[1] * 255) +
       "," +
       Math.round(color[2] * 255) +
-      ',1);" onclick="gui.opSelect().tree.searchFor(\'' +
+      ',1);" onclick="Gui.gui.opSelect().tree.searchFor(\'' +
       item.fullname +
       ".')\">";
     html += "" + item.name;
@@ -64,7 +64,7 @@ export default class OpTreeList {
   }
 
   html() {
-    const perf = gui.uiProfiler.start("opselect.treelist");
+    const perf = Gui.gui.uiProfiler.start("opselect.treelist");
 
     let html = "";
     for (let i = 0; i < this.data.length; i++)

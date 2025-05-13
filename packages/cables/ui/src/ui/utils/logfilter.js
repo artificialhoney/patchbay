@@ -1,5 +1,5 @@
 import { Events } from "@cables/client";
-import { userSettings } from "../components/usersettings.js";
+import UserSettings from "../components/usersettings.js";
 
 function defaultSetting(initiator = "") {
   if (initiator == "LoadingStatus") return true;
@@ -30,17 +30,23 @@ class LogInitiator {
 }
 
 export default class LogFilter extends Events {
+  static logFilter = null;
+
   constructor() {
     super();
     this._warned = false;
     this._initiators = {};
-    this._settings = JSON.parse(userSettings.get("loggingFilter")) || {};
+    this._settings =
+      JSON.parse(UserSettings.userSettings.get("loggingFilter")) || {};
 
     this.logs = [];
 
-    userSettings.on("loaded", () => {
-      this._settings = JSON.parse(userSettings.get("loggingFilter")) || {};
+    UserSettings.userSettings.on("loaded", () => {
+      this._settings =
+        JSON.parse(UserSettings.userSettings.get("loggingFilter")) || {};
     });
+
+    LogFilter.logFilter = this;
   }
 
   get initiators() {
@@ -125,7 +131,10 @@ export default class LogFilter extends Events {
       this._initiators[i].print = defaultSetting(i);
 
     this._settings = {};
-    userSettings.set("loggingFilter", JSON.stringify(this._settings));
+    UserSettings.userSettings.set(
+      "loggingFilter",
+      JSON.stringify(this._settings),
+    );
 
     this.emitEvent("initiatorsChanged");
   }
@@ -136,15 +145,12 @@ export default class LogFilter extends Events {
 
     this._settings[initiator] = !this._settings[initiator];
 
-    userSettings.set("loggingFilter", JSON.stringify(this._settings));
+    UserSettings.userSettings.set(
+      "loggingFilter",
+      JSON.stringify(this._settings),
+    );
 
     this._initiators[initiator].print = this._settings[initiator];
     this.emitEvent("initiatorsChanged");
   }
 }
-
-/**
- * @type {LogFilter}
- */
-const logFilter = new LogFilter();
-export { logFilter };

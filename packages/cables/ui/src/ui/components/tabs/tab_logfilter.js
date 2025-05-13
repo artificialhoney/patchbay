@@ -2,8 +2,8 @@ import { Events } from "@cables/client";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import text from "../../text.js";
-import { gui } from "../../gui.js";
-import { logFilter } from "../../utils/logfilter.js";
+import Gui from "../../gui.js";
+import LogFilter from "../../utils/logfilter.js";
 
 export default class LoggingTab extends Events {
   constructor(tabs) {
@@ -22,21 +22,21 @@ export default class LoggingTab extends Events {
     this.data = { cells: this.cells, colNames: this.colNames };
 
     this._html();
-    logFilter.on("initiatorsChanged", this._html.bind(this));
+    LogFilter.logFilter.on("initiatorsChanged", this._html.bind(this));
 
     this._tab.addEventListener("close", () => {
       this.closed = true;
       this.emitEvent("close");
 
-      logFilter.off(this._showlogListener);
+      LogFilter.logFilter.off(this._showlogListener);
     });
   }
 
   _html() {
     const html = getHandleBarHtml("tab_logging", {
-      user: gui.user,
+      user: Gui.gui.user,
       texts: text.preferences,
-      info: logFilter.getTabInfo(),
+      info: LogFilter.logFilter.getTabInfo(),
     });
     this._tab.html(html);
   }
@@ -47,7 +47,9 @@ export default class LoggingTab extends Events {
 
     if (log.opInstId)
       html +=
-        "<a onclick=\"gui.patchView.centerSelectOp('" + log.opInstId + "');\">";
+        "<a onclick=\"Gui.gui.patchView.centerSelectOp('" +
+        log.opInstId +
+        "');\">";
 
     html += log.initiator;
 

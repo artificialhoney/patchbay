@@ -1,7 +1,7 @@
 import { PortHtmlGenerator } from "../components/opparampanel/op_params_htmlgen.js";
 import ParamsListener from "../components/opparampanel/params_listener.js";
 import GlTimelineTab from "../components/tabs/tab_gltimeline.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 
 const CABLES_CMD_TIMELINE = {};
 
@@ -13,12 +13,12 @@ const timelineCommands = {
 export default timelineCommands;
 
 CABLES_CMD_TIMELINE.TimelineCreateKeyAtCursor = function () {
-  gui.glTimeline.createKeyAtCursor();
+  Gui.gui.glTimeline.createKeyAtCursor();
 };
 
 CABLES_CMD_TIMELINE.ListAnimatedPorts = function () {
   const panelid = CABLES.uuid();
-  const ops = gui.corePatch().ops;
+  const ops = Gui.gui.corePatch().ops;
   const ports = [];
 
   for (let i = 0; i < ops.length; i++) {
@@ -39,72 +39,72 @@ CABLES_CMD_TIMELINE.ListAnimatedPorts = function () {
     padding: true,
     singleton: true,
   });
-  gui.mainTabs.addTab(tab, true);
+  Gui.gui.mainTabs.addTab(tab, true);
   tab.html(html);
-  gui.maintabPanel.show(true);
+  Gui.gui.maintabPanel.show(true);
 
   const paramsListener = new ParamsListener(panelid);
   paramsListener.init({ portsIn: ports });
 };
 
 CABLES_CMD_TIMELINE.TimelinePlay = function () {
-  gui.corePatch().timer.play();
-  gui.emitEvent(
+  Gui.gui.corePatch().timer.play();
+  Gui.gui.emitEvent(
     "timelineControl",
     "setPlay",
     true,
-    gui.corePatch().timer.getTime(),
+    Gui.gui.corePatch().timer.getTime(),
   );
 };
 
 CABLES_CMD_TIMELINE.setLength = function () {
-  // gui.timeLine().setProjectLength();
+  // Gui.gui.timeLine().setProjectLength();
 };
 
 CABLES_CMD_TIMELINE.TimelineForward = function () {
-  gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() + 2);
-  gui.timeLine().view.centerCursor();
+  Gui.gui.corePatch().timer.setTime(Gui.gui.corePatch().timer.getTime() + 2);
+  Gui.gui.timeLine().view.centerCursor();
 };
 
 CABLES_CMD_TIMELINE.TimelineRewind = function () {
-  gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() - 2);
-  gui.timeLine().view.centerCursor();
+  Gui.gui.corePatch().timer.setTime(Gui.gui.corePatch().timer.getTime() - 2);
+  Gui.gui.timeLine().view.centerCursor();
 };
 
 CABLES_CMD_TIMELINE.TimelineRewindStart = function () {
-  gui.corePatch().timer.setTime(0);
-  gui.timeLine().view.centerCursor();
+  Gui.gui.corePatch().timer.setTime(0);
+  Gui.gui.timeLine().view.centerCursor();
 };
 
 CABLES_CMD_TIMELINE.TimelinePause = function () {
-  gui.corePatch().timer.pause();
-  gui.emitEvent(
+  Gui.gui.corePatch().timer.pause();
+  Gui.gui.emitEvent(
     "timelineControl",
     "setPlay",
     false,
-    gui.corePatch().timer.getTime(),
+    Gui.gui.corePatch().timer.getTime(),
   );
 };
 
 CABLES_CMD_TIMELINE.togglePlay = function () {
-  if (gui.corePatch().timer.isPlaying()) gui.corePatch().timer.pause();
-  else gui.corePatch().timer.play();
+  if (Gui.gui.corePatch().timer.isPlaying()) Gui.gui.corePatch().timer.pause();
+  else Gui.gui.corePatch().timer.play();
 };
 
 CABLES_CMD_TIMELINE.openGlTimeline = function () {
-  gui.glTimeLineTab = new GlTimelineTab(gui.bottomTabs);
+  Gui.gui.glTimeLineTab = new GlTimelineTab(Gui.gui.bottomTabs);
 };
 
 CABLES_CMD_TIMELINE.toggleTimeline = function () {
-  gui.toggleTimeline();
+  Gui.gui.toggleTimeline();
 };
 
 CABLES_CMD_TIMELINE.hideTimeline = function () {
-  gui.hideTimeline();
+  Gui.gui.hideTimeline();
 };
 
 CABLES_CMD_TIMELINE.showTimeline = function () {
-  gui.showTiming();
+  Gui.gui.showTiming();
 };
 
 timelineCommands.commands.push(

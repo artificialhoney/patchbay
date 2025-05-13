@@ -1,5 +1,5 @@
 import { ele, Events } from "@cables/client";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 
 /**
  * debug: showing uiattribs of currently selected op
@@ -24,10 +24,10 @@ export default class OpWatchUiAttribs extends Events {
 
     this._op = null;
     this.rebuildHtml();
-    this.setOp(gui.opParams.op);
+    this.setOp(Gui.gui.opParams.op);
 
-    gui.opParams.on("opSelected", () => {
-      this.setOp(gui.opParams.op);
+    Gui.gui.opParams.on("opSelected", () => {
+      this.setOp(Gui.gui.opParams.op);
     });
   }
 

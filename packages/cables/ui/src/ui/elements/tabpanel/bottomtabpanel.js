@@ -1,6 +1,6 @@
 import { Events, ele } from "@cables/client";
-import { gui } from "../../gui.js";
-import { userSettings } from "../../components/usersettings.js";
+import Gui from "../../gui.js";
+import UserSettings from "../../components/usersettings.js";
 import uiconfig from "../../uiconfig.js";
 import TabPanel from "./tabpanel.js";
 
@@ -16,7 +16,8 @@ export default class BottomTabPanel extends Events {
     this._ele = document.getElementById("bottomtabs");
     this._ele.style.display = "none";
     this.height =
-      userSettings.get("bottomPanelHeight") || uiconfig.timingPanelHeight;
+      UserSettings.userSettings.get("bottomPanelHeight") ||
+      uiconfig.timingPanelHeight;
     this._toBottomPanel = null;
 
     this._tabs.on("onTabAdded", (tab, existedBefore) => {
@@ -26,20 +27,20 @@ export default class BottomTabPanel extends Events {
       tabs.activateTab("");
       tabs.activateTab(tab.id);
 
-      if (!wasVisible && window.gui) gui.setLayout();
+      if (!wasVisible && window.gui) Gui.gui.setLayout();
     });
 
     this._tabs.on("onTabRemoved", (_tab) => {
       if (this._tabs.getNumTabs() == 0) {
         this.hide();
-        gui.setLayout();
+        Gui.gui.setLayout();
       }
     });
     this.fixHeight();
   }
 
   init() {
-    const showtabs = userSettings.get("bottomTabsVisible");
+    const showtabs = UserSettings.userSettings.get("bottomTabsVisible");
     if (showtabs) this.show();
     else this.hide(true);
   }
@@ -52,8 +53,8 @@ export default class BottomTabPanel extends Events {
    * @param {Boolean} userInteraction
    */
   show(userInteraction = false) {
-    if (gui.unload) return;
-    userSettings.set("bottomTabsOpened", true);
+    if (Gui.gui.unload) return;
+    UserSettings.userSettings.set("bottomTabsOpened", true);
     this._tabs.emitEvent("resize");
 
     if (this._tabs.getNumTabs() == 0) {
@@ -62,7 +63,7 @@ export default class BottomTabPanel extends Events {
     }
 
     if (!userInteraction) {
-      if (!userSettings.get("bottomTabsVisible")) {
+      if (!UserSettings.userSettings.get("bottomTabsVisible")) {
         return;
       }
     }
@@ -74,10 +75,10 @@ export default class BottomTabPanel extends Events {
 
     document.getElementById("editorminimized").style.display = "none";
 
-    if (gui.finishedLoading() && userInteraction)
-      userSettings.set("bottomTabsVisible", true);
+    if (Gui.gui.finishedLoading() && userInteraction)
+      UserSettings.userSettings.set("bottomTabsVisible", true);
 
-    gui.setLayout();
+    Gui.gui.setLayout();
   }
 
   getHeight() {
@@ -99,9 +100,9 @@ export default class BottomTabPanel extends Events {
     clearTimeout(this._toBottomPanel);
     this._toBottomPanel = setTimeout(() => {
       this.fixHeight();
-      userSettings.set("bottomPanelHeight", this.height);
+      UserSettings.userSettings.set("bottomPanelHeight", this.height);
     }, 100);
-    gui.setLayout();
+    Gui.gui.setLayout();
 
     this._tabs.emitEvent("resize");
   }
@@ -112,27 +113,27 @@ export default class BottomTabPanel extends Events {
   hide(donotsave = false) {
     ele.byId("splitterBottomTabs").style.display = "none";
 
-    userSettings.set("bottomTabsOpened", false);
+    UserSettings.userSettings.set("bottomTabsOpened", false);
     this._tabs.emitEvent("resize");
 
     this._visible = false;
     document.getElementById("editorminimized").style.display = "block";
     this._ele.style.display = "none";
-    if (window.gui) gui.setLayout();
+    if (window.gui) Gui.gui.setLayout();
 
-    if (!donotsave && gui.finishedLoading())
-      userSettings.set("bottomTabsVisible", false);
+    if (!donotsave && Gui.gui.finishedLoading())
+      UserSettings.userSettings.set("bottomTabsVisible", false);
   }
 
   /**
    * @param {boolean} userInteraction
    */
   toggle(userInteraction = false) {
-    if (!gui.finishedLoading()) return;
+    if (!Gui.gui.finishedLoading()) return;
     console.log("toggle", this._visible);
     if (this._visible) {
       this.hide();
-      gui.patchView.focus();
+      Gui.gui.patchView.focus();
       this._visible = false;
     } else this.show(userInteraction);
   }

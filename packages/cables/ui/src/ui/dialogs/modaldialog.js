@@ -1,6 +1,6 @@
 import { ModalBackground, Logger, ele, Events } from "@cables/client";
 import { hideToolTip } from "../elements/tooltips.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 
 /**
  * configuration object for a modal dialog
@@ -31,7 +31,7 @@ export default class ModalDialog extends Events {
     super();
     this._log = new Logger("ModalDialog");
 
-    if (window.gui && gui.currentModal) gui.currentModal.close();
+    if (window.gui && Gui.gui.currentModal) Gui.gui.currentModal.close();
     this._options = options;
     this._options.okButton = this._options.okButton || {};
     if (!this._options.okButton.text) this._options.okButton.text = "Ok";
@@ -58,7 +58,7 @@ export default class ModalDialog extends Events {
 
     ele.byId("modalclose").style.display = "block";
 
-    if (window.gui) gui.currentModal = this;
+    if (window.gui) Gui.gui.currentModal = this;
 
     this._bg.on("hide", this.close.bind(this));
   }
@@ -66,7 +66,7 @@ export default class ModalDialog extends Events {
   close() {
     this._ele.remove();
     this._bg.hide();
-    if (window.gui) gui.currentModal = null;
+    if (window.gui) Gui.gui.currentModal = null;
     this.emitEvent("onClose", this);
   }
 

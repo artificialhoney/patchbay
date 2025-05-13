@@ -3,12 +3,12 @@ import defaultOps from "../defaultops.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import OpTreeList from "../components/opselect_treelist.js";
 import text from "../text.js";
-import Gui, { gui } from "../gui.js";
+import Gui from "../gui.js";
 import OpSearch from "../components/opsearch.js";
 import { hideToolTip } from "../elements/tooltips.js";
 import opNames from "../opnameutils.js";
 import { platform } from "../platform.js";
-import { userSettings } from "../components/usersettings.js";
+import UserSettings from "../components/usersettings.js";
 import { portType } from "../core_constants.js";
 
 CABLES = CABLES || {};
@@ -47,8 +47,8 @@ export default class OpSelect {
     this._bg.hide();
     this._eleOpsearchmodal.style.zIndex = -9999;
 
-    gui.currentModal = null;
-    gui.patchView.focus();
+    Gui.gui.currentModal = null;
+    Gui.gui.patchView.focus();
   }
 
   _getQuery() {
@@ -68,9 +68,9 @@ export default class OpSelect {
 
   updateStatusBar() {
     if (!this._eleSearchinfo) return;
-    this._hideUserOps = gui.project().isOpExample;
+    this._hideUserOps = Gui.gui.project().isOpExample;
 
-    const perf = gui.uiProfiler.start("opselect.udpateOptions");
+    const perf = Gui.gui.uiProfiler.start("opselect.udpateOptions");
     const num = ele.byQueryAll(
       ".searchbrowser .searchable:not(.hidden)",
     ).length;
@@ -125,10 +125,11 @@ export default class OpSelect {
       } else {
         const isOwner = platform.currentUserIsPatchOwner();
         const isFullCollab =
-          gui.project().users && gui.project().users.includes(gui.user.id);
+          Gui.gui.project().users &&
+          Gui.gui.project().users.includes(Gui.gui.user.id);
         const isReadOnlyCollab =
-          gui.project().usersReadOnly &&
-          gui.project().usersReadOnly.includes(gui.user.id);
+          Gui.gui.project().usersReadOnly &&
+          Gui.gui.project().usersReadOnly.includes(Gui.gui.user.id);
 
         if (num === 0 && !(isOwner || isFullCollab || isReadOnlyCollab)) {
           optionsHtml +=
@@ -167,7 +168,7 @@ export default class OpSelect {
   _showSuggestionsInfo() {
     if (this._minimal) return;
 
-    const perf = gui.uiProfiler.start("opselect.suggestioninfo");
+    const perf = Gui.gui.uiProfiler.start("opselect.suggestioninfo");
 
     let ops = opNames.getOpsForPortLink(
       CABLES.UI.OPSELECT.linkNewOpToPort,
@@ -301,7 +302,7 @@ export default class OpSelect {
     const eleReplaceWithExistingVar = ele.byId("replaceLinkVariableExists");
     if (link && link.portIn) {
       // show "replace with existing var button..."
-      const existingVars = gui.corePatch().getVars(link.portIn.type);
+      const existingVars = Gui.gui.corePatch().getVars(link.portIn.type);
       if (existingVars.length === 0) ele.hide(eleReplaceWithExistingVar);
       else {
         ele.show(eleReplaceWithExistingVar);
@@ -354,11 +355,11 @@ export default class OpSelect {
         if (this._currentInfo == "docs_" + selectedEle.dataset.opname) return;
         this._currentInfo = "docs_" + selectedEle.dataset.opname;
       }
-      const perf = gui.uiProfiler.start("opselect.updateInfo");
+      const perf = Gui.gui.uiProfiler.start("opselect.updateInfo");
 
       this._eleSearchinfo.innerHTML = "??";
       const listItem = this.getListItemByOpName(opName);
-      const opDocHtml = gui.opDocs.getHtml(opName, listItem);
+      const opDocHtml = Gui.gui.opDocs.getHtml(opName, listItem);
 
       let html = "";
       if (listItem && listItem.isCollection) {
@@ -366,7 +367,7 @@ export default class OpSelect {
       } else {
         html = '<div id="opselect-layout" class="op">';
 
-        const svg = gui.opDocs.getLayoutSvg(opName);
+        const svg = Gui.gui.opDocs.getLayoutSvg(opName);
         if (svg) html += svg;
         else
           html +=
@@ -384,19 +385,19 @@ export default class OpSelect {
           opName +
           '" class="button-small">View Documentation</a>';
 
-        const docs = gui.opDocs.getOpDocByName(opName);
+        const docs = Gui.gui.opDocs.getOpDocByName(opName);
 
         if (docs) {
           if (docs.allowEdit) {
             html +=
               '<a class="button-small" onkeypress="ele.keyClick(event,this)" tabindex="0" onclick="CABLES.CMD.OP.manageOp(\'' +
               docs.id +
-              '\');gui.pressedEscape();"><span class="icon icon-op"></span></a>';
+              '\');Gui.gui.pressedEscape();"><span class="icon icon-op"></span></a>';
             if (platform.frontendOptions.hasOpDirectories && docs.opDirFull)
               html +=
                 '<a class="button-small" onkeypress="ele.keyClick(event,this)" tabindex="0" onclick="CABLES.CMD.ELECTRON.openOpDir(\'\', \'' +
                 opName +
-                '\');gui.pressedEscape();"><span class="icon icon-folder"></span></a>';
+                '\');Gui.gui.pressedEscape();"><span class="icon icon-folder"></span></a>';
           }
 
           if (
@@ -477,7 +478,7 @@ export default class OpSelect {
       this._opSearch.search("");
     else this._opSearch.search(query, sq);
 
-    const perf = gui.uiProfiler.start("opselect.searchLoop");
+    const perf = Gui.gui.uiProfiler.start("opselect.searchLoop");
 
     for (let i = 0; i < this._opSearch.list.length; i++) {
       this._opSearch.list[i].element =
@@ -501,14 +502,14 @@ export default class OpSelect {
 
     perf.finish();
 
-    const perfTinysort = gui.uiProfiler.start("opselect.tinysort");
+    const perfTinysort = Gui.gui.uiProfiler.start("opselect.tinysort");
     tinysort.defaults.order = "desc";
     tinysort(".searchresult", { data: "score" });
     perfTinysort.finish();
 
     this.navigate(0);
 
-    const perf2 = gui.uiProfiler.start("opselect.searchLoop2");
+    const perf2 = Gui.gui.uiProfiler.start("opselect.searchLoop2");
 
     if (this.itemHeight === 0)
       this.itemHeight = ele
@@ -520,7 +521,7 @@ export default class OpSelect {
   }
 
   navigate(diff) {
-    const perf2 = gui.uiProfiler.start("opselect.navigate");
+    const perf2 = Gui.gui.uiProfiler.start("opselect.navigate");
 
     this._typedSinceOpening = true;
     this.displayBoxIndex += diff;
@@ -542,13 +543,14 @@ export default class OpSelect {
     if (oBoxCollection[this.displayBoxIndex])
       oBoxCollection[this.displayBoxIndex].classList.add(cssClass);
 
-    const perf3 = gui.uiProfiler.start("opselect.navigate.perf3");
+    const perf3 = Gui.gui.uiProfiler.start("opselect.navigate.perf3");
     const scrollTop = (this.displayBoxIndex - 5) * (this.itemHeight + 1);
 
     if (this._lastScrollTop != scrollTop) {
       this._lastScrollTop = scrollTop;
       if (this.displayBoxIndex > 5)
-        ele.byClass("searchbrowser").scrollTop = scrollTop; // .scrollTop is expensive!
+        ele.byClass("searchbrowser").scrollTop =
+          scrollTop; // .scrollTop is expensive!
       else ele.byClass("searchbrowser").scrollTop = 1;
     }
     perf3.finish();
@@ -567,13 +569,13 @@ export default class OpSelect {
     this.tree = new OpTreeList();
 
     if (!this._opSearch.list) {
-      const perf = gui.uiProfiler.start("opselect.prepare.list");
+      const perf = Gui.gui.uiProfiler.start("opselect.prepare.list");
       this._opSearch._buildList();
       perf.finish();
     }
 
     if (!this._html) {
-      const perf = gui.uiProfiler.start("opselect.html");
+      const perf = Gui.gui.uiProfiler.start("opselect.html");
 
       const head = getHandleBarHtml("op_select");
 
@@ -611,16 +613,16 @@ export default class OpSelect {
   }
 
   show(options, linkOp, linkPort, link) {
-    if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
-    const perf = gui.uiProfiler.start("opselect.show");
+    if (Gui.gui.getRestriction() < Gui.gui.RESTRICT_MODE_FULL) return;
+    const perf = Gui.gui.uiProfiler.start("opselect.show");
 
     this._eleSearchinfo = ele.byId("searchinfo");
 
-    if (window.gui) gui.currentModal = this;
+    if (window.gui) Gui.gui.currentModal = this;
 
     this._typedSinceOpening = false;
     this._lastScrollTop = -5711;
-    this._minimal = userSettings.get("miniopselect") == true;
+    this._minimal = UserSettings.userSettings.get("miniopselect") == true;
 
     this._options = options;
     hideToolTip();
@@ -744,14 +746,14 @@ export default class OpSelect {
       this._newOpOptions.createdLocally = true;
 
       if (itemType === "extension" || itemType === "team") {
-        gui.opSelect().loadCollection(opname);
+        Gui.gui.opSelect().loadCollection(opname);
       } else if (itemType === "patchop") {
-        gui.opSelect().addPatchOp(opname, reopenModal);
+        Gui.gui.opSelect().addPatchOp(opname, reopenModal);
       } else {
         if (reopenModal) {
           setTimeout(() => {
-            gui.opSelect().show({
-              subPatch: gui.patchView.getCurrentSubPatch(),
+            Gui.gui.opSelect().show({
+              subPatch: Gui.gui.patchView.getCurrentSubPatch(),
               x: 0,
               y: 0,
             });
@@ -759,13 +761,13 @@ export default class OpSelect {
         }
 
         this.close();
-        gui.patchView.addOp(opname, this._newOpOptions);
+        Gui.gui.patchView.addOp(opname, this._newOpOptions);
       }
     }
   }
 
   loadCollection(name) {
-    gui.serverOps.loadCollectionOps(name, () => {
+    Gui.gui.serverOps.loadCollectionOps(name, () => {
       const q = this._getQuery();
       this.close();
       this.reload();
@@ -774,7 +776,7 @@ export default class OpSelect {
         const opts = this._options;
 
         opts.search = q;
-        opts.subPatch = gui.patchView.getCurrentSubPatch();
+        opts.subPatch = Gui.gui.patchView.getCurrentSubPatch();
         this.show(
           opts,
           this._newOpOptions.linkNewOpToOp,
@@ -786,12 +788,12 @@ export default class OpSelect {
   }
 
   addPatchOp(name, reopenModal) {
-    gui.serverOps.loadOpDependencies(name, () => {
+    Gui.gui.serverOps.loadOpDependencies(name, () => {
       if (reopenModal) {
         setTimeout(() => {
           const opts = this._options;
           opts.search = name;
-          opts.subPatch = gui.patchView.getCurrentSubPatch();
+          opts.subPatch = Gui.gui.patchView.getCurrentSubPatch();
           this.show(
             opts,
             this._newOpOptions.linkNewOpToOp,
@@ -802,7 +804,7 @@ export default class OpSelect {
       }
 
       this.close();
-      gui.patchView.addOp(name, this._newOpOptions);
+      Gui.gui.patchView.addOp(name, this._newOpOptions);
     });
   }
 

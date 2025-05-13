@@ -1,6 +1,6 @@
 import { Events } from "@cables/client";
 import Tab from "../../elements/tabpanel/tab.js";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 
 /**
  *simple tab to just show html
@@ -12,7 +12,7 @@ import { gui } from "../../gui.js";
 export default class HtmlTab extends Events {
   constructor(tabs, html, title, options = {}) {
     super();
-    this._tabs = tabs || gui.mainTabs;
+    this._tabs = tabs || Gui.gui.mainTabs;
 
     this._tab = new Tab(title, {
       icon: options.icon || "list",
@@ -21,7 +21,7 @@ export default class HtmlTab extends Events {
       singleton: true,
     });
     this._tabs.addTab(this._tab, true);
-    gui.maintabPanel.show(true);
+    Gui.gui.maintabPanel.show(true);
 
     this._tab.html(html);
   }

@@ -1,4 +1,4 @@
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 
 let lastNotify = "";
 let lastText = "";
@@ -117,7 +117,7 @@ export function notifyWarn(title, text = "", options = {}) {
  * });
  */
 export function notify(title, text = "", options = {}) {
-  if (gui.isRemoteClient) return;
+  if (Gui.gui.Gui.gui.isRemoteClient) return;
 
   const timeout = options.timeout || 2000;
   const closeable = options.closeable || false;

@@ -1,6 +1,6 @@
 import ManageOp from "../components/tabs/tab_manage_op.js";
 import { notify } from "../elements/notification.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { platform } from "../platform.js";
 
 const CABLES_CMD_OP = {};
@@ -14,19 +14,19 @@ const opCommands = {
 export default opCommands;
 
 CABLES_CMD_OP.codeNewOp = () => {
-  gui.serverOps.createDialog();
+  Gui.gui.serverOps.createDialog();
 };
 
 CABLES_CMD_OP.downGradeOp = function () {
-  const selops = gui.patchView.getSelectedOps();
+  const selops = Gui.gui.patchView.getSelectedOps();
   for (let i = 0; i < selops.length; i++) {
-    gui.patchView.downGradeOp(selops[i].id, selops[i].objName);
+    Gui.gui.patchView.downGradeOp(selops[i].id, selops[i].objName);
   }
 };
 
 CABLES_CMD_OP.copyNameClipboard = function () {
   let str = "";
-  const selops = gui.patchView.getSelectedOps();
+  const selops = Gui.gui.patchView.getSelectedOps();
 
   for (let i = 0; i < selops.length; i++) str += selops[i].objName.endl();
 
@@ -37,52 +37,52 @@ CABLES_CMD_OP.copyNameClipboard = function () {
 };
 
 CABLES_CMD_OP.upGradeOps = function () {
-  const selops = gui.patchView.getSelectedOps();
+  const selops = Gui.gui.patchView.getSelectedOps();
   for (let i = 0; i < selops.length; i++) {
-    const opdoc = gui.opDocs.getOpDocById(selops[i].opId);
+    const opdoc = Gui.gui.opDocs.getOpDocById(selops[i].opId);
     if (
       opdoc &&
       opdoc.oldVersion &&
       opdoc.newestVersion &&
       opdoc.newestVersion.name
     )
-      gui.patchView.replaceOp(selops[i].id, opdoc.newestVersion.name);
+      Gui.gui.patchView.replaceOp(selops[i].id, opdoc.newestVersion.name);
   }
 };
 
 CABLES_CMD_OP.reloadChangedOps = function () {
-  for (let i in gui.serverOps.opIdsChangedOnServer) {
-    gui.serverOps.execute(i, () => {
-      delete gui.serverOps.opIdsChangedOnServer[i];
-      gui.opParams.refresh();
+  for (let i in Gui.gui.serverOps.opIdsChangedOnServer) {
+    Gui.gui.serverOps.execute(i, () => {
+      delete Gui.gui.serverOps.opIdsChangedOnServer[i];
+      Gui.gui.opParams.refresh();
     });
   }
-  gui.restriction.hide();
+  Gui.gui.restriction.hide();
 };
 
 CABLES_CMD_OP.cloneSelectedOp = function () {
-  const ops = gui.patchView.getSelectedOps();
-  if (ops.length > 0) gui.serverOps.cloneDialog(ops[0].objName, ops[0]);
+  const ops = Gui.gui.patchView.getSelectedOps();
+  if (ops.length > 0) Gui.gui.serverOps.cloneDialog(ops[0].objName, ops[0]);
 };
 
 CABLES_CMD_OP.manageCurrentSubpatchOp = function () {
-  const oldSubPatchId = gui.patchView.getCurrentSubPatch();
-  const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
+  const oldSubPatchId = Gui.gui.patchView.getCurrentSubPatch();
+  const subOuter = Gui.gui.patchView.getSubPatchOuterOp(oldSubPatchId);
 
-  new ManageOp(gui.mainTabs, subOuter.opId);
+  new ManageOp(Gui.gui.mainTabs, subOuter.opId);
 };
 
 CABLES_CMD_OP.manageOp = function (opid) {
   if (!opid) {
-    const ops = gui.patchView.getSelectedOps();
+    const ops = Gui.gui.patchView.getSelectedOps();
     if (ops.length > 0) opid = ops[0].opId;
   }
-  new ManageOp(gui.mainTabs, opid);
+  new ManageOp(Gui.gui.mainTabs, opid);
 };
 
 CABLES_CMD_OP.cloneSelectedOps = (ops) => {
   if (!ops) {
-    ops = gui.patchView.getSelectedOps();
+    ops = Gui.gui.patchView.getSelectedOps();
 
     for (let i = 0; i < ops.length; i++) {
       const op = ops[i];
@@ -96,7 +96,7 @@ CABLES_CMD_OP.cloneSelectedOps = (ops) => {
 
       let count = 0;
       newOpname = newOpnameNoVer;
-      while (gui.opDocs.getOpDocByName(newOpname)) {
+      while (Gui.gui.opDocs.getOpDocByName(newOpname)) {
         newOpname = newOpnameNoVer + count;
         count++;
       }
@@ -108,27 +108,27 @@ CABLES_CMD_OP.cloneSelectedOps = (ops) => {
     if (ops.length == 0) return;
   }
 
-  // loadingModal = loadingModal || gui.startModalLoading("Cloning ops...");
+  // loadingModal = loadingModal || Gui.gui.startModalLoading("Cloning ops...");
 
   if (ops.length == 0) {
-    gui.endModalLoading();
+    Gui.gui.endModalLoading();
     return;
   }
   const op = ops.pop();
   const opname = op.objName;
   const newOpname = op.renameopto;
 
-  if (gui.opDocs.getOpDocByName(newOpname)) {
+  if (Gui.gui.opDocs.getOpDocByName(newOpname)) {
     // that opname was already renamed in list
-    gui.patchView.replaceOp(op.id, newOpname);
+    Gui.gui.patchView.replaceOp(op.id, newOpname);
     CABLES_CMD_OP.cloneSelectedOps(ops);
   } else {
-    gui.serverOps.clone(
+    Gui.gui.serverOps.clone(
       op.opId,
       newOpname,
       () => {
-        gui.serverOps.loadOpDependencies(opname, function () {
-          gui.patchView.replaceOp(op.id, newOpname);
+        Gui.gui.serverOps.loadOpDependencies(opname, function () {
+          Gui.gui.patchView.replaceOp(op.id, newOpname);
 
           notify("created op " + newOpname, null, { force: true });
 
@@ -142,21 +142,21 @@ CABLES_CMD_OP.cloneSelectedOps = (ops) => {
 
 CABLES_CMD_OP.renameOp = (opName = null) => {
   if (!opName) {
-    const ops = gui.patchView.getSelectedOps();
+    const ops = Gui.gui.patchView.getSelectedOps();
     if (!ops.length) return;
-    const op = gui.patchView.getSelectedOps()[0];
+    const op = Gui.gui.patchView.getSelectedOps()[0];
     opName = op.objName;
   }
 
   if (platform.frontendOptions.opRenameInEditor) {
-    gui.serverOps.renameDialog(opName);
+    Gui.gui.serverOps.renameDialog(opName);
   } else {
-    gui.serverOps.renameDialogIframe(opName);
+    Gui.gui.serverOps.renameDialogIframe(opName);
   }
 };
 
 CABLES_CMD_OP.createVersionSelectedOp = function () {
-  const ops = gui.patchView.getSelectedOps();
+  const ops = Gui.gui.patchView.getSelectedOps();
   if (ops.length == 0) return;
 
   const opname = ops[0].objName;
@@ -166,9 +166,9 @@ CABLES_CMD_OP.createVersionSelectedOp = function () {
     newOpname = parts[0] + "_v" + (parseFloat(parts[1]) + 1);
   } else newOpname = opname + "_v2";
 
-  gui.serverOps.clone(ops[0].opId, newOpname, () => {
-    gui.serverOps.loadOpDependencies(opname, function () {
-      gui.patchView.replaceOp(ops[0].id, newOpname);
+  Gui.gui.serverOps.clone(ops[0].opId, newOpname, () => {
+    Gui.gui.serverOps.loadOpDependencies(opname, function () {
+      Gui.gui.patchView.replaceOp(ops[0].id, newOpname);
 
       notify("created op " + newOpname, null, { force: true });
     });
@@ -176,11 +176,11 @@ CABLES_CMD_OP.createVersionSelectedOp = function () {
 };
 
 CABLES_CMD_OP.editOp = function (userInteraction = true) {
-  const selops = gui.patchView.getSelectedOps();
+  const selops = Gui.gui.patchView.getSelectedOps();
 
   if (selops && selops.length > 0) {
     for (let i = 0; i < selops.length; i++)
-      gui.serverOps.edit(selops[i], false, null, userInteraction);
+      Gui.gui.serverOps.edit(selops[i], false, null, userInteraction);
   }
 };
 

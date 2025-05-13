@@ -1,9 +1,9 @@
 import { notify } from "../../elements/notification.js";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 
 export default class CanvasLens {
   constructor(ele) {
-    this._origCanvas = gui.canvasManager.currentCanvas();
+    this._origCanvas = Gui.gui.canvasManager.currentCanvas();
     this._scale = 7;
     this._size = this._scale * (this._origCanvas.clientWidth / 25);
     this._size2 = this._size / 2;
@@ -43,7 +43,7 @@ export default class CanvasLens {
     this._copyListener = this._onCopy.bind(this);
     document.addEventListener("copy", this._copyListener);
 
-    gui.canvasMagnifier = this;
+    Gui.gui.canvasMagnifier = this;
   }
 
   _onCopy(e) {
@@ -55,8 +55,8 @@ export default class CanvasLens {
   _onMouseMove(e) {
     clearTimeout(this.leaveTimeout);
     const rect = e.target.getBoundingClientRect();
-    this._x = (e.clientX - rect.left) / gui._corePatch.cgl.canvasScale; // x position within the element.
-    this._y = (e.clientY - rect.top) / gui._corePatch.cgl.canvasScale; // y position within the element.
+    this._x = (e.clientX - rect.left) / Gui.gui._corePatch.cgl.canvasScale; // x position within the element.
+    this._y = (e.clientY - rect.top) / Gui.gui._corePatch.cgl.canvasScale; // y position within the element.
 
     this._lensCanvas.style.left = e.clientX - this._size2 + "px";
     this._lensCanvas.style.top = e.clientY + 15 + "px";
@@ -110,7 +110,7 @@ export default class CanvasLens {
   }
 
   close() {
-    gui.corePatch().cgl.off(this._endFrameListenerId);
+    Gui.gui.corePatch().cgl.off(this._endFrameListenerId);
     this._origCanvas.removeEventListener("mousemove", this._moveListener);
     this._origCanvas.removeEventListener("mouseleave", this._moveLeaveListener);
     document.removeEventListener("copy", this._copyListener);

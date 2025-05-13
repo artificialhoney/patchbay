@@ -1,7 +1,7 @@
 import { ele } from "@cables/client";
 import { escapeHTML } from "../utils/helper.js";
 import ModalDialog from "./modaldialog.js";
-import { userSettings } from "../components/usersettings.js";
+import UserSettings from "../components/usersettings.js";
 
 function getBadLines(infoLog) {
   const basLines = [];
@@ -66,16 +66,16 @@ export function showShaderError(shader) {
   new ModalDialog({ html: html, title: "Shader Error" });
 
   ele.clickable(ele.byId("alwaysshowbutton"), () => {
-    userSettings.set(
+    UserSettings.userSettings.set(
       "showAllShaderErrors",
-      !userSettings.get("showAllShaderErrors"),
+      !UserSettings.userSettings.get("showAllShaderErrors"),
     );
     ele.byId("alwaysshowbutton").innerHTML = getShowAlwaysButtonText();
   });
 }
 
 function getShowAlwaysButtonText() {
-  if (!userSettings.get("showAllShaderErrors"))
+  if (!UserSettings.userSettings.get("showAllShaderErrors"))
     return '<icon class="icon icon-x"></icon>Always open on shader errors';
   return '<icon class="icon icon-check"></icon>Always open on shader errors';
 }

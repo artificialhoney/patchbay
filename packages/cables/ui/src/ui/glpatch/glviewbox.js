@@ -1,8 +1,8 @@
 import { vec2 } from "gl-matrix";
 import GlUiConfig from "./gluiconfig.js";
-import Gui, { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { hideToolTip } from "../elements/tooltips.js";
-import { userSettings } from "../components/usersettings.js";
+import UserSettings from "../components/usersettings.js";
 
 /**
  * Viewbox of current patch
@@ -32,7 +32,7 @@ export default class GlViewBox {
     this._viewResX = 0;
     this._viewResY = 0;
     this._panStarted = 0;
-    this.wheelMode = userSettings.get("patch_wheelmode");
+    this.wheelMode = UserSettings.userSettings.get("patch_wheelmode");
     // this._opsBoundingRect = null;
     this._mouseRightDownStartX = 0;
     this._mouseRightDownStartY = 0;
@@ -85,10 +85,10 @@ export default class GlViewBox {
 
     this._eleTabs = document.getElementById("splitterMaintabs");
 
-    // this._drawBoundingRect = userSettings.get("glpatch_showboundings");
+    // this._drawBoundingRect = UserSettings.userSettings.get("glpatch_showboundings");
 
-    userSettings.on("change", (which, _v) => {
-      this.wheelMode = userSettings.get("patch_wheelmode");
+    UserSettings.userSettings.on("change", (which, _v) => {
+      this.wheelMode = UserSettings.userSettings.get("patch_wheelmode");
     });
   }
 
@@ -119,8 +119,12 @@ export default class GlViewBox {
     const coord = this.screenToPatchCoord(x + dx, y + dy);
     this.mousePatchNotPredicted = this.screenToPatchCoord(x, y);
 
-    gui.patchView.emitEvent("mouseMove", this._mousePatchX, this._mousePatchY);
-    gui.patchView.emitEvent("viewBoxChange");
+    Gui.gui.patchView.emitEvent(
+      "mouseMove",
+      this._mousePatchX,
+      this._mousePatchY,
+    );
+    Gui.gui.patchView.emitEvent("viewBoxChange");
 
     this._mousePatchX = coord[0];
     this._mousePatchY = coord[1];
@@ -169,7 +173,8 @@ export default class GlViewBox {
     this._lastPosPixel[0] = e.offsetX;
     this._lastPosPixel[1] = e.offsetY;
 
-    if (window.gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
+    if (window.Gui.gui.getRestriction() < Gui.gui.RESTRICT_MODE_EXPLORER)
+      return;
 
     if (
       this.glPatch.mouseState.buttonStateForScrolling ||
@@ -243,7 +248,8 @@ export default class GlViewBox {
     }
 
     if (doPan) {
-      let speed = parseFloat(userSettings.get("patch_panspeed")) || 0.25;
+      let speed =
+        parseFloat(UserSettings.userSettings.get("patch_panspeed")) || 0.25;
 
       this.scrollTo(
         this._scrollX - event.deltaX * speed,
@@ -263,17 +269,19 @@ export default class GlViewBox {
 
     if (this._touchpadMode && event.metaKey) this.wheelZoom(delta);
 
-    gui.on("themeChanged", () => {
-      // this._opsBoundingRect.setColor(gui.theme.colors_patch.opBoundsRect);
+    Gui.gui.on("themeChanged", () => {
+      // this._opsBoundingRect.setColor(Gui.gui.theme.colors_patch.opBoundsRect);
     });
   }
 
   wheelZoom(delta) {
-    if (window.gui.getRestriction() < Gui.RESTRICT_MODE_FOLLOWER) return;
+    if (window.Gui.gui.getRestriction() < Gui.gui.RESTRICT_MODE_FOLLOWER)
+      return;
 
     if (delta == 0) return;
 
-    const wheelMultiplier = (userSettings.get("wheelmultiplier") || 1) * 1.5;
+    const wheelMultiplier =
+      (UserSettings.userSettings.get("wheelmultiplier") || 1) * 1.5;
 
     if (delta < 0) delta = 1.0 - 0.2 * wheelMultiplier;
     else delta = 1 + 0.2 * wheelMultiplier;
@@ -309,7 +317,7 @@ export default class GlViewBox {
       this.scrollTo(x - mouseAfterZoom[0], y - mouseAfterZoom[1], true);
     }
 
-    gui.patchView.emitEvent("viewBoxChange");
+    Gui.gui.patchView.emitEvent("viewBoxChange");
   }
 
   get zoom() {
@@ -402,12 +410,12 @@ export default class GlViewBox {
     this._animScrollX.setValue(this.glPatch.time, x);
     this._animScrollY.setValue(this.glPatch.time, y);
 
-    gui.patchView.emitEvent("viewBoxChange");
+    Gui.gui.patchView.emitEvent("viewBoxChange");
   }
 
   centerSelectedOps(noAnim) {
-    let ops = gui.patchView.getSelectedOps();
-    if (ops.length == 0) ops = gui.corePatch().ops;
+    let ops = Gui.gui.patchView.getSelectedOps();
+    if (ops.length == 0) ops = Gui.gui.corePatch().ops;
 
     if (ops.length == 0) {
       // no ops in patch at all
@@ -460,7 +468,7 @@ export default class GlViewBox {
 
     if (cy != cy) cy = 0;
 
-    gui.patchView.getSubPatchBounds();
+    Gui.gui.patchView.getSubPatchBounds();
     this.animateScrollTo(bb.center[0], cy);
   }
 

@@ -1,5 +1,5 @@
 // import { ele } from "@cables/client";
-// import { gui } from "../../gui.js";
+// import Gui from "../../gui.js";
 // import uiconfig from "../../uiconfig.js";
 // import undo from "../../utils/undo.js";
 
@@ -59,7 +59,7 @@ export default function extendCoreAnim() {
   //     CABLES.ANIM.Key.prototype.updateCircle = function (_isMainAnim)
   //     {
   //         if (_isMainAnim !== undefined) this.isMainAnim = _isMainAnim;
-  //         if (!gui.timeLine()) return;
+  //         if (!Gui.gui.timeLine()) return;
   //         if (!this.circle) this.initUI();
   //         if (this.getEasing() == CABLES.ANIM.EASING_CUBICSPLINE && !this.circleBezierOut) this.initUI();
   //         if (isNaN(this.value)) this.value = 0;
@@ -95,7 +95,7 @@ export default function extendCoreAnim() {
   //     };
   //     CABLES.ANIM.Key.prototype.initUI = function ()
   //     {
-  //         if (!gui.timeLine()) return;
+  //         if (!Gui.gui.timeLine()) return;
   //         const self = this;
   //         this.x = this.time * CABLES.ANIM.TIMESCALE;
   //         this.y = this.value * -CABLES.ANIM.VALUESCALE;
@@ -109,23 +109,23 @@ export default function extendCoreAnim() {
   //         if (this.getEasing() == CABLES.ANIM.EASING_CUBICSPLINE)
   //         {
   //             if (!this.circleBezierOut)
-  //                 this.circleBezierOut = gui.timeLine().getPaper().circle(this.bezX, this.bezY, 7);
+  //                 this.circleBezierOut = Gui.gui.timeLine().getPaper().circle(this.bezX, this.bezY, 7);
   //             this.circleBezierOut.attr({ "fill": "#fff", "fill-opacity": 0.7 });
   //             if (!this.circleBezierIn)
-  //                 this.circleBezierIn = gui.timeLine().getPaper().circle(this.bezXIn, this.bezYIn, 7);
+  //                 this.circleBezierIn = Gui.gui.timeLine().getPaper().circle(this.bezXIn, this.bezYIn, 7);
   //             this.circleBezierIn.attr({ "fill": "#f00", "fill-opacity": 0.7 });
   //             if (!this.bezierControlLineOut)
-  //                 this.bezierControlLineOut = gui.timeLine().getPaper().path("M 0 0 ");
+  //                 this.bezierControlLineOut = Gui.gui.timeLine().getPaper().path("M 0 0 ");
   //             if (!this.bezierControlLineIn)
-  //                 this.bezierControlLineIn = gui.timeLine().getPaper().path("M 0 0 ");
+  //                 this.bezierControlLineIn = Gui.gui.timeLine().getPaper().path("M 0 0 ");
   //         }
-  //         this.circle = gui.timeLine().getPaper().circle(this.x, this.y, 5);
+  //         this.circle = Gui.gui.timeLine().getPaper().circle(this.x, this.y, 5);
   //         this.circle.attr(discattr);
   //         this.circle.toFront();
   //         this.circle.node.onclick = function (e)
   //         {
   //             ele.byId("timeline").focus();
-  //             if (!e.shiftKey) gui.timeLine().unselectKeys();
+  //             if (!e.shiftKey) Gui.gui.timeLine().unselectKeys();
   //             if (e.shiftKey && self.selected) self.setSelected(false);
   //             else self.setSelected(true);
   //         };
@@ -136,7 +136,7 @@ export default function extendCoreAnim() {
   //         {
   //             startMoveX = -1;
   //             startMoveY = -1;
-  //             if (gui.metaKeyframes)gui.metaKeyframes.update();
+  //             if (Gui.gui.metaKeyframes)Gui.gui.metaKeyframes.update();
   //             self.isDragging = false;
   //         };
   //         this.doMove = function (dx, dy, a, b, e, newPos)
@@ -149,9 +149,9 @@ export default function extendCoreAnim() {
   //             }
   //             newPos.x -= startMoveX;
   //             newPos.y -= startMoveY;
-  //             let time = gui.timeLine().getTimeFromPaper(newPos.x);
-  //             const frame = parseInt((time + 0.5 * 1 / gui.timeLine().getFPS()) * gui.timeLine().getFPS(), 10);
-  //             time = frame / gui.timeLine().getFPS();
+  //             let time = Gui.gui.timeLine().getTimeFromPaper(newPos.x);
+  //             const frame = parseInt((time + 0.5 * 1 / Gui.gui.timeLine().getFPS()) * Gui.gui.timeLine().getFPS(), 10);
+  //             time = frame / Gui.gui.timeLine().getFPS();
   //             if (CABLES.ANIM.MoveMode === 0)
   //             {
   //                 self.set({ time, "value": self.value });
@@ -174,10 +174,10 @@ export default function extendCoreAnim() {
   //             self.isDragging = true;
   //             if (!self.selected)
   //             {
-  //                 gui.timeLine().unselectKeys();
+  //                 Gui.gui.timeLine().unselectKeys();
   //                 self.setSelected(true);
   //             }
-  //             gui.timeLine().moveSelectedKeys(dx, dy, a, b, e);
+  //             Gui.gui.timeLine().moveSelectedKeys(dx, dy, a, b, e);
   //         }
   //         function down()
   //         {
@@ -189,19 +189,19 @@ export default function extendCoreAnim() {
   //         }
   //         function up()
   //         {
-  //             gui.timeLine().moveSelectedKeysFinished();
+  //             Gui.gui.timeLine().moveSelectedKeysFinished();
   //             undo.add({
   //                 "title": "timeline move keys",
   //                 undo()
   //                 {
   //                     self.set(oldValues);
-  //                     gui.timeLine().refresh();
+  //                     Gui.gui.timeLine().refresh();
   //                 },
   //                 redo()
   //                 {
   //                 }
   //             });
-  //             if (gui.metaKeyframes)gui.metaKeyframes.update();
+  //             if (Gui.gui.metaKeyframes)Gui.gui.metaKeyframes.update();
   //             self.isDragging = false;
   //         }
   //         this.circle.drag(move, down, up);
@@ -209,8 +209,8 @@ export default function extendCoreAnim() {
   //         function moveBezierOut(dx, dy, a, b, e)
   //         {
   //             self.isDragging = true;
-  //             const newPos = gui.timeLine().getCanvasCoordsMouse(e);
-  //             const newTime = gui.timeLine().getTimeFromPaper(newPos.x);
+  //             const newPos = Gui.gui.timeLine().getCanvasCoordsMouse(e);
+  //             const newTime = Gui.gui.timeLine().getTimeFromPaper(newPos.x);
   //             const t = self.time;
   //             const v = self.value;
   //             const newValue = newPos.y / CABLES.ANIM.VALUESCALE;
@@ -228,8 +228,8 @@ export default function extendCoreAnim() {
   //         function moveBezierIn(dx, dy, a, b, e)
   //         {
   //             self.isDragging = true;
-  //             const newPos = gui.timeLine().getCanvasCoordsMouse(e);
-  //             const newTime = gui.timeLine().getTimeFromPaper(newPos.x);
+  //             const newPos = Gui.gui.timeLine().getCanvasCoordsMouse(e);
+  //             const newTime = Gui.gui.timeLine().getTimeFromPaper(newPos.x);
   //             const t = self.time;
   //             const v = self.value;
   //             const newValue = newPos.y / CABLES.ANIM.VALUESCALE;
@@ -260,9 +260,9 @@ export default function extendCoreAnim() {
   //     };
   //     CABLES.Anim.prototype.show = function ()
   //     {
-  //         if (gui.timeLine())
+  //         if (Gui.gui.timeLine())
   //             if (!this.keyLine)
-  //                 this.keyLine = gui.timeLine().getPaper().path("M 0 0 L 0 1");
+  //                 this.keyLine = Gui.gui.timeLine().getPaper().path("M 0 0 L 0 1");
   //     };
   //     CABLES.Anim.prototype.removeUi = function ()
   //     {
@@ -291,12 +291,12 @@ export default function extendCoreAnim() {
   //                 {
   //                     anim.addKey(new CABLES.ANIM.Key(objKey));
   //                     anim.sortKeys();
-  //                     gui.timeLine().refresh();
+  //                     Gui.gui.timeLine().refresh();
   //                 },
   //                 redo()
   //                 {
   //                     anim.deleteKeyAt(objKey.t);
-  //                     gui.timeLine().refresh();
+  //                     Gui.gui.timeLine().refresh();
   //                 }
   //             });
   //         }
@@ -315,6 +315,6 @@ export default function extendCoreAnim() {
   //             }
   //         }
   //         this.sortKeys();
-  //         if (gui.metaKeyframes)gui.metaKeyframes.update();
+  //         if (Gui.gui.metaKeyframes)Gui.gui.metaKeyframes.update();
   //     };
 }

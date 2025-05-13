@@ -1,6 +1,6 @@
 import { ele } from "@cables/client";
 import Tab from "../../elements/tabpanel/tab.js";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { fileUploader } from "../../dialogs/upload.js";
 import namespace from "../../namespaceutils.js";
@@ -17,9 +17,9 @@ export default class OpDependencyTab extends Tab {
   constructor(tabs, title, options = {}) {
     super(title, options);
     this.options.docsUrl = platform.getCablesDocsUrl();
-    this._tabs = tabs || gui.mainTabs;
+    this._tabs = tabs || Gui.gui.mainTabs;
     this._tabs.addTab(this);
-    gui.maintabPanel.show(true);
+    Gui.gui.maintabPanel.show(true);
     this.html(this.getHtml());
     this._initEventListeners();
   }
@@ -102,7 +102,7 @@ export default class OpDependencyTab extends Tab {
             opDoc.id,
             (err, newFilename) => {
               if (!err) {
-                gui.serverOps.addOpDependency(
+                Gui.gui.serverOps.addOpDependency(
                   opName,
                   "./" + newFilename,
                   depType,
@@ -116,17 +116,17 @@ export default class OpDependencyTab extends Tab {
             },
           );
         } else if (depType === "lib") {
-          gui.serverOps.addOpLib(opName, depSrc, () => {
+          Gui.gui.serverOps.addOpLib(opName, depSrc, () => {
             submitEle.innerText = "Add";
             submitEle.disabled = false;
           });
         } else if (depType === "corelib") {
-          gui.serverOps.addCoreLib(opName, depSrc, () => {
+          Gui.gui.serverOps.addCoreLib(opName, depSrc, () => {
             submitEle.innerText = "Add";
             submitEle.disabled = false;
           });
         } else {
-          gui.serverOps.addOpDependency(
+          Gui.gui.serverOps.addOpDependency(
             opName,
             depSrc,
             depType,

@@ -3,8 +3,8 @@ import { Logger, ele } from "@cables/client";
 import srcShaderFragment from "./texturepreviewer_glsl.frag";
 import srcShaderVertex from "./texturepreviewer_glsl.vert";
 import { hideToolTip } from "../elements/tooltips.js";
-import { gui } from "../gui.js";
-import { userSettings } from "./usersettings.js";
+import Gui from "../gui.js";
+import UserSettings from "./usersettings.js";
 
 const MODE_CORNER = 0;
 const MODE_HOVER = 1;
@@ -23,7 +23,9 @@ export default class TexturePreviewer {
     this._showing = false;
     this._lastTimeActivity = 0;
     this._mode =
-      userSettings.get("texpreviewMode") == "corner" ? MODE_CORNER : MODE_HOVER;
+      UserSettings.userSettings.get("texpreviewMode") == "corner"
+        ? MODE_CORNER
+        : MODE_HOVER;
     this._paused = false;
     this._shader = null;
     this._shaderTexUniform = null;
@@ -41,9 +43,10 @@ export default class TexturePreviewer {
     this._ele = document.getElementById("bgpreview");
     this.setSize();
 
-    userSettings.on("change", (key, v) => {
+    UserSettings.userSettings.on("change", (key, v) => {
       if (key == "texpreviewTransparent") this.setSize();
-      if (key == "texpreviewSize") this.setSize(userSettings.get(key));
+      if (key == "texpreviewSize")
+        this.setSize(UserSettings.userSettings.get(key));
       if (key == "bgpreviewMax") this.enableBgPreview();
     });
 
@@ -64,7 +67,7 @@ export default class TexturePreviewer {
     }
 
     if (this._mode == MODE_HOVER) {
-      gui.on("portHovered", (port) => {
+      Gui.gui.on("portHovered", (port) => {
         if (port && port.get() && port.get().tex) {
           this._enabled = true;
           this.selectTexturePort(port);
@@ -78,10 +81,10 @@ export default class TexturePreviewer {
     }
 
     if (this._mode == MODE_CORNER) {
-      gui.opParams.on("opSelected", () => {
-        if (!gui.opParams.op) return;
+      Gui.gui.opParams.on("opSelected", () => {
+        if (!Gui.gui.opParams.op) return;
         let foundPreview = false;
-        const ports = gui.opParams.op.portsOut;
+        const ports = Gui.gui.opParams.op.portsOut;
 
         for (let i = 0; i < ports.length; i++) {
           if (!foundPreview && ports[i].uiAttribs.preview) {
@@ -128,7 +131,7 @@ export default class TexturePreviewer {
     const previewCanvas = previewCanvasEle.getContext("2d");
 
     if (previewCanvas && port && port.get()) {
-      const perf = gui.uiProfiler.start("texpreview");
+      const perf = Gui.gui.uiProfiler.start("texpreview");
       const cgl = port.op.patch.cgl;
 
       if (!this._emptyCubemap)
@@ -235,7 +238,7 @@ export default class TexturePreviewer {
         this._currentHeight = previewCanvasEle.height = s[1] * this.scale;
       }
 
-      const perf2 = gui.uiProfiler.start("texpreview22");
+      const perf2 = Gui.gui.uiProfiler.start("texpreview22");
 
       // if (this._mode == MODE_CORNER)
       // {
@@ -264,10 +267,11 @@ export default class TexturePreviewer {
 
       if (this._mode == MODE_HOVER && this._enabled) {
         const vizCtx =
-          gui.patchView.patchRenderer.vizLayer._eleCanvas.getContext("2d");
+          Gui.gui.patchView.patchRenderer.vizLayer._eleCanvas.getContext("2d");
         vizCtx.save();
 
-        if (userSettings.get("texpreviewTransparent")) vizCtx.globalAlpha = 0.5;
+        if (UserSettings.userSettings.get("texpreviewTransparent"))
+          vizCtx.globalAlpha = 0.5;
 
         let w = 150;
         let h = Math.min(
@@ -275,13 +279,13 @@ export default class TexturePreviewer {
           (150 * previewCanvasEle.height) / this._currentWidth,
         );
         let x = Math.round(
-          gui.patchView.patchRenderer.viewBox.mouseX *
-            gui.patchView.patchRenderer._cgl.pixelDensity +
+          Gui.gui.patchView.patchRenderer.viewBox.mouseX *
+            Gui.gui.patchView.patchRenderer._cgl.pixelDensity +
             53,
         );
         let y = Math.round(
-          gui.patchView.patchRenderer.viewBox.mouseY *
-            gui.patchView.patchRenderer._cgl.pixelDensity -
+          Gui.gui.patchView.patchRenderer.viewBox.mouseY *
+            Gui.gui.patchView.patchRenderer._cgl.pixelDensity -
             0,
         );
         vizCtx.translate(x, y);
@@ -320,13 +324,13 @@ export default class TexturePreviewer {
     // vizCtx.drawImage(cgl.canvas, 0, 0, w, h);
     // if (this._mode == MODE_HOVER && this._enabled && this._ele && this._ele.width > 0 && this._ele.height > 0)
     // {
-    // // const vizCtx = gui.patchView.patchRenderer.vizLayer._eleCanvas.getContext("2d");
-    //     if (userSettings.get("texpreviewTransparent")) vizCtx.globalAlpha = 0.5;
+    // // const vizCtx = Gui.gui.patchView.patchRenderer.vizLayer._eleCanvas.getContext("2d");
+    //     if (UserSettings.userSettings.get("texpreviewTransparent")) vizCtx.globalAlpha = 0.5;
     //     vizCtx.save();
     //     let w = 150;
     //     let h = Math.min(150, 150 * this._ele.height / this._currentWidth);
-    //     let x = Math.round(gui.patchView.patchRenderer.viewBox.mouseX * gui.patchView.patchRenderer._cgl.pixelDensity + 53);
-    //     let y = Math.round(gui.patchView.patchRenderer.viewBox.mouseY * gui.patchView.patchRenderer._cgl.pixelDensity - 0);
+    //     let x = Math.round(Gui.gui.patchView.patchRenderer.viewBox.mouseX * Gui.gui.patchView.patchRenderer._cgl.pixelDensity + 53);
+    //     let y = Math.round(Gui.gui.patchView.patchRenderer.viewBox.mouseY * Gui.gui.patchView.patchRenderer._cgl.pixelDensity - 0);
     //     vizCtx.translate(x, y);
     //     if (this._ele.width < w && this._ele.height < h)vizCtx.imageSmoothingEnabled = false;
     //     if (w <= 1)w = h / 2;
@@ -342,7 +346,7 @@ export default class TexturePreviewer {
   }
 
   toggleSize(m) {
-    let size = userSettings.get("texpreviewSize");
+    let size = UserSettings.userSettings.get("texpreviewSize");
 
     if (size == null || size == undefined) size = 30;
 
@@ -353,19 +357,19 @@ export default class TexturePreviewer {
 
     this.scale = size / 100;
 
-    userSettings.set("texpreviewSize", this.scale * 100);
+    UserSettings.userSettings.set("texpreviewSize", this.scale * 100);
   }
 
   setSize(size) {
-    if (!size) size = userSettings.get("texpreviewSize") || 50;
+    if (!size) size = UserSettings.userSettings.get("texpreviewSize") || 50;
 
-    if (userSettings.get("texpreviewTransparent"))
+    if (UserSettings.userSettings.get("texpreviewTransparent"))
       this._ele.style.opacity = 0.5;
     else this._ele.style.opacity = 1;
 
     this.scale = size / 100;
 
-    userSettings.set("texpreviewSize", this.scale * 100);
+    UserSettings.userSettings.set("texpreviewSize", this.scale * 100);
   }
 
   _getCanvasSize(port, tex, meta) {
@@ -373,7 +377,7 @@ export default class TexturePreviewer {
     let maxHeight = 200;
 
     if (!meta) {
-      const patchRect = gui.patchView.element.getBoundingClientRect();
+      const patchRect = Gui.gui.patchView.element.getBoundingClientRect();
       maxWidth = Math.min(patchRect.width, port.op.patch.cgl.canvasWidth);
       maxHeight = Math.min(patchRect.height, port.op.patch.cgl.canvasHeight);
     }
@@ -418,17 +422,17 @@ export default class TexturePreviewer {
   }
 
   enableBgPreview() {
-    const enabled = userSettings.get("bgpreviewMax");
+    const enabled = UserSettings.userSettings.get("bgpreviewMax");
     this._enabled = enabled;
 
     // if (storeSetting)
     // {
-    //     userSettings.set("bgpreviewMax", enabled);
+    //     UserSettings.userSettings.set("bgpreviewMax", enabled);
 
     //     this._log.log("store bgpreview max", enabled);
     // }
 
-    // this._log.log("bgpreviewMax", userSettings.get("bgpreviewMax"), enabled);
+    // this._log.log("bgpreviewMax", UserSettings.userSettings.get("bgpreviewMax"), enabled);
 
     if (this._mode == MODE_CORNER) {
       if (!enabled) {
@@ -484,7 +488,7 @@ export default class TexturePreviewer {
   selectTexturePortId(opid, portid) {
     if (!window.gui) return;
 
-    const op = gui.corePatch().getOpById(opid);
+    const op = Gui.gui.corePatch().getOpById(opid);
     if (!op) return;
 
     const p = op.getPortById(portid);
@@ -518,7 +522,7 @@ export default class TexturePreviewer {
   }
 
   selectTexturePort(p) {
-    if (!userSettings.get("bgpreview")) {
+    if (!UserSettings.userSettings.get("bgpreview")) {
       this._lastClickedP = p;
       this._lastClicked = this.updateTexturePort(p);
 
@@ -604,13 +608,13 @@ export default class TexturePreviewer {
 
   gotoOp() {
     if (this._lastClickedP)
-      gui.patchView.centerSelectOp(this._lastClickedP.op.id);
+      Gui.gui.patchView.centerSelectOp(this._lastClickedP.op.id);
   }
 
   deserialize(o) {
     // if (!o) return;
     // this.enableBgPreview(o.enabled);
-    // const op = gui.corePatch().getOpById(o.op);
+    // const op = Gui.gui.corePatch().getOpById(o.op);
     // if (!op)
     // {
     //     this._log.log("texpreviewer cant find op");
@@ -626,7 +630,7 @@ export default class TexturePreviewer {
   serialize() {
     const o = {};
 
-    // // o.pinned = gui.metaTexturePreviewer.pinned;
+    // // o.pinned = Gui.gui.metaTexturePreviewer.pinned;
 
     // if (this._lastClickedP || this._lastClicked)
     // {

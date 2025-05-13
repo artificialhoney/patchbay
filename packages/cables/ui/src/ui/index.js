@@ -5,7 +5,7 @@ import OverlayMeshes from "./components/overlay/overlaymeshes.js";
 import Collapsable from "./components/collapsable.js";
 import DragNDrop from "./components/filemanager_dragdrop.js";
 import setHtmlDefaultListeners from "./components/htmldefaultlisteners.js";
-import { userSettings } from "./components/usersettings.js";
+import UserSettings from "./components/usersettings.js";
 import paramsHelper from "./components/opparampanel/params_helper.js";
 import FindTab from "./components/tabs/tab_find.js";
 import extendCoreAnim from "./components/timelinesvg/core_anim_extend.js";
@@ -22,7 +22,7 @@ import PlatformCommunity from "./platform_community.js";
 import PlatformElectron from "./platform_electron.js";
 import startUi from "./startgui.js";
 import text from "./text.js";
-import { logFilter } from "./utils/logfilter.js";
+import LogFilter from "./utils/logfilter.js";
 import undo from "./utils/undo.js";
 import TabPortObjectInspect from "./components/tabs/tab_portobjectionspect.js";
 import extendCorePatch from "./core_extend_patch.js";
@@ -30,8 +30,100 @@ import Gizmo from "./elements/canvasoverlays/transformgizmo.js";
 import ModalSourceCode from "./dialogs/modalsourcecode.js";
 import { showShaderError } from "./dialogs/modalshadererrorgl.js";
 import { showShaderErrorCgp } from "./dialogs/modalshadererrorcgp.js";
+import {
+  CGL,
+  CG,
+  CGP,
+  EMBED,
+  WEBAUDIO,
+  Link,
+  Port,
+  Patch,
+  Timer,
+  Variable,
+  LoadingStatus,
+  internalNow,
+  now,
+  Anim,
+  AnimKey,
+  utils,
+  CgContext,
+  CONSTANTS,
+  glmatrix,
+  Op,
+  Profiler,
+} from "@cables/cables";
 
-CABLES = CABLES || {};
+window.glMatrix = glmatrix.glmatrix;
+window.mat2 = glmatrix.mat2;
+window.mat2d = glmatrix.mat2d;
+window.mat3 = glmatrix.mat3;
+window.mat4 = glmatrix.mat4;
+window.quat = glmatrix.quat;
+window.quat2 = glmatrix.quat2;
+window.vec2 = glmatrix.vec2;
+window.vec3 = glmatrix.vec3;
+window.vec4 = glmatrix.vec4;
+
+const CABLES = {};
+window.CABLES = CABLES || {};
+
+CABLES.CGL = CGL;
+CABLES.CG = CG;
+CABLES.CGP = CGP;
+CABLES.EMBED = EMBED;
+CABLES.Link = Link;
+CABLES.Port = Port;
+CABLES.Op = Op;
+CABLES.Profiler = Profiler;
+CABLES.Patch = Patch;
+CABLES.Timer = Timer;
+CABLES.WEBAUDIO = WEBAUDIO;
+CABLES.Variable = Variable;
+CABLES.LoadingStatus = LoadingStatus;
+CABLES.now = now;
+CABLES.internalNow = internalNow;
+CABLES.Anim = Anim;
+CABLES.AnimKey = AnimKey;
+
+CABLES.shortId = utils.shortId;
+CABLES.uuid = utils.uuid;
+CABLES.getShortOpName = utils.getShortOpName;
+CABLES.simpleId = utils.simpleId;
+CABLES.clamp = utils.clamp;
+CABLES.map = utils.map;
+CABLES.shuffleArray = utils.shuffleArray;
+CABLES.generateUUID = utils.generateUUID;
+CABLES.prefixedHash = utils.prefixedHash;
+CABLES.smoothStep = utils.smoothStep;
+CABLES.smootherStep = utils.smootherStep;
+CABLES.cacheBust = utils.cacheBust;
+CABLES.copyArray = utils.copyArray;
+CABLES.basename = utils.basename;
+CABLES.logStack = utils.logStack;
+CABLES.filename = utils.filename;
+CABLES.ajaxSync = utils.ajaxSync;
+CABLES.ajax = utils.ajax;
+CABLES.request = utils.request;
+CABLES.logErrorConsole = utils.logErrorConsole;
+CABLES.isNumeric = utils.isNumeric;
+CABLES.isArray = utils.isArray;
+CABLES.float32Concat = utils.float32Concat;
+CABLES.uniqueArray = utils.uniqueArray;
+CABLES.CGState = CgContext;
+CABLES.CgContext = CgContext;
+
+/** @type {Array<Op>} */
+CABLES.OPS = [];
+
+Object.assign(
+  CABLES,
+  CONSTANTS.PORT,
+  CONSTANTS.PACO,
+  CONSTANTS.ANIM,
+  CONSTANTS.OP,
+);
+
 CABLES.UI = CABLES.UI || {};
 CABLES.GLGUI = CABLES.GLGUI || {};
 CABLES.GLUI = CABLES.GLUI || {};
@@ -39,18 +131,20 @@ CABLES.GLGUI.CURSOR_NORMAL = 0;
 CABLES.GLGUI.CURSOR_HAND = 1;
 CABLES.GLGUI.CURSOR_POINTER = 2;
 
+CABLES.UI.userSettings = new UserSettings();
+
 // create "mock" to load dependencies, specific class is set in footer.html
 CABLES.PlatformElectron = PlatformElectron;
 CABLES.PlatformCommunity = PlatformCommunity;
-CABLES.platform = new Platform();
-
+CABLES.platform = new Platform({
+  urlCables: "",
+  patchVersion: "",
+});
 // expose global classes
 CABLES.GLUI.glUiConfig = gluiconfig; // todo: could be removed, needs workaround in gltf ops
 CABLES.UI.TabPortObjectInspect = TabPortObjectInspect;
 
 window.ele = ele;
-
-CABLES.UI.userSettings = userSettings;
 
 CABLES.GradientEditor = GradientEditor;
 CABLES.UI.Tab = Tab; // needs to stay - is used in ops
@@ -74,7 +168,7 @@ CABLES.DragNDrop = DragNDrop;
 
 CABLES.CMD = CMD;
 
-CABLES.UI.logFilter = logFilter;
+CABLES.UI.logFilter = new LogFilter();
 
 CABLES.GL_MARKER = OverlayMeshes;
 CABLES.UI.OverlayMeshes = OverlayMeshes;

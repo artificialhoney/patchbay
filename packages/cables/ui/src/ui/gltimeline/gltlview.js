@@ -1,6 +1,6 @@
 import { Anim } from "@cables/cables";
 import { GlTimeline } from "./gltimeline.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 
 export class GlTlView {
   /** @type {GlTimeline} */
@@ -131,7 +131,7 @@ export class GlTlView {
 
   /** @returns {number} */
   get cursorTime() {
-    return gui.corePatch().timer.getTime();
+    return Gui.gui.corePatch().timer.getTime();
   }
 
   get pixelPerSecond() {

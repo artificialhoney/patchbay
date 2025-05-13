@@ -1,5 +1,5 @@
 import { ele } from "@cables/client";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 import HtmlElementOverlay from "./htmlelementoverlay.js";
 
 export default class HtmlInspector {
@@ -15,8 +15,8 @@ export default class HtmlInspector {
     this._inspectEle.addEventListener(
       "mousedown",
       () => {
-        gui.patchView.centerSelectOp(this._hoveringOpId);
-        gui.opParams.show(this._hoveringOpId);
+        Gui.gui.patchView.centerSelectOp(this._hoveringOpId);
+        Gui.gui.opParams.show(this._hoveringOpId);
       },
       { passive: true },
     );

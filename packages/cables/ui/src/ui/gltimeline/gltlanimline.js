@@ -3,7 +3,7 @@ import { Events } from "@cables/client";
 import { Anim } from "@cables/cables";
 import { GlTimeline } from "./gltimeline.js";
 import { glTlKeys } from "./gltlkeys.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import GlRect from "../gldraw/glrect.js";
 import GlText from "../gldraw/gltext.js";
 import { TlTitle } from "./tllinetitle.js";
@@ -152,7 +152,7 @@ export class glTlAnimLine extends Events {
     const title = new TlTitle(this.#glTl, this.#glTl.parentElement(), anim);
     title.setTitle(t);
     title.on("titleClicked", (title) => {
-      gui.patchView.focusOp(this.#ops[title.index].id);
+      Gui.gui.patchView.focusOp(this.#ops[title.index].id);
     });
 
     this.#titles.push(title);

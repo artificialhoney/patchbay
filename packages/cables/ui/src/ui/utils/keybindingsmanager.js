@@ -1,6 +1,6 @@
 import { Events, Logger } from "@cables/client";
 import { notifyError } from "../elements/notification.js";
-import Gui, { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { getHandleBarHtml } from "./handlebars.js";
 
 /**
@@ -28,12 +28,12 @@ export default class KeyBindingsManager extends Events {
       padding: true,
       singleton: true,
     });
-    gui.mainTabs.addTab(this._tab, true);
+    Gui.gui.mainTabs.addTab(this._tab, true);
 
     const k = this._prepareKeysForDisplay(this._keys);
 
     let showDownloadButton = false;
-    if (gui && gui.user && (gui.user.isStaff || gui.user.isAdmin))
+    if (gui && Gui.gui.user && (Gui.gui.user.isStaff || Gui.gui.user.isAdmin))
       showDownloadButton = true;
 
     const html = getHandleBarHtml("tab_keys", {
@@ -42,7 +42,7 @@ export default class KeyBindingsManager extends Events {
     });
     this._tab.html(html);
 
-    gui.maintabPanel.show(true);
+    Gui.gui.maintabPanel.show(true);
   }
 
   download() {
@@ -127,7 +127,7 @@ export default class KeyBindingsManager extends Events {
       if (!k.options.ctrlKey && e.ctrlKey) continue;
 
       if (!k.target || k.target == e.target.id) {
-        if (k.options.minRestriction > window.gui.getRestriction()) {
+        if (k.options.minRestriction > window.Gui.gui.getRestriction()) {
           notifyError("Not allowed");
           if (!e.dontPreventDefault) e.preventDefault();
 
@@ -161,7 +161,7 @@ export default class KeyBindingsManager extends Events {
       if (k.options.shiftKey && !e.shiftKey) continue;
       if (k.options.altKey && !e.altKey) continue;
       if (!k.options.shiftKey && e.shiftKey) continue;
-      if (k.options.minRestriction > window.gui.getRestriction()) continue;
+      if (k.options.minRestriction > window.Gui.gui.getRestriction()) continue;
 
       if (!k.target || k.target == e.target.id) {
         if (
@@ -172,7 +172,7 @@ export default class KeyBindingsManager extends Events {
         )
           continue;
 
-        // gui.log.userInteraction("pressed " + e.key);
+        // Gui.gui.log.userInteraction("pressed " + e.key);
 
         if (k.cb) k.cb(e);
         else this._log.warn("[keys] key event has no callback", k);
@@ -200,7 +200,7 @@ export default class KeyBindingsManager extends Events {
   key(key, title, event, target, options, cb) {
     options = options || {};
     if (!options.hasOwnProperty("minRestriction"))
-      options.minRestriction = Gui.RESTRICT_MODE_FULL;
+      options.minRestriction = Gui.gui.RESTRICT_MODE_FULL;
 
     if (Array.isArray(key))
       for (let i = 0; i < key.length; i++)

@@ -1,11 +1,11 @@
 import { ele, Events } from "@cables/client";
 import { notify } from "../../elements/notification.js";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 
 export default class TabPortObjectInspect extends Events {
   constructor(opid, portName) {
     super();
-    this.tabs = gui.mainTabs;
+    this.tabs = Gui.gui.mainTabs;
     this.tab = new CABLES.UI.Tab("Inspect " + portName, {
       icon: "op",
       infotext: "tab_objectinspect",
@@ -21,7 +21,7 @@ export default class TabPortObjectInspect extends Events {
       this._showPortValue();
     });
 
-    this.op = gui.corePatch().getOpById(opid);
+    this.op = Gui.gui.corePatch().getOpById(opid);
     if (!this.op) {
       this._log.warn("opid not found:", opid);
       return;
@@ -32,16 +32,16 @@ export default class TabPortObjectInspect extends Events {
       return;
     }
 
-    this._deletelistener = gui.corePatch().on("onOpDelete", (op) => {
+    this._deletelistener = Gui.gui.corePatch().on("onOpDelete", (op) => {
       if (op == this.op) this.tabs.closeTab(this.tab.id);
     });
     this.tab.on("close", () => {
-      gui.corePatch().off(this._deletelistener);
+      Gui.gui.corePatch().off(this._deletelistener);
     });
 
     this._showPortValue();
 
-    gui.maintabPanel.show(true);
+    Gui.gui.maintabPanel.show(true);
   }
 
   _showPortValue() {

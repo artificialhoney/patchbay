@@ -1,5 +1,5 @@
 import { vec3, mat4 } from "gl-matrix";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 import undo from "../../utils/undo.js";
 
 export default class Gizmo {
@@ -373,7 +373,7 @@ export default class Gizmo {
 
     const down = (e) => {
       if (CABLES.UI)
-        gui.savedState.setUnSaved(
+        Gui.gui.savedState.setUnSaved(
           "transformDown",
           this._params.posX.op.getSubPatch(),
         );
@@ -402,11 +402,11 @@ export default class Gizmo {
             title: "move gizmo " + p.name,
             undo() {
               p.set(oldValue);
-              gui.emitEvent("portValueEdited", op, p, oldValue);
+              Gui.gui.emitEvent("portValueEdited", op, p, oldValue);
             },
             redo() {
               p.set(newValue);
-              gui.emitEvent("portValueEdited", op, p, newValue);
+              Gui.gui.emitEvent("portValueEdited", op, p, newValue);
             },
           });
         })(
@@ -419,7 +419,7 @@ export default class Gizmo {
       }
 
       if (CABLES.UI)
-        gui.savedState.setUnSaved(
+        Gui.gui.savedState.setUnSaved(
           "transformUp",
           this._params.posX.op.getSubPatch(),
         );
@@ -441,12 +441,12 @@ export default class Gizmo {
 
       document.removeEventListener("pointermove", move, false);
 
-      if (CABLES.UI) gui.opParams.show(self._draggingPort.op);
+      if (CABLES.UI) Gui.gui.opParams.show(self._draggingPort.op);
     };
 
     const move = (e) => {
       if (CABLES.UI)
-        gui.savedState.setUnSaved(
+        Gui.gui.savedState.setUnSaved(
           "transformMove",
           this._params.posX.op.getSubPatch(),
         );
@@ -472,14 +472,14 @@ export default class Gizmo {
         self._draggingPort.set(newValue);
         self._draggingPortY.set(newValueY);
         if (CABLES.UI)
-          gui.emitEvent(
+          Gui.gui.emitEvent(
             "gizmoMove",
             self._draggingPort.op.id,
             self._draggingPort.getName(),
             newValue,
           );
         if (CABLES.UI)
-          gui.emitEvent(
+          Gui.gui.emitEvent(
             "gizmoMove",
             self._draggingPortY.op.id,
             self._draggingPortY.getName(),
@@ -495,7 +495,7 @@ export default class Gizmo {
         const newValue = self._origValue + self._dragSum;
         self._draggingPort.set(newValue);
         if (CABLES.UI)
-          gui.emitEvent(
+          Gui.gui.emitEvent(
             "gizmoMove",
             self._draggingPort.op.id,
             self._draggingPort.getName(),

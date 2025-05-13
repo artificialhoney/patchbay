@@ -1,7 +1,7 @@
-import { userSettings } from "../components/usersettings.js";
+import UserSettings from "../components/usersettings.js";
 import GlRect from "../gldraw/glrect.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import GlOp from "./glop.js";
 
 export default class GlArea {
@@ -71,12 +71,15 @@ export default class GlArea {
       this._w = this._rectResize.x - this._glop.x + this._rectResize.w / 2;
       this._h = this._rectResize.y - this._glop.y + this._rectResize.h / 2;
 
-      if (userSettings.get("snapToGrid2")) {
+      if (UserSettings.userSettings.get("snapToGrid2")) {
         this._w = this._glop.glPatch.snap.snapX(this._w);
         this._h = this._glop.glPatch.snap.snapY(this._h);
       }
 
-      gui.savedState.setUnSaved("resizeGlArea", this._glop.op.getSubPatch());
+      Gui.gui.savedState.setUnSaved(
+        "resizeGlArea",
+        this._glop.op.getSubPatch(),
+      );
       this._update();
     });
 

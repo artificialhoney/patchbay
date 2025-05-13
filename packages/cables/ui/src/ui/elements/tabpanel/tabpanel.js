@@ -1,11 +1,11 @@
 import { Events, Logger, ele } from "@cables/client";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { notify, notifyError } from "../notification.js";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 import { platform } from "../../platform.js";
 import { contextMenu } from "../contextmenu.js";
 import { editorSession } from "./editor_session.js";
-import { userSettings } from "../../components/usersettings.js";
+import UserSettings from "../../components/usersettings.js";
 import Tab from "./tab.js";
 
 /**
@@ -120,17 +120,17 @@ export default class TabPanel extends Events {
     }
 
     for (let i = 0; i < this._dynCmds.length; i++)
-      gui.cmdPallet.removeDynamic(this._dynCmds[i]);
+      Gui.gui.cmdPallet.removeDynamic(this._dynCmds[i]);
 
     for (let i = 0; i < this._tabs.length; i++) {
       if (window.gui && this._eleId == "maintabs") {
         const t = this._tabs[i];
 
-        const cmd = gui.cmdPallet.addDynamic(
+        const cmd = Gui.gui.cmdPallet.addDynamic(
           "tab",
           "Tab " + t.title,
           () => {
-            gui.maintabPanel.show(true);
+            Gui.gui.maintabPanel.show(true);
 
             this.activateTab(t.id, true);
           },
@@ -225,7 +225,7 @@ export default class TabPanel extends Events {
 
     this.updateHtml();
 
-    if (editorSession && editorSession.loaded() && gui.finishedLoading())
+    if (editorSession && editorSession.loaded() && Gui.gui.finishedLoading())
       this.saveCurrentTabUsersettings();
     return found;
   }
@@ -235,7 +235,8 @@ export default class TabPanel extends Events {
     let found = false;
     for (let i = 0; i < this._tabs.length; i++) {
       if (
-        userSettings.get("tabsLastTitle_" + this._eleId) == this._tabs[i].title
+        UserSettings.userSettings.get("tabsLastTitle_" + this._eleId) ==
+        this._tabs[i].title
       ) {
         this.activateTab(this._tabs[i].id);
         found = true;
@@ -249,7 +250,10 @@ export default class TabPanel extends Events {
     const activeTab = this.getActiveTab();
 
     if (!activeTab) return;
-    userSettings.set("tabsLastTitle_" + this._eleId, activeTab.title);
+    UserSettings.userSettings.set(
+      "tabsLastTitle_" + this._eleId,
+      activeTab.title,
+    );
   }
 
   /**
@@ -431,9 +435,9 @@ export default class TabPanel extends Events {
 
     talkerAPI.on("setSavedState", (opts) => {
       if (opts.state) {
-        gui.savedState.setSaved("talkerAPI", opts.subpatch);
+        Gui.gui.savedState.setSaved("talkerAPI", opts.subpatch);
       } else {
-        gui.savedState.setUnSaved("talkerAPI", opts.subpatch);
+        Gui.gui.savedState.setUnSaved("talkerAPI", opts.subpatch);
       }
     });
 
@@ -441,7 +445,7 @@ export default class TabPanel extends Events {
       platform.setManualScreenshot(opts.manualScreenshot);
 
       if (opts.manualScreenshot) {
-        gui.patchView.store.saveScreenshot(true, () => {
+        Gui.gui.patchView.store.saveScreenshot(true, () => {
           talkerAPI.send("screenshotSaved");
         });
       }
@@ -456,17 +460,17 @@ export default class TabPanel extends Events {
     });
 
     talkerAPI.on("updatePatchName", (opts, next) => {
-      gui.setProjectName(opts.name);
+      Gui.gui.setProjectName(opts.name);
       platform.talkerAPI.send("updatePatchName", opts, (err, r) => {});
     });
 
     talkerAPI.on("updatePatchSummary", (opts, next) => {
-      gui.project().summary = opts;
-      gui.patchParamPanel.show(true);
+      Gui.gui.project().summary = opts;
+      Gui.gui.patchParamPanel.show(true);
     });
 
     talkerAPI.on("opsDeleted", (opts, next) => {
-      const opdocs = gui.opDocs.getAll();
+      const opdocs = Gui.gui.opDocs.getAll();
       const deletedOps = opts.ops || [];
       for (let i = 0; i < deletedOps.length; i++) {
         const deletedOp = deletedOps[i];
@@ -474,7 +478,7 @@ export default class TabPanel extends Events {
           return opDoc.id === deletedOp.id;
         });
         if (opDocToDelete) opdocs.splice(opDocToDelete, 1);
-        gui.opSelect().reload();
+        Gui.gui.opSelect().reload();
       }
       let plural = deletedOps.length > 1 ? "s" : "";
       if (deletedOps.length > 0)
@@ -483,7 +487,7 @@ export default class TabPanel extends Events {
     });
 
     this.activateTab(iframeTab.id);
-    gui.maintabPanel.show(userInteraction);
+    Gui.gui.maintabPanel.show(userInteraction);
     return iframeTab;
   }
 }

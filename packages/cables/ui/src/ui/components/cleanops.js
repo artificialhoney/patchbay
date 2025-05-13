@@ -1,5 +1,5 @@
 import gluiconfig from "../glpatch/gluiconfig.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 
 export default class opCleaner {
   constructor(ops, glpatch) {
@@ -96,7 +96,7 @@ export default class opCleaner {
     for (let i = 0; i < ops.length; i++) {
       const op = ops[i];
       if (op.uiAttribs.translateTemp) {
-        gui.patchView.setOpPos(op, op.getTempPosX(), op.getTempPosY());
+        Gui.gui.patchView.setOpPos(op, op.getTempPosX(), op.getTempPosY());
         delete op.uiAttribs.translateTemp;
       }
     }
@@ -105,7 +105,9 @@ export default class opCleaner {
   // only test collision on ops that have no inputs, but output links
   checkCollisionXTopOps(op) {
     const other = op.testTempCollision(
-      gui.corePatch().getSubPatchOps(gui.patchView.getCurrentSubPatch()),
+      Gui.gui
+        .corePatch()
+        .getSubPatchOps(Gui.gui.patchView.getCurrentSubPatch()),
       this._glpatch,
     );
     if (other) {
@@ -126,7 +128,7 @@ export default class opCleaner {
   }
 
   checkCollisionY(op) {
-    const other = op.testTempCollision(gui.corePatch().ops, this._glpatch);
+    const other = op.testTempCollision(Gui.gui.corePatch().ops, this._glpatch);
     if (other) {
       console.log("yes colliding...", gluiconfig.newOpDistanceY);
 

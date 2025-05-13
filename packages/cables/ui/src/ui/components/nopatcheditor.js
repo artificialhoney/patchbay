@@ -1,10 +1,10 @@
 import { Events } from "@cables/client";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 
 export default class NoPatchEditor extends Events {
   constructor(cgl) {
     super();
-    gui.patchView.setPatchRenderer(null, this);
+    Gui.gui.patchView.setPatchRenderer(null, this);
   }
 
   get name() {

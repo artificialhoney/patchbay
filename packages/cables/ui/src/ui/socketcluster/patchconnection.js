@@ -1,5 +1,5 @@
 import { Logger } from "@cables/client";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 
 const PatchConnectionReceiver = function (patch, options, connector) {
   this._patch = patch;
@@ -37,7 +37,7 @@ PatchConnectionReceiver.prototype._receive = function (ev) {
     this._log.verbose("op create:", data.vars.objName);
 
     if (window.gui) {
-      gui.serverOps.loadOpDependencies(data.vars.objName, () => {
+      Gui.gui.serverOps.loadOpDependencies(data.vars.objName, () => {
         this._addOp(data);
       });
     } else {
@@ -46,7 +46,7 @@ PatchConnectionReceiver.prototype._receive = function (ev) {
   } else if (data.event === CABLES.PACO_DESERIALIZE) {
     if (data.vars.json) {
       if (window.gui) {
-        gui.serverOps.loadProjectDependencies(data.vars.json, () => {
+        Gui.gui.serverOps.loadProjectDependencies(data.vars.json, () => {
           this._patch.deSerialize(data.vars.json, { genIds: data.vars.genIds });
         });
       } else {
@@ -57,9 +57,12 @@ PatchConnectionReceiver.prototype._receive = function (ev) {
     this._log.verbose("PACO load patch.....");
     this._patch.clear();
     if (window.gui) {
-      gui.serverOps.loadProjectDependencies(JSON.parse(data.vars.patch), () => {
-        this._patch.deSerialize(data.vars.patch);
-      });
+      Gui.gui.serverOps.loadProjectDependencies(
+        JSON.parse(data.vars.patch),
+        () => {
+          this._patch.deSerialize(data.vars.patch);
+        },
+      );
     } else {
       this._patch.deSerialize(data.vars.patch);
     }
@@ -145,23 +148,23 @@ PatchConnectionReceiver.prototype._receive = function (ev) {
       }
     }
   } else if (data.event === CABLES.PACO_OP_RELOAD) {
-    const serops = gui.corePatch().getOpsByObjName(data.vars.opName);
+    const serops = Gui.gui.corePatch().getOpsByObjName(data.vars.opName);
 
-    // const ser = gui.patchView.serializeOps(serops);
+    // const ser = Gui.gui.patchView.serializeOps(serops);
 
     for (let i = 0; i < serops.length; i++) {
       // serops[i].patch.deleteOp(serops[i].id);
     }
 
-    // gui.serverOps.execute(data.vars.opName);
+    // Gui.gui.serverOps.execute(data.vars.opName);
 
     if (gui)
-      gui.serverOps.loadOpDependencies(
+      Gui.gui.serverOps.loadOpDependencies(
         data.vars.opName,
         (ops) => {
           // todo: needs to reconnect etc...
           //     loadOpDependencies
-          //     // gui.serverOps.loadProjectDependencies(ser, () =>
+          //     // Gui.gui.serverOps.loadProjectDependencies(ser, () =>
           //     // {
           //     //     console.log("ser", ser);
           //     //     this._patch.deSerialize(ser, { "genIds": false });

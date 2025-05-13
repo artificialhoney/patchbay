@@ -3,10 +3,10 @@ import Tab from "../../elements/tabpanel/tab.js";
 import text from "../../text.js";
 import ManageOp from "./tab_manage_op.js";
 import { notify, notifyError } from "../../elements/notification.js";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 import { platform } from "../../platform.js";
 import { contextMenu } from "../../elements/contextmenu.js";
-import { userSettings } from "../usersettings.js";
+import UserSettings from "../usersettings.js";
 
 /**
  * tab panel for editing text and source code using the ace editor
@@ -22,9 +22,9 @@ export default class EditorTab extends Events {
 
     this._options = options;
 
-    gui.maintabPanel.show();
+    Gui.gui.maintabPanel.show();
 
-    let title = gui.maintabPanel.tabs.getUniqueTitle(options.title);
+    let title = Gui.gui.maintabPanel.tabs.getUniqueTitle(options.title);
 
     // check if tab exists?
 
@@ -50,12 +50,12 @@ export default class EditorTab extends Events {
       if (this._editor) this._editor.resize();
     });
 
-    const existing = gui.mainTabs.getTabByTitle(title);
+    const existing = Gui.gui.mainTabs.getTabByTitle(title);
     if (existing) {
-      gui.mainTabs.activateTab(existing.id);
+      Gui.gui.mainTabs.activateTab(existing.id);
     } else {
       this._tab.editorObj = options.editorObj;
-      gui.mainTabs.addTab(this._tab);
+      Gui.gui.mainTabs.addTab(this._tab);
     }
 
     let style = "";
@@ -85,13 +85,19 @@ export default class EditorTab extends Events {
       this.createEditor("editorcontent" + this._tab.id, content, (editor) => {
         this._editor = editor;
 
-        editor.setFontSize(parseInt(userSettings.get("fontsize_ace")) || 12);
+        editor.setFontSize(
+          parseInt(UserSettings.userSettings.get("fontsize_ace")) || 12,
+        );
         editor
           .getSession()
-          .setUseWrapMode(userSettings.get("wrapmode_ace") || false);
+          .setUseWrapMode(
+            UserSettings.userSettings.get("wrapmode_ace") || false,
+          );
 
-        if (gui.userSettings.get("ace_keymode")) {
-          editor.setKeyboardHandler(gui.userSettings.get("ace_keymode"));
+        if (Gui.gui.UserSettings.userSettings.get("ace_keymode")) {
+          editor.setKeyboardHandler(
+            Gui.gui.UserSettings.userSettings.get("ace_keymode"),
+          );
 
           ace.config.loadModule("ace/keyboard/vim", (module) => {
             let VimApi = module.CodeMirror.Vim;
@@ -141,13 +147,13 @@ export default class EditorTab extends Events {
           opname = this._options.editorObj.data.opname;
 
         if (!opname) {
-          const d = gui.opDocs.getOpDocById(this._options.name);
+          const d = Gui.gui.opDocs.getOpDocById(this._options.name);
           if (d) opname = d.name;
         }
 
         let opId = null;
         if (opname) {
-          const opdoc = gui.opDocs.getOpDocByName(opname);
+          const opdoc = Gui.gui.opDocs.getOpDocByName(opname);
           if (opdoc) {
             opId = opdoc.id;
           } else {
@@ -157,7 +163,7 @@ export default class EditorTab extends Events {
           this._tab.addButton(
             '<span class="icon icon-op"></span> Manage Op',
             () => {
-              new ManageOp(gui.mainTabs, opId);
+              new ManageOp(Gui.gui.mainTabs, opId);
             },
           );
 
@@ -170,7 +176,7 @@ export default class EditorTab extends Events {
                 items.push({
                   title: opdoc.name + ".js",
                   func: () => {
-                    gui.serverOps.edit(opdoc.name, false, null, true);
+                    Gui.gui.serverOps.edit(opdoc.name, false, null, true);
                   },
                 });
 
@@ -179,7 +185,7 @@ export default class EditorTab extends Events {
                   items.push({
                     title: opdoc.attachmentFiles[i],
                     func: () => {
-                      gui.serverOps.editAttachment(opname, fn);
+                      Gui.gui.serverOps.editAttachment(opname, fn);
                     },
                   });
                 }
@@ -224,7 +230,7 @@ export default class EditorTab extends Events {
         this._editor.session.setUndoManager(undoManager);
 
         this._editor.on("change", (e) => {
-          gui.mainTabs.setChanged(this._tab.id, true);
+          Gui.gui.mainTabs.setChanged(this._tab.id, true);
           if (this._options.onChange) this._options.onChange();
         });
 
@@ -262,7 +268,10 @@ export default class EditorTab extends Events {
           this._editor.resize(true);
           this._editor.focus();
           if (this._tab.editorObj && this._tab.editorObj.name)
-            userSettings.set("editortab", this._tab.editorObj.name);
+            UserSettings.userSettings.set(
+              "editortab",
+              this._tab.editorObj.name,
+            );
         });
 
         setTimeout(() => {
@@ -274,7 +283,7 @@ export default class EditorTab extends Events {
       });
     } else {
       this._editor.setValue(content, 1);
-      if (silent) gui.mainTabs.setChanged(this._tab.id, false);
+      if (silent) Gui.gui.mainTabs.setChanged(this._tab.id, false);
     }
   }
 
@@ -306,12 +315,12 @@ export default class EditorTab extends Events {
 
   save() {
     function onSaveCb(txt) {
-      gui.jobs().finish("saveeditorcontent");
+      Gui.gui.jobs().finish("saveeditorcontent");
 
       if (txt.toLowerCase().indexOf("error") == 0) notifyError(txt);
       else {
         notify(txt);
-        gui.mainTabs.setChanged(this._tab.id, false);
+        Gui.gui.mainTabs.setChanged(this._tab.id, false);
       }
 
       this._editor.focus();
@@ -425,12 +434,12 @@ export default class EditorTab extends Events {
           name: "inFloat",
         },
         {
-          content: 'inDropDown("${1:name}",\${2:["option a","option b"]}\)',
+          content: 'inDropDown("${1:name}",${2:["option a","option b"]})',
           name: "inDropDown",
         },
         {
           content:
-            'inSwitch("${1:name}",\${2:["option a","option b"]}\,\${3:"default"}\)',
+            'inSwitch("${1:name}",${2:["option a","option b"]},${3:"default"})',
           name: "inSwitch",
         },
         {
@@ -927,7 +936,7 @@ function loadAce(cb) {
     cb();
   } else {
     loadjs.ready("acelibs", () => {
-      gui.jobs().finish("acelibs");
+      Gui.gui.jobs().finish("acelibs");
       gui
         .jobs()
         .start({ id: "acemisc", title: "loading ace editor misc files" });
@@ -943,12 +952,12 @@ function loadAce(cb) {
     });
 
     loadjs.ready("ace", () => {
-      gui.jobs().finish("acemisc");
+      Gui.gui.jobs().finish("acemisc");
       CABLES.loadedAce = true;
       cb();
     });
 
-    gui.jobs().start({ id: "acelibs", title: "loading ace editor lib" });
+    Gui.gui.jobs().start({ id: "acelibs", title: "loading ace editor lib" });
     try {
       loadjs(["js/ace/ace.js"], "acelibs");
     } catch (e) {

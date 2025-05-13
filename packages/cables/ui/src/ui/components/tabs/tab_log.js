@@ -2,10 +2,10 @@ import { Events, Logger, ele } from "@cables/client";
 import ErrorStackParser from "error-stack-parser";
 import Tab from "../../elements/tabpanel/tab.js";
 import undo from "../../utils/undo.js";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 import { platform } from "../../platform.js";
-import { userSettings } from "../usersettings.js";
-import { logFilter } from "../../utils/logfilter.js";
+import UserSettings from "../usersettings.js";
+import LogFilter from "../../utils/logfilter.js";
 
 /**
  * Tab panel to display logging of cables logger
@@ -39,7 +39,7 @@ export default class LogTab extends Events {
     this.data = { cells: this.cells, colNames: this.colNames };
 
     this._html();
-    logFilter.on("initiatorsChanged", this._html.bind(this));
+    LogFilter.logFilter.on("initiatorsChanged", this._html.bind(this));
 
     this._showlogListener = logFilter.on("logAdded", this._showLog.bind(this));
 
@@ -48,11 +48,15 @@ export default class LogTab extends Events {
     });
 
     const alwaysOpenButton = this._tab.addButton(
-      "Always open: " + (userSettings.get("openLogTab") || false),
+      "Always open: " + (UserSettings.userSettings.get("openLogTab") || false),
       () => {
-        userSettings.set("openLogTab", !userSettings.get("openLogTab"));
+        UserSettings.userSettings.set(
+          "openLogTab",
+          !UserSettings.userSettings.get("openLogTab"),
+        );
         alwaysOpenButton.innerHTML =
-          "Always open: " + (userSettings.get("openLogTab") || false);
+          "Always open: " +
+          (UserSettings.userSettings.get("openLogTab") || false);
       },
     );
 
@@ -80,7 +84,7 @@ export default class LogTab extends Events {
     this.closed = true;
     logFilter.off(this._showlogListener);
     this.emitEvent("close");
-    gui.hideBottomTabs();
+    Gui.gui.hideBottomTabs();
   }
 
   _html() {
@@ -100,7 +104,9 @@ export default class LogTab extends Events {
 
     if (log.opInstId)
       html +=
-        "<a onclick=\"gui.patchView.centerSelectOp('" + log.opInstId + "');\">";
+        "<a onclick=\"Gui.gui.patchView.centerSelectOp('" +
+        log.opInstId +
+        "');\">";
 
     html += log.initiator;
 
@@ -128,7 +134,7 @@ export default class LogTab extends Events {
     if (this.closed) return;
     let html = "";
 
-    if (gui.isRemoteClient) {
+    if (Gui.gui.isRemoteClient) {
       const el = ele.byId("bottomtabs");
       if (el) el.style.zIndex = 1111111;
     }
@@ -152,7 +158,7 @@ export default class LogTab extends Events {
     if (this._hasError && !this.hasErrorButton) {
       this.hasErrorButton = true;
       this._tab.addButton("Send Error Report", () => {
-        gui.patchView.store.sendErrorReport(this.createReport(), true);
+        Gui.gui.patchView.store.sendErrorReport(this.createReport(), true);
       });
     }
 
@@ -272,7 +278,7 @@ export default class LogTab extends Events {
                 currentLine = txt;
               } else if (arg.constructor.name == "Op") {
                 currentLine +=
-                  " <a onclick=\"gui.patchView.centerSelectOp('" +
+                  " <a onclick=\"Gui.gui.patchView.centerSelectOp('" +
                   arg.id +
                   "');\">op: " +
                   arg.shortName +
@@ -385,7 +391,10 @@ export default class LogTab extends Events {
             if (!this.sentAutoReport) {
               this.sentAutoReport = true;
               setTimeout(() => {
-                gui.patchView.store.sendErrorReport(this.createReport(), false);
+                Gui.gui.patchView.store.sendErrorReport(
+                  this.createReport(),
+                  false,
+                );
               }, 500);
             }
           }
@@ -405,7 +414,7 @@ export default class LogTab extends Events {
   createReport() {
     const report = {};
     report.title = this.lastErrorMsg;
-    report.patchTitle = gui.project().name;
+    report.patchTitle = Gui.gui.project().name;
 
     const log = [];
     for (let i = logFilter.logs.length - 1; i >= 0; i--) {
@@ -471,15 +480,15 @@ export default class LogTab extends Events {
 
     report.cablesUrl = platform.getCablesUrl();
     report.platformVersion = platform.getCablesVersion();
-    if (window.gui && gui.isRemoteClient)
+    if (window.gui && Gui.gui.isRemoteClient)
       report.platformVersion += " REMOTE CLIENT";
     report.browserDescription = platform.description;
 
     if (window.gui) {
-      if (gui.project()) report.projectId = gui.project()._id;
-      if (gui.user) {
-        report.username = gui.user.username;
-        report.userId = gui.user.id;
+      if (Gui.gui.project()) report.projectId = Gui.gui.project()._id;
+      if (Gui.gui.user) {
+        report.username = Gui.gui.user.username;
+        report.userId = Gui.gui.user.id;
       }
 
       try {

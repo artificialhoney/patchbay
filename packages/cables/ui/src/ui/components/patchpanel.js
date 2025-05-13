@@ -3,7 +3,7 @@ import { getHandleBarHtml } from "../utils/handlebars.js";
 import TreeView from "./treeview.js";
 import subPatchOpUtil from "../subpatchop_util.js";
 import PatchOutline from "./patchoutline.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { platform } from "../platform.js";
 
 /**
@@ -30,27 +30,27 @@ export default class PatchPanel extends Events {
   }
 
   show(force) {
-    if (!gui.finishedLoading()) return;
+    if (!Gui.gui.finishedLoading()) return;
 
     if (this._firstTime) {
-      gui.corePatch().buildSubPatchCache();
+      Gui.gui.corePatch().buildSubPatchCache();
       this._firstTime = false;
     }
 
-    gui.opParams.emitEvent("opSelected", null);
+    Gui.gui.opParams.emitEvent("opSelected", null);
 
     if (!force && ele.byClass("patchParamPanel")) return;
 
     let html = '<div class="patchParamPanel panel bookmarkpanel">';
 
-    const project = gui.project();
+    const project = Gui.gui.project();
     if (project) {
       const projectId = project.shortId || project._id;
       const isSameHost = platform.isPatchSameHost();
 
       let host = "";
 
-      if (!isSameHost) host = gui.project().buildInfo.host;
+      if (!isSameHost) host = Gui.gui.project().buildInfo.host;
 
       html += getHandleBarHtml("patch_summary", {
         projectId: projectId,
@@ -65,19 +65,21 @@ export default class PatchPanel extends Events {
 
     html += '<br/><div id="_cbl_outlinetree"></div>';
 
-    if (gui.longPressConnector.isActive()) {
-      html += gui.longPressConnector.getParamPanelHtml();
+    if (Gui.gui.longPressConnector.isActive()) {
+      html += Gui.gui.longPressConnector.getParamPanelHtml();
     } else {
-      gui.patchView.checkPatchErrors();
+      Gui.gui.patchView.checkPatchErrors();
 
-      if (!gui.bookmarks.needRefreshSubs && ele.byId("patchsummary")) return;
-      if (!gui.bookmarks.needRefreshSubs && ele.byId("bookmarkpanel")) return;
+      if (!Gui.gui.bookmarks.needRefreshSubs && ele.byId("patchsummary"))
+        return;
+      if (!Gui.gui.bookmarks.needRefreshSubs && ele.byId("bookmarkpanel"))
+        return;
 
-      html += gui.bookmarks.getHtml();
+      html += Gui.gui.bookmarks.getHtml();
     }
 
-    if (ele.byId(gui.getParamPanelEleId()))
-      ele.byId(gui.getParamPanelEleId()).innerHTML = html;
+    if (ele.byId(Gui.gui.getParamPanelEleId()))
+      ele.byId(Gui.gui.getParamPanelEleId()).innerHTML = html;
 
     if (ele.byId("btn_patch_settings"))
       ele.clickable(ele.byId("btn_patch_settings"), CABLES.CMD.UI.settings);

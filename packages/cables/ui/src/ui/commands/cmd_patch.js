@@ -1,6 +1,6 @@
 import { Logger, ele } from "@cables/client";
 import ModalDialog from "../dialogs/modaldialog.js";
-import Gui, { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { notify, notifyError } from "../elements/notification.js";
 import AnalyzePatchTab from "../components/tabs/tab_analyze.js";
@@ -28,14 +28,14 @@ const patchCommands = {
 export default patchCommands;
 
 CABLES_CMD_PATCH.setPatchTitle = () => {
-  gui.patchView.store.showModalTitleDialog();
+  Gui.gui.patchView.store.showModalTitleDialog();
 };
 
 CABLES_CMD_PATCH.openParamsTab = () => {
-  const ops = gui.patchView.getSelectedOps();
+  const ops = Gui.gui.patchView.getSelectedOps();
   if (!ops.length) return;
 
-  const op = gui.patchView.getSelectedOps()[0];
+  const op = Gui.gui.patchView.getSelectedOps()[0];
   const id = "params" + CABLES.uuid();
 
   const tab = new CABLES.UI.Tab(op.name, {
@@ -44,8 +44,8 @@ CABLES_CMD_PATCH.openParamsTab = () => {
     padding: true,
     singleton: false,
   });
-  gui.mainTabs.addTab(tab, true);
-  gui.maintabPanel.show(true);
+  Gui.gui.mainTabs.addTab(tab, true);
+  Gui.gui.maintabPanel.show(true);
   tab.html('<div id="' + id + '"></div<');
 
   const opParams = new OpParampanel();
@@ -55,53 +55,55 @@ CABLES_CMD_PATCH.openParamsTab = () => {
 };
 
 CABLES_CMD_PATCH.clearOpTitles = function () {
-  let ops = gui.patchView.getSelectedOps();
+  let ops = Gui.gui.patchView.getSelectedOps();
 
-  if (ops.length == 0) ops = gui.corePatch().ops;
+  if (ops.length == 0) ops = Gui.gui.corePatch().ops;
 
   if (!ops || ops.length == 0) return;
 
   for (let i = 0; i < ops.length; i++) {
-    const op = gui.corePatch().getOpById(ops[i].id);
+    const op = Gui.gui.corePatch().getOpById(ops[i].id);
     op.setTitle("");
   }
 };
 
 CABLES_CMD_PATCH.selectChilds = function () {
-  const ops = gui.patchView.getSelectedOps();
+  const ops = Gui.gui.patchView.getSelectedOps();
 
   if (!ops || ops.length == 0) return;
 
   for (let i = 0; i < ops.length; i++) {
-    const op = gui.corePatch().getOpById(ops[i].id);
+    const op = Gui.gui.corePatch().getOpById(ops[i].id);
     op.selectChilds();
   }
 
-  gui.patchView.showSelectedOpsPanel();
+  Gui.gui.patchView.showSelectedOpsPanel();
 };
 
 CABLES_CMD_PATCH.autoPosSubpatchInputOutputOps = function () {
-  const sub = gui.patchView.getCurrentSubPatch();
+  const sub = Gui.gui.patchView.getCurrentSubPatch();
   if (!sub) return;
-  gui.patchView.setPositionSubPatchInputOutputOps(sub);
+  Gui.gui.patchView.setPositionSubPatchInputOutputOps(sub);
 };
 
 CABLES_CMD_PATCH.gotoParentSubpatch = function () {
-  const names = gui.patchView.getSubpatchPathArray(
-    gui.patchView.getCurrentSubPatch(),
+  const names = Gui.gui.patchView.getSubpatchPathArray(
+    Gui.gui.patchView.getCurrentSubPatch(),
   );
 
   if (names.length == 0) return;
-  if (names.length == 1) gui.patchView.setCurrentSubPatch(0);
-  else gui.patchView.setCurrentSubPatch(names[names.length - 1].id);
+  if (names.length == 1) Gui.gui.patchView.setCurrentSubPatch(0);
+  else Gui.gui.patchView.setCurrentSubPatch(names[names.length - 1].id);
 };
 
 CABLES_CMD_PATCH.selectAllOps = function () {
-  gui.patchView.selectAllOpsSubPatch(gui.patchView.getCurrentSubPatch());
+  Gui.gui.patchView.selectAllOpsSubPatch(
+    Gui.gui.patchView.getCurrentSubPatch(),
+  );
 };
 
 CABLES_CMD_PATCH.deleteSelectedOps = function () {
-  gui.patchView.deleteSelectedOps();
+  Gui.gui.patchView.deleteSelectedOps();
 };
 
 CABLES_CMD_PATCH.reload = function () {
@@ -109,7 +111,7 @@ CABLES_CMD_PATCH.reload = function () {
 };
 
 CABLES_CMD_PATCH.save = function (force, cb) {
-  if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) {
+  if (Gui.gui.getRestriction() < Gui.gui.RESTRICT_MODE_FULL) {
     notifyError("Not allowed");
     return;
   }
@@ -118,9 +120,9 @@ CABLES_CMD_PATCH.save = function (force, cb) {
     return;
   }
 
-  gui.patchView.store.saveCurrentProject(cb, undefined, undefined, force);
+  Gui.gui.patchView.store.saveCurrentProject(cb, undefined, undefined, force);
 
-  const ops = gui.savedState.getUnsavedPatchSubPatchOps();
+  const ops = Gui.gui.savedState.getUnsavedPatchSubPatchOps();
 
   for (let i = 0; i < ops.length; i++) {
     const name = ops[i].op.shortName;
@@ -131,7 +133,7 @@ CABLES_CMD_PATCH.save = function (force, cb) {
 };
 
 CABLES_CMD_PATCH.saveAs = function () {
-  gui.patchView.store.saveAs();
+  Gui.gui.patchView.store.saveAs();
 };
 
 CABLES_CMD_PATCH.createBackup = function () {
@@ -139,21 +141,21 @@ CABLES_CMD_PATCH.createBackup = function () {
 };
 
 CABLES_CMD_PATCH.clear = function () {
-  gui.patchView.clearPatch();
+  Gui.gui.patchView.clearPatch();
 };
 
 CABLES_CMD_PATCH.createAreaFromSelection = function () {
-  gui.patchView.createAreaFromSelection();
+  Gui.gui.patchView.createAreaFromSelection();
 };
 
 CABLES_CMD_PATCH.deleteUnusedPatchOps = function () {
-  const opdocs = gui.opDocs.getAll();
+  const opdocs = Gui.gui.opDocs.getAll();
   let text = "";
   let ids = [];
 
   for (let i = 0; i < opdocs.length; i++) {
     if (opdocs[i].name.indexOf("Ops.Patch") == 0) {
-      const usedOps = gui.corePatch().getOpsByOpId(opdocs[i].id);
+      const usedOps = Gui.gui.corePatch().getOpsByOpId(opdocs[i].id);
 
       if (ids.indexOf(opdocs[i].id) == -1 && usedOps.length == 0) {
         text += "- " + opdocs[i].name + "<br/>";
@@ -174,7 +176,7 @@ CABLES_CMD_PATCH.deleteUnusedPatchOps = function () {
     const idsParam = ids.join(",");
     const url =
       platform.getCablesUrl() + "/op/delete?ids=" + idsParam + "&iframe=true";
-    gui.mainTabs.addIframeTab(
+    Gui.gui.mainTabs.addIframeTab(
       "Delete Ops",
       url,
       {
@@ -189,7 +191,10 @@ CABLES_CMD_PATCH.deleteUnusedPatchOps = function () {
 };
 
 CABLES_CMD_PATCH.createSubPatchOp = function () {
-  if (!gui.project().allowEdit && gui.patchView.getCurrentSubPatch() == 0) {
+  if (
+    !Gui.gui.project().allowEdit &&
+    Gui.gui.patchView.getCurrentSubPatch() == 0
+  ) {
     new ModalDialog({
       title: "You don't have write access",
       showOkButton: true,
@@ -198,12 +203,12 @@ CABLES_CMD_PATCH.createSubPatchOp = function () {
   }
 
   let suggestedNamespace = platform.getPatchOpsNamespace();
-  if (gui.patchView.getCurrentSubPatch() != 0) {
-    const subOuter = gui.patchView.getSubPatchOuterOp(
-      gui.patchView.getCurrentSubPatch(),
+  if (Gui.gui.patchView.getCurrentSubPatch() != 0) {
+    const subOuter = Gui.gui.patchView.getSubPatchOuterOp(
+      Gui.gui.patchView.getCurrentSubPatch(),
     );
     if (subOuter) {
-      if (!gui.opDocs.getOpDocByName(subOuter.objName).allowEdit) {
+      if (!Gui.gui.opDocs.getOpDocByName(subOuter.objName).allowEdit) {
         new ModalDialog({
           title: "You don't have write access in this subPatchOp",
           showOkButton: true,
@@ -227,9 +232,9 @@ CABLES_CMD_PATCH.createSubPatchOp = function () {
     hasOpDirectories: platform.frontendOptions.hasOpDirectories,
   };
 
-  if (gui.patchView.getCurrentSubPatch() != 0) {
-    const outerOp = gui.patchView.getSubPatchOuterOp(
-      gui.patchView.getCurrentSubPatch(),
+  if (Gui.gui.patchView.getCurrentSubPatch() != 0) {
+    const outerOp = Gui.gui.patchView.getSubPatchOuterOp(
+      Gui.gui.patchView.getCurrentSubPatch(),
     );
     if (outerOp) {
       const containerName = outerOp.objName;
@@ -237,10 +242,10 @@ CABLES_CMD_PATCH.createSubPatchOp = function () {
     }
   }
 
-  gui.serverOps.opNameDialog(
+  Gui.gui.serverOps.opNameDialog(
     dialogOptions,
     (newNamespace, newName, options) => {
-      gui.closeModal();
+      Gui.gui.closeModal();
       CABLES_CMD_PATCH.createOpFromSelection({
         newOpName: newName,
         ignoreNsCheck: true,
@@ -251,14 +256,16 @@ CABLES_CMD_PATCH.createSubPatchOp = function () {
 };
 
 CABLES_CMD_PATCH.centerOpsInSubpatch = function () {
-  gui.patchView.centerSubPatchBounds(gui.patchView.getCurrentSubPatch());
+  Gui.gui.patchView.centerSubPatchBounds(
+    Gui.gui.patchView.getCurrentSubPatch(),
+  );
 };
 
 CABLES_CMD_PATCH.createOpFromSelection = function (options = {}) {
   if (!options.ignoreNsCheck) {
-    if (gui.patchView.getCurrentSubPatch() != 0) {
-      const subOuter = gui.patchView.getSubPatchOuterOp(
-        gui.patchView.getCurrentSubPatch(),
+    if (Gui.gui.patchView.getCurrentSubPatch() != 0) {
+      const subOuter = Gui.gui.patchView.getSubPatchOuterOp(
+        Gui.gui.patchView.getCurrentSubPatch(),
       );
       if (subOuter && subOuter.objName.indexOf("Ops.Patch.") != 0) {
         CABLES_CMD_PATCH.createSubPatchOp();
@@ -267,14 +274,14 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {}) {
     }
   }
 
-  const origOpsBounds = gui.patchView.getSelectionBounds();
-  gui.patchView.patchRenderer.subPatchOpAnimStart(origOpsBounds, () => {
-    const selops = gui.patchView.getSelectedOps();
+  const origOpsBounds = Gui.gui.patchView.getSelectionBounds();
+  Gui.gui.patchView.patchRenderer.subPatchOpAnimStart(origOpsBounds, () => {
+    const selops = Gui.gui.patchView.getSelectedOps();
 
-    let selectedOpIds = gui.patchView.getSelectedOpsIds();
+    let selectedOpIds = Gui.gui.patchView.getSelectedOpsIds();
     const newOpname = options.newOpName || subPatchOpUtil.getAutoName();
-    const currentSubpatch = gui.patchView.getCurrentSubPatch();
-    // const loadingModal = gui.startModalLoading("Create Subpatch");
+    const currentSubpatch = Gui.gui.patchView.getCurrentSubPatch();
+    // const loadingModal = Gui.gui.startModalLoading("Create Subpatch");
 
     for (let i = 0; i < selops.length; i++) {
       if (selops[i].isSubPatchOp()) {
@@ -290,15 +297,15 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {}) {
       }
     }
 
-    gui.serverOps.create(
+    Gui.gui.serverOps.create(
       newOpname,
       () => {
         let newselectedOpIds = [];
 
         for (let i = 0; i < selectedOpIds.length; i++) {
-          gui.patchView.selectOpId(selectedOpIds[i]);
+          Gui.gui.patchView.selectOpId(selectedOpIds[i]);
 
-          const op = gui.corePatch().getOpById(selectedOpIds[i]);
+          const op = Gui.gui.corePatch().getOpById(selectedOpIds[i]);
           if (op.isSubPatchOp()) {
             const newops = gui
               .corePatch()
@@ -308,14 +315,14 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {}) {
           }
         }
 
-        gui.patchView.createSubPatchFromSelection(
+        Gui.gui.patchView.createSubPatchFromSelection(
           2,
           (patchId, OpTempSubpatch) => {
             const portJson = { ports: [] };
             const oldLinks = [];
 
             // find ops that are crosslinked...
-            const ops = gui.corePatch().getSubPatchOps(patchId);
+            const ops = Gui.gui.corePatch().getSubPatchOps(patchId);
 
             let unlink = [];
             for (let i = 0; i < ops.length; i++) {
@@ -378,7 +385,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {}) {
               l.remove();
             });
 
-            gui.patchView.addOp(newOpname, {
+            Gui.gui.patchView.addOp(newOpname, {
               uiAttribs: {
                 translate: { x: origOpsBounds.minX, y: origOpsBounds.minY },
               },
@@ -390,8 +397,8 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {}) {
                     const src =
                       subPatchOpUtil.generatePortsAttachmentJsSrc(portJson);
 
-                    gui.corePatch().deleteOp(OpTempSubpatch.id);
-                    gui.patchView.setCurrentSubPatch(currentSubpatch);
+                    Gui.gui.corePatch().deleteOp(OpTempSubpatch.id);
+                    Gui.gui.patchView.setCurrentSubPatch(currentSubpatch);
 
                     platform.talkerAPI.send(
                       "opUpdate",
@@ -410,7 +417,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {}) {
                           return;
                         }
 
-                        gui.serverOps.execute(newOpname, (newOps) => {
+                        Gui.gui.serverOps.execute(newOpname, (newOps) => {
                           newOp = newOps[0];
 
                           const subPatchId = newOp.patchId.get();
@@ -479,12 +486,14 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {}) {
                               origOpsBounds.minY,
                             );
 
-                          gui.patchView.testCollision(newOp);
-                          gui.patchView.setPositionSubPatchInputOutputOps(
+                          Gui.gui.patchView.testCollision(newOp);
+                          Gui.gui.patchView.setPositionSubPatchInputOutputOps(
                             subPatchId,
                           );
 
-                          if (!gui.savedState.getStateBlueprint(subPatchId)) {
+                          if (
+                            !Gui.gui.savedState.getStateBlueprint(subPatchId)
+                          ) {
                             subPatchOpUtil.updateSubPatchOpAttachment(newOp, {
                               oldSubId: subPatchId,
                               next: () => {
@@ -495,11 +504,15 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {}) {
                               },
                             });
                           }
-                          gui.patchView.patchRenderer.focusOpAnim(newOp.id);
-                          gui.patchView.patchRenderer.subPatchOpAnimEnd(
+                          Gui.gui.patchView.patchRenderer.focusOpAnim(newOp.id);
+                          Gui.gui.patchView.patchRenderer.subPatchOpAnimEnd(
                             newOp.id,
                           );
-                          gui.emitEvent("createdSubPatchOp", newOp, subPatchId);
+                          Gui.gui.emitEvent(
+                            "createdSubPatchOp",
+                            newOp,
+                            subPatchId,
+                          );
                         });
                       },
                     );
@@ -521,29 +534,29 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {}) {
 /*
  * CABLES_CMD_PATCH.createSubPatchFromSelection = function (version)
  * {
- *     gui.patchView.createSubPatchFromSelection(version);
+ *     Gui.gui.patchView.createSubPatchFromSelection(version);
  * };
  */
 
 CABLES_CMD_PATCH.findCommentedOps = function () {
-  gui.find(":commented");
+  Gui.gui.find(":commented");
 };
 
 CABLES_CMD_PATCH.findUnconnectedOps = function () {
-  gui.find(":unconnected");
+  Gui.gui.find(":unconnected");
 };
 
 CABLES_CMD_PATCH.findUserOps = function () {
-  gui.find(":user");
+  Gui.gui.find(":user");
 };
 
 CABLES_CMD_PATCH.findOpsUsingExternalAssets = function () {
-  gui.find(":extassets");
+  Gui.gui.find(":extassets");
 };
 
 CABLES_CMD_PATCH.createFile = function () {
-  gui.showFileManager(function () {
-    gui.fileManager.createFile();
+  Gui.gui.showFileManager(function () {
+    Gui.gui.fileManager.createFile();
   });
 };
 
@@ -564,12 +577,12 @@ CABLES_CMD_PATCH.reuploadFile = function (id, fileName) {
 };
 
 CABLES_CMD_PATCH.uploadFileDialog = function () {
-  if (!window.gui || !gui.project()) return;
+  if (!window.gui || !Gui.gui.project()) return;
   const fileElem = document.getElementById("uploaddialog");
 
   if (!fileElem) {
     const html = getHandleBarHtml("dialog_upload", {
-      patchId: gui.project()._id,
+      patchId: Gui.gui.project()._id,
     });
 
     new ModalDialog({ html: html });
@@ -580,9 +593,9 @@ CABLES_CMD_PATCH.uploadFileTab = () => {
   const url =
     platform.getCablesUrl() +
     "/patch/" +
-    gui.project()._id +
+    Gui.gui.project()._id +
     "/settings/upload?iframe=true";
-  gui.mainTabs.addIframeTab(
+  Gui.gui.mainTabs.addIframeTab(
     "Upload File",
     url,
     {
@@ -598,14 +611,14 @@ CABLES_CMD_PATCH.showBackups = () => {
   const url =
     platform.getCablesUrl() +
     "/patch/" +
-    gui.project()._id +
+    Gui.gui.project()._id +
     "/settings?iframe=true#versions";
   const gotoUrl =
     platform.getCablesUrl() +
     "/patch/" +
-    gui.project()._id +
+    Gui.gui.project()._id +
     "/settings#versions";
-  gui.mainTabs.addIframeTab(
+  Gui.gui.mainTabs.addIframeTab(
     "Patch Backups",
     url,
     {
@@ -620,7 +633,7 @@ CABLES_CMD_PATCH.showBackups = () => {
 
 CABLES_CMD_PATCH.export = function (type) {
   const exporter = new Exporter(
-    gui.project(),
+    Gui.gui.project(),
     platform.getPatchVersion(),
     type,
   );
@@ -628,7 +641,7 @@ CABLES_CMD_PATCH.export = function (type) {
 };
 
 CABLES_CMD_PATCH.newPatch = function () {
-  gui.createProject();
+  Gui.gui.createProject();
 };
 
 CABLES_CMD_PATCH.addOpByName = (name) => {
@@ -638,17 +651,17 @@ CABLES_CMD_PATCH.addOpByName = (name) => {
     text: "Enter full op name",
     promptValue: name,
     promptOk: (opname) => {
-      gui.serverOps.loadOpDependencies(opname, function () {
-        gui.patchView.addOp(opname, {
+      Gui.gui.serverOps.loadOpDependencies(opname, function () {
+        Gui.gui.patchView.addOp(opname, {
           onOpAdd: (op) => {
             op.setUiAttrib({
               translate: {
-                x: gui.patchView.patchRenderer.viewBox.mousePatchX,
-                y: gui.patchView.patchRenderer.viewBox.mousePatchY,
+                x: Gui.gui.patchView.patchRenderer.viewBox.mousePatchX,
+                y: Gui.gui.patchView.patchRenderer.viewBox.mousePatchY,
               },
             });
             if (op) {
-              gui.patchView.focusOp(op.id);
+              Gui.gui.patchView.focusOp(op.id);
             }
           },
         });
@@ -658,24 +671,24 @@ CABLES_CMD_PATCH.addOpByName = (name) => {
 };
 
 CABLES_CMD_PATCH.reloadOp = function (x, y) {
-  const ops = gui.patchView.getSelectedOps();
+  const ops = Gui.gui.patchView.getSelectedOps();
   if (!ops.length) return;
 
-  const op = gui.patchView.getSelectedOps()[0];
+  const op = Gui.gui.patchView.getSelectedOps()[0];
 
-  gui.serverOps.execute(op.opId, () => {
+  Gui.gui.serverOps.execute(op.opId, () => {
     notify("reloaded op " + op.objName);
   });
 };
 
 CABLES_CMD_PATCH.addOp = function (x, y) {
-  gui.opSelect().show({ x: 0, y: 0 });
+  Gui.gui.opSelect().show({ x: 0, y: 0 });
 };
 
 CABLES_CMD_PATCH.patchWebsite = function () {
   window.open(
-    platform.getCablesUrl() + "/p/" + gui.project().shortId ||
-      gui.project()._id,
+    platform.getCablesUrl() + "/p/" + Gui.gui.project().shortId ||
+      Gui.gui.project()._id,
   );
 };
 
@@ -686,8 +699,8 @@ CABLES_CMD_PATCH.renameVariable = function (oldname) {
     text: "Enter a new name for the variable " + oldname,
     promptValue: oldname,
     promptOk: (newname) => {
-      gui.corePatch().emitEvent("variableRename", oldname, newname);
-      gui.corePatch().deleteVar(oldname);
+      Gui.gui.corePatch().emitEvent("variableRename", oldname, newname);
+      Gui.gui.corePatch().deleteVar(oldname);
     },
   });
 };
@@ -702,7 +715,7 @@ CABLES_CMD_PATCH.createVariable = function (op) {
       if (op) {
         op.setTitle(str);
         op.varName.set(str);
-        gui.opParams.show(op);
+        Gui.gui.opParams.show(op);
       }
     },
   });
@@ -715,10 +728,10 @@ CABLES_CMD_PATCH.createVarNumber = function (next) {
     text: "Enter a name for the new variable",
     promptValue: "myNewVar",
     promptOk: (str) => {
-      const opSetter = gui.patchView.addOp(
+      const opSetter = Gui.gui.patchView.addOp(
         defaultOps.defaultOpNames.VarSetNumber,
       );
-      const opGetter = gui.patchView.addOp(
+      const opGetter = Gui.gui.patchView.addOp(
         defaultOps.defaultOpNames.VarGetNumber,
       );
 
@@ -740,12 +753,12 @@ CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next) {
   let opSetterName = getsetOp.setter;
   let opGetterName = getsetOp.getter;
 
-  gui.patchView.addOp(opSetterName, {
+  Gui.gui.patchView.addOp(opSetterName, {
     onOpAdd: (opSetter) => {
-      gui.patchView.addOp(opGetterName, {
+      Gui.gui.patchView.addOp(opGetterName, {
         onOpAdd: (opGetter) => {
-          opSetter.uiAttr({ subPatch: gui.patchView.getCurrentSubPatch() });
-          opGetter.uiAttr({ subPatch: gui.patchView.getCurrentSubPatch() });
+          opSetter.uiAttr({ subPatch: Gui.gui.patchView.getCurrentSubPatch() });
+          opGetter.uiAttr({ subPatch: Gui.gui.patchView.getCurrentSubPatch() });
 
           if (p.type != portType.trigger)
             opSetter.getPortByName(portName).set(value);
@@ -761,11 +774,13 @@ CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next) {
           opSetter.varName.set(name);
           opGetter.varName.set(name);
 
-          gui.patchView.setCurrentSubPatch(gui.patchView.getCurrentSubPatch());
+          Gui.gui.patchView.setCurrentSubPatch(
+            Gui.gui.patchView.getCurrentSubPatch(),
+          );
 
           if (next) next(opSetter, opGetter);
 
-          gui.closeModal();
+          Gui.gui.closeModal();
         },
       });
     },
@@ -778,18 +793,18 @@ CABLES_CMD_PATCH.replaceLinkTriggerReceiveExist = function () {
   const portOut = link.portOut;
   CABLES.UI.OPSELECT.linkNewLink = null;
 
-  gui.opSelect().close();
-  gui.closeModal();
+  Gui.gui.opSelect().close();
+  Gui.gui.closeModal();
   const getsetOp = opNames.getVarGetterOpNameByType(p.type, p);
 
-  gui.patchView.addOp(getsetOp.getter, {
+  Gui.gui.patchView.addOp(getsetOp.getter, {
     onOpAdd: (opGetter) => {
       link.remove();
       p.removeLinks();
       p.op.patch.link(opGetter, getsetOp.portNameOut, p.op, p.name);
 
       opGetter.uiAttr({
-        subPatch: gui.patchView.getCurrentSubPatch(),
+        subPatch: Gui.gui.patchView.getCurrentSubPatch(),
         translate: {
           x: p.op.uiAttribs.translate.x + 20,
           y: p.op.uiAttribs.translate.y - 40,
@@ -803,15 +818,15 @@ CABLES_CMD_PATCH.createTriggerSendReceiveExist = function () {
   const type = CABLES.UI.OPSELECT.linkNewOpToPort.type;
   const p = CABLES.UI.OPSELECT.linkNewOpToPort;
 
-  gui.opSelect().close();
-  gui.closeModal();
+  Gui.gui.opSelect().close();
+  Gui.gui.closeModal();
   const getsetOp = opNames.getVarGetterOpNameByType(type, p);
   CABLES.UI.OPSELECT.linkNewOpToPort = null;
 
   let getset = getsetOp.setter;
   if (p.direction == CABLES.Port.DIR_IN) getset = getsetOp.getter;
 
-  gui.patchView.addOp(getset, {
+  Gui.gui.patchView.addOp(getset, {
     onOpAdd: (op) => {
       let off = -40;
 
@@ -823,7 +838,7 @@ CABLES_CMD_PATCH.createTriggerSendReceiveExist = function () {
       }
 
       op.uiAttr({
-        subPatch: gui.patchView.getCurrentSubPatch(),
+        subPatch: Gui.gui.patchView.getCurrentSubPatch(),
         translate: {
           x: p.op.uiAttribs.translate.x + 20,
           y: p.op.uiAttribs.translate.y + off,
@@ -839,11 +854,11 @@ CABLES_CMD_PATCH.replaceLinkVariableExist = function () {
   const portOut = link.portOut;
   CABLES.UI.OPSELECT.linkNewLink = null;
 
-  gui.opSelect().close();
-  gui.closeModal();
+  Gui.gui.opSelect().close();
+  Gui.gui.closeModal();
   const getsetOp = opNames.getVarGetterOpNameByType(p.type, p);
 
-  gui.patchView.addOp(getsetOp.getter, {
+  Gui.gui.patchView.addOp(getsetOp.getter, {
     onOpAdd: (opGetter) => {
       link.remove();
       p.removeLinks();
@@ -851,7 +866,7 @@ CABLES_CMD_PATCH.replaceLinkVariableExist = function () {
       p.op.patch.link(opGetter, getsetOp.portName, p.op, p.name);
 
       opGetter.uiAttr({
-        subPatch: gui.patchView.getCurrentSubPatch(),
+        subPatch: Gui.gui.patchView.getCurrentSubPatch(),
         translate: {
           x: p.op.uiAttribs.translate.x + 20,
           y: p.op.uiAttribs.translate.y - 40,
@@ -867,36 +882,36 @@ CABLES_CMD_PATCH.addLinkReroute = function () {
   const portOut = link.portOut;
   CABLES.UI.OPSELECT.linkNewLink = null;
 
-  gui.opSelect().close();
-  gui.closeModal();
+  Gui.gui.opSelect().close();
+  Gui.gui.closeModal();
   const getsetOp = opNames.getRerouteOp(p.type);
 
-  gui.patchView.addOp(getsetOp, {
+  Gui.gui.patchView.addOp(getsetOp, {
     onOpAdd: (opGetter) => {
-      const glPatch = gui.patchView.patchRenderer;
+      const glPatch = Gui.gui.patchView.patchRenderer;
       let x = glPatch._lastMouseX;
       let y = glPatch._lastMouseY;
 
       opGetter.uiAttr({
-        subPatch: gui.patchView.getCurrentSubPatch(),
+        subPatch: Gui.gui.patchView.getCurrentSubPatch(),
       });
 
       setTimeout(() => {
         x = glPatch.snap.snapX(x);
         y = glPatch.snap.snapY(y);
 
-        gui.patchView.insertOpInLink(link, opGetter, x, y);
+        Gui.gui.patchView.insertOpInLink(link, opGetter, x, y);
       }, 100);
     },
   });
 };
 
 CABLES_CMD_PATCH.createLinkVariableExist = function (createTrigger = false) {
-  gui.opSelect().close();
+  Gui.gui.opSelect().close();
   const type = CABLES.UI.OPSELECT.linkNewOpToPort.type;
   const p = CABLES.UI.OPSELECT.linkNewOpToPort;
 
-  gui.closeModal();
+  Gui.gui.closeModal();
   const getsetOp = opNames.getVarGetterOpNameByType(type, p);
   CABLES.UI.OPSELECT.linkNewOpToPort = null;
 
@@ -912,13 +927,13 @@ CABLES_CMD_PATCH.createLinkVariableExist = function (createTrigger = false) {
     newOpY = p.op.uiAttribs.translate.y + 40;
   }
 
-  gui.patchView.addOp(opFunction, {
+  Gui.gui.patchView.addOp(opFunction, {
     onOpAdd: (opGetter) => {
       p.removeLinks();
       p.op.patch.link(opGetter, getsetOp.portName, p.op, p.name);
 
       opGetter.uiAttr({
-        subPatch: gui.patchView.getCurrentSubPatch(),
+        subPatch: Gui.gui.patchView.getCurrentSubPatch(),
         translate: {
           x: newOpX,
           y: newOpY,
@@ -929,7 +944,7 @@ CABLES_CMD_PATCH.createLinkVariableExist = function (createTrigger = false) {
 };
 
 CABLES_CMD_PATCH.replaceLinkVariable = function () {
-  gui.opSelect().close();
+  Gui.gui.opSelect().close();
   new ModalDialog({
     prompt: true,
     title: "New Variable",
@@ -973,7 +988,7 @@ CABLES_CMD_PATCH.replaceLinkVariable = function () {
 };
 
 CABLES_CMD_PATCH.createTriggerSendReceive = () => {
-  gui.opSelect().close();
+  Gui.gui.opSelect().close();
   const link = CABLES.UI.OPSELECT.linkNewLink;
 
   new ModalDialog({
@@ -998,7 +1013,7 @@ CABLES_CMD_PATCH.createTriggerSendReceive = () => {
         p2.get(),
         (setter, getter) => {
           getter.uiAttr({
-            subPatch: gui.patchView.getCurrentSubPatch(),
+            subPatch: Gui.gui.patchView.getCurrentSubPatch(),
             translate: {
               x: p1.op.uiAttribs.translate.x,
               y: p1.op.uiAttribs.translate.y - 40,
@@ -1006,7 +1021,7 @@ CABLES_CMD_PATCH.createTriggerSendReceive = () => {
           });
 
           setter.uiAttr({
-            subPatch: gui.patchView.getCurrentSubPatch(),
+            subPatch: Gui.gui.patchView.getCurrentSubPatch(),
             translate: {
               x: p2.op.uiAttribs.translate.x,
               y: p2.op.uiAttribs.translate.y + 40,
@@ -1019,7 +1034,7 @@ CABLES_CMD_PATCH.createTriggerSendReceive = () => {
 };
 
 CABLES_CMD_PATCH.createAutoVariable = function () {
-  gui.opSelect().close();
+  Gui.gui.opSelect().close();
   const p = CABLES.UI.OPSELECT.linkNewOpToPort;
 
   new ModalDialog({
@@ -1036,7 +1051,7 @@ CABLES_CMD_PATCH.createAutoVariable = function () {
         (setter, getter) => {
           if (!setter.uiAttribs.translate)
             setter.uiAttr({
-              subPatch: gui.patchView.getCurrentSubPatch(),
+              subPatch: Gui.gui.patchView.getCurrentSubPatch(),
               translate: {
                 x: p.op.uiAttribs.translate.x,
                 y: p.op.uiAttribs.translate.y + 40,
@@ -1044,7 +1059,7 @@ CABLES_CMD_PATCH.createAutoVariable = function () {
             });
 
           getter.uiAttr({
-            subPatch: gui.patchView.getCurrentSubPatch(),
+            subPatch: Gui.gui.patchView.getCurrentSubPatch(),
             translate: {
               x: setter.uiAttribs.translate.x,
               y: setter.uiAttribs.translate.y + 40,
@@ -1057,51 +1072,51 @@ CABLES_CMD_PATCH.createAutoVariable = function () {
 };
 
 CABLES_CMD_PATCH.addSpaceX = () => {
-  gui.patchView.addSpaceBetweenOpsX();
+  Gui.gui.patchView.addSpaceBetweenOpsX();
 };
 
 CABLES_CMD_PATCH.addSpaceY = () => {
-  gui.patchView.addSpaceBetweenOpsY();
+  Gui.gui.patchView.addSpaceBetweenOpsY();
 };
 
 CABLES_CMD_PATCH.linkTwoSelectedOps = () => {
-  if (gui.patchView.getSelectedOps().length != 2) {
+  if (Gui.gui.patchView.getSelectedOps().length != 2) {
     log.log("needs 2 selected ops");
     return;
   }
 
-  let a = gui.patchView.getSelectedOps()[0];
-  let b = gui.patchView.getSelectedOps()[1];
+  let a = Gui.gui.patchView.getSelectedOps()[0];
+  let b = Gui.gui.patchView.getSelectedOps()[1];
 
   if (a.uiAttribs.translate.y > b.uiAttribs.translate.y)
-    gui.patchView.suggestionBetweenTwoOps(b, a);
-  else gui.patchView.suggestionBetweenTwoOps(a, b);
+    Gui.gui.patchView.suggestionBetweenTwoOps(b, a);
+  else Gui.gui.patchView.suggestionBetweenTwoOps(a, b);
 };
 
 CABLES_CMD_PATCH.compressOps = () => {
-  gui.patchView.compressSelectedOps(gui.patchView.getSelectedOps());
+  Gui.gui.patchView.compressSelectedOps(Gui.gui.patchView.getSelectedOps());
 };
 
 CABLES_CMD_PATCH.alignOpsLeft = () => {
-  gui.patchView.alignSelectedOpsVert(gui.patchView.getSelectedOps());
+  Gui.gui.patchView.alignSelectedOpsVert(Gui.gui.patchView.getSelectedOps());
 };
 
 CABLES_CMD_PATCH.watchGlOp = function () {
-  new GlOpWatcher(gui.mainTabs);
-  gui.maintabPanel.show(true);
+  new GlOpWatcher(Gui.gui.mainTabs);
+  Gui.gui.maintabPanel.show(true);
 };
 
 CABLES_CMD_PATCH.savePatchScreenshot = function () {
-  gui.patchView.patchRenderer._cgl.saveScreenshot(
+  Gui.gui.patchView.patchRenderer._cgl.saveScreenshot(
     "patchfield_" + performance.now(),
     () => {
-      gui.patchView.patchRenderer._cgl.patch.resume();
+      Gui.gui.patchView.patchRenderer._cgl.patch.resume();
     },
   );
 };
 
 CABLES_CMD_PATCH.toggleResizable = function () {
-  const ops = gui.patchView.getSelectedOps();
+  const ops = Gui.gui.patchView.getSelectedOps();
 
   for (let i = 0; i < ops.length; i++) {
     const op = ops[i];
@@ -1115,7 +1130,7 @@ CABLES_CMD_PATCH.toggleResizable = function () {
 };
 
 CABLES_CMD_PATCH.setOpTitle = function () {
-  const ops = gui.patchView.getSelectedOps();
+  const ops = Gui.gui.patchView.getSelectedOps();
 
   if (ops.length != 1) {
     log.warn("rename canceled - select one op!");
@@ -1128,17 +1143,17 @@ CABLES_CMD_PATCH.setOpTitle = function () {
     text: "Enter a title for this op",
     promptValue: ops[0].name,
     promptOk: (name) => {
-      gui.opParams.setCurrentOpTitle(name);
+      Gui.gui.opParams.setCurrentOpTitle(name);
     },
   });
 };
 
 CABLES_CMD_PATCH.resume = function () {
-  gui.corePatch().resume();
+  Gui.gui.corePatch().resume();
 };
 
 CABLES_CMD_PATCH.pause = function () {
-  gui.corePatch().pause();
+  Gui.gui.corePatch().pause();
 };
 
 CABLES_CMD_PATCH.replaceOp = function () {
@@ -1147,9 +1162,9 @@ CABLES_CMD_PATCH.replaceOp = function () {
     title: "Replace Ops",
     text: "Replace selected ops with: Enter full op name",
     promptOk: (opname) => {
-      const ops = gui.patchView.getSelectedOps();
+      const ops = Gui.gui.patchView.getSelectedOps();
       for (let i = 0; i < ops.length; i++) {
-        gui.patchView.replaceOp(ops[i].id, opname);
+        Gui.gui.patchView.replaceOp(ops[i].id, opname);
       }
     },
   });
@@ -1164,17 +1179,17 @@ CABLES_CMD_PATCH.editOpSummary = function (opId, opName, oldSummary = "") {
     text: "New summary:",
     promptValue: oldSummary,
     promptOk: (summary) => {
-      gui.savingTitleAnimStart("Updating Op...");
+      Gui.gui.savingTitleAnimStart("Updating Op...");
       platform.talkerAPI.send(
         "opSetSummary",
         { id: opId, name: opName, summary: summary },
         (err, res) => {
           if (!err) {
-            gui.serverOps.loadOpDependencies(
+            Gui.gui.serverOps.loadOpDependencies(
               opName,
               () => {
-                gui.savingTitleAnimEnd();
-                gui.emitEvent("refreshManageOp", opName);
+                Gui.gui.savingTitleAnimEnd();
+                Gui.gui.emitEvent("refreshManageOp", opName);
               },
               true,
             );
@@ -1189,13 +1204,13 @@ CABLES_CMD_PATCH.uncollideOps = function (ops) {
   let found = true;
   // while (found)
 
-  for (let i = 0; i < gui.corePatch().ops.length; i++) {
-    const op = gui.corePatch().ops[i];
+  for (let i = 0; i < Gui.gui.corePatch().ops.length; i++) {
+    const op = Gui.gui.corePatch().ops[i];
 
     if (!op.uiAttribs.translate) op.uiAttribs.translate = { x: 0, y: 0 };
 
-    for (let j = 0; j < gui.corePatch().ops.length; j++) {
-      const b = gui.corePatch().ops[j];
+    for (let j = 0; j < Gui.gui.corePatch().ops.length; j++) {
+      const b = Gui.gui.corePatch().ops[j];
       if (b.deleted || b == op) continue;
 
       while (
@@ -1237,20 +1252,20 @@ CABLES_CMD_PATCH.togglePatchLike = (targetElement = null) => {
 
 CABLES_CMD_PATCH.deleteOp = (opName = null) => {
   if (!opName) {
-    const ops = gui.patchView.getSelectedOps();
+    const ops = Gui.gui.patchView.getSelectedOps();
     if (!ops.length) return;
-    const op = gui.patchView.getSelectedOps()[0];
+    const op = Gui.gui.patchView.getSelectedOps()[0];
     opName = op.objName;
   }
 
   if (platform.frontendOptions.opDeleteInEditor) {
-    gui.serverOps.deleteDialog(opName);
+    Gui.gui.serverOps.deleteDialog(opName);
   }
 };
 
 CABLES_CMD_PATCH.patchProfiler = () => {
-  new Profiler(gui.mainTabs);
-  gui.maintabPanel.show(true);
+  new Profiler(Gui.gui.mainTabs);
+  Gui.gui.maintabPanel.show(true);
 };
 
 CMD_PATCH_COMMANDS.push(

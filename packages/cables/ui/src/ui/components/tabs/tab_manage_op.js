@@ -4,7 +4,7 @@ import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { hideToolTip, showToolTip } from "../../elements/tooltips.js";
 import subPatchOpUtil from "../../subpatchop_util.js";
 import OpDependencyTabPanel from "../../elements/tabpanel/opdependencytabpanel.js";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 import { platform } from "../../platform.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
 import { contextMenu } from "../../elements/contextmenu.js";
@@ -23,13 +23,13 @@ export default class ManageOp {
       return;
     }
 
-    let opDoc = gui.opDocs.getOpDocById(opId);
+    let opDoc = Gui.gui.opDocs.getOpDocById(opId);
     if (!opDoc && opId.startsWith("Ops.")) {
       this._log.warn(
         "manage op paramerter should not be objname, but id",
         opId,
       );
-      opDoc = gui.opDocs.getOpDocByName(opId);
+      opDoc = Gui.gui.opDocs.getOpDocByName(opId);
       if (opDoc) opId = opDoc.id;
       else return;
     }
@@ -58,23 +58,23 @@ export default class ManageOp {
       editorSession.remove("manageOp", this._currentId);
 
       for (let i in this._refreshListener) {
-        gui.off(this._refreshListener[i]);
+        Gui.gui.off(this._refreshListener[i]);
       }
       for (let i in this._refreshCoreListener) {
-        gui.corePatch().off(this._refreshCoreListener[i]);
+        Gui.gui.corePatch().off(this._refreshCoreListener[i]);
       }
     });
 
-    gui.maintabPanel.show(true);
+    Gui.gui.maintabPanel.show(true);
 
     this._refreshListener.push(
-      gui.on("refreshManageOp", (name) => {
+      Gui.gui.on("refreshManageOp", (name) => {
         if (name === undefined || this._currentName == name) this.show();
       }),
     );
 
     this._refreshCoreListener.push(
-      gui.corePatch().on("opReloaded", (name) => {
+      Gui.gui.corePatch().on("opReloaded", (name) => {
         if (name === undefined || this._currentName == name) this.show();
       }),
     );
@@ -101,7 +101,7 @@ export default class ManageOp {
     this._tab.html(
       '<div class="loading" style="width:40px;height:40px;"></div>',
     );
-    const opDoc = gui.opDocs.getOpDocById(this._currentId);
+    const opDoc = Gui.gui.opDocs.getOpDocById(this._currentId);
 
     if (!opDoc) {
       this._tab.html(
@@ -120,7 +120,7 @@ export default class ManageOp {
         (error, res) => {
           if (error) this._log.warn("error api?", error);
 
-          const perf = gui.uiProfiler.start("showOpCodeMetaPanel");
+          const perf = Gui.gui.uiProfiler.start("showOpCodeMetaPanel");
           const doc = {};
           const opName = this._currentName;
           let summary = "";
@@ -143,7 +143,7 @@ export default class ManageOp {
               });
 
               if (res.attachmentFiles[i] === "att_ports.json") {
-                const ops = gui.corePatch().getOpsByObjName(opName);
+                const ops = Gui.gui.corePatch().getOpsByObjName(opName);
 
                 if (ops && ops.length > 0) {
                   try {
@@ -157,14 +157,16 @@ export default class ManageOp {
             doc.attachmentFiles = attachmentFiles;
           }
 
-          doc.libs = gui.serverOps.getOpLibs(opName, false).map((lib) => {
+          doc.libs = Gui.gui.serverOps.getOpLibs(opName, false).map((lib) => {
             return lib.name;
           });
-          doc.coreLibs = gui.serverOps.getCoreLibs(opName, false).map((lib) => {
-            return lib.name;
-          });
-          summary = gui.opDocs.getSummary(opName) || "No Summary";
-          const canEditOp = gui.serverOps.canEditOp(gui.user, opName);
+          doc.coreLibs = Gui.gui.serverOps
+            .getCoreLibs(opName, false)
+            .map((lib) => {
+              return lib.name;
+            });
+          summary = Gui.gui.opDocs.getSummary(opName) || "No Summary";
+          const canEditOp = Gui.gui.serverOps.canEditOp(Gui.gui.user, opName);
           if (portJson && portJson.ports) {
             portJson.ports = subPatchOpUtil.sortPortsJsonPorts(portJson.ports);
 
@@ -174,7 +176,7 @@ export default class ManageOp {
                   portJson.ports[i].divider = true;
               }
           }
-          const allLibs = gui.opDocs.libs.sort((a, b) => {
+          const allLibs = Gui.gui.opDocs.libs.sort((a, b) => {
             return a.localeCompare(b);
           });
           const libs = [];
@@ -189,13 +191,13 @@ export default class ManageOp {
           const html = getHandleBarHtml("tab_manage_op", {
             layoutUrl: platform.getCablesUrl() + "/api/op/layout/" + opName,
             url: platform.getCablesDocsUrl(),
-            opLayoutSvg: gui.opDocs.getLayoutSvg(opName),
+            opLayoutSvg: Gui.gui.opDocs.getLayoutSvg(opName),
             opid: opDoc.id,
             opname: opDoc.name,
             doc: doc,
             opDoc: opDoc,
             viewId: this._id,
-            subPatchSaved: gui.savedState.isSavedSubOp(opName),
+            subPatchSaved: Gui.gui.savedState.isSavedSubOp(opName),
             portJson: portJson,
             summary: summary,
             canEditOp: canEditOp,
@@ -203,7 +205,7 @@ export default class ManageOp {
               ? canEditOp
               : false,
             readOnly: !canEditOp,
-            user: gui.user,
+            user: Gui.gui.user,
             warns: res.warns,
             visibilityString: res.visibilityString,
             hasDependencies:
@@ -249,15 +251,19 @@ export default class ManageOp {
                 func: (ee) => {
                   switch (depType) {
                     case "corelib":
-                      gui.serverOps.removeCoreLib(opName, depSrc);
+                      Gui.gui.serverOps.removeCoreLib(opName, depSrc);
                       break;
                     case "lib":
-                      gui.serverOps.removeOpLib(opName, depSrc);
+                      Gui.gui.serverOps.removeOpLib(opName, depSrc);
                       break;
                     case "commonjs":
                     case "module":
                     default:
-                      gui.serverOps.removeOpDependency(opName, depSrc, depType);
+                      Gui.gui.serverOps.removeOpDependency(
+                        opName,
+                        depSrc,
+                        depType,
+                      );
                       break;
                   }
                 },
@@ -276,8 +282,8 @@ export default class ManageOp {
               const panelOptions = {
                 opDoc: opDoc,
                 libs: libs,
-                coreLibs: gui.opDocs.coreLibs,
-                user: gui.user,
+                coreLibs: Gui.gui.opDocs.coreLibs,
+                user: Gui.gui.user,
                 canEditOp: canEditOp,
                 viewId: this._id,
               };

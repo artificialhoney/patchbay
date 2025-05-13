@@ -8,6 +8,7 @@ import { platform } from "../platform.js";
  * @extends {Events}
  */
 export default class UserSettings extends Events {
+  static userSettings = null;
   constructor() {
     super();
 
@@ -19,6 +20,8 @@ export default class UserSettings extends Events {
 
     this._lsSettings =
       JSON.parse(localStorage.getItem(this._LOCALSTORAGE_KEY)) || {};
+
+    UserSettings.userSettings = this;
   }
 
   reset() {
@@ -109,9 +112,3 @@ export default class UserSettings extends Events {
     return this._settings;
   }
 }
-
-/**
- * @type {UserSettings}
- */
-const userSettings = new UserSettings();
-export { userSettings };

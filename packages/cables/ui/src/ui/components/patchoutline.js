@@ -3,7 +3,7 @@ import TreeView from "./treeview.js";
 import defaultOps from "../defaultops.js";
 import subPatchOpUtil from "../subpatchop_util.js";
 import { escapeHTML } from "../utils/helper.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { platform } from "../platform.js";
 import { contextMenu } from "../elements/contextmenu.js";
 
@@ -31,32 +31,32 @@ export default class PatchOutline extends Events {
     this._subTree.on("title_dblclick", (item, el, event) => {
       if (
         item.subPatchId &&
-        gui.patchView.getSelectedOps() &&
-        gui.patchView.getSelectedOps().length > 0 &&
-        gui.patchView.getSelectedOps()[0].id == item.id
+        Gui.gui.patchView.getSelectedOps() &&
+        Gui.gui.patchView.getSelectedOps().length > 0 &&
+        Gui.gui.patchView.getSelectedOps()[0].id == item.id
       )
-        gui.patchView.clickSubPatchNav(item.subPatchId);
+        Gui.gui.patchView.clickSubPatchNav(item.subPatchId);
     });
 
     this._subTree.on("title_click", (item, el, event) => {
       if (item.id) {
         if (event.shiftKey) {
-          return gui.opParams.show(item.id);
+          return Gui.gui.opParams.show(item.id);
         }
 
         if (
-          gui.patchView.getSelectedOps().length > 0 &&
-          gui.patchView.getSelectedOps()[0].id == item.id
+          Gui.gui.patchView.getSelectedOps().length > 0 &&
+          Gui.gui.patchView.getSelectedOps()[0].id == item.id
         )
-          gui.opParams.show(item.id);
+          Gui.gui.opParams.show(item.id);
 
-        gui.patchView.centerSelectOp(item.id);
+        Gui.gui.patchView.centerSelectOp(item.id);
       } else this._log.warn("unknown", item);
     });
 
     this._subTree.on("icon_click", (item) => {
-      gui.patchView.centerSelectOp(item.id);
-      gui.opParams.show(item.id);
+      Gui.gui.patchView.centerSelectOp(item.id);
+      Gui.gui.opParams.show(item.id);
     });
   }
 
@@ -126,11 +126,11 @@ export default class PatchOutline extends Events {
   insert(id = "_cbl_outlinetree") {
     if (!this._listeningSubs) {
       this._listeningSubs = true;
-      gui.corePatch().on("subpatchesChanged", () => {
+      Gui.gui.corePatch().on("subpatchesChanged", () => {
         if (this.isCurrentlyVisible()) this.insert();
       });
 
-      gui.on("multiUserSubpatchChanged", (_clientId, _subPatch) => {
+      Gui.gui.on("multiUserSubpatchChanged", (_clientId, _subPatch) => {
         if (this.isCurrentlyVisible()) this.insert();
       });
     }
@@ -207,8 +207,8 @@ export default class PatchOutline extends Events {
 
   _getUserImagesStringSubpatch(patchId) {
     let str = "";
-    if (!gui.socket) return "";
-    const userIds = gui.socket.state.getUserInSubpatch(patchId);
+    if (!Gui.gui.socket) return "";
+    const userIds = Gui.gui.socket.state.getUserInSubpatch(patchId);
 
     for (let i = 0; i < userIds.length; i++) {
       str +=
@@ -224,7 +224,7 @@ export default class PatchOutline extends Events {
 
   _getSubPatchesHierarchy(patchId = 0) {
     let mainTitle = "Patch ";
-    if (!gui.savedState.isSavedSubPatch(0)) mainTitle += " (*) ";
+    if (!Gui.gui.savedState.isSavedSubPatch(0)) mainTitle += " (*) ";
 
     mainTitle += this._getUserImagesStringSubpatch(0);
 
@@ -237,16 +237,16 @@ export default class PatchOutline extends Events {
       icon: "folder",
     };
 
-    if (gui.patchView.getCurrentSubPatch() == 0) sub.rowClass = "active";
+    if (Gui.gui.patchView.getCurrentSubPatch() == 0) sub.rowClass = "active";
 
     let subs = [sub];
 
     if (patchId) {
-      const subOp = gui.patchView.getSubPatchOuterOp(patchId);
+      const subOp = Gui.gui.patchView.getSubPatchOuterOp(patchId);
       if (!subOp) return;
       sub.title = subOp.getTitle();
       sub.id = subOp.id;
-      if (!gui.savedState.isSavedSubPatch(patchId)) sub.title += " (*) ";
+      if (!Gui.gui.savedState.isSavedSubPatch(patchId)) sub.title += " (*) ";
 
       sub.title += this._getUserImagesStringSubpatch(patchId);
 
@@ -268,7 +268,7 @@ export default class PatchOutline extends Events {
 
       sub.subPatchVer = subOp.storage.subPatchVer || 0;
 
-      if (gui.patchView.getCurrentSubPatch() == sub.subPatchId)
+      if (Gui.gui.patchView.getCurrentSubPatch() == sub.subPatchId)
         sub.rowClass = "active";
       else sub.rowClass = "";
 
@@ -278,7 +278,7 @@ export default class PatchOutline extends Events {
       }
     }
 
-    const ops = gui.patchView.getAllSubPatchOps(patchId || 0);
+    const ops = Gui.gui.patchView.getAllSubPatchOps(patchId || 0);
 
     for (let i = 0; i < ops.length; i++) {
       let included = false;
@@ -344,7 +344,7 @@ export default class PatchOutline extends Events {
     items.push({
       title: "Rename",
       func() {
-        gui.patchView.focusSubpatchOp(item.subPatchId);
+        Gui.gui.patchView.focusSubpatchOp(item.subPatchId);
         CABLES.CMD.PATCH.setOpTitle();
       },
     });
@@ -361,7 +361,7 @@ export default class PatchOutline extends Events {
       items.push({
         title: "Save Op",
         func() {
-          const op = gui.patchView.getSubPatchOuterOp(item.subPatchId);
+          const op = Gui.gui.patchView.getSubPatchOuterOp(item.subPatchId);
 
           subPatchOpUtil.updateSubPatchOpAttachment(op, {
             oldSubId: item.subPatchId,

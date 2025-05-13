@@ -6,8 +6,8 @@ import { notify, notifyError } from "./elements/notification.js";
 import defaultOps from "./defaultops.js";
 import ElectronOpDirs from "./components/tabs/tab_electronopdirs.js";
 import namespace from "./namespaceutils.js";
-import { gui } from "./gui.js";
-import { userSettings } from "./components/usersettings.js";
+import Gui from "./gui.js";
+import UserSettings from "./components/usersettings.js";
 
 /**
  * @type {Platform}
@@ -32,7 +32,7 @@ export class Platform extends Events {
     this.frontendOptions = {};
 
     if (this._cfg) {
-      if (CABLESUILOADER && this.talkerAPI) {
+      if (window.CABLESUILOADER && this.talkerAPI) {
         this.talkerAPI.addEventListener("logError", (errorData) => {
           if (errorData) {
             const errorMessage = errorData.message || "unknown error";
@@ -63,8 +63,8 @@ export class Platform extends Events {
       }
 
       if (this._cfg.usersettings && this._cfg.usersettings.settings)
-        userSettings.load(this._cfg.usersettings.settings);
-      else userSettings.load({});
+        UserSettings.userSettings.load(this._cfg.usersettings.settings);
+      else UserSettings.userSettings.load({});
 
       window.addEventListener("online", this.updateOnlineIndicator.bind(this));
       window.addEventListener("offline", this.updateOnlineIndicator.bind(this));
@@ -132,7 +132,7 @@ export class Platform extends Events {
     this._isOffline = true;
     if (!this._checkOfflineInterval) {
       this._checkOfflineInterval = setInterval(() => {
-        gui.patchView.store.checkUpdated(null, false, true);
+        Gui.gui.patchView.store.checkUpdated(null, false, true);
       }, this._checkOfflineIntervalSeconds);
     }
   }
@@ -165,13 +165,13 @@ export class Platform extends Events {
 
   isPatchSameHost() {
     if (
-      !gui.project() ||
-      !gui.project().buildInfo ||
-      !gui.project().buildInfo.host
+      !Gui.gui.project() ||
+      !Gui.gui.project().buildInfo ||
+      !Gui.gui.project().buildInfo.host
     )
       return true;
     return (
-      gui.project().buildInfo.host ==
+      Gui.gui.project().buildInfo.host ==
       platform
         .getCablesUrl()
         .replaceAll("https://", "")
@@ -216,7 +216,7 @@ export class Platform extends Events {
   }
 
   showStartupChangelog() {
-    const lastView = userSettings.get("changelogLastView");
+    const lastView = UserSettings.userSettings.get("changelogLastView");
     const cl = new ChangelogToast();
     cl.getHtml((clhtml) => {
       if (clhtml !== null) {
@@ -229,10 +229,10 @@ export class Platform extends Events {
     const isFirefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
 
     if (
-      !gui.isRemoteClient &&
+      !Gui.gui.isRemoteClient &&
       !window.chrome &&
       !isFirefox &&
-      !userSettings.get("nobrowserWarning")
+      !UserSettings.userSettings.get("nobrowserWarning")
     ) {
       iziToast.error({
         position: "topRight",
@@ -269,7 +269,7 @@ export class Platform extends Events {
   }
 
   initRouting(cb) {
-    gui.setUser(this._cfg.user);
+    Gui.gui.setUser(this._cfg.user);
 
     this.talkerAPI.addEventListener("notify", (options, _next) => {
       notify(options.msg, options.text, options.options);
@@ -280,15 +280,15 @@ export class Platform extends Events {
     });
 
     this.talkerAPI.addEventListener("refreshFileManager", (_options, _next) => {
-      gui.closeModal();
-      gui.refreshFileManager();
+      Gui.gui.closeModal();
+      Gui.gui.refreshFileManager();
     });
 
     this.talkerAPI.addEventListener("executeOp", (options, _next) => {
       if (options && options.name) {
-        gui.serverOps.execute(options.id || options.name, () => {
+        Gui.gui.serverOps.execute(options.id || options.name, () => {
           if (options.forceReload && options.name) {
-            const editorTab = gui.mainTabs.getTabByDataId(options.name);
+            const editorTab = Gui.gui.mainTabs.getTabByDataId(options.name);
             if (
               editorTab &&
               editorTab.editor &&
@@ -304,25 +304,25 @@ export class Platform extends Events {
 
     this.talkerAPI.addEventListener("fileUpdated", (options, _next) => {
       if (options && options.filename) {
-        for (let j = 0; j < gui.corePatch().ops.length; j++) {
-          if (gui.corePatch().ops[j]) {
-            if (gui.corePatch().ops[j].onFileChanged)
-              gui.corePatch().ops[j].onFileChanged(options.filename);
-            else if (gui.corePatch().ops[j].onFileUploaded)
-              gui.corePatch().ops[j].onFileUploaded(options.filename); // todo deprecate , rename to onFileChanged
+        for (let j = 0; j < Gui.gui.corePatch().ops.length; j++) {
+          if (Gui.gui.corePatch().ops[j]) {
+            if (Gui.gui.corePatch().ops[j].onFileChanged)
+              Gui.gui.corePatch().ops[j].onFileChanged(options.filename);
+            else if (Gui.gui.corePatch().ops[j].onFileUploaded)
+              Gui.gui.corePatch().ops[j].onFileUploaded(options.filename); // todo deprecate , rename to onFileChanged
           }
         }
         if (options.filename.endsWith(".js")) {
           const libUrl =
-            "/assets/" + gui.project()._id + "/" + options.filename;
+            "/assets/" + Gui.gui.project()._id + "/" + options.filename;
           if (
             gui &&
-            gui.opDocs &&
-            gui.opDocs.libs &&
-            !gui.opDocs.libs.includes(libUrl)
+            Gui.gui.opDocs &&
+            Gui.gui.opDocs.libs &&
+            !Gui.gui.opDocs.libs.includes(libUrl)
           ) {
-            gui.opDocs.libs.push(libUrl);
-            gui.emitEvent("refreshManageOp");
+            Gui.gui.opDocs.libs.push(libUrl);
+            Gui.gui.emitEvent("refreshManageOp");
           }
         }
       }
@@ -330,54 +330,55 @@ export class Platform extends Events {
 
     this.talkerAPI.addEventListener("fileDeleted", (options, _next) => {
       if (options && options.fileName && options.fileName.endsWith(".js")) {
-        for (let j = 0; j < gui.corePatch().ops.length; j++) {
-          if (gui.corePatch().ops[j]) {
-            if (gui.corePatch().ops[j].onFileChanged)
-              gui.corePatch().ops[j].onFileChanged(options.fileName);
-            else if (gui.corePatch().ops[j].onFileUploaded)
-              gui.corePatch().ops[j].onFileUploaded(options.fileName); // todo deprecate , rename to onFileChanged
+        for (let j = 0; j < Gui.gui.corePatch().ops.length; j++) {
+          if (Gui.gui.corePatch().ops[j]) {
+            if (Gui.gui.corePatch().ops[j].onFileChanged)
+              Gui.gui.corePatch().ops[j].onFileChanged(options.fileName);
+            else if (Gui.gui.corePatch().ops[j].onFileUploaded)
+              Gui.gui.corePatch().ops[j].onFileUploaded(options.fileName); // todo deprecate , rename to onFileChanged
           }
         }
 
-        const libUrl = "/assets/" + gui.project()._id + "/" + options.fileName;
+        const libUrl =
+          "/assets/" + Gui.gui.project()._id + "/" + options.fileName;
         if (
           gui &&
-          gui.opDocs &&
-          gui.opDocs.libs &&
-          gui.opDocs.libs.includes(libUrl)
+          Gui.gui.opDocs &&
+          Gui.gui.opDocs.libs &&
+          Gui.gui.opDocs.libs.includes(libUrl)
         ) {
-          const libIndex = gui.opDocs.libs.findIndex((lib) => {
+          const libIndex = Gui.gui.opDocs.libs.findIndex((lib) => {
             return lib === libUrl;
           });
           if (libIndex !== -1) {
-            gui.opDocs.libs.splice(libIndex, 1);
-            gui.emitEvent("refreshManageOp");
+            Gui.gui.opDocs.libs.splice(libIndex, 1);
+            Gui.gui.emitEvent("refreshManageOp");
           }
         }
       }
     });
 
     this.talkerAPI.addEventListener("jobStart", (options, _next) => {
-      gui.jobs().start({ id: options.id, title: options.title });
+      Gui.gui.jobs().start({ id: options.id, title: options.title });
     });
 
     this.talkerAPI.addEventListener("jobFinish", (options, _next) => {
-      gui.jobs().finish(options.id);
+      Gui.gui.jobs().finish(options.id);
     });
 
     this.talkerAPI.addEventListener("jobProgress", (options, _next) => {
-      gui.jobs().setProgress(options.id, options.progress);
+      Gui.gui.jobs().setProgress(options.id, options.progress);
     });
 
     this.talkerAPI.addEventListener("updatePatchName", (opts, _next) => {
-      gui.setProjectName(opts.name);
+      Gui.gui.setProjectName(opts.name);
       this.talkerAPI.send("updatePatchName", opts, (_err, _r) => {});
     });
 
     this.talkerAPI.addEventListener("updatePatchSummary", (opts, _next) => {
-      const project = gui.project();
-      if (project) gui.project().summary = opts;
-      gui.patchParamPanel.show(true);
+      const project = Gui.gui.project();
+      if (project) Gui.gui.project().summary = opts;
+      Gui.gui.patchParamPanel.show(true);
     });
 
     this.talkerAPI.send("getPatch", {}, (_err, r) => {
@@ -395,23 +396,25 @@ export class Platform extends Events {
     const modalNotices = [];
     if (
       gui &&
-      gui.user &&
+      Gui.gui.user &&
       platform.isTrustedPatch() &&
-      gui.user.supporterFeatures &&
+      Gui.gui.user.supporterFeatures &&
       !this.patchIsBackup()
     ) {
       const exportUrl =
-        platform.getCablesUrl() + "/export/" + gui.patchId + "#patch";
+        platform.getCablesUrl() + "/export/" + Gui.gui.patchId + "#patch";
       const importUrl = platform.getCablesUrl() + "/mydata#import";
       const quotaOverviewUrl = platform.getCablesUrl() + "/mydata";
 
       if (
-        gui.user.supporterFeatures.includes("full_project_backup") ||
-        gui.user.supporterFeatures.includes("overquota_full_project_backup")
+        Gui.gui.user.supporterFeatures.includes("full_project_backup") ||
+        Gui.gui.user.supporterFeatures.includes("overquota_full_project_backup")
       ) {
         let modalText = "Enter a name for the backup";
         if (
-          gui.user.supporterFeatures.includes("overquota_full_project_backup")
+          Gui.gui.user.supporterFeatures.includes(
+            "overquota_full_project_backup",
+          )
         ) {
           modalText =
             'You are currently using all of your <a href="' +
@@ -434,7 +437,7 @@ export class Platform extends Events {
           promptValue: "Manual Backup",
           promptOk: (title) => {
             backupOptions.title = title;
-            gui.jobs().start({
+            Gui.gui.jobs().start({
               id: "patchCreateBackup",
               title: "creating backup",
               indicator: "canvas",
@@ -443,7 +446,7 @@ export class Platform extends Events {
           },
         };
 
-        if (!gui.getSavedState()) {
+        if (!Gui.gui.getSavedState()) {
           new ModalDialog({
             choice: true,
             cancelButton: {
@@ -491,13 +494,13 @@ export class Platform extends Events {
     const proj = this._cfg.patch;
     incrementStartup();
     if (window.logStartup) logStartup("set project");
-    gui.patchView.setProject(proj, cb);
-    if (proj.ui) gui.bookmarks.set(proj.ui.bookmarks);
+    Gui.gui.patchView.setProject(proj, cb);
+    if (proj.ui) Gui.gui.bookmarks.set(proj.ui.bookmarks);
   }
 
   showFileSelect(inputId, filterType, opid, previewId) {
     this._log.log("showFileSelect", inputId, filterType, opid, previewId);
-    gui.showFileManager(() => {
+    Gui.gui.showFileManager(() => {
       this._log.log("showFileSelect22222");
       const portInputEle = ele.byQuery(inputId);
       if (!portInputEle) {
@@ -506,13 +509,13 @@ export class Platform extends Events {
       }
       const fn = portInputEle.value;
 
-      gui.fileManager.setFilterType(filterType);
-      gui.fileManager.setFilePort(
+      Gui.gui.fileManager.setFilterType(filterType);
+      Gui.gui.fileManager.setFilePort(
         portInputEle,
-        gui.corePatch().getOpById(opid),
+        Gui.gui.corePatch().getOpById(opid),
         ele.byId(previewId),
       );
-      gui.fileManager.selectFile(fn);
+      Gui.gui.fileManager.selectFile(fn);
 
       ele.byId("menubar").scrollIntoView({ block: "end" }); // dont ask why... without "some"(background image op) file selects make the page scroll............
     });
@@ -520,8 +523,8 @@ export class Platform extends Events {
 
   openOpDirsTab() {
     if (this.frontendOptions.hasOpDirectories) {
-      new ElectronOpDirs(gui.mainTabs);
-      gui.maintabPanel.show(true);
+      new ElectronOpDirs(Gui.gui.mainTabs);
+      Gui.gui.maintabPanel.show(true);
     }
   }
 
@@ -539,7 +542,7 @@ export class Platform extends Events {
       url = gotoUrl + "?iframe=true";
     }
 
-    gui.mainTabs.addIframeTab(
+    Gui.gui.mainTabs.addIframeTab(
       "Export Patch",
       url,
       {
@@ -556,7 +559,7 @@ export class Platform extends Events {
     const PATCHOPS_ID_REPLACEMENTS = {
       "-": "___",
     };
-    let ns = gui.project().shortId;
+    let ns = Gui.gui.project().shortId;
     Object.keys(PATCHOPS_ID_REPLACEMENTS).forEach((key) => {
       if (ns) ns = ns.replaceAll(key, PATCHOPS_ID_REPLACEMENTS[key]);
     });
@@ -574,7 +577,7 @@ export class Platform extends Events {
    * @param {Boolean} state
    */
   setSaving(state) {
-    gui.patchView.store.isSaving = state;
+    Gui.gui.patchView.store.isSaving = state;
   }
 
   /**
@@ -582,7 +585,7 @@ export class Platform extends Events {
    * @return {Boolean}
    */
   isSaving() {
-    return gui.patchView.store.isSaving;
+    return Gui.gui.patchView.store.isSaving;
   }
 
   getDefaultOpName() {

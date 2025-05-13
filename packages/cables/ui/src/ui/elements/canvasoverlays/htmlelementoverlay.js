@@ -1,4 +1,4 @@
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 import TransformsIcon from "./transformsicon.js";
 
 export default class HtmlElementOverlay {
@@ -6,7 +6,7 @@ export default class HtmlElementOverlay {
     this._showing = true;
     this._trackEle = null;
 
-    gui.opParams.on("opSelected", (op) => {
+    Gui.gui.opParams.on("opSelected", (op) => {
       this._trackEle = null;
       if (!op) return;
 
@@ -29,7 +29,7 @@ export default class HtmlElementOverlay {
   }
 
   _update() {
-    if (!gui.shouldDrawOverlay || !this._trackEle) {
+    if (!Gui.gui.shouldDrawOverlay || !this._trackEle) {
       if (this._eleOver) {
         this._eleOver.remove();
         this._eleOver = null;

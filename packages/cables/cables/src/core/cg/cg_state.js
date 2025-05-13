@@ -111,7 +111,7 @@ export class CgContext extends Events {
   }
 
   get canvas() {
-    return this.cgCanvas.canvasEle;
+    return this.cgCanva?.canvasEle;
   }
 
   get viewPort() {
@@ -123,7 +123,7 @@ export class CgContext extends Events {
    * @param {HTMLElement} canvEle
    */
   setCanvas(canvEle) {
-    if (this.cgCanvas && canvEle == this.cgCanvas.canvasEle) return;
+    if (this.cgCanvas && canvEle === this.cgCanvas.canvasEle) return;
     if (typeof canvEle === "string") canvEle = document.getElementById(canvEle);
 
     this.cgCanvas = new CgCanvas({ canvasEle: canvEle, cg: this });

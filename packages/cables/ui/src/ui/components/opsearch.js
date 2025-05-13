@@ -3,7 +3,7 @@ import { CgContext } from "@cables/cables";
 import defaultOps from "../defaultops.js";
 import namespace from "../namespaceutils.js";
 import opNames from "../opnameutils.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { platform } from "../platform.js";
 
 /**
@@ -33,28 +33,28 @@ export default class OpSearch extends Events {
   }
 
   _buildList() {
-    const perf = gui.uiProfiler.start("opsearch.getlist");
+    const perf = Gui.gui.uiProfiler.start("opsearch.getlist");
 
     const codeOpNames = this._getOpsNamesFromCode([], "Ops", Ops, "");
     let items = this._createListItemsByNames(codeOpNames);
 
-    const docOpName = gui.opDocs.getOpDocs().map((ext) => {
+    const docOpName = Gui.gui.opDocs.getOpDocs().map((ext) => {
       return ext.name;
     });
     items = items.concat(this._createListItemsByNames(docOpName, items));
 
-    const extensionNames = gui.opDocs.getExtensions().map((ext) => {
+    const extensionNames = Gui.gui.opDocs.getExtensions().map((ext) => {
       return ext.name;
     });
     items = items.concat(this._createListItemsByNames(extensionNames, items));
 
-    const teamNamespaces = gui.opDocs.getTeamNamespaces().map((ext) => {
+    const teamNamespaces = Gui.gui.opDocs.getTeamNamespaces().map((ext) => {
       return ext.name;
     });
     items = items.concat(this._createListItemsByNames(teamNamespaces, items));
 
     const ns = platform.getPatchOpsNamespace();
-    const patchOpNames = gui.opDocs.getNamespaceDocs(ns).map((ext) => {
+    const patchOpNames = Gui.gui.opDocs.getNamespaceDocs(ns).map((ext) => {
       return ext.name;
     });
 
@@ -94,7 +94,7 @@ export default class OpSearch extends Events {
         "." +
         this._list[i].shortName.toLowerCase();
 
-      const opdoc = gui.opDocs.getOpDocByName(this._list[i].name);
+      const opdoc = Gui.gui.opDocs.getOpDocByName(this._list[i].name);
       if (
         namespace.isDeprecatedOp(this._list[i].name) ||
         (opdoc && opdoc.oldVersion)
@@ -109,7 +109,7 @@ export default class OpSearch extends Events {
   _searchWord(wordIndex, orig, list, query) {
     if (!query || query === " " || query === "") return;
 
-    const perf = gui.uiProfiler.start("opsearch._searchWord");
+    const perf = Gui.gui.uiProfiler.start("opsearch._searchWord");
 
     for (let i = 0; i < list.length; i++) {
       if (wordIndex > 0 && list[i].score === 0) continue; // when second word was found, but first was not
@@ -212,7 +212,7 @@ export default class OpSearch extends Events {
           const firstportfitspoints = 3;
           const firstportfitsText = "+3 First Port fits<br/>";
 
-          const docs = gui.opDocs.getOpDocByName(list[i].name);
+          const docs = Gui.gui.opDocs.getOpDocByName(list[i].name);
 
           if (docs && docs.hasOwnProperty("version")) {
             const p = docs.version * 0.01;
@@ -390,7 +390,7 @@ export default class OpSearch extends Events {
   }
 
   search(query, originalSearch) {
-    this.prefereGApi = gui.canvasManager.currentContext().gApi;
+    this.prefereGApi = Gui.gui.canvasManager.currentContext().gApi;
 
     document.getElementById("realsearch").innerHTML = "";
     document.getElementById("opOptions").innerHTML = "";
@@ -499,7 +499,7 @@ export default class OpSearch extends Events {
       const parts = opName.split(".");
       const lowerCaseName =
         opName.toLowerCase() + "_" + parts.join("").toLowerCase();
-      const opDoc = gui.opDocs.getOpDocByName(opName);
+      const opDoc = Gui.gui.opDocs.getOpDocByName(opName);
       let shortName = parts[parts.length - 1];
       let hidden = false;
       let opDocHidden = false;
@@ -533,7 +533,7 @@ export default class OpSearch extends Events {
         if (namespace.isDeprecatedOp(opName)) oldState = "DEPREC";
 
         let popularity = -1;
-        let summary = gui.opDocs.getSummary(opName);
+        let summary = Gui.gui.opDocs.getSummary(opName);
         let type = "op";
         if (namespace.isTeamNamespace(opName)) type = "team";
         if (namespace.isExtension(opName)) type = "extension";
@@ -544,7 +544,7 @@ export default class OpSearch extends Events {
 
         let collectionOpNames = null;
         if (isCollection) {
-          const a = gui.opDocs.getNamespaceDocs(opName);
+          const a = Gui.gui.opDocs.getNamespaceDocs(opName);
           if (a && a.length > 0 && a[0].ops)
             collectionOpNames = a[0].ops.join(" ").toLowerCase();
         }

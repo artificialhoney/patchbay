@@ -1,5 +1,5 @@
-import { userSettings } from "../components/usersettings.js";
-import { gui } from "../gui.js";
+import UserSettings from "../components/usersettings.js";
+import Gui from "../gui.js";
 import srcShaderGlSplineDrawerFrag from "./glsplinedrawer_glsl.frag";
 import srcShaderGlSplineDrawerVert from "./glsplinedrawer_glsl.vert";
 
@@ -59,13 +59,13 @@ export default class GlSplineDrawer {
       this._shader,
       "f",
       "width",
-      gui.theme.patch.cablesWidth || 3,
+      Gui.gui.theme.patch.cablesWidth || 3,
     );
     this._uniWidthSelected = new CGL.Uniform(
       this._shader,
       "f",
       "widthSelected",
-      gui.theme.patch.cablesWidthSelected || 3,
+      Gui.gui.theme.patch.cablesWidthSelected || 3,
     );
 
     this._uniFadeoutOptions = new CGL.Uniform(
@@ -77,27 +77,33 @@ export default class GlSplineDrawer {
 
     this._uniMousePos = new CGL.Uniform(this._shader, "2f", "mousePos");
 
-    this._shader.toggleDefine("FADEOUT", !userSettings.get("fadeOutOptions"));
-    this._shader.toggleDefine("DRAWSPEED", userSettings.get("glflowmode") != 0);
+    this._shader.toggleDefine(
+      "FADEOUT",
+      !UserSettings.userSettings.get("fadeOutOptions"),
+    );
+    this._shader.toggleDefine(
+      "DRAWSPEED",
+      UserSettings.userSettings.get("glflowmode") != 0,
+    );
 
-    userSettings.on("change", (which, val) => {
+    UserSettings.userSettings.on("change", (which, val) => {
       if (which == "noFadeOutCables")
         this._shader.toggleDefine("FADEOUT", !val);
       if (which == "glflowmode")
         this._shader.toggleDefine(
           "DRAWSPEED",
-          userSettings.get("glflowmode") != 0,
+          UserSettings.userSettings.get("glflowmode") != 0,
         );
     });
 
-    gui.on("themeChanged", () => {
-      this._uniWidth.set(gui.theme.patch.cablesWidth || 3);
-      this._uniWidthSelected.set(gui.theme.patch.cablesWidthSelected || 3);
+    Gui.gui.on("themeChanged", () => {
+      this._uniWidth.set(Gui.gui.theme.patch.cablesWidth || 3);
+      this._uniWidthSelected.set(Gui.gui.theme.patch.cablesWidthSelected || 3);
       this._uniFadeoutOptions.set([
-        gui.theme.patch.fadeOutDistStart,
-        gui.theme.patch.fadeOutFadeDist,
+        Gui.gui.theme.patch.fadeOutDistStart,
+        Gui.gui.theme.patch.fadeOutFadeDist,
         0.0,
-        gui.theme.patch.fadeOutFadeOpacity,
+        Gui.gui.theme.patch.fadeOutFadeOpacity,
       ]);
     });
   }
@@ -126,7 +132,7 @@ export default class GlSplineDrawer {
     if (this._splines.length == 0) return;
 
     if (this._rebuildLater) {
-      if (gui.finishedLoading) {
+      if (Gui.gui.finishedLoading) {
         this.rebuild();
       } else {
         clearTimeout(this._laterTimeout);
@@ -148,17 +154,17 @@ export default class GlSplineDrawer {
       this._uniTime.set(performance.now() / 1000);
 
       const fadeOutOpts = [
-        gui.theme.patch.fadeOutDistStart,
-        gui.theme.patch.fadeOutFadeDist,
+        Gui.gui.theme.patch.fadeOutDistStart,
+        Gui.gui.theme.patch.fadeOutFadeDist,
         0.0,
-        gui.theme.patch.fadeOutFadeOpacity,
+        Gui.gui.theme.patch.fadeOutFadeOpacity,
       ];
       if (zoom > 1400)
         fadeOutOpts[3] = CABLES.map(
           zoom,
           1400,
           2700,
-          gui.theme.patch.fadeOutFadeOpacity,
+          Gui.gui.theme.patch.fadeOutFadeOpacity,
           1.0,
         );
 
@@ -351,7 +357,7 @@ export default class GlSplineDrawer {
   }
 
   buildMesh() {
-    const perf = gui.uiProfiler.start("[glspline] buildMesh");
+    const perf = Gui.gui.uiProfiler.start("[glspline] buildMesh");
     const num = this._thePoints.length / 3;
 
     if (this._verts.length != num * 18) {
@@ -433,9 +439,9 @@ export default class GlSplineDrawer {
   }
 
   _updateAttribsCoordinates(idx, updateWhat) {
-    if (!gui.patchView._patchRenderer) return;
-    if (gui.patchView._patchRenderer.debugData)
-      gui.patchView._patchRenderer.debugData.splineUpdate++;
+    if (!Gui.gui.patchView._patchRenderer) return;
+    if (Gui.gui.patchView._patchRenderer.debugData)
+      Gui.gui.patchView._patchRenderer.debugData.splineUpdate++;
 
     if (!this._mesh || !this._colors) {
       this._rebuildReason = "no mesh/colors";
@@ -453,14 +459,14 @@ export default class GlSplineDrawer {
     if (updateWhat == undefined) title = "all";
     else title = Object.keys(updateWhat).join(".");
 
-    const perf = gui.uiProfiler.start(
+    const perf = Gui.gui.uiProfiler.start(
       "[glspline] _updateAttribsCoordinates " + title,
     );
 
     if (updateWhat === undefined) {
       if (this.doCalcProgress && this._splines[idx].pointsNeedProgressUpdate) {
         this._splines[idx].pointsNeedProgressUpdate = false;
-        const perf2 = gui.uiProfiler.start(
+        const perf2 = Gui.gui.uiProfiler.start(
           "[glspline] _updateAttribsCoordinates progress coords",
         );
         let totalDistance = 0;
@@ -514,7 +520,7 @@ export default class GlSplineDrawer {
       }
     }
 
-    const perf4 = gui.uiProfiler.start(
+    const perf4 = Gui.gui.uiProfiler.start(
       "[glspline] _updateAttribsCoordinates color values",
     );
 
@@ -550,7 +556,7 @@ export default class GlSplineDrawer {
     }
     perf4.finish();
 
-    const perf3 = gui.uiProfiler.start(
+    const perf3 = Gui.gui.uiProfiler.start(
       "[glspline] _updateAttribsCoordinates setAttributeRanges",
     );
 
@@ -632,7 +638,7 @@ export default class GlSplineDrawer {
 
     this._thePoints = []; // todo calc length beforehand
 
-    const perf = gui.uiProfiler.start("[glspline] rebuild");
+    const perf = Gui.gui.uiProfiler.start("[glspline] rebuild");
 
     for (let i = 0; i < this._splines.length; i++) {
       const spline = this._splines[i];
@@ -706,7 +712,9 @@ export default class GlSplineDrawer {
       // console.log(this._splines[this._splineIndex[i]], this._splineIndex[i]);
     }
 
-    const perfAttribs = gui.uiProfiler.start("[glspline] rebuild set Attribs");
+    const perfAttribs = Gui.gui.uiProfiler.start(
+      "[glspline] rebuild set Attribs",
+    );
 
     this._mesh.setAttribute("speed", this._speeds, 1);
 
@@ -724,7 +732,7 @@ export default class GlSplineDrawer {
 
     perfAttribs.finish();
 
-    const perfAttribs2 = gui.uiProfiler.start(
+    const perfAttribs2 = Gui.gui.uiProfiler.start(
       "[glspline] rebuild _updateAttribsCoordinates",
     );
 
@@ -753,13 +761,13 @@ export default class GlSplineDrawer {
     let count = 0;
 
     let step = 0.001;
-    if (!userSettings.get("straightLines")) step = 0.01;
+    if (!UserSettings.userSettings.get("straightLines")) step = 0.01;
     const oneMinusStep = 1 - step;
     const l = oldArr.length * 3 - 3;
 
     if (!l || l < 0) return;
 
-    const perf = gui.uiProfiler.start("[glspline] tessEdges");
+    const perf = Gui.gui.uiProfiler.start("[glspline] tessEdges");
 
     this._arrEdges = [];
     this._arrEdges.length = l;

@@ -1,6 +1,6 @@
 import { Events } from "@cables/client";
-import { gui } from "../gui.js";
-import { userSettings } from "../components/usersettings.js";
+import Gui from "../gui.js";
+import UserSettings from "../components/usersettings.js";
 
 /**
  * managing mouse states buttons/position/dragging etc
@@ -40,7 +40,7 @@ export default class MouseState extends Events {
 
     this._initUserPrefs();
 
-    userSettings.on("change", this._initUserPrefs.bind(this));
+    UserSettings.userSettings.on("change", this._initUserPrefs.bind(this));
 
     canvas.addEventListener("pointerenter", (/** @type {PointerEvent} */ e) => {
       if (e.pointerType == "touch") this._mouseOverCanvas = true;
@@ -120,7 +120,9 @@ export default class MouseState extends Events {
   }
 
   _initUserPrefs() {
-    const userSettingScrollButton = userSettings.get("patch_button_scroll");
+    const userSettingScrollButton = UserSettings.userSettings.get(
+      "patch_button_scroll",
+    );
 
     if (userSettingScrollButton == 4)
       this.buttonForScrolling = MouseState.BUTTON_WHEEL;
@@ -136,7 +138,7 @@ export default class MouseState extends Events {
     for (let i in this._buttonStates)
       str += i + ":" + (this._buttonStates[i].down ? "X" : "-") + " | ";
 
-    gui.patchView._patchRenderer.debugData.mouseState = str;
+    Gui.gui.patchView._patchRenderer.debugData.mouseState = str;
   }
 
   /** @returns {Number} */
@@ -270,12 +272,12 @@ export default class MouseState extends Events {
   get buttonStateForScrolling() {
     if (
       this.buttonForScrolling == this._useDragCablesButton &&
-      gui.patchView.patchRenderer.isDraggingPort()
+      Gui.gui.patchView.patchRenderer.isDraggingPort()
     )
       return false;
     if (
       this.buttonForScrolling == this._useDragCablesButton &&
-      gui.patchView.patchRenderer.isDraggingPort()
+      Gui.gui.patchView.patchRenderer.isDraggingPort()
     )
       return false;
     return this._buttonStates[this.buttonForScrolling].down;

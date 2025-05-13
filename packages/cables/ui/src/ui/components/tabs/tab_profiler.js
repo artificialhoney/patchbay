@@ -1,7 +1,7 @@
 import { ele } from "@cables/client";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 
 /**
  * cpu profile the running patch, what is most expensive?
@@ -36,20 +36,20 @@ export default class Profiler {
     this.lastPortTriggers = 0;
     this._subTab = 0;
 
-    gui.corePatch().on("onLink", () => {
-      if (gui.corePatch().profiler) gui.corePatch().profiler.clear();
+    Gui.gui.corePatch().on("onLink", () => {
+      if (Gui.gui.corePatch().profiler) Gui.gui.corePatch().profiler.clear();
       this.update();
     });
-    gui.corePatch().on(CABLES.Patch.EVENT_OP_ADDED, () => {
-      if (gui.corePatch().profiler) gui.corePatch().profiler.clear();
+    Gui.gui.corePatch().on(CABLES.Patch.EVENT_OP_ADDED, () => {
+      if (Gui.gui.corePatch().profiler) Gui.gui.corePatch().profiler.clear();
       this.update();
     });
-    gui.corePatch().on(CABLES.Patch.EVENT_OP_DELETED, () => {
-      if (gui.corePatch().profiler) gui.corePatch().profiler.clear();
+    Gui.gui.corePatch().on(CABLES.Patch.EVENT_OP_DELETED, () => {
+      if (Gui.gui.corePatch().profiler) Gui.gui.corePatch().profiler.clear();
       this.update();
     });
-    gui.corePatch().on("onUnLink", () => {
-      if (gui.corePatch().profiler) gui.corePatch().profiler.clear();
+    Gui.gui.corePatch().on("onUnLink", () => {
+      if (Gui.gui.corePatch().profiler) Gui.gui.corePatch().profiler.clear();
       this.update();
     });
   }
@@ -71,7 +71,7 @@ export default class Profiler {
     if (which == 4)
       ele.byId("profilerTabEvents").classList.add("tabActiveSubtab");
 
-    gui.corePatch().profiler.clear();
+    Gui.gui.corePatch().profiler.clear();
     this._subTab = which;
     this.update();
   }
@@ -89,7 +89,7 @@ export default class Profiler {
   }
 
   update() {
-    const profiler = gui.corePatch().profiler;
+    const profiler = Gui.gui.corePatch().profiler;
     if (!profiler) return;
 
     const items = profiler.getItems();
@@ -159,7 +159,7 @@ export default class Profiler {
 
     let item = null;
     let pad = "";
-    const cgl = gui.corePatch().cgl;
+    const cgl = Gui.gui.corePatch().cgl;
 
     if (this._subTab == 4) {
       html += "<table>";
@@ -212,7 +212,7 @@ export default class Profiler {
           html += "<td><span>" + item.numCumulated + "</span></td>";
         if (!cumulate)
           html +=
-            '<td ><a class="button-small" onclick="gui.patchView.centerSelectOp(\'' +
+            '<td ><a class="button-small" onclick="Gui.gui.patchView.centerSelectOp(\'' +
             item.opid +
             "')\">op</a></td>";
 
@@ -250,7 +250,7 @@ export default class Profiler {
         subPatches.push(cumulatedSubPatches[i]);
       }
       for (let i = 0; i < subPatches.length; i++) {
-        subPatches[i].name = gui.patchView.getSubPatchName(
+        subPatches[i].name = Gui.gui.patchView.getSubPatchName(
           subPatches[i].subPatch,
         );
         subPatches[i].percent = (subPatches[i].timeUsed / allTimesUsed) * 100;
@@ -268,7 +268,7 @@ export default class Profiler {
           Math.floor(subPatches[i].percent * 100) / 100 +
           "%</span></td>";
         html +=
-          "<td><span><a onclick=\"gui.patchView.setCurrentSubPatch('" +
+          "<td><span><a onclick=\"Gui.gui.patchView.setCurrentSubPatch('" +
           subPatches[i].subPatch +
           "')\">" +
           subPatches[i].name +
@@ -292,8 +292,8 @@ export default class Profiler {
     }
 
     let pauseStr = "Pause";
-    if (gui.corePatch().profiler) {
-      if (gui.corePatch().profiler.paused) pauseStr = "Resume";
+    if (Gui.gui.corePatch().profiler) {
+      if (Gui.gui.corePatch().profiler.paused) pauseStr = "Resume";
       ele.byId("profiler_pause").innerHTML = pauseStr;
     }
 
@@ -305,7 +305,7 @@ export default class Profiler {
   }
 
   start() {
-    gui.corePatch().profile(true);
+    Gui.gui.corePatch().profile(true);
     this.update();
     ele.byId("profilerTabOpsCum").addEventListener("click", () => {
       this.setTab(0);

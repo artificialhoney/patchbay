@@ -2,7 +2,7 @@ import { Events } from "@cables/client";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import text from "../../text.js";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 
 export default class JobsTab extends Events {
   constructor(tabs) {
@@ -19,17 +19,17 @@ export default class JobsTab extends Events {
 
     this._html();
 
-    gui.corePatch().loading.on("finishedTask", this._html.bind(this));
-    gui.corePatch().loading.on("addTask", this._html.bind(this));
-    gui.corePatch().loading.on("startTask", this._html.bind(this));
+    Gui.gui.corePatch().loading.on("finishedTask", this._html.bind(this));
+    Gui.gui.corePatch().loading.on("addTask", this._html.bind(this));
+    Gui.gui.corePatch().loading.on("startTask", this._html.bind(this));
 
-    gui.jobs().on("taskAdd", this._html.bind(this));
-    gui.jobs().on("taskFinish", this._html.bind(this));
+    Gui.gui.jobs().on("taskAdd", this._html.bind(this));
+    Gui.gui.jobs().on("taskFinish", this._html.bind(this));
   }
 
   _html() {
-    let list = gui.corePatch().loading.getList();
-    let jobs = gui.jobs().getList();
+    let list = Gui.gui.corePatch().loading.getList();
+    let jobs = Gui.gui.jobs().getList();
 
     for (let i = 0; i < jobs.length; i++) {
       jobs[i].name = jobs[i].name || jobs[i].title;
@@ -43,7 +43,7 @@ export default class JobsTab extends Events {
     });
 
     const html = getHandleBarHtml("tab_jobs", {
-      user: gui.user,
+      user: Gui.gui.user,
       texts: text.preferences,
       list: list,
     });

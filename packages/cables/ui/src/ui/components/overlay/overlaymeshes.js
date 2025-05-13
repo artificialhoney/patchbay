@@ -1,7 +1,7 @@
 import { mat4, vec3 } from "gl-matrix";
 import overlayShaderVert from "./overlaymeshes.vert";
 import overlayShaderFrag from "./overlaymeshes.frag";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 
 const helperMeshes = {};
 helperMeshes.count = 0;
@@ -123,7 +123,7 @@ helperMeshes.drawCircle = function (op, size) {
 
   let shader = helperMeshes.getDefaultShader(cgl, { billboarded: true });
 
-  if (gui.patchView.isCurrentOp(op))
+  if (Gui.gui.patchView.isCurrentOp(op))
     shader = helperMeshes.getSelectedShader(cgl, { billboarded: true });
   shader.glPrimitive = cgl.gl.LINE_STRIP;
 
@@ -212,7 +212,7 @@ helperMeshes.drawSphere = function (op, size) {
   mat4.scale(cgl.mvMatrix, cgl.mvMatrix, helperMeshes.SPHERE.vScale);
 
   let shader = helperMeshes.getDefaultShader(cgl);
-  if (gui.patchView.isCurrentOp(op))
+  if (Gui.gui.patchView.isCurrentOp(op))
     shader = helperMeshes.getSelectedShader(cgl);
 
   shader.glPrimitive = cgl.gl.LINE_STRIP;
@@ -338,7 +338,7 @@ helperMeshes.drawLineSourceDest = function (
   helperMeshes.startFramebuffer(cgl);
 
   let shader = helperMeshes.getDefaultShader(cgl);
-  if (gui.patchView.isCurrentOp(op))
+  if (Gui.gui.patchView.isCurrentOp(op))
     shader = helperMeshes.getSelectedShader(cgl);
 
   helperMeshes.ARROW_SRC_DST.cube.render(shader);
@@ -395,7 +395,7 @@ helperMeshes.drawArrow = function (op, sizeX, rotX, rotY, rotZ) {
   if (rotZ) mat4.rotateZ(cgl.mvMatrix, cgl.mvMatrix, rotZ * CGL.DEG2RAD);
 
   let shader = helperMeshes.getDefaultShader(cgl);
-  if (gui.patchView.isCurrentOp(op))
+  if (Gui.gui.patchView.isCurrentOp(op))
     shader = helperMeshes.getSelectedShader(cgl);
 
   helperMeshes.ARROW.cube.render(shader);
@@ -444,7 +444,7 @@ helperMeshes.drawXPlane = function (op, sizeX, rotX, rotY, rotZ) {
   if (rotZ) mat4.rotateZ(cgl.mvMatrix, cgl.mvMatrix, rotZ * CGL.DEG2RAD);
 
   let shader = helperMeshes.getDefaultShader(cgl);
-  if (gui.patchView.isCurrentOp(op))
+  if (Gui.gui.patchView.isCurrentOp(op))
     shader = helperMeshes.getSelectedShader(cgl);
 
   helperMeshes.XPLANE.mesh.render(shader);
@@ -499,7 +499,7 @@ helperMeshes.drawCube = function (op, sizeX, sizeY, sizeZ) {
   mat4.scale(cgl.mvMatrix, cgl.mvMatrix, helperMeshes.CUBE.vScale);
 
   let shader = helperMeshes.getDefaultShader(cgl);
-  if (gui.patchView.isCurrentOp(op))
+  if (Gui.gui.patchView.isCurrentOp(op))
     shader = helperMeshes.getSelectedShader(cgl);
 
   helperMeshes.CUBE.mesh.render(shader);
@@ -510,7 +510,7 @@ helperMeshes.drawCube = function (op, sizeX, sizeY, sizeZ) {
 };
 
 helperMeshes.drawMarkerLayer = function (cgl, size) {
-  if (!gui.shouldDrawOverlay) return;
+  if (!Gui.gui.shouldDrawOverlay) return;
 
   if (helperMeshes.count == 0) return;
   helperMeshes.count = 0;

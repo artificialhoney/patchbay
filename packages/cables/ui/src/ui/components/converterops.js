@@ -1,6 +1,6 @@
 import defaultOps from "../defaultops.js";
 import gluiconfig from "../glpatch/gluiconfig.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 
 export function convertPorts(p1, p2, converter) {
   let found = false;
@@ -26,10 +26,12 @@ export function convertPorts(p1, p2, converter) {
     found = true;
   }
 
-  gui.patchView.addOp(converter.op, {
+  Gui.gui.patchView.addOp(converter.op, {
     onOpAdd: (newOp) => {
-      gui.corePatch().link(pFrom.op, pFrom.getName(), newOp, converter.portIn);
-      gui.corePatch().link(pTo.op, pTo.getName(), newOp, converter.portOut);
+      Gui.gui
+        .corePatch()
+        .link(pFrom.op, pFrom.getName(), newOp, converter.portIn);
+      Gui.gui.corePatch().link(pTo.op, pTo.getName(), newOp, converter.portOut);
 
       newOp.setUiAttrib({
         translate: {

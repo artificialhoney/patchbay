@@ -1,10 +1,10 @@
 import { ele } from "@cables/client";
 import Tab from "../../elements/tabpanel/tab.js";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 import text from "../../text.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { platform } from "../../platform.js";
-import { userSettings } from "../usersettings.js";
+import UserSettings from "../usersettings.js";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
 
 /**
@@ -57,119 +57,179 @@ export default class Preferences {
   }
 
   updateValues() {
-    this.setSwitchValue("snapToGrid2", userSettings.get("snapToGrid2"));
-    this.setSwitchValue("canvasMode", userSettings.get("canvasMode"));
+    this.setSwitchValue(
+      "snapToGrid2",
+      UserSettings.userSettings.get("snapToGrid2"),
+    );
+    this.setSwitchValue(
+      "canvasMode",
+      UserSettings.userSettings.get("canvasMode"),
+    );
 
-    this.setSwitchValue("hideCanvasUi", userSettings.get("hideCanvasUi"));
-    this.setSwitchValue("bgpreview", userSettings.get("bgpreview"));
+    this.setSwitchValue(
+      "hideCanvasUi",
+      UserSettings.userSettings.get("hideCanvasUi"),
+    );
+    this.setSwitchValue(
+      "bgpreview",
+      UserSettings.userSettings.get("bgpreview"),
+    );
 
     this.setSwitchValue(
       "texpreviewTransparent",
-      userSettings.get("texpreviewTransparent") || false,
+      UserSettings.userSettings.get("texpreviewTransparent") || false,
     );
     this.setSwitchValue(
       "texpreviewMode",
-      userSettings.get("texpreviewMode") || "",
+      UserSettings.userSettings.get("texpreviewMode") || "",
     );
 
-    this.setSwitchValue("linetype", userSettings.get("linetype") || "curved");
-    this.setSwitchValue("touchpadmode", userSettings.get("touchpadmode"));
+    this.setSwitchValue(
+      "linetype",
+      UserSettings.userSettings.get("linetype") || "curved",
+    );
+    this.setSwitchValue(
+      "touchpadmode",
+      UserSettings.userSettings.get("touchpadmode"),
+    );
     this.setSwitchValue(
       "presentationmode",
-      userSettings.get("presentationmode"),
+      UserSettings.userSettings.get("presentationmode"),
     );
     this.setSwitchValue(
       "nobrowserWarning",
-      userSettings.get("nobrowserWarning"),
+      UserSettings.userSettings.get("nobrowserWarning"),
     );
-    this.setSwitchValue("introCompleted", userSettings.get("introCompleted"));
+    this.setSwitchValue(
+      "introCompleted",
+      UserSettings.userSettings.get("introCompleted"),
+    );
     this.setSwitchValue(
       "randomizePatchName",
-      userSettings.get("randomizePatchName", true),
+      UserSettings.userSettings.get("randomizePatchName", true),
     );
-    this.setSwitchValue("showTipps", userSettings.get("showTipps"));
-    this.setSwitchValue("showMinimap", userSettings.get("showMinimap"));
-    this.setSwitchValue("hideSizeBar", userSettings.get("hideSizeBar"));
+    this.setSwitchValue(
+      "showTipps",
+      UserSettings.userSettings.get("showTipps"),
+    );
+    this.setSwitchValue(
+      "showMinimap",
+      UserSettings.userSettings.get("showMinimap"),
+    );
+    this.setSwitchValue(
+      "hideSizeBar",
+      UserSettings.userSettings.get("hideSizeBar"),
+    );
 
-    this.setSwitchValue("helperMode", userSettings.get("helperMode"));
-    this.setSwitchValue("idlemode", userSettings.get("idlemode"));
+    this.setSwitchValue(
+      "helperMode",
+      UserSettings.userSettings.get("helperMode"),
+    );
+    this.setSwitchValue("idlemode", UserSettings.userSettings.get("idlemode"));
 
     this.setInputValue(
       "wheelmultiplier",
-      userSettings.get("wheelmultiplier") || 1,
+      UserSettings.userSettings.get("wheelmultiplier") || 1,
     );
-    this.setInputValue("fontsize_ace", userSettings.get("fontsize_ace") || 12);
+    this.setInputValue(
+      "fontsize_ace",
+      UserSettings.userSettings.get("fontsize_ace") || 12,
+    );
     this.setSwitchValue(
       "wrapmode_ace",
-      userSettings.get("wrapmode_ace") || false,
+      UserSettings.userSettings.get("wrapmode_ace") || false,
     );
 
     this.setSwitchValue(
       "quickLinkLongPress",
-      userSettings.get("quickLinkLongPress"),
+      UserSettings.userSettings.get("quickLinkLongPress"),
     );
     this.setSwitchValue(
       "quickLinkMiddleMouse",
-      userSettings.get("quickLinkMiddleMouse"),
+      UserSettings.userSettings.get("quickLinkMiddleMouse"),
     );
     this.setSwitchValue(
       "doubleClickAction",
-      userSettings.get("doubleClickAction"),
+      UserSettings.userSettings.get("doubleClickAction"),
     );
 
-    // this.setSwitchValue("forceWebGl1", userSettings.get("forceWebGl1"));
-    this.setSwitchValue("devinfos", userSettings.get("devinfos") || false);
+    // this.setSwitchValue("forceWebGl1", UserSettings.userSettings.get("forceWebGl1"));
+    this.setSwitchValue(
+      "devinfos",
+      UserSettings.userSettings.get("devinfos") || false,
+    );
 
     this.setSwitchValue(
       "patch_button_scroll",
-      userSettings.get("patch_button_scroll") || "2",
+      UserSettings.userSettings.get("patch_button_scroll") || "2",
     );
     this.setSwitchValue(
       "patch_allowCableDrag",
-      userSettings.get("patch_allowCableDrag") || false,
+      UserSettings.userSettings.get("patch_allowCableDrag") || false,
     );
 
-    this.setSwitchValue("miniopselect", userSettings.get("miniopselect"));
-    this.setSwitchValue("glpatch_cursor", userSettings.get("glpatch_cursor"));
-    this.setSwitchValue("noFadeOutCables", userSettings.get("noFadeOutCables"));
+    this.setSwitchValue(
+      "miniopselect",
+      UserSettings.userSettings.get("miniopselect"),
+    );
+    this.setSwitchValue(
+      "glpatch_cursor",
+      UserSettings.userSettings.get("glpatch_cursor"),
+    );
+    this.setSwitchValue(
+      "noFadeOutCables",
+      UserSettings.userSettings.get("noFadeOutCables"),
+    );
 
-    // this.setSwitchValue("glpatch_showboundings", userSettings.get("glpatch_showboundings") || false);
+    // this.setSwitchValue("glpatch_showboundings", UserSettings.userSettings.get("glpatch_showboundings") || false);
 
     this.setSwitchValue(
       "bgpattern",
-      userSettings.get("bgpattern") || "bgPatternDark",
+      UserSettings.userSettings.get("bgpattern") || "bgPatternDark",
     );
-    this.setSwitchValue("fontSizeOff", userSettings.get("fontSizeOff") || 0);
+    this.setSwitchValue(
+      "fontSizeOff",
+      UserSettings.userSettings.get("fontSizeOff") || 0,
+    );
 
-    this.setSwitchValue("formatcode", userSettings.get("formatcode") || false);
+    this.setSwitchValue(
+      "formatcode",
+      UserSettings.userSettings.get("formatcode") || false,
+    );
     this.setSwitchValue(
       "notlocalizeNumberformat",
-      userSettings.get("notlocalizeNumberformat") || false,
+      UserSettings.userSettings.get("notlocalizeNumberformat") || false,
     );
 
     this.setSwitchValue(
       "openlastproject",
-      userSettings.get("openlastproject") || false,
+      UserSettings.userSettings.get("openlastproject") || false,
     );
     this.setSwitchValue(
       "openfullscreen",
-      userSettings.get("openfullscreen") || false,
+      UserSettings.userSettings.get("openfullscreen") || false,
     );
     this.setSwitchValue(
       "maximizerenderer",
-      userSettings.get("maximizerenderer") || false,
+      UserSettings.userSettings.get("maximizerenderer") || false,
     );
 
-    this.setInputValue("authorName", userSettings.get("authorName") || "");
+    this.setInputValue(
+      "authorName",
+      UserSettings.userSettings.get("authorName") || "",
+    );
     this.setSwitchValue(
       "escape_closetabs",
-      userSettings.get("escape_closetabs") || false,
+      UserSettings.userSettings.get("escape_closetabs") || false,
     );
 
-    this.setSwitchValue("ace_keymode", userSettings.get("ace_keymode") || "");
+    this.setSwitchValue(
+      "ace_keymode",
+      UserSettings.userSettings.get("ace_keymode") || "",
+    );
 
     if (platform.frontendOptions.selectableDownloadPath) {
-      const currentValue = userSettings.get("downloadPath") || "";
+      const currentValue = UserSettings.userSettings.get("downloadPath") || "";
       this.setInputValue("downloadPath", currentValue);
       const pathSelectEle = ele.byId("usersetting_downloadPath");
       if (pathSelectEle) {
@@ -181,7 +241,7 @@ export default class Preferences {
             { dir: currentValue },
             (err, dirName) => {
               if (!err) {
-                userSettings.set("downloadPath", dirName);
+                UserSettings.userSettings.set("downloadPath", dirName);
               }
             },
           );
@@ -191,21 +251,21 @@ export default class Preferences {
 
     this.setSwitchValue(
       "patch_wheelmode",
-      userSettings.get("patch_wheelmode") || "zoom",
+      UserSettings.userSettings.get("patch_wheelmode") || "zoom",
     );
     this.setInputValue(
       "patch_panspeed",
-      userSettings.get("patch_panspeed") || 0.25,
+      UserSettings.userSettings.get("patch_panspeed") || 0.25,
     );
     this.setInputValue(
       "keybind_escape",
-      userSettings.get("keybind_escape") || "escape",
+      UserSettings.userSettings.get("keybind_escape") || "escape",
     );
   }
 
   show() {
     const html = getHandleBarHtml("tab_preferences", {
-      user: gui.user,
+      user: Gui.gui.user,
       texts: text.preferences,
     });
     this._tab.html(html);
@@ -219,7 +279,7 @@ export default class Preferences {
         if (v === "true") v = true;
         if (v === "false") v = false;
 
-        userSettings.set(e.target.dataset.setting, v);
+        UserSettings.userSettings.set(e.target.dataset.setting, v);
       });
     }
 
@@ -228,15 +288,15 @@ export default class Preferences {
       elements[i].addEventListener("input", (e) => {
         let v = e.target.value;
         if (e.target.classList.contains("numberinput")) v = parseFloat(v);
-        if (v == v) userSettings.set(e.target.dataset.setting, v);
+        if (v == v) UserSettings.userSettings.set(e.target.dataset.setting, v);
       });
     }
 
     ele.byId("resetPrefs").addEventListener("click", () => {
-      userSettings.reset();
+      UserSettings.userSettings.reset();
     });
 
-    userSettings.on("change", () => {
+    UserSettings.userSettings.on("change", () => {
       this.updateValues();
     });
   }

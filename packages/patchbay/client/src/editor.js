@@ -294,7 +294,7 @@ export default class PatchbayEditor {
     };
 
     Object.keys(this._talkerTopics).forEach((talkerTopic) => {
-      this._talker.addEventListener(talkerTopic, (data, next) => {
+      this._talker.on(talkerTopic, (data, next) => {
         const topicConfig = this._talkerTopics[talkerTopic];
         CablesPatchbay.cablesPatchbay.ipcRenderer
           .invoke("talkerMessage", talkerTopic, data, topicConfig)
@@ -305,7 +305,7 @@ export default class PatchbayEditor {
                 level: error.level,
                 message: error.msg || error,
               });
-            next(error, r);
+            if (next) next(error, r);
           });
       });
     });

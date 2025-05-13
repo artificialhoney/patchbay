@@ -720,7 +720,7 @@ export class Patch extends Events {
 
     if (this.config.doRequestAnimation)
       this._animReq =
-        this.cgl.canvas.ownerDocument.defaultView.requestAnimationFrame(
+        this.cgl.canvas?.ownerDocument.defaultView.requestAnimationFrame(
           this.exec.bind(this),
         );
   }

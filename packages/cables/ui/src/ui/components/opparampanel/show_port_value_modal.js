@@ -2,7 +2,7 @@ import { Logger } from "@cables/client";
 import ModalDialog from "../../dialogs/modaldialog.js";
 import GlUiConfig from "../../glpatch/gluiconfig.js";
 import defaultOps from "../../defaultops.js";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 
 export default class ModalPortValue {
   constructor() {
@@ -11,7 +11,7 @@ export default class ModalPortValue {
   }
 
   showJsonStructure(opid, which) {
-    const op = gui.corePatch().getOpById(opid);
+    const op = Gui.gui.corePatch().getOpById(opid);
     if (!op) {
       this._log.warn("opid not found:", opid);
       return;
@@ -108,7 +108,7 @@ export default class ModalPortValue {
       }
       const hideclass = "";
       html +=
-        "<a onclick=\"gui.opPortModal.structureHelper_exposeArray('" +
+        "<a onclick=\"Gui.gui.opPortModal.structureHelper_exposeArray('" +
         op.id +
         "', '" +
         portName +
@@ -119,7 +119,7 @@ export default class ModalPortValue {
         '\')" class="treebutton">Array</a>';
       html += "&nbsp;";
       html +=
-        "<a onclick=\"gui.opPortModal.structureHelper_exposeNode('" +
+        "<a onclick=\"Gui.gui.opPortModal.structureHelper_exposeNode('" +
         op.id +
         "', '" +
         portName +
@@ -246,7 +246,7 @@ export default class ModalPortValue {
       fullHTML += "port: <b>" + title + "</b> of <b>" + port.op.name + "</b> ";
       fullHTML += "<br/><br/>";
       fullHTML +=
-        '<a class="button " onclick="gui.opPortModal.updatePortStructurePreview(\'' +
+        '<a class="button " onclick="Gui.gui.opPortModal.updatePortStructurePreview(\'' +
         title +
         '\')"><span class="icon icon-refresh"></span>Update</a>';
       fullHTML += "<br/><br/>";
@@ -277,7 +277,7 @@ export default class ModalPortValue {
   }
 
   updatePortStructurePreview(title) {
-    this._showPortStructure(title, gui.currentModal, this._port);
+    this._showPortStructure(title, Gui.gui.currentModal, this._port);
   }
 
   structureHelper_exposeNode(
@@ -290,9 +290,9 @@ export default class ModalPortValue {
     const jsonDataOpName =
       defaultOps.jsonPathOps[inputDataType + "Get" + dataType];
     if (!jsonDataOpName) return;
-    const op = gui.corePatch().getOpById(opId);
-    gui.patchView.addOp(jsonDataOpName, {
-      subPatch: gui.patchView.getCurrentSubPatch(),
+    const op = Gui.gui.corePatch().getOpById(opId);
+    Gui.gui.patchView.addOp(jsonDataOpName, {
+      subPatch: Gui.gui.patchView.getCurrentSubPatch(),
       onOpAdd: (newop) => {
         newop.setUiAttrib({
           translate: {
@@ -303,8 +303,8 @@ export default class ModalPortValue {
 
         newop.getPort("Path").set(path);
         op.patch.link(op, portName, newop, inputDataType);
-        gui.patchView.centerSelectOp(newop.id);
-        gui.closeModal();
+        Gui.gui.patchView.centerSelectOp(newop.id);
+        Gui.gui.closeModal();
       },
     });
   }
@@ -314,8 +314,8 @@ export default class ModalPortValue {
       defaultOps.jsonPathOps[inputDataType + "GetArrayValues"];
     if (!jsonDataOpName) return;
 
-    const op = gui.corePatch().getOpById(opId);
-    const newop = gui.corePatch().addOp(jsonDataOpName);
+    const op = Gui.gui.corePatch().getOpById(opId);
+    const newop = Gui.gui.corePatch().addOp(jsonDataOpName);
 
     newop.setUiAttrib({
       translate: {
@@ -326,7 +326,7 @@ export default class ModalPortValue {
 
     newop.getPort("Path").set(path);
     op.patch.link(op, portName, newop, inputDataType);
-    gui.patchView.centerSelectOp(newop.id);
-    gui.closeModal();
+    Gui.gui.patchView.centerSelectOp(newop.id);
+    Gui.gui.closeModal();
   }
 }

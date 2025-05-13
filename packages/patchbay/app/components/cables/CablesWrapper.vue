@@ -2,16 +2,17 @@
 import "@cables/ui/src/web/CablesWebComponent.js";
 import CablesPatchbay from "@patchbay/client";
 import { useTemplateRef, onMounted } from "vue";
+import { EventEmitter } from "eventemitter3";
 
 const { data: platformSettings } = await useFetch(
   "/api/cables/platformSettings",
 );
 const { data: cablesConfig } = await useFetch("/api/cables/cablesConfig");
 const { data: getStartupLog } = await useFetch("/api/cables/getStartupLog");
-// const { data: getOpModuleDir } = await useFetch("/api/cables/getOpModuleDir");
-// const { data: getOpModuleLocation } = await useFetch(
-//   "/cables/getOpModuleLocation",
-// );
+const { data: getOpModuleDir } = await useFetch("/api/cables/getOpModuleDir");
+const { data: getOpModuleLocation } = await useFetch(
+  "api/cables/getOpModuleLocation",
+);
 
 const cablesUi = useTemplateRef("cables-ui");
 
@@ -25,27 +26,36 @@ const patchbay = {
           return cablesConfig.value;
         case "getStartupLog":
           return getStartupLog.value;
-        // case "getOpModuleDir":
-        //   return getOpModuleDir;
-        // case "getOpModuleLocation":
-        //   return getOpModuleLocation;
+        case "getOpModuleDir":
+          return getOpModuleDir.value;
+        case "getOpModuleLocation":
+          return getOpModuleLocation.value;
       }
+    }
+    invoke() {
+      return Promise.resolve();
     }
   })(),
 };
 
-const talker = new (class {
-  on(token) {
-    console.log(token);
-  }
-  addEventListener(token) {
-    console.log(token);
+let cablesPatchbay = null;
+
+const talker = new (class extends EventEmitter {
+  send(event, data, callback) {
+    switch (event) {
+      case "requestPatchData":
+        callback(null, cablesPatchbay.editor.config);
+        return;
+      case "getOpDocsAll":
+        callback(null, []);
+        return;
+    }
   }
 })();
 
 if (process.client) {
   onMounted(async () => {
-    const cablesPatchbay = new CablesPatchbay(patchbay, talker, cablesUi.value);
+    cablesPatchbay = new CablesPatchbay(patchbay, talker, cablesUi.value);
     await cablesPatchbay.init();
   });
 }
@@ -53,6 +63,6 @@ if (process.client) {
 
 <template>
   <div class="flex">
-    <cables-ui ref="cables-ui"></cables-ui>
+    <cables-ui ref="cables-ui" :talker="talker"></cables-ui>
   </div>
 </template>

@@ -1,7 +1,7 @@
 import { ModalBackground, Logger } from "@cables/client";
 import uiConfig from "../uiconfig.js";
-import { gui } from "../gui.js";
-import { userSettings } from "./usersettings.js";
+import Gui from "../gui.js";
+import UserSettings from "./usersettings.js";
 
 let idling = false;
 let idleTimeout = null;
@@ -14,33 +14,36 @@ const logger = new Logger("idlemode");
 
 function startIdleMode() {
   if (
-    gui.canvasManager.mode == gui.canvasManager.CANVASMODE_POPOUT ||
-    gui.canvasManager.mode == gui.canvasManager.CANVASMODE_FULLSCREEN
+    Gui.gui.canvasManager.mode == Gui.gui.canvasManager.CANVASMODE_POPOUT ||
+    Gui.gui.canvasManager.mode == Gui.gui.canvasManager.CANVASMODE_FULLSCREEN
   )
     return;
-  if (gui.patchView.hasFocus() && idleFocus) return;
+  if (Gui.gui.patchView.hasFocus() && idleFocus) return;
 
-  if (!window.gui || !gui.finishedLoading()) return;
+  if (!window.gui || !Gui.gui.finishedLoading()) return;
   if (idling) return;
-  if (!userSettings.get("idlemode")) return;
-  if (gui.socket && gui.socket.inMultiplayerSession) return;
+  if (!UserSettings.userSettings.get("idlemode")) return;
+  if (Gui.gui.socket && Gui.gui.socket.inMultiplayerSession) return;
 
   const wasActiveSeconds = (performance.now() - activeModeStart) / 1000;
   if (
     window.gui &&
     !(
-      gui.currentModal &&
-      gui.currentModal.persistInIdleMode &&
-      gui.currentModal.persistInIdleMode()
+      Gui.gui.currentModal &&
+      Gui.gui.currentModal.persistInIdleMode &&
+      Gui.gui.currentModal.persistInIdleMode()
     )
   ) {
-    gui.restriction.setMessage("idlemode", "cables is paused! Click to resume");
+    Gui.gui.restriction.setMessage(
+      "idlemode",
+      "cables is paused! Click to resume",
+    );
     idleModal = new ModalBackground();
     idleModal.show();
   }
 
-  gui.corePatch().pause();
-  gui.emitEvent("uiIdleStart", wasActiveSeconds);
+  Gui.gui.corePatch().pause();
+  Gui.gui.emitEvent("uiIdleStart", wasActiveSeconds);
   idling = true;
 
   clearTimeout(idleTimeout);
@@ -58,22 +61,22 @@ function idleInteractivity() {
 }
 
 function stopIdleMode() {
-  if (!window.gui || !gui.finishedLoading()) return;
+  if (!window.gui || !Gui.gui.finishedLoading()) return;
   if (!idling) return;
 
   const idleSeconds = Math.round((Date.now() - idleModeStart) / 1000);
   logger.log("idled for ", idleSeconds + " seconds");
 
-  gui.corePatch().resume();
+  Gui.gui.corePatch().resume();
   // if (idleModal) idleModal.close();
   if (idleModal) {
     idleModal.hide();
-    gui.restriction.setMessage("idlemode", null);
+    Gui.gui.restriction.setMessage("idlemode", null);
   }
-  // gui.closeModal();
+  // Gui.gui.closeModal();
   idling = false;
   clearTimeout(idleTimeout);
-  gui.emitEvent("uiIdleEnd", idleSeconds);
+  Gui.gui.emitEvent("uiIdleEnd", idleSeconds);
   activeModeStart = performance.now();
 }
 
@@ -84,7 +87,7 @@ function visibilityChanged(e) {
 }
 
 export default function startIdleListeners() {
-  if (gui.isRemoteClient) return;
+  if (Gui.gui.isRemoteClient) return;
 
   window.addEventListener("focus", (event) => {
     idleFocus = true;
@@ -101,7 +104,7 @@ export default function startIdleListeners() {
   document.addEventListener("keydown", idleInteractivity, false);
   document.addEventListener("pointermove", idleInteractivity);
   document.addEventListener("visibilitychange", visibilityChanged);
-  gui.on("userActivity", idleInteractivity);
+  Gui.gui.on("userActivity", idleInteractivity);
 
   idleTimeout = setTimeout(startIdleMode, uiConfig.idleModeTimeout * 1000);
 }

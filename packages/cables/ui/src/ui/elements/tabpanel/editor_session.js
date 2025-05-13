@@ -1,8 +1,8 @@
 import paramsHelper from "../../components/opparampanel/params_helper.js";
 import ManageOp from "../../components/tabs/tab_manage_op.js";
 import WelcomeTab from "../../components/tabs/tab_welcome.js";
-import { userSettings } from "../../components/usersettings.js";
-import { gui } from "../../gui.js";
+import UserSettings from "../../components/usersettings.js";
+import Gui from "../../gui.js";
 
 /**
  * stores opened editors to reopen when loading ui
@@ -27,16 +27,16 @@ export default class EditorSession {
     });
 
     this.addListener("manageOp", (id, data) => {
-      new ManageOp(gui.mainTabs, id);
+      new ManageOp(Gui.gui.mainTabs, id);
     });
 
     this.addListener("welcometab", (name, data) => {
-      new WelcomeTab(gui.mainTabs);
+      new WelcomeTab(Gui.gui.mainTabs);
     });
   }
 
   store() {
-    userSettings.set("openEditors", this._openEditors);
+    UserSettings.userSettings.set("openEditors", this._openEditors);
   }
 
   loaded() {
@@ -56,7 +56,7 @@ export default class EditorSession {
 
     setTimeout(() => {
       if (this._loadingCount == 0 && !this._loadedCurrentTab) {
-        gui.mainTabs.loadCurrentTabUsersettings();
+        Gui.gui.mainTabs.loadCurrentTabUsersettings();
         this._loadedCurrentTab = true;
       }
     }, 100);
@@ -110,7 +110,7 @@ export default class EditorSession {
     const obj = { name: name, type: type, data: data || {} };
     this._openEditors.push(obj);
     this.store();
-    if (!skipSetEditorTab) userSettings.set("editortab", name);
+    if (!skipSetEditorTab) UserSettings.userSettings.set("editortab", name);
 
     return obj;
   }
@@ -121,7 +121,7 @@ export default class EditorSession {
    * @function
    */
   open() {
-    const sessions = userSettings.get("openEditors");
+    const sessions = UserSettings.userSettings.get("openEditors");
 
     if (sessions) {
       for (let i = 0; i < sessions.length; i++) {

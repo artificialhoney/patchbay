@@ -1,5 +1,5 @@
 import { notify } from "../elements/notification.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import opNames from "../opnameutils.js";
 import text from "../text.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
@@ -28,7 +28,7 @@ export default class Bookmarks {
 
   cleanUp() {
     for (let i in this._bookmarks) {
-      const op = gui.corePatch().getOpById(this._bookmarks[i]);
+      const op = Gui.gui.Gui.gui.corePatch().getOpById(this._bookmarks[i]);
       if (!op) this._bookmarks[i] = null;
     }
   }
@@ -36,15 +36,15 @@ export default class Bookmarks {
   getHtml() {
     // if (this.needRefreshSubs)
     // {
-    //     const subs = gui.patchView.getSubPatches(true);
-    //     const perf = gui.uiProfiler.start("bookmark panel subpatches");
+    //     const subs = Gui.gui.Gui.gui.patchView.getSubPatches(true);
+    //     const perf = Gui.gui.Gui.gui.uiProfiler.start("bookmark panel subpatches");
 
     //     this.needRefreshSubs = false;
     //     for (let i = 0; i < subs.length; i++)
     //     {
     //         const subPatchId = subs[i].id;
 
-    //         subs[i].path = gui.patchView.getSubpatchPathArray(subPatchId, null, true);
+    //         subs[i].path = Gui.gui.Gui.gui.patchView.getSubpatchPathArray(subPatchId, null, true);
     //         let sortname = "";
 
     //         for (let j = 0; j < subs[i].path.length; j++)
@@ -68,11 +68,11 @@ export default class Bookmarks {
     //     perf.finish();
     // }
 
-    const perf = gui.uiProfiler.start("bookmarks");
+    const perf = Gui.gui.Gui.gui.uiProfiler.start("bookmarks");
 
     const bm = [];
     for (const i in this._bookmarks) {
-      const op = gui.corePatch().getOpById(this._bookmarks[i]);
+      const op = Gui.gui.Gui.gui.corePatch().getOpById(this._bookmarks[i]);
 
       if (op) {
         bm.push({
@@ -89,15 +89,15 @@ export default class Bookmarks {
 
     perf.finish();
 
-    const perf2 = gui.uiProfiler.start("bookmarks handlebars");
+    const perf2 = Gui.gui.Gui.gui.uiProfiler.start("bookmarks handlebars");
     let html = getHandleBarHtml("bookmarks", {
       bookmarks: bm,
       subPatches: this._subs,
-      currentSubPatch: gui.patchView.getCurrentSubPatch(),
+      currentSubPatch: Gui.gui.Gui.gui.patchView.getCurrentSubPatch(),
     });
     perf2.finish();
 
-    // const perf3 = gui.uiProfiler.start("update dynamic commands");
+    // const perf3 = Gui.gui.Gui.gui.uiProfiler.start("update dynamic commands");
     // this.updateDynamicCommands();
     // perf3.finish();
 
@@ -114,7 +114,7 @@ export default class Bookmarks {
   }
 
   setBoookmarkUiAttr(id, bookmarked) {
-    const op = gui.corePatch().getOpById(id);
+    const op = Gui.gui.Gui.gui.corePatch().getOpById(id);
     if (op) op.setUiAttrib({ bookmarked: bookmarked });
   }
 
@@ -128,7 +128,7 @@ export default class Bookmarks {
 
     while (this._bookmarks.indexOf(null) >= 0)
       this._bookmarks.splice(this._bookmarks.indexOf(null), 1);
-    gui.corePatch().emitEvent("bookmarkschanged");
+    Gui.gui.Gui.gui.corePatch().emitEvent("bookmarkschanged");
   }
 
   add(id) {
@@ -160,20 +160,20 @@ export default class Bookmarks {
         elements[eli].classList.remove("icon-bookmark");
       }
 
-      gui.patchView.centerSelectOp(id);
+      Gui.gui.Gui.gui.patchView.centerSelectOp(id);
       notify(text.bookmark_added);
-      gui.corePatch().emitEvent("bookmarkschanged");
+      Gui.gui.Gui.gui.corePatch().emitEvent("bookmarkschanged");
     }
 
     this.updateDynamicCommands();
   }
 
   goto(id) {
-    if (!gui.keys.shiftKey) {
-      const op = gui.corePatch().getOpById(id);
-      gui.opParams.show(op);
+    if (!Gui.gui.Gui.gui.keys.shiftKey) {
+      const op = Gui.gui.Gui.gui.corePatch().getOpById(id);
+      Gui.gui.Gui.gui.opParams.show(op);
     } else {
-      gui.patchView.centerSelectOp(id);
+      Gui.gui.Gui.gui.patchView.centerSelectOp(id);
     }
   }
 
@@ -191,17 +191,17 @@ export default class Bookmarks {
       this.setBoookmarkUiAttr(this._bookmarks[i], true);
 
     for (let i = 0; i < this._dynCmds.length; i++)
-      gui.cmdPallet.removeDynamic(this._dynCmds[i]);
+      Gui.gui.Gui.gui.cmdPallet.removeDynamic(this._dynCmds[i]);
 
     for (let i = 0; i < this._bookmarks.length; i++) {
-      const op = gui.corePatch().getOpById(this._bookmarks[i]);
+      const op = Gui.gui.Gui.gui.corePatch().getOpById(this._bookmarks[i]);
 
       if (!op) continue;
-      const cmd = gui.cmdPallet.addDynamic(
+      const cmd = Gui.gui.Gui.gui.cmdPallet.addDynamic(
         "bookmark",
         "" + op.getTitle(),
         () => {
-          gui.patchView.centerSelectOp(op.id);
+          Gui.gui.Gui.gui.patchView.centerSelectOp(op.id);
         },
         "bookmark",
       );
@@ -209,15 +209,15 @@ export default class Bookmarks {
       this._dynCmds.push(cmd);
     }
 
-    const subs = gui.patchView.getSubPatches(false);
+    const subs = Gui.gui.Gui.gui.patchView.getSubPatches(false);
     for (let i = 0; i < subs.length; i++) {
       const sub = subs[i];
 
-      const cmd = gui.cmdPallet.addDynamic(
+      const cmd = Gui.gui.Gui.gui.cmdPallet.addDynamic(
         "subpatch",
         "" + sub.name,
         () => {
-          gui.patchView.setCurrentSubPatch(sub.id);
+          Gui.gui.Gui.gui.patchView.setCurrentSubPatch(sub.id);
           CABLES.CMD.UI.centerPatchOps();
         },
         "subpatch",

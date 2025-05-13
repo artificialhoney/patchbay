@@ -9,10 +9,10 @@ import subPatchOpUtil from "../subpatchop_util.js";
 import ModalIframe from "../dialogs/modaliframe.js";
 import LibLoader from "./libloader.js";
 import namespace from "../namespaceutils.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { platform } from "../platform.js";
 import { editorSession } from "../elements/tabpanel/editor_session.js";
-import { userSettings } from "../components/usersettings.js";
+import UserSettings from "../components/usersettings.js";
 import { portType } from "../core_constants.js";
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
@@ -33,7 +33,7 @@ export default class ServerOps {
 
     editorSession.addListener("op", (name, data) => {
       editorSession.startLoadingTab();
-      const lastTab = userSettings.get("editortab");
+      const lastTab = UserSettings.userSettings.get("editortab");
 
       if (data && data.opId) {
         name = {
@@ -43,8 +43,8 @@ export default class ServerOps {
       }
 
       this.edit(name, false, () => {
-        gui.mainTabs.activateTabByName(lastTab);
-        userSettings.set("editortab", lastTab);
+        Gui.gui.mainTabs.activateTabByName(lastTab);
+        UserSettings.userSettings.set("editortab", lastTab);
         editorSession.finishLoadingTab();
       });
     });
@@ -52,15 +52,15 @@ export default class ServerOps {
     editorSession.addListener("attachment", (name, data) => {
       editorSession.startLoadingTab();
       if (data && data.opname) {
-        const lastTab = userSettings.get("editortab");
+        const lastTab = UserSettings.userSettings.get("editortab");
         this.editAttachment(
           data.opname,
           data.name,
           false,
           () => {
-            gui.mainTabs.activateTabByName(lastTab);
+            Gui.gui.mainTabs.activateTabByName(lastTab);
             console.log("act tab", lastTab);
-            userSettings.set("editortab", lastTab);
+            UserSettings.userSettings.set("editortab", lastTab);
             editorSession.finishLoadingTab();
           },
           true,
@@ -74,7 +74,7 @@ export default class ServerOps {
     CABLESUILOADER.preload.opDocsAll.opDocs.forEach((newOp) => {
       this._ops.push(newOp);
     });
-    gui.opDocs.addCoreOpDocs();
+    Gui.gui.opDocs.addCoreOpDocs();
     this.load(next);
   }
 
@@ -102,8 +102,8 @@ export default class ServerOps {
       res.forEach((newOp) => {
         this._ops.push(newOp);
       });
-      if (gui.opDocs) {
-        gui.opDocs.addOpDocs(res);
+      if (Gui.gui.opDocs) {
+        Gui.gui.opDocs.addOpDocs(res);
       }
 
       /*
@@ -114,7 +114,7 @@ export default class ServerOps {
         return op && op.usedInProject;
       });
       this.loadOpsLibs(usedOps, () => {
-        gui.corePatch().logStartup("Ops loaded");
+        Gui.gui.corePatch().logStartup("Ops loaded");
         if (cb) cb(this._ops);
         this.loaded = true;
         incrementStartup();
@@ -129,7 +129,7 @@ export default class ServerOps {
   }
 
   create(name, cb, openEditor, options = {}) {
-    gui.savingTitleAnimStart("Creating Op...");
+    Gui.gui.savingTitleAnimStart("Creating Op...");
 
     const createRequest = {
       opname: name,
@@ -139,24 +139,24 @@ export default class ServerOps {
 
     platform.talkerAPI.send("opCreate", createRequest, (err, res) => {
       if (err) {
-        gui.serverOps.showApiError(err);
-        gui.savingTitleAnimEnd();
+        Gui.gui.serverOps.showApiError(err);
+        Gui.gui.savingTitleAnimEnd();
         if (cb) cb();
       } else {
         function done() {
-          gui.opSelect().reload();
-          gui.endModalLoading();
-          gui.savingTitleAnimEnd();
+          Gui.gui.opSelect().reload();
+          Gui.gui.endModalLoading();
+          Gui.gui.savingTitleAnimEnd();
           if (cb) cb(res);
         }
 
         if (!options.noLoadOp) {
           this.loadOp(res, (newOps) => {
             if (openEditor) {
-              gui.maintabPanel.show(true);
+              Gui.gui.maintabPanel.show(true);
               this.edit(res.name, false, null, true);
             }
-            gui.serverOps.execute(res.name, () => {
+            Gui.gui.serverOps.execute(res.name, () => {
               done();
             });
           });
@@ -268,7 +268,7 @@ export default class ServerOps {
     const opObj = this._getOpLayout(op);
 
     // check if layout has changed...
-    const l = gui.opDocs.getOpDocById(op.opId);
+    const l = Gui.gui.opDocs.getOpDocById(op.opId);
     if (JSON.stringify(l.layout) == JSON.stringify(opObj)) return false; // has not changed
 
     platform.talkerAPI.send(
@@ -291,13 +291,13 @@ export default class ServerOps {
    */
   execute(opIdentifier, next, options) {
     options = options || {};
-    gui.savedState.pause();
+    Gui.gui.savedState.pause();
 
     let oldOps = null;
     if (opIdentifier.indexOf(".") > 0) {
-      oldOps = gui.corePatch().getOpsByObjName(opIdentifier);
+      oldOps = Gui.gui.corePatch().getOpsByObjName(opIdentifier);
     } else {
-      oldOps = gui.corePatch().getOpsByOpId(opIdentifier);
+      oldOps = Gui.gui.corePatch().getOpsByOpId(opIdentifier);
     }
 
     let name = opIdentifier;
@@ -307,13 +307,13 @@ export default class ServerOps {
       if (oldOps[i].uiAttribs) delete oldOps[i].uiAttribs.uierrors;
     }
 
-    gui.jobs().start({ id: "executeop" });
+    Gui.gui.jobs().start({ id: "executeop" });
 
-    // const oldLayout = gui.opDocs.getOpDocById(oldOps[0].opId); //d.......
+    // const oldLayout = Gui.gui.opDocs.getOpDocById(oldOps[0].opId); //d.......
     this.loadOpDependencies(
       name,
       () => {
-        gui.corePatch().reloadOp(
+        Gui.gui.corePatch().reloadOp(
           name,
           (num, newOps) => {
             for (let i = 0; i < newOps.length; i++)
@@ -323,11 +323,11 @@ export default class ServerOps {
             if (newOps.length > 0) {
               this.saveOpLayout(newOps[0]);
             }
-            gui.corePatch().emitEvent("opReloaded", name, newOps[0]);
-            // gui.emitEvent("opReloaded", name, newOps[0]);
-            gui.jobs().finish("executeop");
+            Gui.gui.corePatch().emitEvent("opReloaded", name, newOps[0]);
+            // Gui.gui.emitEvent("opReloaded", name, newOps[0]);
+            Gui.gui.jobs().finish("executeop");
 
-            gui.savedState.resume();
+            Gui.gui.savedState.resume();
             if (next) next(newOps, options.refOldOp);
           },
           options.refOldOp,
@@ -340,8 +340,8 @@ export default class ServerOps {
   clone(oldname, name, cb, options) {
     options = options || { openEditor: true };
 
-    // const loadingModal = options.loadingModal || gui.startModalLoading("Cloning op...");
-    gui.savingTitleAnimStart("Cloning Op...");
+    // const loadingModal = options.loadingModal || Gui.gui.startModalLoading("Cloning op...");
+    Gui.gui.savingTitleAnimStart("Cloning Op...");
 
     // loadingModal.setTask("cloning " + oldname + " to " + name);
 
@@ -354,8 +354,8 @@ export default class ServerOps {
     platform.talkerAPI.send("opClone", cloneRequest, (err, res) => {
       if (err) {
         this._log.log("err res", res);
-        // gui.endModalLoading();
-        gui.savingTitleAnimEnd();
+        // Gui.gui.endModalLoading();
+        Gui.gui.savingTitleAnimEnd();
 
         CABLES.UI.MODAL.showError("Could not clone op", "");
 
@@ -367,9 +367,9 @@ export default class ServerOps {
           if (options.openEditor) this.edit(name);
 
           // loadingModal.setTask("loading new op: " + name);
-          gui.serverOps.execute(name, () => {
-            gui.opSelect().reload();
-            gui.savingTitleAnimEnd();
+          Gui.gui.serverOps.execute(name, () => {
+            Gui.gui.opSelect().reload();
+            Gui.gui.savingTitleAnimEnd();
             if (cb) cb();
           });
         });
@@ -398,7 +398,7 @@ export default class ServerOps {
           },
           (errr, re) => {
             if (re && re.data && re.data.updated)
-              gui.patchView.store.setServerDate(re.data.updated);
+              Gui.gui.patchView.store.setServerDate(re.data.updated);
             finished();
           },
         );
@@ -438,11 +438,11 @@ export default class ServerOps {
             });
           }
         } else {
-          gui.serverOps.loadOpDependencies(
+          Gui.gui.serverOps.loadOpDependencies(
             opName,
             () => {
               this._log.log("lib added!", opName, libName);
-              gui.emitEvent("refreshManageOp", opName);
+              Gui.gui.emitEvent("refreshManageOp", opName);
               if (next) next();
             },
             true,
@@ -472,11 +472,11 @@ export default class ServerOps {
               "unable to remove library: " + err.msg,
             );
           } else {
-            gui.serverOps.loadOpDependencies(
+            Gui.gui.serverOps.loadOpDependencies(
               opName,
               () => {
                 this._log.log("lib removed!", opName, libName);
-                gui.emitEvent("refreshManageOp", opName);
+                Gui.gui.emitEvent("refreshManageOp", opName);
                 if (next) next();
               },
               true,
@@ -518,12 +518,12 @@ export default class ServerOps {
             });
           }
         } else {
-          gui.serverOps.loadOpDependencies(
+          Gui.gui.serverOps.loadOpDependencies(
             opName,
             () => {
               this._log.log("corelib added!", opName, libName);
 
-              gui.emitEvent("refreshManageOp", opName);
+              Gui.gui.emitEvent("refreshManageOp", opName);
               if (next) next();
             },
             true,
@@ -553,11 +553,11 @@ export default class ServerOps {
               "unable to remove corelib: " + err.msg,
             );
           } else {
-            gui.serverOps.loadOpDependencies(
+            Gui.gui.serverOps.loadOpDependencies(
               opName,
               () => {
                 this._log.log("corelib removed!", opName, libName);
-                gui.emitEvent("refreshManageOp", opName);
+                Gui.gui.emitEvent("refreshManageOp", opName);
 
                 if (next) next();
               },
@@ -572,7 +572,7 @@ export default class ServerOps {
   addOpDependency(opName, depSrc, depType, exportName, next = null) {
     if (!opName || !depSrc || !depType) return;
 
-    gui.jobs().start({
+    Gui.gui.jobs().start({
       id: "addOpDependency",
       title: "adding " + depSrc + " to " + opName,
     });
@@ -585,7 +585,7 @@ export default class ServerOps {
         export: exportName,
       },
       (err, res) => {
-        gui.jobs().finish("addOpDependency");
+        Gui.gui.jobs().finish("addOpDependency");
 
         if (err) {
           if (err.msg === "NO_OP_RIGHTS") {
@@ -617,13 +617,13 @@ export default class ServerOps {
             this._log.error(err.msg, err);
           }
         }
-        gui.serverOps.loadOpDependencies(
+        Gui.gui.serverOps.loadOpDependencies(
           opName,
           (op) => {
             this._log.info("op-dependency added: " + opName + " " + depSrc);
             if (res && res.data && res.data.stdout)
               this._log.info("npm: " + res.data.stdout);
-            gui.emitEvent("refreshManageOp", opName);
+            Gui.gui.emitEvent("refreshManageOp", opName);
             if (next) next(null, op);
           },
           true,
@@ -639,7 +639,7 @@ export default class ServerOps {
       choice: true,
     });
     modal.on("onSubmit", () => {
-      gui.jobs().start({
+      Gui.gui.jobs().start({
         id: "removeOpDependency",
         title: "removing " + depSrc + " from " + opName,
       });
@@ -651,16 +651,16 @@ export default class ServerOps {
           type: depType,
         },
         (err, res) => {
-          gui.jobs().finish("removeOpDependency");
+          Gui.gui.jobs().finish("removeOpDependency");
           if (err) {
             this._log.warn("unable to remove op-dependency: " + err.msg);
-            gui.emitEvent("refreshManageOp", opName);
+            Gui.gui.emitEvent("refreshManageOp", opName);
           } else {
-            gui.serverOps.loadOpDependencies(
+            Gui.gui.serverOps.loadOpDependencies(
               opName,
               () => {
                 this._log.log("op-dependency removed!", opName, depSrc);
-                gui.emitEvent("refreshManageOp", opName);
+                Gui.gui.emitEvent("refreshManageOp", opName);
 
                 if (next) next();
               },
@@ -692,7 +692,7 @@ export default class ServerOps {
           }
 
           if (res && res.data && res.data.name) {
-            const opDoc = gui.opDocs.getOpDocByName(opName);
+            const opDoc = Gui.gui.opDocs.getOpDocByName(opName);
             if (opDoc) {
               if (opDoc.attachmentFiles)
                 opDoc.attachmentFiles = opDoc.attachmentFiles.filter((att) => {
@@ -701,7 +701,7 @@ export default class ServerOps {
             }
           }
 
-          gui.emitEvent("refreshManageOp", opName);
+          Gui.gui.emitEvent("refreshManageOp", opName);
 
           if (err) {
             CABLES.UI.MODAL.showError(
@@ -716,7 +716,7 @@ export default class ServerOps {
 
   addAttachmentDialog(opName) {
     let opid = opName;
-    const docs = gui.opDocs.getOpDocByName(opName);
+    const docs = Gui.gui.opDocs.getOpDocByName(opName);
     if (docs && docs) opid = docs.id;
 
     let html =
@@ -741,7 +741,7 @@ export default class ServerOps {
             }
 
             if (res && res.data && res.data.name) {
-              const opDoc = gui.opDocs.getOpDocByName(opName);
+              const opDoc = Gui.gui.opDocs.getOpDocByName(opName);
               if (opDoc) {
                 if (!opDoc.attachmentFiles) opDoc.attachmentFiles = [];
                 if (
@@ -753,7 +753,7 @@ export default class ServerOps {
             }
 
             this.editAttachment(opName, "att_" + attName);
-            gui.emitEvent("refreshManageOp", opName);
+            Gui.gui.emitEvent("refreshManageOp", opName);
           },
         );
       },
@@ -1053,7 +1053,7 @@ export default class ServerOps {
       const newNamespace = ele.byId("opNameDialogNamespace").value;
       let nameInput = ele.byId("opNameDialogInput").value;
 
-      const opUsername = gui.user ? gui.user.usernameLowercase : "";
+      const opUsername = Gui.gui.user ? Gui.gui.user.usernameLowercase : "";
       const nameParts = nameInput.split(".");
       const capitalizedParts = nameParts.map((part) => {
         if (opUsername && part === opUsername) return part; // username is the only part of ops that can be lowercase
@@ -1074,7 +1074,7 @@ export default class ServerOps {
         const opTargetDirEle = ele.byId("opTargetDir");
         if (opTargetDirEle) checkNameRequest.opTargetDir = opTargetDirEle.value;
 
-        gui.jobs().start({
+        Gui.gui.jobs().start({
           id: "checkOpName" + fullName,
           title: "checking op name" + fullName,
         });
@@ -1090,7 +1090,7 @@ export default class ServerOps {
           if (res.checkedName && res.checkedName === fullName) {
             _updateFormFromApi(res, fullName, newNamespace);
           }
-          gui.jobs().finish("checkOpName" + fullName);
+          Gui.gui.jobs().finish("checkOpName" + fullName);
         });
       }
     };
@@ -1183,7 +1183,7 @@ export default class ServerOps {
     options = options || {};
     if (!options.hasOwnProperty("showEditor")) options.showEditor = true;
 
-    if (gui.project().isOpExample) {
+    if (Gui.gui.project().isOpExample) {
       notifyError("Not possible in op example patch!");
       return;
     }
@@ -1205,26 +1205,26 @@ export default class ServerOps {
       this.create(
         opname,
         (newOp) => {
-          gui.closeModal();
+          Gui.gui.closeModal();
 
           opname = newOp && newOp.name ? newOp.name : opname;
 
-          gui.serverOps.loadOpDependencies(opname, function () {
+          Gui.gui.serverOps.loadOpDependencies(opname, function () {
             // add new op
-            gui.patchView.addOp(opname, {
+            Gui.gui.patchView.addOp(opname, {
               onOpAdd: (op) => {
                 op.setUiAttrib({
                   translate: {
-                    x: gui.patchView.patchRenderer.viewBox.mousePatchX,
-                    y: gui.patchView.patchRenderer.viewBox.mousePatchY,
+                    x: Gui.gui.patchView.patchRenderer.viewBox.mousePatchX,
+                    y: Gui.gui.patchView.patchRenderer.viewBox.mousePatchY,
                   },
                 });
 
-                if (op) gui.patchView.focusOp(op.id);
+                if (op) Gui.gui.patchView.focusOp(op.id);
                 if (op)
-                  gui.patchView.patchRenderer.viewBox.animateScrollTo(
-                    gui.patchView.patchRenderer.viewBox.mousePatchX,
-                    gui.patchView.patchRenderer.viewBox.mousePatchY,
+                  Gui.gui.patchView.patchRenderer.viewBox.animateScrollTo(
+                    Gui.gui.patchView.patchRenderer.viewBox.mousePatchX,
+                    Gui.gui.patchView.patchRenderer.viewBox.mousePatchY,
                   );
                 if (options.cb) options.cb(op);
               },
@@ -1266,7 +1266,7 @@ export default class ServerOps {
           "closeRenameDialog",
           () => {
             talkerAPI.removeEventListener(renameDoneListenerId);
-            gui.closeModal();
+            Gui.gui.closeModal();
           },
         );
         this._afterOpRename(newOp);
@@ -1278,7 +1278,7 @@ export default class ServerOps {
   renameDialog(oldName) {
     if (!platform.frontendOptions.opRenameInEditor) return;
 
-    if (gui.showGuestWarning()) return;
+    if (Gui.gui.showGuestWarning()) return;
 
     this._log.log("renamedialog");
 
@@ -1302,7 +1302,7 @@ export default class ServerOps {
       const opname = newName;
 
       let nameOrId = oldName;
-      const doc = gui.opDocs.getOpDocByName(oldName);
+      const doc = Gui.gui.opDocs.getOpDocByName(oldName);
       if (doc && doc.id) nameOrId = doc.id;
       cbOptions = cbOptions || { openEditor: true };
       const renameRequest = {
@@ -1318,7 +1318,7 @@ export default class ServerOps {
           this._log.log("err res", res);
           CABLES.UI.MODAL.showError("Could not rename op", "");
         } else {
-          gui.closeModal();
+          Gui.gui.closeModal();
           this._afterOpRename(res.data);
         }
       });
@@ -1328,7 +1328,7 @@ export default class ServerOps {
   deleteDialog(opName) {
     if (!platform.frontendOptions.opDeleteInEditor) return;
 
-    if (gui.showGuestWarning()) return;
+    if (Gui.gui.showGuestWarning()) return;
 
     const modal = new ModalDialog({
       title: "Really delete op?",
@@ -1343,7 +1343,7 @@ export default class ServerOps {
             text: err.message,
           });
         } else {
-          const patch = gui.corePatch();
+          const patch = Gui.gui.corePatch();
           const ops = patch.getOpsByObjName(opName);
           ops.forEach((op) => {
             patch.deleteOp(op.id, true);
@@ -1382,21 +1382,21 @@ export default class ServerOps {
         properties.shift();
         const path = properties.join(".");
         this._deletePropertyByPath(Ops, path);
-        const usedOps = gui.corePatch().getOpsByOpId(newOp.opId);
+        const usedOps = Gui.gui.corePatch().getOpsByOpId(newOp.opId);
         usedOps.forEach((usedOp) => {
-          gui.patchView.replaceOp(usedOp.id, newOp.objName);
+          Gui.gui.patchView.replaceOp(usedOp.id, newOp.objName);
         });
-        gui.opSelect().reload();
-        gui.opSelect().prepare();
+        Gui.gui.opSelect().reload();
+        Gui.gui.opSelect().prepare();
       },
       true,
     );
   }
 
   cloneDialog(oldName, origOp) {
-    if (gui.showGuestWarning()) return;
+    if (Gui.gui.showGuestWarning()) return;
 
-    if (gui.project().isOpExample) {
+    if (Gui.gui.project().isOpExample) {
       notifyError("Not possible in op example patch!");
       return;
     }
@@ -1422,41 +1422,41 @@ export default class ServerOps {
       const opname = newName;
 
       let nameOrId = oldName;
-      const doc = gui.opDocs.getOpDocByName(oldName);
+      const doc = Gui.gui.opDocs.getOpDocByName(oldName);
 
       if (doc && doc.id) nameOrId = doc.id;
 
-      gui.serverOps.clone(
+      Gui.gui.serverOps.clone(
         nameOrId,
         opname,
         () => {
-          gui.closeModal();
+          Gui.gui.closeModal();
 
-          gui.serverOps.loadOpDependencies(opname, function () {
+          Gui.gui.serverOps.loadOpDependencies(opname, function () {
             if (cbOptions && cbOptions.replace) {
               // replace existing ops
-              const ops = gui.corePatch().getOpsByObjName(oldName);
+              const ops = Gui.gui.corePatch().getOpsByObjName(oldName);
               for (let i = 0; i < ops.length; i++) {
-                gui.patchView.replaceOp(ops[i].id, opname);
+                Gui.gui.patchView.replaceOp(ops[i].id, opname);
               }
             } else {
               // add new op
-              gui.patchView.addOp(opname, {
+              Gui.gui.patchView.addOp(opname, {
                 onOpAdd: (op) => {
                   op.setUiAttrib({
                     translate: {
-                      x: gui.patchView.patchRenderer.viewBox.mousePatchX,
-                      y: gui.patchView.patchRenderer.viewBox.mousePatchY,
+                      x: Gui.gui.patchView.patchRenderer.viewBox.mousePatchX,
+                      y: Gui.gui.patchView.patchRenderer.viewBox.mousePatchY,
                     },
                   });
 
                   if (op) {
-                    if (origOp) gui.patchView.copyOpInputPorts(origOp, op);
+                    if (origOp) Gui.gui.patchView.copyOpInputPorts(origOp, op);
 
-                    gui.patchView.focusOp(op.id);
-                    gui.patchView.patchRenderer.viewBox.animateScrollTo(
-                      gui.patchView.patchRenderer.viewBox.mousePatchX,
-                      gui.patchView.patchRenderer.viewBox.mousePatchY,
+                    Gui.gui.patchView.focusOp(op.id);
+                    Gui.gui.patchView.patchRenderer.viewBox.animateScrollTo(
+                      Gui.gui.patchView.patchRenderer.viewBox.mousePatchX,
+                      Gui.gui.patchView.patchRenderer.viewBox.mousePatchY,
                     );
                   }
                 },
@@ -1477,7 +1477,7 @@ export default class ServerOps {
       opname = op.objName;
       opId = op.opId;
     } else {
-      const docs = gui.opDocs.getOpDocByName(opname);
+      const docs = Gui.gui.opDocs.getOpDocByName(opname);
       if (docs) opId = docs.id;
       else this._log.warn("could not find opid for ", opname);
     }
@@ -1487,15 +1487,15 @@ export default class ServerOps {
     const title = shortname + "/" + attachmentName;
     const userInteraction = !fromListener;
 
-    let existingTab = gui.maintabPanel.tabs.getTabByTitle(title);
+    let existingTab = Gui.gui.maintabPanel.tabs.getTabByTitle(title);
     if (existingTab) {
-      gui.mainTabs.activateTabByName(existingTab.title);
-      gui.maintabPanel.show(true);
+      Gui.gui.mainTabs.activateTabByName(existingTab.title);
+      Gui.gui.maintabPanel.show(true);
       return;
     }
 
     let editorObj = null;
-    gui.jobs().start({
+    Gui.gui.jobs().start({
       id: "load_attachment_" + attachmentName,
       title: "loading attachment " + attachmentName,
     });
@@ -1521,7 +1521,7 @@ export default class ServerOps {
     if (attachmentName.endsWith(".css") || attachmentName.endsWith("_css"))
       syntax = "css";
 
-    const lastTab = userSettings.get("editortab");
+    const lastTab = UserSettings.userSettings.get("editortab");
     let inactive = false;
     if (fromListener) if (lastTab !== title) inactive = true;
 
@@ -1531,7 +1531,7 @@ export default class ServerOps {
       loading: true,
       syntax: syntax,
       editorObj: editorObj,
-      allowEdit: this.canEditAttachment(gui.user, opname),
+      allowEdit: this.canEditAttachment(Gui.gui.user, opname),
       showSaveButton: true,
       inactive: inactive,
       onClose: (which) => {
@@ -1549,7 +1549,7 @@ export default class ServerOps {
           return;
         }
 
-        gui.jobs().finish("load_attachment_" + attachmentName);
+        Gui.gui.jobs().finish("load_attachment_" + attachmentName);
 
         if (err || !res || res.content === undefined) {
           if (err) this._log.log("[editAttachment] err", err);
@@ -1578,7 +1578,7 @@ export default class ServerOps {
 
         if (editorObj) {
           editorTab.on("save", (_setStatus, _content) => {
-            gui.savingTitleAnimStart("Saving Attachment...");
+            Gui.gui.savingTitleAnimStart("Saving Attachment...");
             platform.talkerAPI.send(
               "opAttachmentSave",
               {
@@ -1597,7 +1597,7 @@ export default class ServerOps {
                 }
 
                 if (re && re.data && re.data.updated)
-                  gui.patchView.store.setServerDate(re.data.updated);
+                  Gui.gui.patchView.store.setServerDate(re.data.updated);
 
                 _setStatus("saved");
 
@@ -1617,15 +1617,15 @@ export default class ServerOps {
                     opname,
                     () => {
                       subPatchOpUtil.executeBlueprintIfMultiple(opname, () => {
-                        gui.opParams.refresh();
-                        gui.savingTitleAnimEnd();
+                        Gui.gui.opParams.refresh();
+                        Gui.gui.savingTitleAnimEnd();
                       });
                     },
                   );
                 } else
                   subPatchOpUtil.executeBlueprintIfMultiple(opname, () => {
-                    gui.opParams.refresh();
-                    gui.savingTitleAnimEnd();
+                    Gui.gui.opParams.refresh();
+                    Gui.gui.savingTitleAnimEnd();
                   });
               },
             );
@@ -1633,10 +1633,10 @@ export default class ServerOps {
         }
 
         if (cb) cb();
-        else gui.maintabPanel.show(userInteraction);
+        else Gui.gui.maintabPanel.show(userInteraction);
       },
       (err) => {
-        gui.jobs().finish("load_attachment_" + attachmentName);
+        Gui.gui.jobs().finish("load_attachment_" + attachmentName);
         this._log.error("error opening attachment " + attachmentName);
         this._log.log(err);
         if (editorObj) editorSession.remove(editorObj.type, editorObj.name);
@@ -1644,14 +1644,14 @@ export default class ServerOps {
     );
 
     if (!editorObj) {
-      gui.mainTabs.activateTabByName(title);
-      gui.maintabPanel.show(userInteraction);
+      Gui.gui.mainTabs.activateTabByName(title);
+      Gui.gui.maintabPanel.show(userInteraction);
     }
   }
 
   // Shows the editor and displays the code of an op in it
   edit(op, readOnly, cb, userInteraction) {
-    if (gui.isGuestEditor()) {
+    if (Gui.gui.isGuestEditor()) {
       CABLES.UI.MODAL.showError("Demo Editor", text.guestHint);
       return;
     }
@@ -1663,7 +1663,7 @@ export default class ServerOps {
       opid = op.opId;
       opname = op.objName;
     } else {
-      const docs = gui.opDocs.getOpDocByName(op);
+      const docs = Gui.gui.opDocs.getOpDocByName(op);
       if (!docs)
         return this._log.warn("[opsserver] could not find docs", op, opid);
       opid = docs.id;
@@ -1679,7 +1679,7 @@ export default class ServerOps {
       return;
     }
 
-    gui.jobs().start({
+    Gui.gui.jobs().start({
       id: "load_opcode_" + opname,
       title: "loading op code " + opname,
     });
@@ -1696,7 +1696,7 @@ export default class ServerOps {
         loading: true,
         singleton: true,
         syntax: "js",
-        allowEdit: this.canEditOp(gui.user, editorObj.name),
+        allowEdit: this.canEditOp(Gui.gui.user, editorObj.name),
         showSaveButton: true,
         editorObj: editorObj,
         onClose: (which) => {
@@ -1712,7 +1712,7 @@ export default class ServerOps {
           projectId: this._patchId,
         },
         (er, rslt) => {
-          gui.jobs().finish("load_opcode_" + opname);
+          Gui.gui.jobs().finish("load_opcode_" + opname);
 
           if (er) {
             notifyError("Error receiving op code!");
@@ -1724,29 +1724,29 @@ export default class ServerOps {
 
           if (!readOnly && editorTab) {
             editorTab.on("save", (setStatus, content, editor) => {
-              gui.savingTitleAnimStart("Saving Op...");
+              Gui.gui.savingTitleAnimStart("Saving Op...");
 
               platform.talkerAPI.send(
                 "saveOpCode",
                 {
                   opname: opid,
                   code: content,
-                  format: userSettings.get("formatcode") || false,
+                  format: UserSettings.userSettings.get("formatcode") || false,
                 },
                 (err, res) => {
-                  const selOps = gui.patchView.getSelectedOps();
+                  const selOps = Gui.gui.patchView.getSelectedOps();
                   let selOpTranslate = null;
                   if (selOps && selOps.length > 0)
                     selOpTranslate = selOps[0].uiAttribs.translate;
 
                   if (err) {
-                    gui.endModalLoading();
+                    Gui.gui.endModalLoading();
                     setStatus("Error: " + err.msg || "Unknown error");
                     return;
                   }
 
                   if (!res.success) {
-                    gui.savingTitleAnimEnd();
+                    Gui.gui.savingTitleAnimEnd();
 
                     if (res && res.error && res.error.line != undefined)
                       setStatus(
@@ -1760,34 +1760,36 @@ export default class ServerOps {
                       setStatus("Error: " + err.msg || "Unknown error");
                   } else {
                     if (res.updated)
-                      gui.patchView.store.setServerDate(res.updated);
+                      Gui.gui.patchView.store.setServerDate(res.updated);
                     if (platform.warnOpEdit(opname))
                       notifyError("WARNING: op editing on live environment");
                     if (!CABLES.Patch.getOpClass(opname))
-                      gui.opSelect().reload();
+                      Gui.gui.opSelect().reload();
 
-                    gui.serverOps.execute(opid, () => {
+                    Gui.gui.serverOps.execute(opid, () => {
                       setStatus("Saved " + opname);
                       editor.focus();
 
                       if (selOpTranslate)
-                        for (let i = 0; i < gui.corePatch().ops.length; i++)
+                        for (let i = 0; i < Gui.gui.corePatch().ops.length; i++)
                           if (
-                            gui.corePatch().ops[i].uiAttribs &&
-                            gui.corePatch().ops[i].uiAttribs.translate &&
-                            gui.corePatch().ops[i].uiAttribs.translate.x ==
+                            Gui.gui.corePatch().ops[i].uiAttribs &&
+                            Gui.gui.corePatch().ops[i].uiAttribs.translate &&
+                            Gui.gui.corePatch().ops[i].uiAttribs.translate.x ==
                               selOpTranslate.x &&
-                            gui.corePatch().ops[i].uiAttribs.translate.y ==
+                            Gui.gui.corePatch().ops[i].uiAttribs.translate.y ==
                               selOpTranslate.y
                           ) {
-                            gui.opParams.show(gui.corePatch().ops[i].id);
-                            gui.patchView.setSelectedOpById(
-                              gui.corePatch().ops[i].id,
+                            Gui.gui.opParams.show(
+                              Gui.gui.corePatch().ops[i].id,
+                            );
+                            Gui.gui.patchView.setSelectedOpById(
+                              Gui.gui.corePatch().ops[i].id,
                             );
                           }
 
-                      gui.savingTitleAnimEnd();
-                      gui.endModalLoading();
+                      Gui.gui.savingTitleAnimEnd();
+                      Gui.gui.endModalLoading();
                     });
                   }
                 },
@@ -1795,28 +1797,28 @@ export default class ServerOps {
                   setStatus("ERROR: not saved - " + result.msg);
                   this._log.log("err result", result);
 
-                  // gui.endModalLoading();
-                  gui.savingTitleAnimEnd();
+                  // Gui.gui.endModalLoading();
+                  Gui.gui.savingTitleAnimEnd();
                 },
               );
             });
           }
 
           if (cb) cb();
-          else gui.maintabPanel.show(userInteraction);
+          else Gui.gui.maintabPanel.show(userInteraction);
         },
       );
     } else {
-      gui.jobs().finish("load_opcode_" + opname);
+      Gui.gui.jobs().finish("load_opcode_" + opname);
 
-      gui.mainTabs.activateTabByName(title);
-      gui.maintabPanel.show(userInteraction);
+      Gui.gui.mainTabs.activateTabByName(title);
+      Gui.gui.maintabPanel.show(userInteraction);
     }
   }
 
   getOpLibs(opName) {
-    const perf = gui.uiProfiler.start("[opsserver] getOpLibs");
-    const opDoc = gui.opDocs.getOpDocByName(opName);
+    const perf = Gui.gui.uiProfiler.start("[opsserver] getOpLibs");
+    const opDoc = Gui.gui.opDocs.getOpDocByName(opName);
     const libs = [];
     if (opDoc && opDoc.libs) {
       for (let j = 0; j < opDoc.libs.length; j++) {
@@ -1834,8 +1836,8 @@ export default class ServerOps {
   }
 
   getCoreLibs(opName) {
-    const perf = gui.uiProfiler.start("[opsserver] getCoreLibs");
-    const opDoc = gui.opDocs.getOpDocByName(opName);
+    const perf = Gui.gui.uiProfiler.start("[opsserver] getCoreLibs");
+    const opDoc = Gui.gui.opDocs.getOpDocByName(opName);
     const coreLibs = [];
     if (opDoc && opDoc.coreLibs) {
       for (let j = 0; j < opDoc.coreLibs.length; j++) {
@@ -1853,20 +1855,21 @@ export default class ServerOps {
   }
 
   getOpDeps(opThing) {
-    const perf = gui.uiProfiler.start("[opsserver] getOpDeps");
+    const perf = Gui.gui.uiProfiler.start("[opsserver] getOpDeps");
 
     let opDoc = null;
-    if (typeof opThing === "string") opDoc = gui.opDocs.getOpDocByName(opThing);
+    if (typeof opThing === "string")
+      opDoc = Gui.gui.opDocs.getOpDocByName(opThing);
     else {
       if (opThing.opId) {
         // probably serialized patch
-        opDoc = gui.opDocs.getOpDocById(opThing.opId);
+        opDoc = Gui.gui.opDocs.getOpDocById(opThing.opId);
       } else if (opThing.objName) {
         // probably op instance
-        opDoc = gui.opDocs.getOpDocByName(opThing.objName);
+        opDoc = Gui.gui.opDocs.getOpDocByName(opThing.objName);
       } else {
         // probably opDoc object
-        opDoc = gui.opDocs.getOpDocById(opThing.id);
+        opDoc = Gui.gui.opDocs.getOpDocById(opThing.id);
       }
     }
 
@@ -1909,11 +1912,13 @@ export default class ServerOps {
       missingOps = this.getMissingOps(proj);
     }
     this.loadOps(missingOps, (newOps, newIds) => {
-      const perf2 = gui.uiProfiler.start("[opsserver] loadProjectDependencies");
+      const perf2 = Gui.gui.uiProfiler.start(
+        "[opsserver] loadProjectDependencies",
+      );
 
-      if (gui && gui.opSelect() && newOps.length > 0) {
-        gui.opSelect().reload();
-        gui.opSelect().prepare();
+      if (gui && Gui.gui.opSelect() && newOps.length > 0) {
+        Gui.gui.opSelect().reload();
+        Gui.gui.opSelect().prepare();
       }
 
       if (proj && proj.ops) {
@@ -1989,7 +1994,7 @@ export default class ServerOps {
   }
 
   getMissingOps(proj) {
-    const perf = gui.uiProfiler.start("[opsserver] gerMissingOps");
+    const perf = Gui.gui.uiProfiler.start("[opsserver] gerMissingOps");
 
     let missingOps = [];
     const missingOpsFound = [];
@@ -2020,7 +2025,7 @@ export default class ServerOps {
   }
 
   isLoaded(op) {
-    const opDocs = gui.opDocs.getOpDocs();
+    const opDocs = Gui.gui.opDocs.getOpDocs();
     const opIdentifier = this.getOpIdentifier(op);
     // FIXME: this is very convoluted since opdocs have .id and .name but projectops have .opId and .objName and the likes...unify some day :/
     let foundOp = opDocs.find((loadedOp) => {
@@ -2082,18 +2087,18 @@ export default class ServerOps {
     if (op) {
       const opIdentifier = this.getOpIdentifier(op);
       const oldName = this.getOpNameByIdentifier(opIdentifier);
-      gui.jobs().start({
+      Gui.gui.jobs().start({
         id: "getopdocs",
         title: "load opdocs for " + oldName,
       });
       platform.talkerAPI.send("getOpDocs", opIdentifier, (err, res) => {
-        gui.jobs().finish("getopdocs");
+        Gui.gui.jobs().finish("getopdocs");
         if (err) {
           let title = "Failed to load op";
           let footer = "";
           let otherEnvName = "dev.cables.gl";
           let editorLink =
-            "https://" + otherEnvName + "/edit/" + gui.project().shortId;
+            "https://" + otherEnvName + "/edit/" + Gui.gui.project().shortId;
           let otherEnvButton = "Try " + otherEnvName;
           let errMsg = "";
           let opLinks = [];
@@ -2105,7 +2110,7 @@ export default class ServerOps {
             if (err.data.reasons) opLinks = err.data.reasons;
             if (err.data.otherEnvUrl)
               editorLink =
-                err.data.otherEnvUrl + "/edit/" + gui.project().shortId;
+                err.data.otherEnvUrl + "/edit/" + Gui.gui.project().shortId;
             if (err.data.otherEnvButton)
               otherEnvButton = err.data.otherEnvButton;
             if (err.data.editorLink) editorLink = err.data.editorLink;
@@ -2162,7 +2167,7 @@ export default class ServerOps {
             missingOpUrl.push(url);
           });
 
-          gui.jobs().start({
+          Gui.gui.jobs().start({
             id: "missingops",
             title: "load missing ops",
           });
@@ -2181,21 +2186,21 @@ export default class ServerOps {
                 this._ops.push(opDoc);
               });
               if (forceReload && oldName) {
-                const oldDocs = gui.opDocs.getOpDocByName(oldName);
-                if (oldDocs) gui.opDocs.removeOpDoc(oldDocs);
+                const oldDocs = Gui.gui.opDocs.getOpDocByName(oldName);
+                if (oldDocs) Gui.gui.opDocs.removeOpDoc(oldDocs);
               }
 
-              if (gui.opDocs) {
-                gui.opDocs.addOpDocs(res.opDocs);
+              if (Gui.gui.opDocs) {
+                Gui.gui.opDocs.addOpDocs(res.opDocs);
               }
               collectionsToLoad = CABLES.uniqueArray(collectionsToLoad);
               collectionsToLoad.forEach((collectionNamespace) => {
                 this.loadCollectionOps(collectionNamespace, () => {
-                  gui.opSelect().reload();
+                  Gui.gui.opSelect().reload();
                 });
               });
             }
-            gui.jobs().finish("missingops");
+            Gui.gui.jobs().finish("missingops");
             cb(newOps);
           });
           loadjs(missingOpUrl, lid, {
@@ -2232,21 +2237,21 @@ export default class ServerOps {
       if (platform.config.previewMode) apiUrl += "?preview=true";
       collectionOpUrl.push(apiUrl);
       const lid = "collection ops" + collectionName + CABLES.uuid();
-      gui.jobs().start({ id: "getCollectionOpDocs" });
+      Gui.gui.jobs().start({ id: "getCollectionOpDocs" });
       platform.talkerAPI.send(
         "getCollectionOpDocs",
         { name: collectionName },
         (err, res) => {
-          gui.jobs().finish("getCollectionOpDocs");
+          Gui.gui.jobs().finish("getCollectionOpDocs");
           if (!err && res && res.opDocs) {
-            gui.jobs().start({ id: "loadjsopdocs" });
+            Gui.gui.jobs().start({ id: "loadjsopdocs" });
             loadjs.ready(lid, () => {
-              gui.jobs().finish("loadjsopdocs");
+              Gui.gui.jobs().finish("loadjsopdocs");
               res.opDocs.forEach((newOp) => {
                 this._ops.push(newOp);
               });
-              if (gui.opDocs) {
-                gui.opDocs.addOpDocs(res.opDocs);
+              if (Gui.gui.opDocs) {
+                Gui.gui.opDocs.addOpDocs(res.opDocs);
               }
               incrementStartup();
               if (cb) cb();
@@ -2298,7 +2303,7 @@ export default class ServerOps {
   getOpNameByIdentifier(opIdentifier) {
     if (!opIdentifier) return undefined;
     if (opIdentifier.startsWith(defaultOps.prefixes.op)) return opIdentifier;
-    const opDoc = gui.opDocs.getOpDocById(opIdentifier);
+    const opDoc = Gui.gui.opDocs.getOpDocById(opIdentifier);
     return opDoc ? opDoc.name : undefined;
   }
 }

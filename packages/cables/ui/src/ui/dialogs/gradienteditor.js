@@ -1,6 +1,6 @@
 import { ModalBackground, Logger, ele } from "@cables/client";
 import { getHandleBarHtml } from "../utils/handlebars.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 
 /**
  * gradient editor dialog
@@ -31,7 +31,7 @@ export default class GradientEditor {
     this._currentKey = null;
     this._oldCurrentKey = null;
 
-    this._op = gui.corePatch().getOpById(this._opId);
+    this._op = Gui.gui.corePatch().getOpById(this._opId);
     this._port = this._op.getPort(this._portName);
     this.type = this._port.uiAttribs.gradientType || "gradient";
 
@@ -423,7 +423,7 @@ export default class GradientEditor {
   show(cb) {
     this._callback = cb;
 
-    if (window.gui && gui.currentModal) gui.currentModal.close();
+    if (window.gui && Gui.gui.currentModal) Gui.gui.currentModal.close();
 
     const html = getHandleBarHtml("GradientEditor", { name: this._portName });
 
@@ -474,7 +474,7 @@ export default class GradientEditor {
       });
 
     if (this._opId && this._portName) {
-      const op = gui.corePatch().getOpById(this._opId);
+      const op = Gui.gui.corePatch().getOpById(this._opId);
       if (!op) this.close();
       const data = op.getPort(this._portName).get();
       try {
@@ -506,7 +506,7 @@ export default class GradientEditor {
     });
 
     ele.byId("gradientCancelButton").addEventListener("click", () => {
-      const op = gui.corePatch().getOpById(this._opId);
+      const op = Gui.gui.corePatch().getOpById(this._opId);
       op.getPort(this._portName).set(this._previousContent);
       this.close();
     });

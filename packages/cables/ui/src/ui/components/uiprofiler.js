@@ -1,6 +1,6 @@
 import { ele } from "@cables/client";
 import { getHandleBarHtml } from "../utils/handlebars.js";
-import { userSettings } from "./usersettings.js";
+import UserSettings from "./usersettings.js";
 
 export default class UiProfiler {
   #filter = "";
@@ -10,35 +10,37 @@ export default class UiProfiler {
     this._ele = null;
     this._timeout = null;
 
-    this._currentHighlight = userSettings.get("uiPerfLastHighlight");
-    this.#filter = userSettings.get("showUIPerfFilter") || "";
+    this._currentHighlight = UserSettings.userSettings.get(
+      "uiPerfLastHighlight",
+    );
+    this.#filter = UserSettings.userSettings.get("showUIPerfFilter") || "";
     this._ignore = false;
-    ele.byId("uiPerfFilter").value = this.#filter;
+    // TODO: ele.byId("uiPerfFilter").value = this.#filter;
   }
 
   hide() {
     this._eleContainer.style.display = "none";
     clearTimeout(this._timeout);
 
-    userSettings.set("showUIPerf", false);
+    UserSettings.userSettings.set("showUIPerf", false);
   }
 
   filter(str) {
     this.#filter = str;
     this.update();
-    userSettings.set("showUIPerfFilter", this.#filter);
+    UserSettings.userSettings.set("showUIPerfFilter", this.#filter);
   }
 
   show() {
-    userSettings.set("showUIPerf", true);
+    UserSettings.userSettings.set("showUIPerf", true);
     this.update();
   }
 
   highlight(name) {
     for (const i in this._measures) this._measures[i].highlight = false;
     this._currentHighlight = name;
-    userSettings.set("uiPerfLastHighlight", name);
-    if (userSettings.get("showUIPerf")) this.show();
+    UserSettings.userSettings.set("uiPerfLastHighlight", name);
+    if (UserSettings.userSettings.get("showUIPerf")) this.show();
   }
 
   update() {
@@ -91,7 +93,7 @@ export default class UiProfiler {
 
     clearTimeout(this._timeout);
     this._timeout = setTimeout(() => {
-      if (userSettings.get("showUIPerf")) this.update();
+      if (UserSettings.userSettings.get("showUIPerf")) this.update();
     }, 500);
   }
 

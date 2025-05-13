@@ -1,6 +1,6 @@
 import { ele } from "@cables/client";
-import { gui } from "../../gui.js";
-import { userSettings } from "../usersettings.js";
+import Gui from "../../gui.js";
+import UserSettings from "../usersettings.js";
 
 export default class CanvasUi {
   constructor(cg) {
@@ -59,7 +59,7 @@ export default class CanvasUi {
     });
 
     cg.fpsCounter.on("performance", (perf) => {
-      const p = gui.uiProfiler.start("[canvasUi] on performance");
+      const p = Gui.gui.uiProfiler.start("[canvasUi] on performance");
 
       // if (this.isCanvasFocussed)
       // {
@@ -74,12 +74,12 @@ export default class CanvasUi {
 
         if (
           window.gui &&
-          gui.patchView.patchRenderer.vizLayer &&
-          gui.patchView.patchRenderer.vizLayer.renderMs > 3
+          Gui.gui.patchView.patchRenderer.vizLayer &&
+          Gui.gui.patchView.patchRenderer.vizLayer.renderMs > 3
         ) {
           ms +=
             " vizLayer: " +
-            Math.round(gui.patchView.patchRenderer.vizLayer.renderMs) +
+            Math.round(Gui.gui.patchView.patchRenderer.vizLayer.renderMs) +
             "ms";
         }
 
@@ -94,10 +94,10 @@ export default class CanvasUi {
     this.canvasEle.setAttribute("tabindex", 0);
 
     this.canvasEle.addEventListener("focus", () => {
-      const p = gui.uiProfiler.start("[canvasUi] on focus");
+      const p = Gui.gui.uiProfiler.start("[canvasUi] on focus");
 
       this.showCanvasModal(true);
-      gui.canvasManager.setCurrentCanvas(this.canvasEle);
+      Gui.gui.canvasManager.setCurrentCanvas(this.canvasEle);
       p.finish();
     });
 
@@ -117,13 +117,13 @@ export default class CanvasUi {
   }
 
   get canvasMode() {
-    return gui._canvasMode;
+    return Gui.gui._canvasMode;
   }
 
   updateCanvasIconBar() {
     if (!this._elCanvasIconbarContainer) return;
 
-    const perf = gui.uiProfiler.start("[canvasUi] updateCanvasIconBar");
+    const perf = Gui.gui.uiProfiler.start("[canvasUi] updateCanvasIconBar");
 
     const splitterPatchRect = this._elSplitterPatch.getBoundingClientRect();
     const bodyRect = document.body.getBoundingClientRect();
@@ -132,11 +132,11 @@ export default class CanvasUi {
   }
 
   updateSizeDisplay() {
-    if (!gui.corePatch().cgl) return;
+    if (!Gui.gui.corePatch().cgl) return;
 
-    const canvas = gui.canvasManager.currentCanvas();
+    const canvas = Gui.gui.canvasManager.currentCanvas();
 
-    const ctx = gui.canvasManager.currentContext();
+    const ctx = Gui.gui.canvasManager.currentContext();
 
     this._elCanvasInfoAspect =
       this._elCanvasInfoAspect || document.getElementById("canvasInfoAspect");
@@ -145,7 +145,7 @@ export default class CanvasUi {
     if (ctx.pixelDensity != 1)
       sizeStr += " (" + Math.round(ctx.pixelDensity * 100) / 100 + "x)";
 
-    gui.canvasManager.updateCanvasUi();
+    Gui.gui.canvasManager.updateCanvasUi();
 
     if (this._oldSizeStr != sizeStr) this._elCanvasInfoSize.innerHTML = sizeStr;
     this._oldSizeStr = sizeStr;
@@ -182,7 +182,7 @@ export default class CanvasUi {
   }
 
   updateIconState() {
-    const act = userSettings.get("overlaysShow");
+    const act = UserSettings.userSettings.get("overlaysShow");
     const icon = ele.byId("canvUitoggleOverlay");
     if (icon)
       if (act) icon.style.backgroundColor = "var(--color-special)";
@@ -190,9 +190,9 @@ export default class CanvasUi {
   }
 
   showCanvasModal(_show) {
-    if (userSettings.get("hideCanvasUi")) return;
+    if (UserSettings.userSettings.get("hideCanvasUi")) return;
 
-    const perf = gui.uiProfiler.start("[canvasUi] showCanvasModal");
+    const perf = Gui.gui.uiProfiler.start("[canvasUi] showCanvasModal");
 
     this._elCanvasModalDarkener =
       this._elCanvasModalDarkener || document.getElementById("canvasmodal");
@@ -205,7 +205,9 @@ export default class CanvasUi {
     else this._elCanvasIconbar.classList.add("hidden");
 
     if (_show) {
-      if (gui.canvasManager.mode == gui.canvasManager.CANVASMODE_PATCHBG) {
+      if (
+        Gui.gui.canvasManager.mode == Gui.gui.canvasManager.CANVASMODE_PATCHBG
+      ) {
         ele.hide(this._elCanvasModalDarkener);
       } else {
         if (!this._showing) ele.show(this._elCanvasModalDarkener);

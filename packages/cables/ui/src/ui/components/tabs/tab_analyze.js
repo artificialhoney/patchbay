@@ -1,7 +1,7 @@
 import { Events } from "@cables/client";
 import Tab from "../../elements/tabpanel/tab.js";
 import FindTab from "./tab_find.js";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 import { platform } from "../../platform.js";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
 import namespace from "../../namespaceutils.js";
@@ -15,7 +15,7 @@ export default class AnalyzePatchTab extends Events {
    */
   constructor(tabs = null) {
     super();
-    this._tabs = tabs || gui.mainTabs;
+    this._tabs = tabs || Gui.gui.mainTabs;
 
     this._tab = new Tab("Analyze", {
       icon: "list",
@@ -24,14 +24,14 @@ export default class AnalyzePatchTab extends Events {
       singleton: "true",
     });
     this._tabs.addTab(this._tab, true);
-    gui.maintabPanel.show(true);
+    Gui.gui.maintabPanel.show(true);
 
     this._html();
   }
 
   _html() {
     let report = "<h1>Analyze Patch</h1>";
-    const patch = gui.corePatch();
+    const patch = Gui.gui.corePatch();
     report += '<div style="overflow:scroll;width:100%;height:100%">';
     report += "<h2>Ops</h2>";
 
@@ -44,7 +44,7 @@ export default class AnalyzePatchTab extends Events {
       opsCount[opName] = opsCount[opName] || 0;
       opsCount[opName]++;
       if (hasOpDirs) {
-        const doc = gui.opDocs.getOpDocByName(opName);
+        const doc = Gui.gui.opDocs.getOpDocByName(opName);
         const opDir = doc ? doc.opDir : null;
         if (opDir) {
           opDirs[opDir] = opDirs[opDir] || 0;
@@ -70,7 +70,7 @@ export default class AnalyzePatchTab extends Events {
     }
 
     if (platform.frontendOptions.hasAssetDirectories) {
-      const ops = gui.corePatch().ops;
+      const ops = Gui.gui.corePatch().ops;
       const assets = {};
       let assetCount = 0;
       for (let i = 0; i < ops.length; i++) {
@@ -101,42 +101,42 @@ export default class AnalyzePatchTab extends Events {
     report += "<h2>Op Types</h2>";
 
     {
-      let arr = FindTab.searchOutDated(gui.corePatch().ops, []);
+      let arr = FindTab.searchOutDated(Gui.gui.corePatch().ops, []);
       if (arr.length > 0)
         report +=
-          '<a class="link" onclick="new CABLES.UI.FindTab(gui.mainTabs, \':outdated\');">' +
+          '<a class="link" onclick="new CABLES.UI.FindTab(Gui.gui.mainTabs, \':outdated\');">' +
           arr.length +
           " outdated ops </a><br/>";
     }
     {
-      let arr = FindTab.searchPatchOps(gui.corePatch().ops, []);
+      let arr = FindTab.searchPatchOps(Gui.gui.corePatch().ops, []);
       if (arr.length > 0)
         report +=
-          '<a class="link" onclick="new CABLES.UI.FindTab(gui.mainTabs, \':notcoreops patch\');">' +
+          '<a class="link" onclick="new CABLES.UI.FindTab(Gui.gui.mainTabs, \':notcoreops patch\');">' +
           arr.length +
           " patch ops </a><br/>";
     }
     {
-      let arr = FindTab.searchUserOps(gui.corePatch().ops, []);
+      let arr = FindTab.searchUserOps(Gui.gui.corePatch().ops, []);
       if (arr.length > 0)
         report +=
-          '<a class="link" onclick="new CABLES.UI.FindTab(gui.mainTabs, \':user\');">' +
+          '<a class="link" onclick="new CABLES.UI.FindTab(Gui.gui.mainTabs, \':user\');">' +
           arr.length +
           " user ops </a><br/>";
     }
     {
-      let arr = FindTab.searchTeamOps(gui.corePatch().ops, []);
+      let arr = FindTab.searchTeamOps(Gui.gui.corePatch().ops, []);
       if (arr.length > 0)
         report +=
-          '<a class="link" onclick="new CABLES.UI.FindTab(gui.mainTabs, \':notcoreops team\');">' +
+          '<a class="link" onclick="new CABLES.UI.FindTab(Gui.gui.mainTabs, \':notcoreops team\');">' +
           arr.length +
           " team ops </a><br/>";
     }
     {
-      let arr = FindTab.searchExtensionOps(gui.corePatch().ops, []);
+      let arr = FindTab.searchExtensionOps(Gui.gui.corePatch().ops, []);
       if (arr.length > 0)
         report +=
-          '<a class="link" onclick="new CABLES.UI.FindTab(gui.mainTabs, \':notcoreops extension\');">' +
+          '<a class="link" onclick="new CABLES.UI.FindTab(Gui.gui.mainTabs, \':notcoreops extension\');">' +
           arr.length +
           " extension ops </a><br/>";
     }
@@ -169,7 +169,7 @@ export default class AnalyzePatchTab extends Events {
       report +=
         "<tr><td> " +
         opscountSorted[i].count +
-        'x </td><td><a class="link" onclick="new CABLES.UI.FindTab(gui.mainTabs, \'' +
+        'x </td><td><a class="link" onclick="new CABLES.UI.FindTab(Gui.gui.mainTabs, \'' +
         opscountSorted[i].name +
         "');\">" +
         opscountSorted[i].name +
@@ -219,7 +219,7 @@ export default class AnalyzePatchTab extends Events {
         report +=
           "<tr><td>" +
           s +
-          'kb</td><td><a class="link" onclick="console.log(456);gui.patchView.centerSelectOp(\'' +
+          'kb</td><td><a class="link" onclick="console.log(456);Gui.gui.patchView.centerSelectOp(\'' +
           serializeSizes[i].id +
           "')\">" +
           serializeSizes[i].name +

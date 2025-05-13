@@ -7,10 +7,10 @@ import ParamsListener from "./params_listener.js";
 import gluiconfig from "../../glpatch/gluiconfig.js";
 import { notify } from "../../elements/notification.js";
 import namespace from "../../namespaceutils.js";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 import { platform } from "../../platform.js";
 import { contextMenu } from "../../elements/contextmenu.js";
-import { userSettings } from "../usersettings.js";
+import UserSettings from "../usersettings.js";
 
 /**
  * op parameter panel
@@ -142,47 +142,47 @@ class OpParampanel extends Events {
    * @param {Op|String} op
    */
   show(op) {
-    if (!gui.finishedLoading()) return;
+    if (!Gui.gui.finishedLoading()) return;
     if (!this._startedGlobalListeners) {
       this._startedGlobalListeners = true;
 
-      gui.corePatch().on("bookmarkschanged", () => {
-        gui.bookmarks.needRefreshSubs = true;
+      Gui.gui.corePatch().on("bookmarkschanged", () => {
+        Gui.gui.bookmarks.needRefreshSubs = true;
         this._startedGlobalListeners = true;
-        if (!this._currentOp) gui.patchParamPanel.show(true);
+        if (!this._currentOp) Gui.gui.patchParamPanel.show(true);
       });
-      gui.corePatch().on("subpatchesChanged", () => {
-        gui.bookmarks.needRefreshSubs = true;
+      Gui.gui.corePatch().on("subpatchesChanged", () => {
+        Gui.gui.bookmarks.needRefreshSubs = true;
         this._startedGlobalListeners = true;
-        if (!this._currentOp) gui.patchParamPanel.show(true);
+        if (!this._currentOp) Gui.gui.patchParamPanel.show(true);
       });
-      gui.corePatch().on("subpatchCreated", () => {
-        gui.bookmarks.needRefreshSubs = true;
+      Gui.gui.corePatch().on("subpatchCreated", () => {
+        Gui.gui.bookmarks.needRefreshSubs = true;
         this._startedGlobalListeners = true;
-        if (!this._currentOp) gui.patchParamPanel.show(true);
+        if (!this._currentOp) Gui.gui.patchParamPanel.show(true);
       });
-      gui.corePatch().on("patchLoadEnd", () => {
-        gui.bookmarks.needRefreshSubs = true;
+      Gui.gui.corePatch().on("patchLoadEnd", () => {
+        Gui.gui.bookmarks.needRefreshSubs = true;
         this._startedGlobalListeners = true;
-        if (!this._currentOp) gui.patchParamPanel.show(true);
+        if (!this._currentOp) Gui.gui.patchParamPanel.show(true);
       });
     }
 
     if (this.reloadListener)
-      this.reloadListener = gui.corePatch().on("opReloaded", () => {
+      this.reloadListener = Gui.gui.corePatch().on("opReloaded", () => {
         this.refreshDelayed();
       });
 
-    const perf = gui.uiProfiler.start("[opparampanel] show");
+    const perf = Gui.gui.uiProfiler.start("[opparampanel] show");
 
-    if (typeof op == "string") op = gui.corePatch().getOpById(op);
+    if (typeof op == "string") op = Gui.gui.corePatch().getOpById(op);
 
     if (
-      !gui.showingtwoMetaPanel &&
-      gui.metaTabs.getActiveTab() &&
-      gui.metaTabs.getActiveTab().title != "op"
+      !Gui.gui.showingtwoMetaPanel &&
+      Gui.gui.metaTabs.getActiveTab() &&
+      Gui.gui.metaTabs.getActiveTab().title != "op"
     )
-      gui.metaTabs.activateTabByName("op");
+      Gui.gui.metaTabs.activateTabByName("op");
 
     if (this._currentOp) this._stopListeners();
 
@@ -194,7 +194,7 @@ class OpParampanel extends Events {
     this._portsOut = op.portsOut;
 
     if (op.storage && op.storage.subPatchVer && op.patchId) {
-      const ports = gui.patchView.getSubPatchExposedPorts(op.patchId.get());
+      const ports = Gui.gui.patchView.getSubPatchExposedPorts(op.patchId.get());
       for (let i = 0; i < ports.length; i++) {
         if (
           ports[i].direction === CABLES.Port.DIR_IN &&
@@ -213,16 +213,16 @@ class OpParampanel extends Events {
 
     op.emitEvent("uiParamPanel", op);
 
-    const perfHtml = gui.uiProfiler.start("[opparampanel] build html ");
+    const perfHtml = Gui.gui.uiProfiler.start("[opparampanel] build html ");
 
-    gui.opHistory.push(op.id);
-    gui.setTransformGizmo(null);
+    Gui.gui.opHistory.push(op.id);
+    Gui.gui.setTransformGizmo(null);
 
-    gui.emitEvent("opSelectChange", op);
+    Gui.gui.emitEvent("opSelectChange", op);
 
     this.emitEvent("opSelected", op);
 
-    op.isServerOp = gui.serverOps.isServerOp(op.objName);
+    op.isServerOp = Gui.gui.serverOps.isServerOp(op.objName);
 
     /*
      * show first anim in timeline
@@ -250,10 +250,10 @@ class OpParampanel extends Events {
 
     let html = this._htmlGen.getHtmlOpHeader(op);
 
-    gui.showInfo(text.patchSelectedOp);
+    Gui.gui.showInfo(text.patchSelectedOp);
 
     if (this._portsIn.length > 0) {
-      const perfLoop = gui.uiProfiler.start(
+      const perfLoop = Gui.gui.uiProfiler.start(
         "[opparampanel] _showOpParamsLOOP IN",
       );
       html += this._htmlGen.getHtmlHeaderPorts("in", "Input");
@@ -265,7 +265,7 @@ class OpParampanel extends Events {
     if (this._portsOut.length > 0) {
       html += this._htmlGen.getHtmlHeaderPorts("out", "Output");
 
-      const perfLoopOut = gui.uiProfiler.start(
+      const perfLoopOut = Gui.gui.uiProfiler.start(
         "[opparampanel] _showOpParamsLOOP OUT",
       );
 
@@ -276,10 +276,12 @@ class OpParampanel extends Events {
 
     html += getHandleBarHtml("params_op_foot", {
       op: op,
-      showDevInfos: userSettings.get("devinfos"),
+      showDevInfos: UserSettings.userSettings.get("devinfos"),
     });
 
-    const el = document.getElementById(this._eleId || gui.getParamPanelEleId());
+    const el = document.getElementById(
+      this._eleId || Gui.gui.getParamPanelEleId(),
+    );
 
     if (el) el.innerHTML = html;
     else return;
@@ -344,10 +346,11 @@ class OpParampanel extends Events {
             const parts = fn.split("/");
             if (parts && parts.length > 1) src = "ext: " + parts[2];
           }
-          if (fn.startsWith("/assets/" + gui.project()._id)) src = "this patch";
+          if (fn.startsWith("/assets/" + Gui.gui.project()._id))
+            src = "this patch";
           if (
             fn.startsWith("/assets/") &&
-            !fn.startsWith("/assets/" + gui.project()._id)
+            !fn.startsWith("/assets/" + Gui.gui.project()._id)
           ) {
             const parts = fn.split("/");
             if (parts && parts.length > 1) {
@@ -370,7 +373,7 @@ class OpParampanel extends Events {
           srcEle.innerHTML = src;
 
           ele.clickable(ele.byId("copyToPatch" + i), () => {
-            gui.fileManager.copyFileToPatch(fn);
+            Gui.gui.fileManager.copyFileToPatch(fn);
           });
         }
       }
@@ -378,14 +381,14 @@ class OpParampanel extends Events {
       const f = (e) => {
         if (!this._isPortLineDragDown) return;
 
-        if (gui.patchView._patchRenderer.getOp) {
-          const glOp = gui.patchView._patchRenderer.getOp(op.id);
+        if (Gui.gui.patchView._patchRenderer.getOp) {
+          const glOp = Gui.gui.patchView._patchRenderer.getOp(op.id);
 
           if (glOp && this._portsIn[i]) {
             const glPort = glOp.getGlPort(this._portsIn[i].name);
 
             if (this._portsIn[i].name == this._portLineDraggedName)
-              gui.patchView._patchRenderer.emitEvent(
+              Gui.gui.patchView._patchRenderer.emitEvent(
                 "mouseDownOverPort",
                 glPort,
                 glOp.id,
@@ -428,7 +431,7 @@ class OpParampanel extends Events {
             (e) => {
               const p = this._portsOut[index];
               if (!p.uiAttribs.hidePort)
-                gui.opSelect().show(
+                Gui.gui.opSelect().show(
                   {
                     x:
                       p.parent.uiAttribs.translate.x +
@@ -466,12 +469,12 @@ class OpParampanel extends Events {
           "pointerenter",
           (e) => {
             if (!this._isPortLineDragDown) return;
-            if (gui.patchView._patchRenderer.getOp) {
-              const glOp = gui.patchView._patchRenderer.getOp(op.id);
+            if (Gui.gui.patchView._patchRenderer.getOp) {
+              const glOp = Gui.gui.patchView._patchRenderer.getOp(op.id);
               if (glOp && this._portsOut[ipo]) {
                 const glPort = glOp.getGlPort(this._portsOut[ipo].name);
                 if (this._portsOut[ipo].name == this._portLineDraggedName)
-                  gui.patchView._patchRenderer.emitEvent(
+                  Gui.gui.patchView._patchRenderer.emitEvent(
                     "mouseDownOverPort",
                     glPort,
                     glOp.id,
@@ -508,7 +511,7 @@ class OpParampanel extends Events {
         (e) => {
           if (!navigator.clipboard) return;
 
-          const cop = gui.corePatch().getOpById(e.target.dataset.opid);
+          const cop = Gui.gui.corePatch().getOpById(e.target.dataset.opid);
           const port = cop.getPortByName(e.target.dataset.portname);
 
           navigator.clipboard
@@ -526,10 +529,10 @@ class OpParampanel extends Events {
       );
     });
 
-    if (gui.serverOps.opIdsChangedOnServer[op.opId]) {
+    if (Gui.gui.serverOps.opIdsChangedOnServer[op.opId]) {
       ele.clickable(ele.byId("parampanel_loadchangedop_" + op.opId), () => {
-        gui.serverOps.execute(op.opId, () => {
-          delete gui.serverOps.opIdsChangedOnServer[op.opId];
+        Gui.gui.serverOps.execute(op.opId, () => {
+          delete Gui.gui.serverOps.opIdsChangedOnServer[op.opId];
           this.refresh();
         });
       });
@@ -595,7 +598,7 @@ class OpParampanel extends Events {
 
         div.innerHTML = str;
       }
-      gui.patchView.checkPatchErrors();
+      Gui.gui.patchView.checkPatchErrors();
     }
 
     for (let i = 0; i < this._currentOp.uiAttribs.uierrors.length; i++) {
@@ -612,7 +615,7 @@ class OpParampanel extends Events {
   }
 
   updateUiAttribs() {
-    if (gui.patchView.isPasting) return;
+    if (Gui.gui.patchView.isPasting) return;
     if (!this._currentOp) return;
 
     this._uiAttrFpsLast = this._uiAttrFpsLast || performance.now();
@@ -629,7 +632,7 @@ class OpParampanel extends Events {
       this._uiAttrFpsCount = 0;
     }
 
-    const perf = gui.uiProfiler.start("[opparampanel] updateUiAttribs");
+    const perf = Gui.gui.uiProfiler.start("[opparampanel] updateUiAttribs");
     let el = null;
 
     el = document.getElementById("options_warning");
@@ -702,8 +705,8 @@ class OpParampanel extends Events {
       this._currentOp.uiAttr({ comment: v });
       if (v.length == 0) this._currentOp.uiAttr({ comment: null });
       this._currentOp.patch.emitEvent("commentChanged");
-      // gui.setStateUnsaved({ "op": this._currentOp });
-      gui.savedState.setUnSaved(
+      // Gui.gui.setStateUnsaved({ "op": this._currentOp });
+      Gui.gui.savedState.setUnSaved(
         "op comment",
         this._currentOp.uiAttribs.subPatch,
       );
@@ -734,23 +737,23 @@ class OpParampanel extends Events {
 
   // OLD SUBPATCH LIST!!!!!! REMOVE
   subPatchContextMenu(el) {
-    const outer = gui.patchView.getSubPatchOuterOp(el.dataset.id);
+    const outer = Gui.gui.patchView.getSubPatchOuterOp(el.dataset.id);
 
     const items = [];
     if (outer && outer.storage && outer.storage.blueprint) {
       items.push({
         title: "Goto Blueprint Op",
         func() {
-          // gui.patchView.focusSubpatchOp(el.dataset.id);
+          // Gui.gui.patchView.focusSubpatchOp(el.dataset.id);
         },
       });
       items.push({
         title: "Update Blueprint",
         func() {
-          const bp = gui.patchView.getBlueprintOpFromBlueprintSubpatchId(
+          const bp = Gui.gui.patchView.getBlueprintOpFromBlueprintSubpatchId(
             el.dataset.id,
           );
-          if (bp) gui.patchView.updateBlueprints([bp]);
+          if (bp) Gui.gui.patchView.updateBlueprints([bp]);
         },
       });
       items.push({
@@ -768,7 +771,7 @@ class OpParampanel extends Events {
       items.push({
         title: "Rename",
         func() {
-          gui.patchView.focusSubpatchOp(el.dataset.id);
+          Gui.gui.patchView.focusSubpatchOp(el.dataset.id);
           CABLES.CMD.PATCH.setOpTitle();
         },
       });
@@ -776,7 +779,7 @@ class OpParampanel extends Events {
       items.push({
         title: "Goto Subpatch Op",
         func() {
-          gui.patchView.focusSubpatchOp(el.dataset.id);
+          Gui.gui.patchView.focusSubpatchOp(el.dataset.id);
         },
       });
 
@@ -784,8 +787,8 @@ class OpParampanel extends Events {
         items.push({
           title: "Create op from subpatch",
           func() {
-            gui.serverOps.createBlueprint2Op(el.dataset.id);
-            // gui.patchView.focusSubpatchOp(el.dataset.id);
+            Gui.gui.serverOps.createBlueprint2Op(el.dataset.id);
+            // Gui.gui.patchView.focusSubpatchOp(el.dataset.id);
           },
         });
 
@@ -793,12 +796,12 @@ class OpParampanel extends Events {
         items.push({
           title: "Save Blueprint Op",
           func() {
-            const op = gui.patchView.getSubPatchOuterOp(el.dataset.id);
+            const op = Gui.gui.patchView.getSubPatchOuterOp(el.dataset.id);
 
-            gui.serverOps.updateSubPatchOpAttachment(op, {
+            Gui.gui.serverOps.updateSubPatchOpAttachment(op, {
               oldSubId: el.dataset.id,
             });
-            // gui.patchView.focusSubpatchOp(el.dataset.id);
+            // Gui.gui.patchView.focusSubpatchOp(el.dataset.id);
           },
         });
       }
@@ -823,14 +826,14 @@ class OpParampanel extends Events {
     items.push({
       title: "Set default values",
       func() {
-        gui.patchView.resetOpValues(opid);
+        Gui.gui.patchView.resetOpValues(opid);
       },
     });
 
     items.push({
       title: "Bookmark",
       func() {
-        gui.bookmarks.add();
+        Gui.gui.bookmarks.add();
       },
     });
 

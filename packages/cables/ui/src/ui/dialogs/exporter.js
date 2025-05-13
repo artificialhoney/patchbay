@@ -1,4 +1,4 @@
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { platform } from "../platform.js";
 import text from "../text.js";
 import ModalDialog from "./modaldialog.js";
@@ -10,7 +10,7 @@ export default class Exporter {
   }
 
   show() {
-    if (!gui.getSavedState()) {
+    if (!Gui.gui.getSavedState()) {
       new ModalDialog({
         html: text.projectExportNotSaved,
         warning: true,

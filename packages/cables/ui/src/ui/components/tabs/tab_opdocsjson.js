@@ -1,5 +1,5 @@
 import { ele, Events } from "@cables/client";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 
 export default class OpDocsJson extends Events {
   constructor(tabs) {
@@ -17,10 +17,10 @@ export default class OpDocsJson extends Events {
 
     this._op = null;
     this.rebuildHtml();
-    this.setOp(gui.opParams.op);
+    this.setOp(Gui.gui.opParams.op);
 
-    gui.opParams.on("opSelected", () => {
-      this.setOp(gui.opParams.op);
+    Gui.gui.opParams.on("opSelected", () => {
+      this.setOp(Gui.gui.opParams.op);
     });
   }
 
@@ -47,7 +47,7 @@ export default class OpDocsJson extends Events {
 
   rebuildHtml() {
     if (this._op) {
-      let json = gui.opDocs.getOpDocByName(this._op.objName);
+      let json = Gui.gui.opDocs.getOpDocByName(this._op.objName);
 
       json = this._sortObject(json);
 

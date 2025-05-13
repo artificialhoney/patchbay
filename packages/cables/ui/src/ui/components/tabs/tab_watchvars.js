@@ -1,11 +1,11 @@
 import { ele, Events } from "@cables/client";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 
 export default class WatchVarTab extends Events {
   constructor(tabs, patch) {
     super();
     this._tabs = tabs;
-    this._patch = patch || gui.corePatch();
+    this._patch = patch || Gui.gui.corePatch();
 
     this._varListeners = {};
     this._patchListeners = [
@@ -29,7 +29,7 @@ export default class WatchVarTab extends Events {
     });
 
     this._tabs.addTab(this._tab, true);
-    gui.maintabPanel.show(true);
+    Gui.gui.maintabPanel.show(true);
 
     this._id = "spread" + CABLES.uuid();
     this._tab.html("<div id='" + this._id + "'></div>");

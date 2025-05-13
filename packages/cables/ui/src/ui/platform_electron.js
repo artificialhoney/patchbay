@@ -3,7 +3,7 @@ import { Platform } from "./platform.js";
 import ModalDialog from "./dialogs/modaldialog.js";
 import text from "./text.js";
 import { notify } from "./elements/notification.js";
-import { gui } from "./gui.js";
+import Gui from "./gui.js";
 
 /**
  * platform for standalone / electron version
@@ -101,13 +101,13 @@ export default class PlatformElectron extends Platform {
       { url: value, filter: filterType, opId: opId },
       (_err, file) => {
         if (file && inputEle) {
-          const op = gui.corePatch().getOpById(opId);
-          gui.savedState.setUnSaved("filemanager", op.getSubPatch());
+          const op = Gui.gui.corePatch().getOpById(opId);
+          Gui.gui.savedState.setUnSaved("filemanager", op.getSubPatch());
           inputEle.value = file;
           const event = document.createEvent("Event");
           event.initEvent("input", true, true);
           inputEle.dispatchEvent(event);
-          gui.opParams.show(op);
+          Gui.gui.opParams.show(op);
         }
       },
     );
@@ -120,7 +120,7 @@ export default class PlatformElectron extends Platform {
       });
     };
 
-    if (!gui.getSavedState()) {
+    if (!Gui.gui.getSavedState()) {
       new ModalDialog({
         choice: true,
         cancelButton: {
@@ -157,7 +157,7 @@ export default class PlatformElectron extends Platform {
         const modalOptions = {
           title: "Patch Export",
         };
-        gui.jobs().finish("exportPatch");
+        Gui.gui.jobs().finish("exportPatch");
         if (err || result.error) {
           modalOptions.warning = true;
           modalOptions.text =

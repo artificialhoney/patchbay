@@ -1,5 +1,5 @@
 import { Logger } from "@cables/client";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { platform } from "../platform.js";
 import ModalDialog from "../dialogs/modaldialog.js";
 import { notify, notifyError } from "../elements/notification.js";
@@ -25,9 +25,9 @@ CABLES_CMD_FILES.replaceFilePath = function (from = null, to = null) {
         prompt: true,
         title: "Replace String Values",
         text: "...replace with",
-        promptValue: to || "/assets/" + gui.project()._id,
+        promptValue: to || "/assets/" + Gui.gui.project()._id,
         promptOk: (replace) => {
-          gui.fileManager.replaceAssetPorts(search, replace);
+          Gui.gui.fileManager.replaceAssetPorts(search, replace);
         },
       });
     },

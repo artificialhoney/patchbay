@@ -1,5 +1,5 @@
 import { ele } from "@cables/client";
-import { userSettings } from "../components/usersettings.js";
+import UserSettings from "../components/usersettings.js";
 import text from "../text.js";
 import ModalDialog from "./modaldialog.js";
 
@@ -22,12 +22,12 @@ export default class Tips {
   }
 
   neverShow() {
-    userSettings.set("showTipps", false);
+    UserSettings.userSettings.set("showTipps", false);
     this.show();
   }
 
   showAlways() {
-    userSettings.set("showTipps", true);
+    UserSettings.userSettings.set("showTipps", true);
     this.show();
   }
 
@@ -62,7 +62,7 @@ export default class Tips {
     html += '  <a id="tips_next" class="button">Next tip</a>';
 
     html += '  <div style="float:right;">';
-    if (userSettings.get("showTipps"))
+    if (UserSettings.userSettings.get("showTipps"))
       html +=
         '<a id="tips_showNever" class="button-small">Do not show this on startup</a>';
     else

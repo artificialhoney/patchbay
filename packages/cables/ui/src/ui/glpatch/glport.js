@@ -4,7 +4,7 @@ import gluiconfig from "./gluiconfig.js";
 import GlRect from "../gldraw/glrect.js";
 import MouseState from "./mousestate.js";
 import { hideToolTip, updateHoverToolTip } from "../elements/tooltips.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import GlPatch from "./glpatch.js";
 import GlOp from "./glop.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
@@ -417,7 +417,7 @@ export default class GlPort {
 }
 
 GlPort.getInactiveColor = (type) => {
-  const perf = gui.uiProfiler.start("[glport] getInactiveColor");
+  const perf = Gui.gui.uiProfiler.start("[glport] getInactiveColor");
   let portname = "";
 
   if (type == portType.number) portname = "num";
@@ -429,8 +429,8 @@ GlPort.getInactiveColor = (type) => {
 
   const name = portname + "_inactive";
 
-  let col = gui.theme.colors_types[name] ||
-    gui.theme.colors_types[portname] || [0, 0, 0, 1];
+  let col = Gui.gui.theme.colors_types[name] ||
+    Gui.gui.theme.colors_types[portname] || [0, 0, 0, 1];
 
   perf.finish();
 
@@ -438,7 +438,7 @@ GlPort.getInactiveColor = (type) => {
 };
 
 GlPort.getColorBorder = (type, hovering, selected) => {
-  const perf = gui.uiProfiler.start("[glport] getcolorBorder");
+  const perf = Gui.gui.uiProfiler.start("[glport] getcolorBorder");
   let name = "";
   let portname = "";
 
@@ -452,11 +452,11 @@ GlPort.getColorBorder = (type, hovering, selected) => {
   let coll = [1, 0.9, 0.8, 0];
   if (hovering) {
     name = portname + "_hover";
-    coll = gui.theme.colors_types[name] ||
-      gui.theme.colors_types[portname] || [1, 0, 0, 1];
+    coll = Gui.gui.theme.colors_types[name] ||
+      Gui.gui.theme.colors_types[portname] || [1, 0, 0, 1];
   } else if (selected) {
     // name = portname + "_selected";
-    coll = gui.theme.colors_patch.selectedCable;
+    coll = Gui.gui.theme.colors_patch.selectedCable;
   } else return coll;
 
   let col = [coll[0], coll[1], coll[2], coll[3]];
@@ -468,7 +468,7 @@ GlPort.getColorBorder = (type, hovering, selected) => {
 };
 
 GlPort.getColor = (type, hovering, _selected, activity) => {
-  const perf = gui.uiProfiler.start("[glport] getcolor");
+  const perf = Gui.gui.uiProfiler.start("[glport] getcolor");
 
   let name = "";
   let portname = "";
@@ -485,8 +485,8 @@ GlPort.getColor = (type, hovering, _selected, activity) => {
   if (hovering) name = portname + "_hover";
   // else if (selected)name = portname + "_selected";
 
-  let col = gui.theme.colors_types[name] ||
-    gui.theme.colors_types[portname] || [1, 0, 0, 1];
+  let col = Gui.gui.theme.colors_types[name] ||
+    Gui.gui.theme.colors_types[portname] || [1, 0, 0, 1];
 
   perf.finish();
 

@@ -1,7 +1,7 @@
 import { ele } from "@cables/client";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { platform } from "../platform.js";
-import { userSettings } from "../components/usersettings.js";
+import UserSettings from "../components/usersettings.js";
 
 /**
  * show a searchable command palette (cmd/ctrl+p)
@@ -51,7 +51,7 @@ export default class CommandPallete {
 
   show() {
     this._cursorIndex = 0;
-    gui.closeModal();
+    Gui.gui.closeModal();
     document.getElementById("modalbg").style.display = "block";
     ele.show(ele.byId("cmdpalette"));
     ele.byId("cmdinput").focus();
@@ -76,7 +76,7 @@ export default class CommandPallete {
 
     const el = ev.target;
     const cmd = el.closest(".result").dataset.cmd;
-    const itemObj = userSettings.get("sidebar_left") || {};
+    const itemObj = UserSettings.userSettings.get("sidebar_left") || {};
 
     // replace the pin-icon / set / remove icon from sidebar
     const addToSidebar = !this.isCmdInSidebar(cmd);
@@ -93,15 +93,18 @@ export default class CommandPallete {
       itemObj[cmd] = false;
     }
 
-    userSettings.set("sidebar_left", JSON.parse(JSON.stringify(itemObj)));
+    UserSettings.userSettings.set(
+      "sidebar_left",
+      JSON.parse(JSON.stringify(itemObj)),
+    );
 
-    gui.iconBarLeft.refresh();
+    Gui.gui.iconBarLeft.refresh();
   }
 
   onResultClick(ev) {
     const el = ev.target;
     const cmd = el.dataset.cmd;
-    gui.cmdPallet.close();
+    Gui.gui.cmdPallet.close();
 
     if (el.classList.contains("dyn")) {
       this.dynamicCmds[el.dataset.index].func();
@@ -111,7 +114,7 @@ export default class CommandPallete {
   }
 
   isCmdInSidebar(cmdName) {
-    const itemObj = userSettings.get("sidebar_left") || {};
+    const itemObj = UserSettings.userSettings.get("sidebar_left") || {};
     return itemObj.hasOwnProperty(cmdName) && itemObj[cmdName];
   }
 
@@ -150,7 +153,7 @@ export default class CommandPallete {
       idx +
       '" data-cmd="' +
       cmd.cmd +
-      '" onclick=gui.cmdPallet.onResultClick(event)>';
+      '" onclick=Gui.gui.cmdPallet.onResultClick(event)>';
     html += '<span class="icon icon-' + (cmd.icon || "square") + '"></span>';
     html += '<span class="title">' + cmd.cmd + "</span>";
     html +=
@@ -161,7 +164,7 @@ export default class CommandPallete {
     html +=
       '<span class="icon ' +
       bookmarkIcon +
-      ' bookmark" onclick=gui.cmdPallet.onBookmarkIconClick(event)></span>';
+      ' bookmark" onclick=Gui.gui.cmdPallet.onBookmarkIconClick(event)></span>';
     if (cmd.hotkey) {
       html += '<span class="hotkey">[ ' + cmd.hotkey + " ]</span>";
     }

@@ -12,7 +12,7 @@ import startIdleListeners from "./components/idlemode.js";
 import GlGuiFull from "./glpatch/gluifull.js";
 import { platform } from "./platform.js";
 import { editorSession } from "./elements/tabpanel/editor_session.js";
-import { userSettings } from "./components/usersettings.js";
+import UserSettings from "./components/usersettings.js";
 
 /**
  * manage the start of the ui/editor
@@ -26,22 +26,22 @@ export default function startUi(cfg) {
 
   const gui = new Gui(cfg);
 
-  gui.on("uiloaded", () => {
+  Gui.gui.on("uiloaded", () => {
     new Tracking();
   });
 
-  if (gui.isRemoteClient) new NoPatchEditor();
-  else new GlGuiFull(gui.corePatch());
+  if (Gui.gui.isRemoteClient) new NoPatchEditor();
+  else new GlGuiFull(Gui.gui.corePatch());
 
   incrementStartup();
-  gui.serverOps = new ServerOps(cfg.patchId, () => {
-    gui.init();
-    gui.checkIdle();
-    gui.initCoreListeners();
+  Gui.gui.serverOps = new ServerOps(cfg.patchId, () => {
+    Gui.gui.init();
+    Gui.gui.checkIdle();
+    Gui.gui.initCoreListeners();
 
-    gui.corePatch().timer.setTime(0);
+    Gui.gui.corePatch().timer.setTime(0);
 
-    if (!gui.corePatch().cgl.gl) {
+    if (!Gui.gui.corePatch().cgl.gl) {
       // ele.byId("loadingstatus").remove();
       // ele.byId("loadingstatusLog").remove();
 
@@ -52,72 +52,73 @@ export default function startUi(cfg) {
       return;
     }
 
-    gui.bind(() => {
+    Gui.gui.bind(() => {
       incrementStartup();
       platform.initRouting(() => {
         incrementStartup();
-        gui.opSelect().prepare();
-        userSettings.init();
+        Gui.gui.opSelect().prepare();
+        UserSettings.userSettings.init();
         incrementStartup();
 
-        gui.opSelect().reload();
-        gui.showWelcomeNotifications();
+        Gui.gui.opSelect().reload();
+        Gui.gui.showWelcomeNotifications();
         incrementStartup();
-        gui.showUiElements();
-        gui.setLayout();
-        gui.opSelect().prepare();
+        Gui.gui.showUiElements();
+        Gui.gui.setLayout();
+        Gui.gui.opSelect().prepare();
         incrementStartup();
-        gui.opSelect().search();
-        gui.setElementBgPattern(ele.byId("cablescanvas"));
+        Gui.gui.opSelect().search();
+        Gui.gui.setElementBgPattern(ele.byId("cablescanvas"));
 
         editorSession.open();
 
-        gui.setFontSize(userSettings.get("fontSizeOff"));
+        Gui.gui.setFontSize(UserSettings.userSettings.get("fontSizeOff"));
 
-        userSettings.on("change", function (key, v) {
+        UserSettings.userSettings.on("change", function (key, v) {
           if (key == "fontSizeOff") {
-            gui.setFontSize(v);
+            Gui.gui.setFontSize(v);
           }
 
           if (key == "bgpattern") {
-            gui.setElementBgPattern(ele.byId("cablescanvas"));
-            gui.setElementBgPattern(ele.byId("bgpreview"));
+            Gui.gui.setElementBgPattern(ele.byId("cablescanvas"));
+            Gui.gui.setElementBgPattern(ele.byId("bgpreview"));
           }
 
           if (key == "hideSizeBar") {
-            gui.setLayout();
+            Gui.gui.setLayout();
           }
         });
 
-        if (!userSettings.get("introCompleted"))
-          gui.introduction.showIntroduction();
+        if (!UserSettings.userSettings.get("introCompleted"))
+          Gui.gui.introduction.showIntroduction();
 
-        gui.bindKeys();
+        Gui.gui.bindKeys();
         ele.byId("maincomponents").style.display = "inline";
 
         const socketClusterConfig = platform.getSocketclusterConfig();
-        if (!gui.socket && socketClusterConfig.enabled) {
-          gui.socket = new ScConnection(socketClusterConfig);
+        if (!Gui.gui.socket && socketClusterConfig.enabled) {
+          Gui.gui.socket = new ScConnection(socketClusterConfig);
         }
 
         startIdleListeners();
 
         new HtmlInspector();
 
-        if (userSettings.get("openLogTab") == true)
+        if (UserSettings.userSettings.get("openLogTab") == true)
           CABLES.CMD.DEBUG.logConsole();
 
-        gui.maintabPanel.init();
+        Gui.gui.maintabPanel.init();
 
-        gui.corePatch().logStartup("finished loading cables");
+        Gui.gui.corePatch().logStartup("finished loading cables");
 
         setTimeout(() => {
-          if (userSettings.get("forceWebGl1")) notifyError("Forcing WebGl v1 ");
+          if (UserSettings.userSettings.get("forceWebGl1"))
+            notifyError("Forcing WebGl v1 ");
         }, 1000);
 
-        gui.patchView.checkPatchErrors();
+        Gui.gui.patchView.checkPatchErrors();
 
-        gui.patchView.setCurrentSubPatch(0);
+        Gui.gui.patchView.setCurrentSubPatch(0);
 
         ele.byId("patchnavhelperEmpty").innerHTML =
           text.patch_hint_overlay_empty;
@@ -126,9 +127,9 @@ export default function startUi(cfg) {
 
         document.getElementById("loadingstatusLog").style.display = "none";
 
-        let projectId = gui.patchId;
-        if (gui.project()) {
-          projectId = gui.project().shortId || gui.project()._id;
+        let projectId = Gui.gui.patchId;
+        if (Gui.gui.project()) {
+          projectId = Gui.gui.project().shortId || Gui.gui.project()._id;
         }
         new QRCode(document.getElementById("remote_view_qr"), {
           text: platform.getCablesUrl() + "/remote_client/" + projectId,
@@ -148,26 +149,27 @@ export default function startUi(cfg) {
           correctLevel: QRCode.CorrectLevel.H,
         });
 
-        if (gui.user) gui.updateActivityFeedIcon(gui.user.activityFeed);
+        if (Gui.gui.user)
+          Gui.gui.updateActivityFeedIcon(Gui.gui.user.activityFeed);
 
         CABLES.UI.loaded = true;
         CABLES.UI.loadedTime = performance.now();
 
-        gui.corePatch().clearSubPatchCache();
+        Gui.gui.corePatch().clearSubPatchCache();
 
-        for (let i = 0; i < gui.corePatch().ops.length; i++)
-          if (gui.corePatch().ops[i].checkLinkTimeWarnings)
-            gui.corePatch().ops[i].checkLinkTimeWarnings();
+        for (let i = 0; i < Gui.gui.corePatch().ops.length; i++)
+          if (Gui.gui.corePatch().ops[i].checkLinkTimeWarnings)
+            Gui.gui.corePatch().ops[i].checkLinkTimeWarnings();
 
-        gui.patchParamPanel.show();
+        Gui.gui.patchParamPanel.show();
 
         setTimeout(() => {
-          window.gui.emitEvent("uiloaded");
-          gui.corePatch().timer.setTime(0);
+          window.Gui.gui.emitEvent("uiloaded");
+          Gui.gui.corePatch().timer.setTime(0);
         }, 100);
       });
     });
   });
 
-  gui.corePatch().logStartup("Init UI done");
+  Gui.gui.corePatch().logStartup("Init UI done");
 }

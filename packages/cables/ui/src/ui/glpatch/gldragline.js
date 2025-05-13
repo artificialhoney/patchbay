@@ -1,7 +1,7 @@
 import { Logger } from "@cables/client";
 import glUiConfig from "./gluiconfig.js";
 import MouseState from "./mousestate.js";
-import Gui, { gui } from "../gui.js";
+import Gui from "../gui.js";
 import GlPort from "./glport.js";
 import GlPatch from "./glpatch.js";
 import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
@@ -56,8 +56,8 @@ export default class GlDragLine {
       if (!ele) return;
 
       if (ele.dataset.opid && ele.dataset.portname) {
-        if (gui && gui.corePatch()) {
-          const op = gui.corePatch().getOpById(ele.dataset.opid);
+        if (gui && Gui.gui.corePatch()) {
+          const op = Gui.gui.corePatch().getOpById(ele.dataset.opid);
           if (op) {
             const port = op.getPortByName(ele.dataset.portname);
             if (port) {
@@ -95,7 +95,7 @@ export default class GlDragLine {
           pos.noSnap = true;
         }
 
-        gui.opSelect().show(pos, this._glPort.port.op, this._glPort.port);
+        Gui.gui.opSelect().show(pos, this._glPort.port.op, this._glPort.port);
       }
 
       this.stop();
@@ -107,7 +107,7 @@ export default class GlDragLine {
     });
 
     glpatch.on("mouseDownOverPort", (glport, opid, portName, e) => {
-      if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
+      if (Gui.gui.getRestriction() < Gui.gui.RESTRICT_MODE_FULL) return;
 
       this._button = e.buttons;
 
@@ -117,7 +117,7 @@ export default class GlDragLine {
         this.setPort(glport);
         const glports = this._glPatch.getConnectedGlPorts(opid, portName);
 
-        if (!e.altKey && glport) gui.patchView.unlinkPort(opid, glport.id);
+        if (!e.altKey && glport) Gui.gui.patchView.unlinkPort(opid, glport.id);
 
         this._startGlPorts = glports;
       }
@@ -128,7 +128,7 @@ export default class GlDragLine {
 
       if (this._startGlPorts.length === 0) {
         // left click
-        gui.patchView.linkPortToOp(
+        Gui.gui.patchView.linkPortToOp(
           e,
           this._startPortOpId,
           this._startPortId,
@@ -144,7 +144,7 @@ export default class GlDragLine {
           portIds.push(this._startGlPorts[i].id);
         }
 
-        gui.patchView.linkPortsToOp(e, opid, opids, portIds);
+        Gui.gui.patchView.linkPortsToOp(e, opid, opids, portIds);
       }
       this.stop();
     });
@@ -163,7 +163,7 @@ export default class GlDragLine {
       if (!this._startGlPorts) return;
       if (this._startGlPorts.length === 0) {
         // left click
-        gui.patchView.linkPorts(
+        Gui.gui.patchView.linkPorts(
           this._startPortOpId,
           this._startPortId,
           port.op.id,
@@ -182,7 +182,7 @@ export default class GlDragLine {
               );
               return;
             }
-            gui.patchView.linkPorts(
+            Gui.gui.patchView.linkPorts(
               opid,
               portId,
               this._startGlPorts[i].glOp.id,

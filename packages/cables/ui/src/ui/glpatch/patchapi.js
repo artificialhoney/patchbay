@@ -3,7 +3,7 @@ import { Patch } from "@cables/cables";
 import GlLink from "./gllink.js";
 import undo from "../utils/undo.js";
 import { hideToolTip } from "../elements/tooltips.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 
 const DEFAULT_ACTIVITY = 0;
 
@@ -48,7 +48,7 @@ export default class GlPatchAPI {
         for (let il = 0; il < op.portsIn[ip].links.length; il++) {
           const link = op.portsIn[ip].links[il];
 
-          let visible = true; // link.portIn.op.uiAttribs.subPatch != gui.patchView.getCurrentSubPatch();
+          let visible = true; // link.portIn.op.uiAttribs.subPatch != Gui.gui.patchView.getCurrentSubPatch();
 
           const l = new GlLink(
             this._glPatch,
@@ -95,7 +95,7 @@ export default class GlPatchAPI {
 
     const frames = this._glPatch.frameCount - this._flowvisStartFrame;
 
-    const perf = gui.uiProfiler.start("[glpatch] update flow mode");
+    const perf = Gui.gui.uiProfiler.start("[glpatch] update flow mode");
 
     let numUpdates = Math.min(350, this._patch.ops.length);
 
@@ -230,7 +230,7 @@ export default class GlPatchAPI {
       })(link.portOut.op.patch, p1.name, p2.name, p1.op.id, p2.op.id);
     }
 
-    let visible = true; // p1.op.uiAttribs.subPatch != gui.patchView.getCurrentSubPatch();
+    let visible = true; // p1.op.uiAttribs.subPatch != Gui.gui.patchView.getCurrentSubPatch();
     const l = new GlLink(
       this._glPatch,
       link,
@@ -288,7 +288,7 @@ export default class GlPatchAPI {
 
   _onAddOp(op, fromDeserialize) {
     this._glPatch.addOp(op, fromDeserialize);
-    if (!fromDeserialize) gui.patchView.testCollision(op);
+    if (!fromDeserialize) Gui.gui.patchView.testCollision(op);
 
     if (op.checkLinkTimeWarnings) op.checkLinkTimeWarnings();
 
@@ -300,7 +300,7 @@ export default class GlPatchAPI {
 
   _onDeleteOp(op) {
     if (!undo.paused())
-      gui.savedState.setUnSaved("patchApiOnDeleteOp", op.getSubPatch());
+      Gui.gui.savedState.setUnSaved("patchApiOnDeleteOp", op.getSubPatch());
 
     let updateSubs = false;
 
@@ -312,20 +312,20 @@ export default class GlPatchAPI {
     CABLES.UI.hoverInterval = -1;
     hideToolTip();
 
-    if (updateSubs) gui.bookmarks.needRefreshSubs = true;
+    if (updateSubs) Gui.gui.bookmarks.needRefreshSubs = true;
   }
 
   showOpParams(opid) {
     setTimeout(() => {
-      const op = gui.corePatch().getOpById(opid);
-      gui.opParams.show(op);
+      const op = Gui.gui.corePatch().getOpById(opid);
+      Gui.gui.opParams.show(op);
     }, 33);
   }
 
   removeLink(opIdIn, opIdOut, portIdIn, portIdOut) {
-    const opIn = gui.corePatch().getOpById(opIdIn);
+    const opIn = Gui.gui.corePatch().getOpById(opIdIn);
     const pIn = opIn.getPortById(portIdIn);
-    const opOut = gui.corePatch().getOpById(opIdOut);
+    const opOut = Gui.gui.corePatch().getOpById(opIdOut);
     const pOut = opOut.getPortById(portIdOut);
     if (!pOut) return;
     const l = pOut.getLinkTo(pIn);
@@ -337,13 +337,13 @@ export default class GlPatchAPI {
   /*
    * addOpIntoLink(opIdIn, opIdOut, portIdIn, portIdOut, x, y)
    * {
-   *     const opIn = gui.corePatch().getOpById(opIdIn);
+   *     const opIn = Gui.gui.corePatch().getOpById(opIdIn);
    *     const pIn = opIn.getPortById(portIdIn);
-   *     const opOut = gui.corePatch().getOpById(opIdOut);
+   *     const opOut = Gui.gui.corePatch().getOpById(opIdOut);
    *     const pOut = opOut.getPortById(portIdOut);
    *     const link = pOut.getLinkTo(pIn);
    *     // options, linkOp, linkPort, link)
-   *     gui.opSelect().show({ "x": 0,
+   *     Gui.gui.opSelect().show({ "x": 0,
    *         "y": 0,
    *         "onOpAdd": (op) =>
    *         {
@@ -354,11 +354,11 @@ export default class GlPatchAPI {
    */
 
   deleteOp(id) {
-    gui.corePatch().deleteOp(id, true);
+    Gui.gui.corePatch().deleteOp(id, true);
   }
 
   setOpUiAttribs(opid, attrName, val) {
-    const op = gui.corePatch().getOpById(opid);
+    const op = Gui.gui.corePatch().getOpById(opid);
     if (!op) {
       this._log.warn("[setOpUiAttribs] op not found");
       return;

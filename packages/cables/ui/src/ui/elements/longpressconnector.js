@@ -2,8 +2,8 @@ import { Events } from "@cables/client";
 import SuggestionDialog from "../components/suggestiondialog.js";
 import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
 import { notify } from "./notification.js";
-import { gui } from "../gui.js";
-import { userSettings } from "../components/usersettings.js";
+import Gui from "../gui.js";
+import UserSettings from "../components/usersettings.js";
 
 /** Your class description */
 export default class LongPressConnector extends Events {
@@ -26,8 +26,8 @@ export default class LongPressConnector extends Events {
     this._startY = 0;
     this._delay = 500;
     this._enabled =
-      userSettings.get("quickLinkLongPress") ||
-      userSettings.get("quickLinkMiddleMouse");
+      UserSettings.userSettings.get("quickLinkLongPress") ||
+      UserSettings.userSettings.get("quickLinkMiddleMouse");
   }
 
   getStartOp() {
@@ -64,9 +64,9 @@ export default class LongPressConnector extends Events {
       this._removelisteners();
 
       this._longPress = true;
-      gui.patchView.focusOp(op.id);
+      Gui.gui.patchView.focusOp(op.id);
 
-      gui.patchView.showDefaultPanel();
+      Gui.gui.patchView.showDefaultPanel();
     }, options.delay || this._delay);
 
     this._listenerUp = this._longpressup.bind(this);
@@ -115,11 +115,11 @@ export default class LongPressConnector extends Events {
     let wasActive = this._longPress;
 
     this._longPressOp = null;
-    if (this._longPress) gui.setCursor();
+    if (this._longPress) Gui.gui.setCursor();
     clearTimeout(this._longPressTimeout);
     this._longPress = false;
 
-    if (wasActive) gui.patchView.showDefaultPanel();
+    if (wasActive) Gui.gui.patchView.showDefaultPanel();
   }
 
   getParamPanelHtml() {
@@ -127,7 +127,7 @@ export default class LongPressConnector extends Events {
     let html = "here we go! <br/>now select any other op!";
 
     html +=
-      '<a onclick="gui.longPressConnector.longPressCancel();" class="icon-button button-small ">Cancel</a>';
+      '<a onclick="Gui.gui.longPressConnector.longPressCancel();" class="icon-button button-small ">Cancel</a>';
     return html;
   }
 
@@ -184,12 +184,14 @@ export default class LongPressConnector extends Events {
       }
 
       if (sugIn.length == 1) {
-        gui.corePatch().link(p.op, p.name, sugIn[0].p.op, sugIn[0].p.name);
+        Gui.gui.corePatch().link(p.op, p.name, sugIn[0].p.op, sugIn[0].p.name);
         return;
       }
 
       new SuggestionDialog(sugIn, op2, mouseEvent, null, function (sid) {
-        gui.corePatch().link(p.op, p.name, sugIn[sid].p.op, sugIn[sid].p.name);
+        Gui.gui
+          .corePatch()
+          .link(p.op, p.name, sugIn[sid].p.op, sugIn[sid].p.name);
       });
     }
 

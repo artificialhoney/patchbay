@@ -1,5 +1,5 @@
 import { ele } from "@cables/client";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 import CanvasUi from "./canvasui.js";
 import { contextMenu } from "../../elements/contextmenu.js";
 
@@ -29,9 +29,9 @@ export default class CanvasManager {
     if (m == this.CANVASMODE_POPOUT) {
       this.popOut();
     } else {
-      gui.emitEvent("canvasModeChange", this._canvasMode);
-      if (hasChanged) gui.setLayout();
-      gui.corePatch().cgl.updateSize();
+      Gui.gui.emitEvent("canvasModeChange", this._canvasMode);
+      if (hasChanged) Gui.gui.setLayout();
+      Gui.gui.corePatch().cgl.updateSize();
     }
   }
 
@@ -64,7 +64,7 @@ export default class CanvasManager {
     this._curContextIdx = this._contexts.length - 1;
 
     const ctx = c;
-    gui.cmdPallet.addDynamic(
+    Gui.gui.cmdPallet.addDynamic(
       "canvas",
       "canvas " + ctx.getGApiName(),
       () => {
@@ -186,7 +186,7 @@ export default class CanvasManager {
 
     let nBody = nDocument.body;
 
-    gui.corePatch().emitEvent("windowChanged", this.subWindow);
+    Gui.gui.corePatch().emitEvent("windowChanged", this.subWindow);
 
     const style = document.createElement("style");
     style.innerHTML =
@@ -213,7 +213,7 @@ export default class CanvasManager {
     // base.setAttribute("href", "https://meineSeite.de/");
     // document.head.appendChild(base);
 
-    const p = gui.corePatch().cgl.canvas.parentElement;
+    const p = Gui.gui.corePatch().cgl.canvas.parentElement;
 
     while (p.childNodes.length > 0) {
       containerEle.appendChild(p.childNodes[0]);
@@ -231,7 +231,7 @@ export default class CanvasManager {
       gui
         .corePatch()
         .cgl.setSize(this.subWindow.innerWidth, this.subWindow.innerHeight);
-      gui.corePatch().cgl.updateSize();
+      Gui.gui.corePatch().cgl.updateSize();
     });
 
     this.subWindow.addEventListener("beforeunload", () => {
@@ -244,14 +244,14 @@ export default class CanvasManager {
       }
       // for (let i = 0; i < ncablesEles.length; i++)
 
-      gui.corePatch().cgl.updateSize();
+      Gui.gui.corePatch().cgl.updateSize();
       this._canvasMode = this.CANVASMODE_NORMAL;
-      gui.setLayout();
+      Gui.gui.setLayout();
     });
 
     this._canvasMode = this.CANVASMODE_POPOUT;
-    gui.emitEvent("canvasModeChange", this._canvasMode);
+    Gui.gui.emitEvent("canvasModeChange", this._canvasMode);
 
-    gui.setLayout();
+    Gui.gui.setLayout();
   }
 }

@@ -6,9 +6,9 @@ import { glTlAnimLine } from "./gltlanimline.js";
 import { glTlRuler } from "./gltlruler.js";
 import { glTlScroll } from "./gltlscroll.js";
 import { GlTlView } from "./gltlview.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { notify, notifyWarn } from "../elements/notification.js";
-import { userSettings } from "../components/usersettings.js";
+import UserSettings from "../components/usersettings.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
 import GlTextWriter from "../gldraw/gltextwriter.js";
@@ -132,7 +132,8 @@ export class GlTimeline extends Events {
     this.#cgl = cgl;
     this.view = new GlTlView(this);
 
-    this.#layout = userSettings.get("gltl_layout") || GlTimeline.LAYOUT_LINES;
+    this.#layout =
+      UserSettings.userSettings.get("gltl_layout") || GlTimeline.LAYOUT_LINES;
 
     this.texts = new GlTextWriter(cgl, { name: "mainText", initNum: 1000 });
     this.#rects = new GlRectInstancer(cgl, {
@@ -168,12 +169,14 @@ export class GlTimeline extends Events {
     });
     this.#rectSelect.setSize(0, 0);
     this.#rectSelect.setPosition(0, 0, -0.9);
-    this.#rectSelect.setColorArray(gui.theme.colors_patch.patchSelectionArea);
+    this.#rectSelect.setColorArray(
+      Gui.gui.theme.colors_patch.patchSelectionArea,
+    );
 
-    gui.corePatch().timer.on("playPause", () => {
+    Gui.gui.corePatch().timer.on("playPause", () => {
       gui
         .corePatch()
-        .timer.setTime(this.snapTime(gui.corePatch().timer.getTime()));
+        .timer.setTime(this.snapTime(Gui.gui.corePatch().timer.getTime()));
     });
 
     cgl.canvas.classList.add("cblgltimelineEle");
@@ -195,15 +198,15 @@ export class GlTimeline extends Events {
     });
     cgl.addEventListener("resize", this.resize.bind(this));
 
-    gui.corePatch().on("timelineConfigChange", this.onConfig.bind(this));
+    Gui.gui.corePatch().on("timelineConfigChange", this.onConfig.bind(this));
 
-    gui.corePatch().on(CABLES.Patch.EVENT_OP_DELETED, () => {
+    Gui.gui.corePatch().on(CABLES.Patch.EVENT_OP_DELETED, () => {
       this.init();
     });
-    gui.corePatch().on(CABLES.Patch.EVENT_OP_ADDED, () => {
+    Gui.gui.corePatch().on(CABLES.Patch.EVENT_OP_ADDED, () => {
       this.init();
     });
-    gui.corePatch().on("portAnimToggle", () => {
+    Gui.gui.corePatch().on("portAnimToggle", () => {
       this.init();
     });
 
@@ -226,11 +229,11 @@ export class GlTimeline extends Events {
     this.#tlTimeDisplay.classList.add("tltimedisplay");
     cgl.canvas.parentElement.appendChild(this.#tlTimeDisplay);
 
-    gui.keys.key("c", "Center cursor", "down", cgl.canvas.id, {}, () => {
+    Gui.gui.keys.key("c", "Center cursor", "down", cgl.canvas.id, {}, () => {
       this.view.centerCursor();
     });
 
-    gui.keys.key(
+    Gui.gui.keys.key(
       "f",
       "zoom to all or selected keys",
       "down",
@@ -248,7 +251,7 @@ export class GlTimeline extends Events {
       },
     );
 
-    gui.keys.key(
+    Gui.gui.keys.key(
       "j",
       "Go to previous keyframe",
       "down",
@@ -258,11 +261,18 @@ export class GlTimeline extends Events {
         this.jumpKey(-1);
       },
     );
-    gui.keys.key("k", "Go to next keyframe", "down", cgl.canvas.id, {}, () => {
-      this.jumpKey(1);
-    });
+    Gui.gui.keys.key(
+      "k",
+      "Go to next keyframe",
+      "down",
+      cgl.canvas.id,
+      {},
+      () => {
+        this.jumpKey(1);
+      },
+    );
 
-    gui.keys.key(
+    Gui.gui.keys.key(
       "delete",
       "delete selected keys",
       "down",
@@ -274,7 +284,7 @@ export class GlTimeline extends Events {
       },
     );
 
-    gui.keys.key(
+    Gui.gui.keys.key(
       "backspace",
       "delete selected keys",
       "down",
@@ -286,7 +296,7 @@ export class GlTimeline extends Events {
       },
     );
 
-    gui.keys.key(
+    Gui.gui.keys.key(
       "a",
       "Select all keys",
       "down",
@@ -299,13 +309,13 @@ export class GlTimeline extends Events {
 
     /// ///////////////////
 
-    gui.on("opSelectChange", () => {
+    Gui.gui.on("opSelectChange", () => {
       for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
       this.needsUpdateAll = true;
     });
 
-    gui.patchView.patchRenderer.on("selectedOpsChanged", () => {
-      let selops = gui.patchView.getSelectedOps();
+    Gui.gui.patchView.patchRenderer.on("selectedOpsChanged", () => {
+      let selops = Gui.gui.patchView.getSelectedOps();
 
       if (selops.length == 0) return;
       let isAnimated = false;
@@ -326,14 +336,16 @@ export class GlTimeline extends Events {
         this.#selOpsStr = selOpsStr;
       }
     });
-    gui.glTimeline = this;
+    Gui.gui.glTimeline = this;
 
     this.init();
     this._initUserPrefs();
   }
 
   _initUserPrefs() {
-    const userSettingScrollButton = userSettings.get("patch_button_scroll");
+    const userSettingScrollButton = UserSettings.userSettings.get(
+      "patch_button_scroll",
+    );
     this.buttonForScrolling = userSettingScrollButton || 2;
   }
 
@@ -360,7 +372,7 @@ export class GlTimeline extends Events {
   }
 
   get cursorTime() {
-    return gui.corePatch().timer.getTime();
+    return Gui.gui.corePatch().timer.getTime();
   }
 
   parentElement() {
@@ -391,7 +403,7 @@ export class GlTimeline extends Events {
       this.#layout = GlTimeline.LAYOUT_LINES;
     else this.#layout = GlTimeline.LAYOUT_GRAPHS;
 
-    userSettings.set("gltl_layout", this.#layout);
+    UserSettings.userSettings.set("gltl_layout", this.#layout);
 
     this.updateIcons();
     this.init();
@@ -723,7 +735,7 @@ export class GlTimeline extends Events {
 
   init() {
     if (this.disposed) return;
-    const perf = gui.uiProfiler.start("[gltimeline] init");
+    const perf = Gui.gui.uiProfiler.start("[gltimeline] init");
 
     this.splines = new GlSplineDrawer(this.#cgl, "gltlSplines_0");
     this.splines.setWidth(2);
@@ -736,12 +748,12 @@ export class GlTimeline extends Events {
     let count = 0;
     const ports = [];
 
-    let selops = gui.patchView.getSelectedOps();
-    if (this.#layout == GlTimeline.LAYOUT_LINES) ops = gui.corePatch().ops;
+    let selops = Gui.gui.patchView.getSelectedOps();
+    if (this.#layout == GlTimeline.LAYOUT_LINES) ops = Gui.gui.corePatch().ops;
 
     // if (this.#layout == GlTimeline.LAYOUT_GRAPHS && selops.length > 0) ops = selops;
     // if (this.#layout == GlTimeline.LAYOUT_GRAPHS && this.#firstInit)ops = i
-    ops = gui.corePatch().ops;
+    ops = Gui.gui.corePatch().ops;
 
     this.#firstInit = false;
 
@@ -838,7 +850,7 @@ export class GlTimeline extends Events {
   render(resX, resY) {
     this.#perfFps.startFrame();
 
-    if (!gui.bottomTabPanel.isMinimized()) {
+    if (!Gui.gui.bottomTabPanel.isMinimized()) {
       if (this.disposed) return;
       this.view.updateAnims();
 
@@ -896,7 +908,7 @@ export class GlTimeline extends Events {
   }
 
   updateAllElements() {
-    const perf = gui.uiProfiler.start("[gltimeline] udpateAllElements");
+    const perf = Gui.gui.uiProfiler.start("[gltimeline] udpateAllElements");
 
     this.ruler.update();
     this.scroll.update();
@@ -953,7 +965,7 @@ export class GlTimeline extends Events {
     }
 
     if (theKey) {
-      gui.corePatch().timer.setTime(theKey.time);
+      Gui.gui.corePatch().timer.setTime(theKey.time);
       if (theKey.time > this.view.timeRight || theKey.time < this.view.timeLeft)
         this.view.centerCursor();
     }
@@ -1088,7 +1100,7 @@ export class GlTimeline extends Events {
             notify(json.keys.length + " keys pasted");
           }
 
-          const animPorts = gui.corePatch().getAllAnimPorts();
+          const animPorts = Gui.gui.corePatch().getAllAnimPorts();
           for (let i = 0; i < animPorts.length; i++) {
             if (animPorts[i].anim) animPorts[i].anim.removeDuplicates();
           }
@@ -1152,7 +1164,7 @@ export class GlTimeline extends Events {
   }
 
   toggle() {
-    gui.bottomTabPanel.toggle(true);
+    Gui.gui.bottomTabPanel.toggle(true);
   }
 
   deactivateAllAnims(v = false) {

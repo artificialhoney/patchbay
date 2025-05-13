@@ -1,6 +1,6 @@
 import GlPatch from "../glpatch/glpatch.js";
 import GlPatchAPI from "../glpatch/patchapi.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 
 export default class GlCanvas {
   /**
@@ -44,11 +44,11 @@ export default class GlCanvas {
     this.cgl.pixelDensity = window.devicePixelRatio || 1;
     this.cgl.updateSize();
 
-    gui.on("uiIdleStart", () => {
+    Gui.gui.on("uiIdleStart", () => {
       this.patch.pause();
     });
 
-    gui.on("uiIdleEnd", () => {
+    Gui.gui.on("uiIdleEnd", () => {
       this.patch.resume();
     });
 

@@ -3,7 +3,7 @@ import { Geometry, Mesh, Shader, Uniform } from "@cables/cables";
 import GlRect from "./glrect.js";
 import srcShaderGlRectInstancerFrag from "./glrectinstancer_glsl.frag";
 import srcShaderGlRectInstancerVert from "./glrectinstancer_glsl.vert";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 
 /**
  * @typedef {Object} GlRectInstancerOptions
@@ -149,7 +149,7 @@ export default class GlRectInstancer extends Events {
 
   get bounds() {
     if (this._needsBoundsRecalc) {
-      const perf = gui.uiProfiler.start("[glRectInstancer] recalcBounds");
+      const perf = Gui.gui.uiProfiler.start("[glRectInstancer] recalcBounds");
 
       const defaultMin = GlRectInstancer.DEFAULT_BIGNUM;
       const defaultMax = -GlRectInstancer.DEFAULT_BIGNUM;
@@ -326,21 +326,21 @@ export default class GlRectInstancer extends Events {
     // console.log(zoom);
     if (zoom > 500 && zoom < 800) {
     }
-    // else gui.patchView._patchRenderer._textWriter._rectDrawer._unimsdfUnit.setValue(0);
-    gui.patchView._patchRenderer._textWriter._rectDrawer._unimsdfUnit.setValue(
+    // else Gui.gui.patchView._patchRenderer._textWriter._rectDrawer._unimsdfUnit.setValue(0);
+    Gui.gui.patchView._patchRenderer._textWriter._rectDrawer._unimsdfUnit.setValue(
       8 / zoom,
     );
     // else if (zoom > 800 && zoom < 1100)
     // {
     //     console.log(2);
-    //     gui.patchView._patchRenderer._textWriter._rectDrawer._unimsdfUnit.setValue(8 / 450);
+    //     Gui.gui.patchView._patchRenderer._textWriter._rectDrawer._unimsdfUnit.setValue(8 / 450);
     // }
     // else if (zoom > 1100)
     // {
     //     console.log(3);
-    //     gui.patchView._patchRenderer._textWriter._rectDrawer._unimsdfUnit.setValue(8 / 250);
+    //     Gui.gui.patchView._patchRenderer._textWriter._rectDrawer._unimsdfUnit.setValue(8 / 250);
     // }
-    // else gui.patchView._patchRenderer._textWriter._rectDrawer._unimsdfUnit.setValue(8 / 1000);
+    // else Gui.gui.patchView._patchRenderer._textWriter._rectDrawer._unimsdfUnit.setValue(8 / 1000);
 
     if (this.doBulkUploads) {
       if (
@@ -436,7 +436,9 @@ export default class GlRectInstancer extends Events {
     this.#mesh.numInstances = this.#num;
 
     if (this.#reUploadAttribs) {
-      const perf = gui.uiProfiler.start("[glRectInstancer] _reUploadAttribs");
+      const perf = Gui.gui.uiProfiler.start(
+        "[glRectInstancer] _reUploadAttribs",
+      );
       this.#meshAttrPos = this.#mesh.setAttribute(
         GlRectInstancer.ATTR_POS,
         this._attrBuffPos,
@@ -761,7 +763,7 @@ export default class GlRectInstancer extends Events {
    * @param {MouseEvent} event
    */
   mouseMove(x, y, button, event) {
-    const perf = gui.uiProfiler.start("[glrectinstancer] mousemove");
+    const perf = Gui.gui.uiProfiler.start("[glrectinstancer] mousemove");
     if (!this.#interactive) return;
     if (this.allowDragging && this.#draggingRect) {
       this.#draggingRect.mouseDrag(x, y, button, event);
@@ -782,7 +784,7 @@ export default class GlRectInstancer extends Events {
   mouseDown(e, x, y) {
     if (!this.#interactive) return;
 
-    const perf = gui.uiProfiler.start("[glrectinstancer] mouseDown");
+    const perf = Gui.gui.uiProfiler.start("[glrectinstancer] mouseDown");
     for (let i = 0; i < this.#rects.length; i++)
       if (!this.#rects[i].parent) this.#rects[i].mouseDown(e, x, y);
     perf.finish();
@@ -793,7 +795,7 @@ export default class GlRectInstancer extends Events {
    */
   mouseUp(e) {
     if (!this.#interactive) return;
-    const perf = gui.uiProfiler.start("[glrectinstancer] mouseup");
+    const perf = Gui.gui.uiProfiler.start("[glrectinstancer] mouseup");
 
     for (let i = 0; i < this.#rects.length; i++) this.#rects[i].mouseUp(e);
     perf.finish();

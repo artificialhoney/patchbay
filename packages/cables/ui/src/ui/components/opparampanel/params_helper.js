@@ -1,7 +1,7 @@
 import { ele } from "@cables/client";
 import EditorTab from "../tabs/tab_editor.js";
 import SpreadSheetTab from "../tabs/tab_spreadsheet.js";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
 
 const paramsHelper = {
@@ -84,9 +84,9 @@ const paramsHelper = {
   inputIncrement: (v, dir, e) => {
     if (e.target.type == "search") return v;
 
-    gui.savedState.setUnSaved(
+    Gui.gui.savedState.setUnSaved(
       "paramsInputIncrement",
-      gui.opParams.op.getSubPatch(),
+      Gui.gui.opParams.op.getSubPatch(),
     );
 
     if (v == "true") return "false";
@@ -131,10 +131,10 @@ const paramsHelper = {
   },
 
   togglePortValBool: (which, checkbox) => {
-    // gui.setStateUnsaved();
-    gui.savedState.setUnSaved(
+    // Gui.gui.setStateUnsaved();
+    Gui.gui.savedState.setUnSaved(
       "paramsTogglePortValBool",
-      gui.opParams.op.getSubPatch(),
+      Gui.gui.opParams.op.getSubPatch(),
     );
     const inputEle = document.getElementById(which);
     const checkBoxEle = document.getElementById(checkbox);
@@ -156,17 +156,17 @@ const paramsHelper = {
   },
 
   openParamSpreadSheetEditor: (opid, portname, cb) => {
-    const op = gui.corePatch().getOpById(opid);
+    const op = Gui.gui.corePatch().getOpById(opid);
     if (!op) return console.warn("paramedit op not found");
 
     const port = op.getPortByName(portname);
     if (!port) return console.warn("paramedit port not found");
 
-    new SpreadSheetTab(gui.mainTabs, port, port.get(), {
-      title: gui.mainTabs.getUniqueTitle("Array " + portname),
+    new SpreadSheetTab(Gui.gui.mainTabs, port, port.get(), {
+      title: Gui.gui.mainTabs.getUniqueTitle("Array " + portname),
       onchange: (content) => {
         port.set(content);
-        gui.emitEvent("portValueEdited", op, port, content);
+        Gui.gui.emitEvent("portValueEdited", op, port, content);
       },
     });
   },
@@ -194,17 +194,17 @@ const paramsHelper = {
   },
 
   setPortAnimated: (op, index, targetState, defaultValue) => {
-    const isOpen = gui.patchView.getSelectedOps()[0]
-      ? op.id === gui.patchView.getSelectedOps()[0].id
+    const isOpen = Gui.gui.patchView.getSelectedOps()[0]
+      ? op.id === Gui.gui.patchView.getSelectedOps()[0].id
       : false;
 
     const elVal = ele.byId("portval_" + index);
 
     if (!targetState) {
-      // const val = gui.timeLine().removeAnim(op.portsIn[index].anim);
+      // const val = Gui.gui.timeLine().removeAnim(op.portsIn[index].anim);
       op.portsIn[index].setAnimated(false);
 
-      // gui.timeLine().setAnim(null);
+      // Gui.gui.timeLine().setAnim(null);
 
       if (isOpen && elVal) {
         // elVal.value = val;
@@ -225,25 +225,25 @@ const paramsHelper = {
       name: op.getTitle() + ": " + op.portsIn[index].name,
       defaultValue: defaultValue,
     };
-    // gui.timeLine().setAnim(op.portsIn[index].anim, animOptions);
+    // Gui.gui.timeLine().setAnim(op.portsIn[index].anim, animOptions);
     op.portsIn[index].op.refreshParams();
   },
 
   openParamStringEditor: (opid, portname, cb, userInteraction) => {
-    const op = gui.corePatch().getOpById(opid);
+    const op = Gui.gui.corePatch().getOpById(opid);
     if (!op) return console.warn("paramedit op not found", opid);
     editorSession.startLoadingTab();
 
     const port = op.getPortByName(portname);
     if (!port) return console.warn("paramedit port not found", portname);
 
-    let name = gui.mainTabs.getUniqueTitle(op.name + " " + port.name);
+    let name = Gui.gui.mainTabs.getUniqueTitle(op.name + " " + port.name);
 
     const dataId = opid + portname;
-    const existingTab = gui.mainTabs.getTabByDataId(dataId);
+    const existingTab = Gui.gui.mainTabs.getTabByDataId(dataId);
     if (existingTab) {
-      gui.mainTabs.activateTabByName(existingTab.title);
-      gui.maintabPanel.show(userInteraction);
+      Gui.gui.mainTabs.activateTabByName(existingTab.title);
+      Gui.gui.maintabPanel.show(userInteraction);
       return;
     }
 
@@ -266,30 +266,30 @@ const paramsHelper = {
         },
         onSave: function (setStatus, content) {
           setStatus("updated " + port.name);
-          // gui.setStateUnsaved();
-          gui.savedState.setUnSaved("saveeditorcontent", op.getSubPatch());
-          gui.jobs().finish("saveeditorcontent");
+          // Gui.gui.setStateUnsaved();
+          Gui.gui.savedState.setUnSaved("saveeditorcontent", op.getSubPatch());
+          Gui.gui.jobs().finish("saveeditorcontent");
           port.setRef(content);
-          gui.emitEvent("portValueEdited", op, port, content);
+          Gui.gui.emitEvent("portValueEdited", op, port, content);
         },
         onChange: function (e) {
-          // gui.setStateUnsaved();
-          gui.savedState.setUnSaved("editorOnChange", op.getSubPatch());
+          // Gui.gui.setStateUnsaved();
+          Gui.gui.savedState.setUnSaved("editorOnChange", op.getSubPatch());
         },
         onFinished: () => {
-          gui.mainTabs.activateTabByName(name);
+          Gui.gui.mainTabs.activateTabByName(name);
         },
       });
 
-      gui.corePatch().on(CABLES.Patch.EVENT_OP_DELETED, (deletedOp) => {
-        if (deletedOp.id == opid) gui.mainTabs.closeTab(t._tab.id);
+      Gui.gui.corePatch().on(CABLES.Patch.EVENT_OP_DELETED, (deletedOp) => {
+        if (deletedOp.id == opid) Gui.gui.mainTabs.closeTab(t._tab.id);
       });
     } else {
-      gui.mainTabs.activateTabByName(name);
+      Gui.gui.mainTabs.activateTabByName(name);
     }
 
     if (cb) cb();
-    else gui.maintabPanel.show(userInteraction);
+    else Gui.gui.maintabPanel.show(userInteraction);
 
     editorSession.finishLoadingTab();
   },

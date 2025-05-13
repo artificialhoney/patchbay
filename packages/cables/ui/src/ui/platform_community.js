@@ -1,4 +1,4 @@
-import { gui } from "./gui.js";
+import Gui from "./gui.js";
 import { Platform } from "./platform.js";
 
 /**
@@ -42,6 +42,6 @@ export default class PlatformCommunity extends Platform {
   }
 
   currentUserIsPatchOwner() {
-    return gui.project().userId === gui.user.id;
+    return Gui.gui.project().userId === Gui.gui.user.id;
   }
 }

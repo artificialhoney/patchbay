@@ -1,4 +1,4 @@
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { platform } from "../platform.js";
 
 export default class Tracking {
@@ -6,7 +6,9 @@ export default class Tracking {
     this.gui = gui;
     this._initListeners();
 
-    this._trackEvent("ui", "userIsGuest", "", { isGuest: gui.isGuestEditor() });
+    this._trackEvent("ui", "userIsGuest", "", {
+      isGuest: Gui.gui.isGuestEditor(),
+    });
 
     this._trackEvent("ui", "loadStartupFiles", "", {
       seconds: CABLESUILOADER.uiLoadFiles / 1000,
@@ -14,7 +16,7 @@ export default class Tracking {
   }
 
   _initListeners() {
-    this.gui._corePatch.on(
+    this.Gui.gui._corePatch.on(
       CABLES.Patch.EVENT_OP_ADDED,
       (op, fromDeserialize) => {
         if (
@@ -32,22 +34,22 @@ export default class Tracking {
       },
     );
 
-    this.gui.on("uiIdleEnd", (idleSeconds) => {
+    this.Gui.gui.on("uiIdleEnd", (idleSeconds) => {
       this._trackEvent("ui", "idleEnd", "end", { seconds: idleSeconds });
     });
 
-    this.gui.on("uiIdleStart", (activeSeconds) => {
+    this.Gui.gui.on("uiIdleStart", (activeSeconds) => {
       this._trackEvent("ui", "activeDuration", "", { seconds: activeSeconds });
     });
 
-    this.gui.on("logEvent", (initiator, level, args) => {
+    this.Gui.gui.on("logEvent", (initiator, level, args) => {
       if (!["error"].includes(level)) return;
-      const perf = gui.uiProfiler.start("logEvent");
+      const perf = Gui.gui.uiProfiler.start("logEvent");
       this._trackLogEvent("logging", level, initiator, args);
       perf.finish();
     });
 
-    this.gui.on("uncaughtError", (report) => {
+    this.Gui.gui.on("uncaughtError", (report) => {
       let initiator = "unknown";
       if (report.url) initiator = report.url;
       if (report.exception)
@@ -62,7 +64,7 @@ export default class Tracking {
       initiator: initiator,
       arguments: args,
     };
-    const project = this.gui.project();
+    const project = this.Gui.gui.project();
     if (project) payload.projectId = project._id;
     if (platform.talkerAPI) {
       payload.platform = platformLib;
@@ -73,8 +75,8 @@ export default class Tracking {
   }
 
   _trackEvent(eventCategory, eventAction, eventLabel, meta = {}) {
-    if (this.gui.socket) {
-      this.gui.socket.track(eventCategory, eventAction, eventLabel, meta);
+    if (this.Gui.gui.socket) {
+      this.Gui.gui.socket.track(eventCategory, eventAction, eventLabel, meta);
     }
   }
 }

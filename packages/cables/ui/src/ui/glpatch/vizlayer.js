@@ -1,7 +1,7 @@
 import { Logger, Events } from "@cables/client";
 import gluiconfig from "./gluiconfig.js";
-import { gui } from "../gui.js";
-import { userSettings } from "../components/usersettings.js";
+import Gui from "../gui.js";
+import UserSettings from "../components/usersettings.js";
 
 /**
  * managing data vizualizations on the patchfield (e.g. viztexture/vizgraph/vizString ops)
@@ -21,13 +21,13 @@ export default class VizLayer extends Events {
     this._items = [];
     this._itemsLookup = {};
     this._glPatch = glPatch;
-    this.paused = userSettings.get("vizlayerpaused") || false;
+    this.paused = UserSettings.userSettings.get("vizlayerpaused") || false;
 
-    gui.on("uiloaded", () => {
+    Gui.gui.on("uiloaded", () => {
       this._updateSize();
     });
 
-    userSettings.on("change", (key, value) => {
+    UserSettings.userSettings.on("change", (key, value) => {
       if (key == "vizlayerpaused") this.paused = value;
     });
 
@@ -43,13 +43,13 @@ export default class VizLayer extends Events {
 
     this._updateSize();
 
-    gui.corePatch().cgl.on("beginFrame", () => {
+    Gui.gui.corePatch().cgl.on("beginFrame", () => {
       this._fallBackrendererDisabled = true;
       this._usingGl = true;
       this.renderVizLayer(true);
     });
 
-    gui.corePatch().on(CABLES.Patch.EVENT_OP_ADDED, (a) => {
+    Gui.gui.corePatch().on(CABLES.Patch.EVENT_OP_ADDED, (a) => {
       if (a.renderVizLayer || a.renderVizLayerGl || a.renderVizLayerGpu) {
         let item = this._itemsLookup[a.id];
         if (item) this._log.log("vizlayer id already exists...");
@@ -106,7 +106,7 @@ export default class VizLayer extends Events {
         this._fallBackrendererDisabled = false;
       return;
     }
-    if (gl && !gui.corePatch().cgl.hasFrameStarted() && this._usingGl) {
+    if (gl && !Gui.gui.corePatch().cgl.hasFrameStarted() && this._usingGl) {
       this._usingGl = false;
       return;
     }
@@ -120,9 +120,9 @@ export default class VizLayer extends Events {
       this._eleCanvas.height,
     );
     this._canvasCtx.fillStyle =
-      gui.theme.colors_vizlayer.colorBackground || "#222";
+      Gui.gui.theme.colors_vizlayer.colorBackground || "#222";
 
-    const perf = gui.uiProfiler.start("glVizPreviewLayer.renderVizLayer");
+    const perf = Gui.gui.uiProfiler.start("glVizPreviewLayer.renderVizLayer");
     const paddingY = this._glPatch.viewBox.patchToScreenConv(0, 25)[1];
 
     this._updateSize();
@@ -188,7 +188,8 @@ export default class VizLayer extends Events {
       region.rect(pos[0], pos[1], size[0], size[1]);
       this._canvasCtx.clip(region);
 
-      const scale = (1000 / gui.patchView._patchRenderer.viewBox.zoom) * 1.5;
+      const scale =
+        (1000 / Gui.gui.patchView._patchRenderer.viewBox.zoom) * 1.5;
 
       if (count > 10 || this.paused || Math.max(sizeOp[1], sizeOp[0]) < 20) {
         this._canvasCtx.save();
@@ -196,7 +197,7 @@ export default class VizLayer extends Events {
 
         this._canvasCtx.font = "normal 6px sourceCodePro";
         this._canvasCtx.fillStyle =
-          gui.theme.colors_vizlayer.colorText || "#FFF";
+          Gui.gui.theme.colors_vizlayer.colorText || "#FFF";
 
         this._canvasCtx.textAlign = "center";
         this._canvasCtx.fillText(
@@ -211,7 +212,7 @@ export default class VizLayer extends Events {
           y: pos[1],
           width: size[0],
           height: size[1],
-          scale: (w / gui.patchView._patchRenderer.viewBox.zoom) * 0.6,
+          scale: (w / Gui.gui.patchView._patchRenderer.viewBox.zoom) * 0.6,
           useGl: this._usingGl,
           vizLayer: this,
           pixelDensity: window.devicePixelRatio,
@@ -237,8 +238,8 @@ export default class VizLayer extends Events {
       count++;
     }
 
-    if (gui.texturePreview().needsVizLayer())
-      gui.texturePreview().drawVizLayer(this._canvasCtx);
+    if (Gui.gui.texturePreview().needsVizLayer())
+      Gui.gui.texturePreview().drawVizLayer(this._canvasCtx);
 
     this._glPatch.debugData.numVizLayers = count;
 
@@ -278,7 +279,7 @@ export default class VizLayer extends Events {
 
   clear(ctx, layer) {
     ctx.fillStyle =
-      gui.theme.colors_vizlayer.colorBackground || "#222" || "#222";
+      Gui.gui.theme.colors_vizlayer.colorBackground || "#222" || "#222";
     ctx.fillRect(layer.x, layer.y, layer.width, layer.height);
   }
 
@@ -328,14 +329,14 @@ export default class VizLayer extends Events {
     if (lines.length < numLines) offset = 0;
 
     ctx.font = "normal " + fs + "px sourceCodePro";
-    ctx.fillStyle = gui.theme.colors_vizlayer.colorText || "#FFF";
+    ctx.fillStyle = Gui.gui.theme.colors_vizlayer.colorText || "#FFF";
 
     if (options.showLineNum)
       for (let i = 0; i < (offset + numLines + " ").length; i++) indent += " ";
 
     let numChars = Math.ceil(layer.width / layer.scale / 6) - indent.length;
 
-    ctx.fillStyle = gui.theme.colors_vizlayer.colorText || "#FFF";
+    ctx.fillStyle = Gui.gui.theme.colors_vizlayer.colorText || "#FFF";
 
     let hl = options.syntax && options.syntax != "text";
 
@@ -365,13 +366,14 @@ export default class VizLayer extends Events {
 
         if (lastline != idx) {
           lastline = idx;
-          ctx.fillStyle = gui.theme.colors_vizlayer.colorLineNumbers || "#888";
+          ctx.fillStyle =
+            Gui.gui.theme.colors_vizlayer.colorLineNumbers || "#888";
           ctx.fillText(
             idx,
             layer.x / layer.scale + padding,
             layer.y / layer.scale + lineHeight + (i - offset) * lineHeight,
           );
-          ctx.fillStyle = gui.theme.colors_vizlayer.colorText || "#FFF";
+          ctx.fillStyle = Gui.gui.theme.colors_vizlayer.colorText || "#FFF";
         }
       }
 
@@ -385,7 +387,7 @@ export default class VizLayer extends Events {
           if (data._emitter.rootNode.children.length >= j + 1)
             nextChild = data._emitter.rootNode.children[j + 1];
           if (typeof child == "string") {
-            ctx.fillStyle = gui.theme.colors_vizlayer.colorText || "#888";
+            ctx.fillStyle = Gui.gui.theme.colors_vizlayer.colorText || "#888";
             ctx.fillText(
               indent + fake + child,
               layer.x / layer.scale + padding,
@@ -394,8 +396,7 @@ export default class VizLayer extends Events {
             for (let k = 0; k < child.length; k++) fake += " ";
           } else {
             if (child.scope && child.children) {
-              if (child.scope == "built_in")
-                ctx.fillStyle = "#418ce9"; // blue
+              if (child.scope == "built_in") ctx.fillStyle = "#418ce9"; // blue
               else if (child.scope == "comment")
                 ctx.fillStyle = "#49d6b2"; // green
               else if (child.scope == "number")
@@ -452,7 +453,7 @@ export default class VizLayer extends Events {
       );
       radGrad.addColorStop(
         0,
-        gui.theme.colors_vizlayer.colorBackground || "#222",
+        Gui.gui.theme.colors_vizlayer.colorBackground || "#222",
       );
       radGrad.addColorStop(1, "rgba(34,34,34,0.0)");
       ctx.fillStyle = radGrad;
@@ -476,7 +477,7 @@ export default class VizLayer extends Events {
       );
       radGrad.addColorStop(
         1,
-        gui.theme.colors_vizlayer.colorBackground || "#222",
+        Gui.gui.theme.colors_vizlayer.colorBackground || "#222",
       );
       radGrad.addColorStop(0, "rgba(34,34,34,0.0)");
       ctx.fillStyle = radGrad;

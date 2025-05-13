@@ -1,12 +1,11 @@
-import { Port } from "@cables/cables";
 import { portType } from "../../core_constants.js";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 import namespace from "../../namespaceutils.js";
 import opNames from "../../opnameutils.js";
 import { platform } from "../../platform.js";
 import text from "../../text.js";
 import { handleBarPrecompiled } from "../../utils/handlebars.js";
-import { userSettings } from "../usersettings.js";
+import UserSettings from "../usersettings.js";
 
 class PortHtmlGenerator {
   constructor(panelId) {
@@ -28,9 +27,12 @@ class PortHtmlGenerator {
     let hasExample = false;
     let doc = null;
 
-    if (op) isBookmarked = gui.bookmarks.hasBookmarkWithId(op.id);
+    if (op) isBookmarked = Gui.gui.Gui.gui.bookmarks.hasBookmarkWithId(op.id);
 
-    const canEditOp = gui.serverOps.canEditOp(gui.user, op.objName);
+    const canEditOp = Gui.gui.Gui.gui.serverOps.canEditOp(
+      Gui.gui.Gui.gui.user,
+      op.objName,
+    );
     if (namespace.isDeprecatedOp(op.objName)) {
       op.isDeprecated = true;
       const notDeprecatedName = op.objName.replace("Deprecated.", "");
@@ -39,9 +41,9 @@ class PortHtmlGenerator {
     }
     if (namespace.isDevOp(op.objName)) op.isExperimental = true;
 
-    if (gui.opDocs) {
-      op.summary = gui.opDocs.getSummary(op.objName);
-      doc = gui.opDocs.getOpDocByName(op.objName);
+    if (Gui.gui.Gui.gui.opDocs) {
+      op.summary = Gui.gui.Gui.gui.opDocs.getSummary(op.objName);
+      doc = Gui.gui.Gui.gui.opDocs.getOpDocByName(op.objName);
     }
 
     if (doc) {
@@ -51,7 +53,7 @@ class PortHtmlGenerator {
     }
 
     let opChanged = false;
-    if (gui.serverOps.opIdsChangedOnServer[op.opId]) opChanged = true;
+    if (Gui.gui.serverOps.opIdsChangedOnServer[op.opId]) opChanged = true;
 
     const o = {
       op: op,
@@ -60,12 +62,15 @@ class PortHtmlGenerator {
       isBookmarked: isBookmarked,
       colorClass: opNames.getNamespaceClassName(op.objName),
       texts: text,
-      user: gui.user,
+      user: Gui.gui.Gui.gui.user,
       optitle: op.getTitle(),
       canEditOp: canEditOp,
       opChanged: opChanged,
       oldVersion: oldversion,
-      minified: userSettings.get("minifiedOpHead"),
+      minified:
+        UserSettings.userSettings.UserSettings.userSettings.get(
+          "minifiedOpHead",
+        ),
       newestVersion: newestVersion,
       cablesUrl: platform.getCablesUrl(),
       hasExample: hasExample,

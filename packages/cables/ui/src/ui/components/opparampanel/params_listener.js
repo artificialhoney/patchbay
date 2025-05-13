@@ -9,9 +9,9 @@ import defaultOps from "../../defaultops.js";
 import { hideToolTip, showToolTip } from "../../elements/tooltips.js";
 import uiconfig from "../../uiconfig.js";
 import valueChanger from "./valuechanger.js";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 import { contextMenu } from "../../elements/contextmenu.js";
-import { userSettings } from "../usersettings.js";
+import UserSettings from "../usersettings.js";
 import { portType } from "../../core_constants.js";
 
 /**
@@ -34,7 +34,7 @@ class ParamsListener extends Events {
     this._portsIn = [];
     this._portsOut = [];
     this._doFormatNumbers = !(
-      userSettings.get("notlocalizeNumberformat") || false
+      UserSettings.userSettings.get("notlocalizeNumberformat") || false
     );
     this._watchPortVisualizer = new WatchPortVisualizer();
 
@@ -56,20 +56,20 @@ class ParamsListener extends Events {
       ele.clickables(options.element, ".clickable", (e, data) => {
         switch (data.click) {
           case "centerSelectOp":
-            gui.patchView.centerSelectOp(data.op);
-            gui.opParams.show(data.op);
+            Gui.gui.patchView.centerSelectOp(data.op);
+            Gui.gui.opParams.show(data.op);
             break;
 
           case "showAnim":
-            gui.toggleTimeline();
+            Gui.gui.toggleTimeline();
             break;
 
           case "resetOpValues":
-            gui.patchView.resetOpValues(data.opid, data.portname);
+            Gui.gui.patchView.resetOpValues(data.opid, data.portname);
             break;
 
           case "addOpAndLink":
-            gui.patchView.addOpAndLink(
+            Gui.gui.patchView.addOpAndLink(
               CABLES.UI.DEFAULTOPNAMES.defaultOpImage,
               data.opid,
               data.portname,
@@ -115,7 +115,7 @@ class ParamsListener extends Events {
         if (elm)
           elm.addEventListener("click", (e) => {
             this._portsIn[index].removeLinks();
-            gui.opParams.show(this._portsIn[index].op);
+            Gui.gui.opParams.show(this._portsIn[index].op);
           });
       })(i);
     }
@@ -163,7 +163,7 @@ class ParamsListener extends Events {
         if (elm)
           elm.addEventListener("focus", () => {
             if (_thePort.isAnimated()) {
-              // gui.timeLine().setAnim(_thePort.anim, {
+              // Gui.gui.timeLine().setAnim(_thePort.anim, {
               //     "opid": _thePort.op.id,
               //     "name": _thePort.op.getTitle() + ": " + _thePort.name,
               // });
@@ -192,7 +192,7 @@ class ParamsListener extends Events {
   }
 
   emitChangeEvent(port) {
-    gui.emitEvent("paramsChangedUserInteraction", {
+    Gui.gui.emitEvent("paramsChangedUserInteraction", {
       port: port,
       panelId: this.panelId,
     });
@@ -202,8 +202,8 @@ class ParamsListener extends Events {
    * togglePortValBool(which, checkbox)
    * {
    *     this._log.log("HJSAHJKLSHJKLS");
-   *     // gui.setStateUnsaved();
-   *     gui.savedState.setUnSaved("togglePortValBool");
+   *     // Gui.gui.setStateUnsaved();
+   *     Gui.gui.savedState.setUnSaved("togglePortValBool");
    */
 
   /*
@@ -355,7 +355,7 @@ class ParamsListener extends Events {
         .addEventListener("click", function (e) {
           const p = ports[index];
           if (!p.uiAttribs.hidePort)
-            gui.opSelect().show(
+            Gui.gui.opSelect().show(
               {
                 x:
                   p.op.uiAttribs.translate.x +
@@ -460,7 +460,7 @@ class ParamsListener extends Events {
      */
 
     /*
-     *         gui.timeLine().setAnim(ports[index].anim, {
+     *         Gui.gui.timeLine().setAnim(ports[index].anim, {
      *             "name": op.getTitle() + ": " + ports[index].name,
      *             "opid": op.id,
      *             "defaultValue": parseFloat(ele.byId("portval_" + index).value)
@@ -482,8 +482,8 @@ class ParamsListener extends Events {
             e,
           );
 
-        // gui.setStateUnsaved();
-        gui.savedState.setUnSaved(
+        // Gui.gui.setStateUnsaved();
+        Gui.gui.savedState.setUnSaved(
           "initPortClickListener",
           port.op.getSubPatch(),
         );
@@ -496,7 +496,7 @@ class ParamsListener extends Events {
      *     const port = ports[index].op.getPortById(e.target.dataset.portid);
      *     if (port) port.setVariable(null);
      *     port.op.refreshParams();
-     *     gui.setStateUnsaved();
+     *     Gui.gui.setStateUnsaved();
      * });
      */
 
@@ -514,13 +514,13 @@ class ParamsListener extends Events {
             items.push({
               title: "Create String Op",
               func: () => {
-                gui.savedState.setUnSaved(
+                Gui.gui.savedState.setUnSaved(
                   "initPortClickListener",
                   port.op.getSubPatch(),
                 );
                 const oldValue = port.get();
 
-                gui.patchView.addOpAndLink(
+                Gui.gui.patchView.addOpAndLink(
                   defaultOps.defaultOpNames.string,
                   port.op.id,
                   port.name,
@@ -546,13 +546,13 @@ class ParamsListener extends Events {
             items.push({
               title: "Create Number Op",
               func: () => {
-                gui.savedState.setUnSaved(
+                Gui.gui.savedState.setUnSaved(
                   "initPortClickListener",
                   port.op.getSubPatch(),
                 );
                 const oldValue = port.get();
 
-                gui.patchView.addOpAndLink(
+                Gui.gui.patchView.addOpAndLink(
                   defaultOps.defaultOpNames.number,
                   port.op.id,
                   port.name,
@@ -583,8 +583,8 @@ class ParamsListener extends Events {
             const item = {
               title: "Assign variable",
               func: () => {
-                // gui.setStateUnsaved();
-                gui.savedState.setUnSaved(
+                // Gui.gui.setStateUnsaved();
+                Gui.gui.savedState.setUnSaved(
                   "initPortClickListener",
                   port.op.getSubPatch(),
                 );
@@ -621,8 +621,8 @@ class ParamsListener extends Events {
             title: title,
             iconClass: icon,
             func: () => {
-              // gui.setStateUnsaved();
-              gui.savedState.setUnSaved(
+              // Gui.gui.setStateUnsaved();
+              Gui.gui.savedState.setUnSaved(
                 "setPortAnimated",
                 port.op.getSubPatch(),
               );
@@ -665,12 +665,14 @@ class ParamsListener extends Events {
             title: "Subpatch Op: Create Port",
             iconClass: "",
             func: () => {
-              const subOuter = gui.patchView.getSubPatchOuterOp(
+              const subOuter = Gui.gui.patchView.getSubPatchOuterOp(
                 port.op.isInBlueprint2(),
               );
 
-              // this._log.log("isSavedSubOp", gui.savedState.isSavedSubPatch(port.op.uiAttribs.subPatch));
-              if (!gui.savedState.isSavedSubPatch(port.op.uiAttribs.subPatch)) {
+              // this._log.log("isSavedSubOp", Gui.gui.savedState.isSavedSubPatch(port.op.uiAttribs.subPatch));
+              if (
+                !Gui.gui.savedState.isSavedSubPatch(port.op.uiAttribs.subPatch)
+              ) {
                 new ModalDialog({
                   showOkButton: true,
                   title: "Can't create port",
@@ -679,7 +681,7 @@ class ParamsListener extends Events {
                 return;
               }
 
-              gui.patchView.unselectAllOps();
+              Gui.gui.patchView.unselectAllOps();
 
               subPatchOpUtil.addPortToBlueprint(subOuter.opId, port);
             },
@@ -689,7 +691,7 @@ class ParamsListener extends Events {
         /*
          * else
          * if (
-         *     (gui.patchView.getCurrentSubPatch() != 0 || gui.patchView.getCurrentSubPatch() != port.op.uiAttribs.subPatch) &&
+         *     (Gui.gui.patchView.getCurrentSubPatch() != 0 || Gui.gui.patchView.getCurrentSubPatch() != port.op.uiAttribs.subPatch) &&
          *     !port.isAnimated())
          * {
          *     let title = "Subpatch Expose Port ";
@@ -708,7 +710,7 @@ class ParamsListener extends Events {
          *             "iconClass": icon,
          *             "func": () =>
          *             {
-         *                 const subOp = gui.patchView.getSubPatchOuterOp(port.op.uiAttribs.subPatch);
+         *                 const subOp = Gui.gui.patchView.getSubPatchOuterOp(port.op.uiAttribs.subPatch);
          */
 
         /*
@@ -725,7 +727,7 @@ class ParamsListener extends Events {
          */
 
         /*
-         *                 gui.savedState.setUnSaved("Subpatch Expose Port", port.op.uiAttribs.subPatch);
+         *                 Gui.gui.savedState.setUnSaved("Subpatch Expose Port", port.op.uiAttribs.subPatch);
          *             }
          *         });
          * }
@@ -739,7 +741,7 @@ class ParamsListener extends Events {
            *         "iconClass": "icon icon-chevron-up",
            *         "func": () =>
            *         {
-           *             gui.patchView.setExposedPortOrder(port, -1);
+           *             Gui.gui.patchView.setExposedPortOrder(port, -1);
            *         }
            *     });
            * items.push(
@@ -748,7 +750,7 @@ class ParamsListener extends Events {
            *         "iconClass": "icon icon-chevron-down",
            *         "func": () =>
            *         {
-           *             gui.patchView.setExposedPortOrder(port, 1);
+           *             Gui.gui.patchView.setExposedPortOrder(port, 1);
            *         }
            *     });
            */
@@ -766,9 +768,9 @@ class ParamsListener extends Events {
           func: () => {
             if (port.uiAttribs.title) {
               port.setUiAttribs({ title: null });
-              gui.opParams.show(port.op.id);
+              Gui.gui.opParams.show(port.op.id);
             } else
-              gui.patchView.setPortTitle(port.op.id, port.name, port.title);
+              Gui.gui.patchView.setPortTitle(port.op.id, port.name, port.title);
           },
         });
 
@@ -789,17 +791,17 @@ class ParamsListener extends Events {
    * @param {any} defaultValue
    */
   setPortAnimated(op, index, panelid, targetState, defaultValue) {
-    const isOpen = gui.patchView.getSelectedOps()[0]
-      ? op.id === gui.patchView.getSelectedOps()[0].id
+    const isOpen = Gui.gui.patchView.getSelectedOps()[0]
+      ? op.id === Gui.gui.patchView.getSelectedOps()[0].id
       : false;
 
     const elVal = ele.byId("portval_" + index + "_" + panelid);
 
     if (!targetState) {
-      // const val = gui.timeLine().removeAnim(op.portsIn[index].anim);
+      // const val = Gui.gui.timeLine().removeAnim(op.portsIn[index].anim);
       op.portsIn[index].setAnimated(false);
 
-      // gui.timeLine().setAnim(null);
+      // Gui.gui.timeLine().setAnim(null);
 
       if (isOpen && elVal) {
         // elVal.value = val;
@@ -820,7 +822,7 @@ class ParamsListener extends Events {
       name: op.getTitle() + ": " + op.portsIn[index].name,
       defaultValue: defaultValue,
     };
-    // gui.timeLine().setAnim(op.portsIn[index].anim, animOptions);
+    // Gui.gui.timeLine().setAnim(op.portsIn[index].anim, animOptions);
     op.portsIn[index].op.refreshParams();
   }
 
@@ -980,7 +982,7 @@ class ParamsListener extends Events {
         (e) => {
           let v = "" + el.value;
 
-          gui.savedState.setUnSaved(
+          Gui.gui.savedState.setUnSaved(
             "paramsInput",
             ports[index].op.getSubPatch(),
           );
@@ -1033,33 +1035,33 @@ class ParamsListener extends Events {
                   },
                   undo() {
                     try {
-                      const uop = gui.corePatch().getOpById(opid);
+                      const uop = Gui.gui.corePatch().getOpById(opid);
                       const p = uop.getPort(portname);
-                      gui.patchView.showDefaultPanel();
+                      Gui.gui.patchView.showDefaultPanel();
 
                       p.set(oldv);
-                      gui.emitEvent("portValueEdited", op, p, oldv);
+                      Gui.gui.emitEvent("portValueEdited", op, p, oldv);
 
-                      gui.opParams.show(uop);
-                      gui.patchView.focusOp(null);
-                      gui.patchView.focusOp(opid);
-                      gui.patchView.centerSelectOp(opid);
+                      Gui.gui.opParams.show(uop);
+                      Gui.gui.patchView.focusOp(null);
+                      Gui.gui.patchView.focusOp(opid);
+                      Gui.gui.patchView.centerSelectOp(opid);
                     } catch (ex) {
                       this._log.warn("undo failed");
                     }
                   },
                   redo() {
                     try {
-                      const rop = gui.corePatch().getOpById(opid);
+                      const rop = Gui.gui.corePatch().getOpById(opid);
                       const p = rop.getPort(portname);
-                      gui.patchView.showDefaultPanel();
+                      Gui.gui.patchView.showDefaultPanel();
 
                       p.set(newv);
-                      gui.emitEvent("portValueEdited", op, p, newv);
-                      gui.opParams.show(rop);
-                      gui.patchView.focusOp(null);
-                      gui.patchView.focusOp(opid);
-                      gui.patchView.centerSelectOp(opid);
+                      Gui.gui.emitEvent("portValueEdited", op, p, newv);
+                      Gui.gui.opParams.show(rop);
+                      Gui.gui.patchView.focusOp(null);
+                      Gui.gui.patchView.focusOp(opid);
+                      Gui.gui.patchView.centerSelectOp(opid);
                     } catch (ex) {
                       this._log.warn("undo failed");
                     }
@@ -1099,17 +1101,17 @@ class ParamsListener extends Events {
           if (op) {
             op.uiAttribs.history.lastInteractionAt = Date.now();
             op.uiAttribs.history.lastInteractionBy = {
-              name: gui.user.usernameLowercase,
+              name: Gui.gui.user.usernameLowercase,
             };
           }
 
           paramsHelper.checkDefaultValue(ports[index], index, panelid);
-          // if (ports[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
+          // if (ports[index].isAnimated()) Gui.gui.timeLine().scaleHeightDelayed();
 
           ports[index].emitEvent("onValueChangeUi");
 
           if (!e.detail || !e.detail.ignorePaco) {
-            gui.emitEvent("portValueEdited", op, ports[index], v);
+            Gui.gui.emitEvent("portValueEdited", op, ports[index], v);
           }
         },
       );
@@ -1117,7 +1119,7 @@ class ParamsListener extends Events {
 
   _updateWatchPorts() {
     if (this._watchPorts.length) {
-      const perf = gui.uiProfiler.start("[opparampanel] watch ports");
+      const perf = Gui.gui.uiProfiler.start("[opparampanel] watch ports");
 
       for (let i = 0; i < this._watchPorts.length; i++) {
         const thePort = this._watchPorts[i];

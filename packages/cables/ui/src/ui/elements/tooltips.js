@@ -1,6 +1,6 @@
 import { ele } from "@cables/client";
 import text from "../text.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { PortDir, portType } from "../core_constants.js";
 
 let tooltipTimeout = null;
@@ -43,7 +43,7 @@ export function showToolTip(e, txt, nopadding) {
 export function hideToolTip() {
   if (!eleTooltip) return;
 
-  gui.emitEvent("portHovered", null);
+  Gui.gui.emitEvent("portHovered", null);
 
   clearTimeout(tooltipTimeout);
   clearInterval(CABLES.UI.hoverInterval);
@@ -70,16 +70,16 @@ function eleTtOut(_e) {
 // --------------------------
 
 export function showInfo(txt, param) {
-  if (param) gui.bottomInfoArea.setContentParam(txt);
-  else gui.bottomInfoArea.setContent(txt);
+  if (param) Gui.gui.bottomInfoArea.setContentParam(txt);
+  else Gui.gui.bottomInfoArea.setContent(txt);
 }
 
 export function hideInfo() {
-  gui.bottomInfoArea.setContent("");
+  Gui.gui.bottomInfoArea.setContent("");
 }
 
 function eleInfoOver(e) {
-  gui.bottomInfoArea.hoverInfoEle(e);
+  Gui.gui.bottomInfoArea.hoverInfoEle(e);
 }
 
 function eleInfoOut(_e) {
@@ -153,14 +153,14 @@ function getPortDescription(thePort, overlink) {
     if (thePort.direction == PortDir.out) strInfo += text.portDirOut;
     if (thePort.isLinked()) strInfo += text.portMouseUnlink;
     else strInfo += text.portMouseCreate;
-    gui.showInfo(strInfo);
+    Gui.gui.showInfo(strInfo);
   }
 
   return str;
 }
 
 export function updateHoverToolTip(event, port, overlink) {
-  gui.emitEvent("portHovered", port);
+  Gui.gui.emitEvent("portHovered", port);
   if (!port) return;
 
   let txt = getPortDescription(port, overlink);
@@ -220,12 +220,12 @@ export function updateHoverToolTip(event, port, overlink) {
     }
 
     if (
-      gui.patchView.patchRenderer.dragLine &&
-      gui.patchView.patchRenderer.dragLine.isActive
+      Gui.gui.patchView.patchRenderer.dragLine &&
+      Gui.gui.patchView.patchRenderer.dragLine.isActive
     ) {
-      let oport = gui.patchView.patchRenderer.dragLine.glPort.port;
-      if (gui.patchView.patchRenderer.dragLine._startGlPorts[0])
-        oport = gui.patchView.patchRenderer.dragLine._startGlPorts[0].port;
+      let oport = Gui.gui.patchView.patchRenderer.dragLine.glPort.port;
+      if (Gui.gui.patchView.patchRenderer.dragLine._startGlPorts[0])
+        oport = Gui.gui.patchView.patchRenderer.dragLine._startGlPorts[0].port;
 
       if (!CABLES.Link.canLink(port, oport))
         txt =

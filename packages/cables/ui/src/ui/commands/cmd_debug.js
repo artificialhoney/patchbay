@@ -8,7 +8,7 @@ import OpWatchUiAttribs from "../components/tabs/tab_uiattribs.js";
 import GlGuiTab from "../components/tabs/tab_glpatch.js";
 
 import CMD from "./commands.js";
-import Gui, { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { portType } from "../core_constants.js";
 import { platform } from "../platform.js";
 
@@ -42,8 +42,8 @@ CABLES_CMD_DEBUG.testCommands = function () {
 };
 
 CABLES_CMD_DEBUG.testBlueprint2 = function () {
-  const p = gui.corePatch();
-  const sub = gui.patchView.getCurrentSubPatch();
+  const p = Gui.gui.corePatch();
+  const sub = Gui.gui.patchView.getCurrentSubPatch();
 
   let ops = p.getSubPatchOps(sub, true);
 
@@ -61,7 +61,7 @@ CABLES_CMD_DEBUG.globalVarDump = function () {
 };
 
 CABLES_CMD_DEBUG.newGlguiTab = function () {
-  const t = new GlGuiTab(gui.mainTabs);
+  const t = new GlGuiTab(Gui.gui.mainTabs);
 };
 
 CABLES_CMD_DEBUG.toggleMultiplayer = function () {
@@ -74,7 +74,7 @@ CABLES_CMD_DEBUG.toggleMultiplayer = function () {
   );
 
   /*
-   *if (!gui.getSavedState())
+   *if (!Gui.gui.getSavedState())
    *{
    *    log.log("SHOW MODAL");
    *}
@@ -93,38 +93,38 @@ CABLES_CMD_DEBUG.toggleMultiplayer = function () {
 };
 
 CABLES_CMD_DEBUG.debugGlUi = function () {
-  new GlDebugTab(gui.mainTabs);
-  gui.maintabPanel.show(true);
+  new GlDebugTab(Gui.gui.mainTabs);
+  Gui.gui.maintabPanel.show(true);
 };
 
 CABLES_CMD_DEBUG.logConsole = function () {
-  gui.showBottomTabs();
+  Gui.gui?.showBottomTabs();
 };
 
 CABLES_CMD_DEBUG.logging = function () {
-  new LoggingTab(gui.mainTabs);
-  gui.maintabPanel.show(true);
+  new LoggingTab(Gui.gui.mainTabs);
+  Gui.gui.maintabPanel.show(true);
 };
 
 CABLES_CMD_DEBUG.logSocketCluster = function () {
-  if (gui.socket) gui.socket.enableVerboseLogging();
+  if (Gui.gui.socket) Gui.gui.socket.enableVerboseLogging();
 };
 
 CABLES_CMD_DEBUG.restrictRemoteView = () => {
-  gui.setRestriction(Gui.RESTRICT_MODE_REMOTEVIEW);
+  Gui.gui.setRestriction(Gui.gui.RESTRICT_MODE_REMOTEVIEW);
 };
 CABLES_CMD_DEBUG.restrictFollow = () => {
-  gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
+  Gui.gui.setRestriction(Gui.gui.RESTRICT_MODE_FOLLOWER);
 };
 CABLES_CMD_DEBUG.restrictExplorer = () => {
-  gui.setRestriction(Gui.RESTRICT_MODE_EXPLORER);
+  Gui.gui.setRestriction(Gui.gui.RESTRICT_MODE_EXPLORER);
 };
 CABLES_CMD_DEBUG.restrictFull = () => {
-  gui.setRestriction(Gui.RESTRICT_MODE_FULL);
+  Gui.gui.setRestriction(Gui.gui.RESTRICT_MODE_FULL);
 };
 
 CABLES_CMD_DEBUG.testAllOps = function () {
-  const ops = gui.opDocs.getAll();
+  const ops = Gui.gui.opDocs.getAll();
 
   log.log(ops);
 
@@ -137,12 +137,12 @@ CABLES_CMD_DEBUG.testAllOps = function () {
 };
 
 CABLES_CMD_DEBUG.focusOpAnim = function () {
-  const ops = gui.patchView.getSelectedOps();
-  if (ops.length > 0) gui.patchView.patchRenderer.focusOpAnim(ops[0].id);
+  const ops = Gui.gui.patchView.getSelectedOps();
+  if (ops.length > 0) Gui.gui.patchView.patchRenderer.focusOpAnim(ops[0].id);
 };
 
 CABLES_CMD_DEBUG.testOp = function () {
-  const ops = gui.patchView.getSelectedOps();
+  const ops = Gui.gui.patchView.getSelectedOps();
 
   for (let i = 0; i < ops.length; i++) {
     for (let j = 0; j < 100; j++) {
@@ -265,34 +265,34 @@ CABLES_CMD_DEBUG.testOp = function () {
 };
 
 function load(opname) {
-  gui.serverOps.loadOpDependencies(opname, function () {
-    gui.corePatch().addOp(opname);
+  Gui.gui.serverOps.loadOpDependencies(opname, function () {
+    Gui.gui.corePatch().addOp(opname);
   });
 }
 
 CABLES_CMD_DEBUG.watchOpSerialized = function () {
-  new OpSerialized(gui.mainTabs);
-  gui.maintabPanel.show(true);
+  new OpSerialized(Gui.gui.mainTabs);
+  Gui.gui.maintabPanel.show(true);
 };
 
 CABLES_CMD_DEBUG.watchOpDocsJson = function () {
-  new OpDocsJson(gui.mainTabs);
-  gui.maintabPanel.show(true);
+  new OpDocsJson(Gui.gui.mainTabs);
+  Gui.gui.maintabPanel.show(true);
 };
 
 CABLES_CMD_DEBUG.watchOpUiAttribs = function () {
-  new OpWatchUiAttribs(gui.mainTabs);
-  gui.maintabPanel.show(true);
+  new OpWatchUiAttribs(Gui.gui.mainTabs);
+  Gui.gui.maintabPanel.show(true);
 };
 
 CABLES_CMD_DEBUG.saveWithOutObjnames = () => {
-  gui.corePatch().storeObjNames = false;
+  Gui.gui.corePatch().storeObjNames = false;
   CABLES.CMD.PATCH.save();
 };
 
 CABLES_CMD_DEBUG.undoHistory = () => {
-  new MetaHistory(gui.mainTabs);
-  gui.maintabPanel.show(true);
+  new MetaHistory(Gui.gui.mainTabs);
+  Gui.gui.maintabPanel.show(true);
 };
 
 CMD_DEBUG_COMMANDS.push(

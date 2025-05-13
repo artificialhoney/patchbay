@@ -2,8 +2,8 @@ import { contextMenu } from "../../elements/contextmenu.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
 import { glTimelineCanvas } from "../../gltimeline/gltimelinecanvas.js";
-import Gui, { gui } from "../../gui.js";
-import { userSettings } from "../usersettings.js";
+import Gui from "../../gui.js";
+import UserSettings from "../usersettings.js";
 
 export default class GlTimelineTab {
   /** @type {Tab} */
@@ -27,13 +27,14 @@ export default class GlTimelineTab {
       infotext: "gl timeline",
       closable: false,
     });
-    gui.bottomTabPanel.show(true);
+    Gui.gui.bottomTabPanel.show(true);
 
     tabs.addTab(this.#tab, true);
     this.#tab.activate();
     this.#tab.contentEle.innerHTML = "";
 
-    this.#splitterPos = userSettings.get("timeline_titles_width") || 100;
+    this.#splitterPos =
+      UserSettings.userSettings.get("timeline_titles_width") || 100;
 
     tabs.on("resize", () => {
       this.updateSize();
@@ -48,7 +49,7 @@ export default class GlTimelineTab {
     });
 
     this.#tab.on("close", () => {
-      userSettings.set("glTimelineOpened", false);
+      UserSettings.userSettings.set("glTimelineOpened", false);
     });
 
     this.#tab.on("onActivate", () => {
@@ -115,9 +116,9 @@ export default class GlTimelineTab {
     const buttonPlay = this.#tab.addButton(
       '<span class="nomargin icon icon-play info" data-info="tlplay"></span>',
       () => {
-        gui.corePatch().timer.togglePlay();
+        Gui.gui.corePatch().timer.togglePlay();
 
-        if (gui.corePatch().timer.isPlaying())
+        if (Gui.gui.corePatch().timer.isPlaying())
           buttonPlay.innerHTML =
             '<span class="nomargin icon icon-pause"></span>';
         else
@@ -219,7 +220,7 @@ export default class GlTimelineTab {
     this.#tab.addButton(
       '<span class="nomargin icon icon-chevron-down info" data-info="tltoggle"></span>',
       () => {
-        gui.bottomTabPanel.toggle();
+        Gui.gui.bottomTabPanel.toggle();
       },
       ["timelineminimize"],
     );
@@ -227,18 +228,18 @@ export default class GlTimelineTab {
     /// //////
 
     this.tlCanvas = new glTimelineCanvas(
-      gui.corePatch(),
+      Gui.gui.corePatch(),
       this.#tab.contentEle,
       this,
     );
 
-    userSettings.set("glTimelineOpened", true);
+    UserSettings.userSettings.set("glTimelineOpened", true);
 
-    gui.on(Gui.EVENT_RESIZE, () => {
+    Gui.gui.on(Gui.gui.EVENT_RESIZE, () => {
       this.updateSize();
     });
 
-    gui.on(Gui.EVENT_RESIZE_CANVAS, () => {
+    Gui.gui.on(Gui.gui.EVENT_RESIZE_CANVAS, () => {
       this.updateSize();
     });
 
@@ -257,8 +258,8 @@ export default class GlTimelineTab {
 
   close() {
     this.#tab.remove();
-    gui.glTimeline.dispose();
-    gui.glTimeline = null;
+    Gui.gui.glTimeline.dispose();
+    Gui.gui.glTimeline = null;
     if (this.tlCanvas) this.tlCanvas.dispose();
     this.tlCanvas = null;
   }
@@ -288,14 +289,14 @@ export default class GlTimelineTab {
     );
     this.resizing = false;
 
-    userSettings.set("timeline_titles_width", this.#splitterPos);
+    UserSettings.userSettings.set("timeline_titles_width", this.#splitterPos);
   }
 
   resizeRenderer(ev) {
     ev.preventDefault();
     window.splitpane.bound = true;
     const mm = (e) => {
-      gui.pauseInteractionSplitpanes();
+      Gui.gui.pauseInteractionSplitpanes();
       let x = e.clientX;
       if (x === undefined && e.touches && e.touches.length > 0)
         x = e.touches[0].clientX;

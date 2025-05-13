@@ -2,7 +2,7 @@ import { Logger, Events } from "@cables/client";
 import ModalDialog from "../dialogs/modaldialog.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import namespace from "../namespaceutils.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { platform } from "../platform.js";
 
 export function bytesArrToBase64(arr) {
@@ -42,7 +42,7 @@ export default class PatchSaveServer extends Events {
   }
 
   setProject(proj) {
-    gui.setProjectName(proj.name);
+    Gui.gui.setProjectName(proj.name);
     this._currentProject = proj;
   }
 
@@ -56,22 +56,24 @@ export default class PatchSaveServer extends Events {
 
   checkUpdatedSaveForce(updated) {
     this.setServerDate(updated);
-    gui.closeModal();
+    Gui.gui.closeModal();
     CABLES.CMD.PATCH.save(true, () => {
       if (platform.getPatchVersion()) {
-        platform.talkerAPI.send("reload", { patchId: gui.project().shortId });
+        platform.talkerAPI.send("reload", {
+          patchId: Gui.gui.project().shortId,
+        });
       }
     });
   }
 
   checkUpdated(cb = null, fromSave = false, forceRequest = false) {
-    if (!gui.project()) return;
+    if (!Gui.gui.project()) return;
     if (platform.isOffline() && !forceRequest) {
       if (cb) cb();
       return;
     }
 
-    gui.jobs().start({
+    Gui.gui.jobs().start({
       id: "checkupdated",
       title: "check patch was updated",
       indicator: "canvas",
@@ -80,7 +82,7 @@ export default class PatchSaveServer extends Events {
     platform.talkerAPI.send("checkProjectUpdated", {}, (err, data) => {
       if (err) {
         this._log.log("error", err);
-        gui.jobs().finish("checkupdated");
+        Gui.gui.jobs().finish("checkupdated");
 
         /* ignore errors, unless project got deleted */
         if (cb && err.code === 404) cb(err);
@@ -88,8 +90,8 @@ export default class PatchSaveServer extends Events {
       }
 
       platform.setOnline();
-      if (gui.isRemoteClient) {
-        gui.jobs().finish("checkupdated");
+      if (Gui.gui.isRemoteClient) {
+        Gui.gui.jobs().finish("checkupdated");
         if (cb) cb(null);
         return;
       }
@@ -97,17 +99,17 @@ export default class PatchSaveServer extends Events {
       if (fromSave && data.maintenance && data.disallowSave) {
         const html =
           "Cables is currently in maintenance mode, saving of patches is disallowed.<br/><br/>Leave the browser-window open, and wait until we are finished with the update.<br/><br/>" +
-          '<a class="button" onclick="gui.closeModal();">Close</a>&nbsp;&nbsp;';
+          '<a class="button" onclick="Gui.gui.closeModal();">Close</a>&nbsp;&nbsp;';
         new ModalDialog({
           title: "Maintenance Mode",
           html: html,
           warning: true,
         });
 
-        gui.jobs().finish("checkupdated");
+        Gui.gui.jobs().finish("checkupdated");
       } else if (data.updated && this._serverDate !== data.updated) {
         const serverDate = moment(data.updated);
-        const localDate = moment(gui.patchView.store.getServerDate());
+        const localDate = moment(Gui.gui.patchView.store.getServerDate());
         if (serverDate.isAfter(localDate)) {
           if (fromSave) {
             let html =
@@ -117,9 +119,9 @@ export default class PatchSaveServer extends Events {
               (data.updatedByUser || "unknown") +
               "<br/><br/>";
             html +=
-              '<a class="button" onclick="gui.closeModal();">Close</a>&nbsp;&nbsp;';
+              '<a class="button" onclick="Gui.gui.closeModal();">Close</a>&nbsp;&nbsp;';
             html +=
-              '<a class="button" onclick="gui.patchView.store.checkUpdatedSaveForce(\'' +
+              '<a class="button" onclick="Gui.gui.patchView.store.checkUpdatedSaveForce(\'' +
               data.updated +
               '\');"><span class="icon icon-save"></span>Save anyway</a>&nbsp;&nbsp;';
             html +=
@@ -129,8 +131,8 @@ export default class PatchSaveServer extends Events {
               title: "Meanwhile...",
               html: html,
             });
-          } else if (!gui.restriction.visible) {
-            gui.restriction.setMessage(
+          } else if (!Gui.gui.restriction.visible) {
+            Gui.gui.restriction.setMessage(
               "cablesupdate",
               "This patch was changed by " +
                 (data.updatedByUser || "unknown") +
@@ -141,7 +143,7 @@ export default class PatchSaveServer extends Events {
           }
         }
         if (cb) cb(null);
-        gui.jobs().finish("checkupdated");
+        Gui.gui.jobs().finish("checkupdated");
       } else {
         if (data.platform && data.platform.buildInfo) {
           let newCore = false;
@@ -157,18 +159,18 @@ export default class PatchSaveServer extends Events {
                 buildInfo.ui.timestamp > CABLESUILOADER.buildInfo.ui.timestamp;
           }
 
-          if (!gui.restriction.visible && (newCore || newUi)) {
-            gui.restriction.setMessage(
+          if (!Gui.gui.restriction.visible && (newCore || newUi)) {
+            Gui.gui.restriction.setMessage(
               "cablesupdate",
               'cables.gl has been updated! &nbsp;&nbsp;&nbsp; <a class="button" onclick="CABLES.CMD.PATCH.reload();"><span class="icon icon-refresh"></span>reload </a>to get the latest update!',
             );
-            gui.jobs().finish("checkupdated");
+            Gui.gui.jobs().finish("checkupdated");
           } else {
-            gui.jobs().finish("checkupdated");
+            Gui.gui.jobs().finish("checkupdated");
           }
           if (cb) cb(null);
         } else {
-          gui.jobs().finish("checkupdated");
+          Gui.gui.jobs().finish("checkupdated");
           if (cb) cb(null);
         }
       }
@@ -176,7 +178,7 @@ export default class PatchSaveServer extends Events {
   }
 
   saveAs() {
-    if (gui.showGuestWarning()) return;
+    if (Gui.gui.showGuestWarning()) return;
 
     platform.talkerAPI.send("getPatch", {}, (_err, project) => {
       if (_err) {
@@ -195,7 +197,7 @@ export default class PatchSaveServer extends Events {
       let hasPrivateUserOps = false;
       if (
         !project.userList.some((u) => {
-          return u.usernameLowercase === gui.user.usernameLowercase;
+          return u.usernameLowercase === Gui.gui.user.usernameLowercase;
         })
       ) {
         hasPrivateUserOps = project.ops.find((op) => {
@@ -203,7 +205,7 @@ export default class PatchSaveServer extends Events {
             op.objName &&
             op.objName.startsWith("Ops.User") &&
             !op.objName.startsWith(
-              "Ops.User." + gui.user.usernameLowercase + ".",
+              "Ops.User." + Gui.gui.user.usernameLowercase + ".",
             )
           );
         });
@@ -224,19 +226,19 @@ export default class PatchSaveServer extends Events {
       const checkboxGroups = [];
       const hasCollaborators =
         project.userList.filter((u) => {
-          return u.username !== gui.user.username;
+          return u.username !== Gui.gui.user.username;
         }).length > 0;
       const hasTeams = true;
 
       if (hasCollaborators) {
-        const userOpsUsed = gui.patchView.getUserOpsUsedInPatch();
+        const userOpsUsed = Gui.gui.patchView.getUserOpsUsedInPatch();
         if (copyCollaborators) {
           const checkboxGroup = {
             title: "Invite the following collaborators to the copy:",
             checkboxes: [],
           };
           project.userList.forEach((user, i) => {
-            if (user._id !== gui.user.id) {
+            if (user._id !== Gui.gui.user.id) {
               const link = platform.getCablesUrl() + "/user/" + user.username;
               const checkboxData = {
                 name: "copy-collab-user-" + i,
@@ -297,7 +299,7 @@ export default class PatchSaveServer extends Events {
         }
       }
 
-      const usedPatchOps = gui.patchView.getPatchOpsUsedInPatch();
+      const usedPatchOps = Gui.gui.patchView.getPatchOpsUsedInPatch();
       if (usedPatchOps.length > 0) {
         let patchOpsText =
           'Patch ops used in this patch will be copied to the new patch. Create a <a href="' +
@@ -306,7 +308,7 @@ export default class PatchSaveServer extends Events {
         modalNotices.push(patchOpsText);
       }
 
-      if (project.userId !== gui.user.id) {
+      if (project.userId !== Gui.gui.user.id) {
         let licenceText =
           "The author of the patch reserves all copyright on this work. Please respect this decision.";
         if (project.settings && project.settings.licence) {
@@ -333,13 +335,13 @@ export default class PatchSaveServer extends Events {
         modalNotices.push(licenceText);
       }
 
-      let patchName = gui.project().name;
+      let patchName = Gui.gui.project().name;
       if (
-        gui.corePatch() &&
-        gui.corePatch().name &&
-        gui.corePatch().name !== patchName
+        Gui.gui.corePatch() &&
+        Gui.gui.corePatch().name &&
+        Gui.gui.corePatch().name !== patchName
       )
-        patchName = gui.corePatch().name;
+        patchName = Gui.gui.corePatch().name;
 
       const saveAsModal = new ModalDialog(
         {
@@ -380,8 +382,9 @@ export default class PatchSaveServer extends Events {
               (err, d) => {
                 if (!err) {
                   const newProjectId = d.shortId ? d.shortId : d._id;
-                  gui.corePatch().settings = gui.corePatch().settings || {};
-                  gui.corePatch().settings.secret = "";
+                  Gui.gui.corePatch().settings =
+                    Gui.gui.corePatch().settings || {};
+                  Gui.gui.corePatch().settings.secret = "";
 
                   if (copyAssets) {
                     platform.talkerAPI.send("gotoPatch", { id: newProjectId });
@@ -412,8 +415,8 @@ export default class PatchSaveServer extends Events {
         false,
       );
 
-      if (gui.user && gui.user.supporterFeatures) {
-        if (gui.user.supporterFeatures.includes("copy_assets_on_clone")) {
+      if (Gui.gui.user && Gui.gui.user.supporterFeatures) {
+        if (Gui.gui.user.supporterFeatures.includes("copy_assets_on_clone")) {
           platform.talkerAPI.send(
             "getFilelist",
             { source: "patch" },
@@ -448,14 +451,18 @@ export default class PatchSaveServer extends Events {
             },
           );
         } else if (
-          gui.user.supporterFeatures.includes("overquota_copy_assets_on_clone")
+          Gui.gui.user.supporterFeatures.includes(
+            "overquota_copy_assets_on_clone",
+          )
         ) {
           let patchOpsText =
             'You are out of storage space, upgrade your <a href="https://cables.gl/support" target="_blank">cables-support level</a>, to copy assets over to new patches again!</a> ';
           modalNotices.push(patchOpsText);
           saveAsModal.show();
         } else if (
-          !gui.user.supporterFeatures.includes("disabled_copy_assets_on_clone")
+          !Gui.gui.user.supporterFeatures.includes(
+            "disabled_copy_assets_on_clone",
+          )
         ) {
           let patchOpsText =
             'Become a <a href="https://cables.gl/support" target="_blank">cables supporter</a>, to copy assets over to new patches!</a> ';
@@ -471,8 +478,8 @@ export default class PatchSaveServer extends Events {
   }
 
   saveCurrentProject(cb, _id, _name, _force) {
-    if (gui.showGuestWarning()) return;
-    if (!_force && gui.showSaveWarning()) return;
+    if (Gui.gui.showGuestWarning()) return;
+    if (!_force && Gui.gui.showSaveWarning()) return;
 
     if (_force) {
       this._saveCurrentProject(cb, _id, _name);
@@ -493,11 +500,11 @@ export default class PatchSaveServer extends Events {
         }
       }, true);
     }
-    gui.patchView.removeLostSubpatches();
+    Gui.gui.patchView.removeLostSubpatches();
   }
 
   finishAnimations() {
-    gui.savingTitleAnimEnd();
+    Gui.gui.savingTitleAnimEnd();
 
     setTimeout(() => {
       document.getElementById("canvasflash").classList.add("hidden");
@@ -511,12 +518,12 @@ export default class PatchSaveServer extends Events {
       return;
     }
 
-    if (gui.showGuestWarning()) return;
+    if (Gui.gui.showGuestWarning()) return;
 
-    gui.corePatch().emitEvent("uiSavePatch");
+    Gui.gui.corePatch().emitEvent("uiSavePatch");
     platform.setSaving(true);
 
-    const ops = gui.corePatch().ops;
+    const ops = Gui.gui.corePatch().ops;
     this._savedPatchCallback = cb;
 
     const blueprintIds = [];
@@ -540,13 +547,13 @@ export default class PatchSaveServer extends Events {
       .jobs()
       .start({ id: "projectsave", title: "save patch", indicator: "canvas" });
 
-    const currentProject = gui.project();
+    const currentProject = Gui.gui.project();
 
     let id = currentProject._id;
     let name = currentProject.name;
     if (_id) id = _id;
     if (_name) name = _name;
-    let data = gui.corePatch().serialize({ asObject: true });
+    let data = Gui.gui.corePatch().serialize({ asObject: true });
 
     data.ops = data.ops || [];
 
@@ -596,26 +603,26 @@ export default class PatchSaveServer extends Events {
 
     data.ui = {
       viewBox: {},
-      timeLineLength: gui.getTimeLineLength(),
+      timeLineLength: Gui.gui.getTimeLineLength(),
     };
 
-    data.ui.texPreview = gui.metaTexturePreviewer.serialize();
-    data.ui.bookmarks = gui.bookmarks.getBookmarks();
+    data.ui.texPreview = Gui.gui.metaTexturePreviewer.serialize();
+    data.ui.bookmarks = Gui.gui.bookmarks.getBookmarks();
 
-    gui.patchView.serialize(data.ui);
-    gui.patchParamPanel.serialize(data.ui);
+    Gui.gui.patchView.serialize(data.ui);
+    Gui.gui.patchParamPanel.serialize(data.ui);
 
     data.ui.renderer = {};
-    data.ui.renderer.w = Math.max(0, gui.rendererWidth);
-    data.ui.renderer.h = Math.max(0, gui.rendererHeight);
-    data.ui.renderer.s = Math.abs(gui.corePatch().cgl.canvasScale) || 1;
+    data.ui.renderer.w = Math.max(0, Gui.gui.rendererWidth);
+    data.ui.renderer.h = Math.max(0, Gui.gui.rendererHeight);
+    data.ui.renderer.s = Math.abs(Gui.gui.corePatch().cgl.canvasScale) || 1;
 
     CABLES.patch.namespace = currentProject.namespace;
 
     setTimeout(() => {
       try {
         const datastr = JSON.stringify(data);
-        gui.patchView.warnLargestPort();
+        Gui.gui.patchView.warnLargestPort();
 
         const origSize = Math.round(datastr.length / 1024);
 
@@ -641,7 +648,7 @@ export default class PatchSaveServer extends Events {
             "Patch is huge, try to reduce amount of data stored in patch/ports",
           );
 
-        gui.savingTitleAnimStart("Saving Patch...");
+        Gui.gui.savingTitleAnimStart("Saving Patch...");
 
         /*
          * document.getElementById("patchname").innerHTML = "Saving Patch";
@@ -670,19 +677,19 @@ export default class PatchSaveServer extends Events {
               this.setServerDate(r.updated);
             }
 
-            gui.savedState.setSaved("patchServerApi", 0);
+            Gui.gui.savedState.setSaved("patchServerApi", 0);
             if (this._savedPatchCallback) this._savedPatchCallback();
             this._savedPatchCallback = null;
 
-            if (gui.socket)
-              gui.socket.track("ui", "savepatch", "savepatch", {
+            if (Gui.gui.socket)
+              Gui.gui.socket.track("ui", "savepatch", "savepatch", {
                 sizeCompressed: uint8data.length / 1024,
                 sizeOrig: origSize,
                 time: performance.now() - startTime,
               });
 
-            gui.emitEvent("patchsaved");
-            gui.jobs().finish("projectsave");
+            Gui.gui.emitEvent("patchsaved");
+            Gui.gui.jobs().finish("projectsave");
 
             if (!r || !r.success || err) {
               let msg = err || "no response";
@@ -719,13 +726,13 @@ export default class PatchSaveServer extends Events {
                 modalOptions.cancelButton = {
                   text: "Convert",
                   callback: () => {
-                    gui.patchView.unselectAllOps();
+                    Gui.gui.patchView.unselectAllOps();
                     r.data.forEach((opName) => {
                       const opsInPatch = gui
                         .corePatch()
                         .getOpsByObjName(opName);
                       opsInPatch.forEach((op) => {
-                        gui.patchView.selectOpId(op.id);
+                        Gui.gui.patchView.selectOpId(op.id);
                       });
                     });
 
@@ -736,24 +743,27 @@ export default class PatchSaveServer extends Events {
               if (msg !== "CANCELLED") {
                 new ModalDialog(modalOptions);
               } else {
-                gui.setStateUnsaved();
+                Gui.gui.setStateUnsaved();
               }
 
               this._log.log(r);
               this.finishAnimations();
               return;
             } else {
-              if (gui.project().summary && gui.project().summary.isTest) {
+              if (
+                Gui.gui.project().summary &&
+                Gui.gui.project().summary.isTest
+              ) {
                 notifyWarn("Test patch saved", null, { force: true });
               } else if (
-                gui.project().summary &&
-                gui.project().summary.exampleForOps &&
-                gui.project().summary.exampleForOps.length > 0
+                Gui.gui.project().summary &&
+                Gui.gui.project().summary.exampleForOps &&
+                Gui.gui.project().summary.exampleForOps.length > 0
               ) {
                 notifyWarn("Example patch saved", null, { force: true });
               } else if (
-                gui.project().summary &&
-                gui.project().summary.isPublic
+                Gui.gui.project().summary &&
+                Gui.gui.project().summary.isPublic
               ) {
                 notifyWarn("Published patch saved", null, { force: true });
               } else {
@@ -769,7 +779,7 @@ export default class PatchSaveServer extends Events {
               }
             }
 
-            const doSaveScreenshot = gui.corePatch().isPlaying();
+            const doSaveScreenshot = Gui.gui.corePatch().isPlaying();
 
             if (doSaveScreenshot && !platform.manualScreenshot())
               this.saveScreenshot();
@@ -781,9 +791,9 @@ export default class PatchSaveServer extends Events {
 
         let found = false;
 
-        for (let i = 0; i < gui.corePatch().ops.length; i++) {
+        for (let i = 0; i < Gui.gui.corePatch().ops.length; i++) {
           try {
-            JSON.stringify(gui.corePatch().ops[i].getSerialized());
+            JSON.stringify(Gui.gui.corePatch().ops[i].getSerialized());
           } catch (e2) {
             found = true;
 
@@ -800,8 +810,10 @@ export default class PatchSaveServer extends Events {
                 [
                   "<button>Go to op</button>",
                   function (instance, toast) {
-                    gui.patchView.focusOp(gui.corePatch().ops[i].id);
-                    gui.patchView.centerSelectOp(gui.corePatch().ops[i].id);
+                    Gui.gui.patchView.focusOp(Gui.gui.corePatch().ops[i].id);
+                    Gui.gui.patchView.centerSelectOp(
+                      Gui.gui.corePatch().ops[i].id,
+                    );
 
                     iziToast.hide({}, toast);
                   },
@@ -813,7 +825,7 @@ export default class PatchSaveServer extends Events {
           }
         }
 
-        gui.jobs().finish("projectsave");
+        Gui.gui.jobs().finish("projectsave");
         this._log.log(e);
         if (!found)
           notifyError("error saving patch - try to delete disabled ops");
@@ -823,7 +835,7 @@ export default class PatchSaveServer extends Events {
   }
 
   showModalTitleDialog(cb = null) {
-    const currentProject = gui.project();
+    const currentProject = Gui.gui.project();
     new ModalDialog({
       prompt: true,
       title: "Patch Title",
@@ -848,14 +860,14 @@ export default class PatchSaveServer extends Events {
               new ModalDialog(options);
             } else {
               if (re.data && re.data.summary) {
-                gui.project().summary = re.data.summary;
-                gui.patchParamPanel.show(true);
+                Gui.gui.project().summary = re.data.summary;
+                Gui.gui.patchParamPanel.show(true);
               }
               platform.talkerAPI.send(
                 "updatePatchName",
                 { name: newName },
                 () => {
-                  gui.setProjectName(newName);
+                  Gui.gui.setProjectName(newName);
                 },
               );
               if (cb) cb(newName);
@@ -867,7 +879,7 @@ export default class PatchSaveServer extends Events {
   }
 
   saveScreenshot(hires, cb) {
-    const thePatch = gui.corePatch();
+    const thePatch = Gui.gui.corePatch();
     const cgl = thePatch.cgl;
     const w = cgl.canvas.width / cgl.pixelDensity || 640;
     const h = cgl.canvas.height / cgl.pixelDensity || 360;
@@ -894,14 +906,14 @@ export default class PatchSaveServer extends Events {
     setTimeout(() => {
       // thePatch.renderOneFrame();
       // thePatch.renderOneFrame();
-      gui.jobs().start({
+      Gui.gui.jobs().start({
         id: "screenshotsave",
         title: "save patch - create screenshot",
       });
 
       if (cgl.gApi == CABLES.CGState.API_WEBGL) thePatch.resume();
 
-      const url = gui.canvasManager.currentCanvas().toDataURL();
+      const url = Gui.gui.canvasManager.currentCanvas().toDataURL();
 
       platform.talkerAPI.send(
         "saveScreenshot",
@@ -915,8 +927,8 @@ export default class PatchSaveServer extends Events {
           cgl.setSize(w, h);
 
           thePatch.resume(); // must resume here for webgpu
-          gui.jobs().finish("screenshotsave");
-          if (gui.onSaveProject) gui.onSaveProject();
+          Gui.gui.jobs().finish("screenshotsave");
+          if (Gui.gui.onSaveProject) Gui.gui.onSaveProject();
           if (cb) cb();
 
           this.finishAnimations();

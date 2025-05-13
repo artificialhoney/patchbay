@@ -2,7 +2,7 @@ import { ele } from "@cables/client";
 import TabPanel from "./tabpanel.js";
 import OpDependencyTab from "../../components/tabs/tab_opdependency.js";
 import { platform } from "../../platform.js";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 
 /**
  * a tab panel, that can contain tabs
@@ -27,7 +27,7 @@ export default class OpDependencyTabPanel extends TabPanel {
       { title: "Op", value: "op" },
       { title: "Core-Lib", value: "corelib" },
     ];
-    if (gui && gui.user && gui.user.isStaff) {
+    if (gui && Gui.gui.user && Gui.gui.user.isStaff) {
       this._sources.push({ title: "Lib", value: "lib", icon: "lock" });
     }
     if (platform.getSupportedOpDependencyTypes().includes("npm")) {

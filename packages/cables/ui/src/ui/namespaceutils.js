@@ -1,5 +1,5 @@
 import defaultOps from "./defaultops.js";
-import { gui } from "./gui.js";
+import Gui from "./gui.js";
 
 class namespace {
   /**
@@ -86,7 +86,7 @@ class namespace {
    * @returns {Boolean}
    */
   isCurrentUserOp(opname) {
-    return this.isUserOpOfUser(opname, gui.user.usernameLowercase);
+    return this.isUserOpOfUser(opname, Gui.gui.Gui.gui.user.usernameLowercase);
   }
 
   /**

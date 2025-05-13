@@ -1,5 +1,5 @@
 import { Logger } from "@cables/client";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { platform } from "../platform.js";
 import { fileUploader } from "../dialogs/upload.js";
 
@@ -60,7 +60,7 @@ DragNDrop.startDragLibraryFile = function (_event, p) {
       return fileUploader.uploadDrop(event);
     }
 
-    gui.patchView.addAssetOpAuto(filepath, event);
+    Gui.gui.patchView.addAssetOpAuto(filepath, event);
 
     document.getElementById("patchviews").removeEventListener("drop", drop);
     document

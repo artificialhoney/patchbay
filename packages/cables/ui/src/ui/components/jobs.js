@@ -1,5 +1,5 @@
 import { ele, Events, Logger } from "@cables/client";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { platform } from "../platform.js";
 
 export default class Jobs extends Events {
@@ -38,7 +38,7 @@ export default class Jobs extends Events {
     if (this._jobs.length === 0) {
       str += "All server jobs finished...";
       this._visibleJobAnim = false;
-      gui.showLoadingProgress(false);
+      Gui.gui.Gui.gui.showLoadingProgress(false);
     } else this._visibleJobAnim = true;
 
     this._updateVisibility();
@@ -74,9 +74,9 @@ export default class Jobs extends Events {
       this._log.error("job undefined", job, new Error());
     }
 
-    gui.showLoadingProgress(true);
+    Gui.gui.Gui.gui.showLoadingProgress(true);
 
-    gui.on("uiloaded", () => {
+    Gui.gui.Gui.gui.on("uiloaded", () => {
       this.updateJobListing();
     });
 
@@ -105,7 +105,7 @@ export default class Jobs extends Events {
   }
 
   _updateVisibility() {
-    if (gui.unload) return;
+    if (Gui.gui.Gui.gui.unload) return;
     const elContainer = ele.byId("uploadprogresscontainer");
 
     if (elContainer) return;
@@ -119,7 +119,7 @@ export default class Jobs extends Events {
       }, 100);
     }
 
-    if (gui.isRemoteClient) {
+    if (Gui.gui.Gui.gui.isRemoteClient) {
       if (!this._visibleJobAnim && !this._visibleProgressBar)
         ele.byId("menubar").classList.add("hidden");
       else ele.byId("menubar").classList.remove("hidden");
@@ -128,7 +128,7 @@ export default class Jobs extends Events {
 
   updateAssetProgress() {
     clearTimeout(this.removeProgressTo);
-    let prog = gui.corePatch().loading.getProgress();
+    let prog = Gui.gui.Gui.gui.corePatch().loading.getProgress();
 
     if (prog === 1) {
       this.removeProgressTo = setTimeout(() => {
@@ -140,7 +140,7 @@ export default class Jobs extends Events {
       this._visibleProgressBar = false;
       this._updateVisibility();
     } else {
-      if (gui.corePatch().loading.getNumAssets() > 2) {
+      if (Gui.gui.Gui.gui.corePatch().loading.getNumAssets() > 2) {
         this._visibleProgressBar = true;
         this._updateVisibility();
       }

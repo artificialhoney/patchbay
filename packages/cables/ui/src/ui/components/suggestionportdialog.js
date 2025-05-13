@@ -1,5 +1,5 @@
 import defaultOps from "../defaultops.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import SuggestionDialog from "./suggestiondialog.js";
 
 /**
@@ -46,7 +46,7 @@ export default class SuggestPortDialog {
       op.objName == defaultOps.defaultOpNames.subPatchInput2 ||
       op.objName == defaultOps.defaultOpNames.subPatchOutput2
     ) {
-      op = gui.patchView.getSubPatchOuterOp(op.uiAttribs.subPatch);
+      op = Gui.gui.patchView.getSubPatchOuterOp(op.uiAttribs.subPatch);
     }
 
     if (op.isSubPatchOp()) {

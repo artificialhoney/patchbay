@@ -1,7 +1,7 @@
 import { ele } from "@cables/client";
 import { getHandleBarHtml } from "../utils/handlebars.js";
-import { gui } from "../gui.js";
-import { userSettings } from "../components/usersettings.js";
+import Gui from "../gui.js";
+import UserSettings from "../components/usersettings.js";
 
 export default class IconBar {
   constructor(which) {
@@ -13,7 +13,7 @@ export default class IconBar {
     this._updateItems();
 
     if (this._id === "sidebar_bottom" && gui) {
-      gui.on("canvasModeChange", (_mode) => {
+      Gui.gui.on("canvasModeChange", (_mode) => {
         this.refresh();
       });
     }
@@ -32,7 +32,7 @@ export default class IconBar {
       items.push("Center patch", "Zoom out", "Zoom in");
       if (
         gui &&
-        gui.canvasManager.mode === gui.canvasManager.CANVASMODE_PATCHBG
+        Gui.gui.canvasManager.mode === Gui.gui.canvasManager.CANVASMODE_PATCHBG
       ) {
         items.push("Patch background renderer");
         items.push("Hide patchfield");
@@ -46,13 +46,13 @@ export default class IconBar {
         "Show settings",
         "Maximize canvas",
       ];
-      const itemObj = userSettings.get(this._id) || {};
+      const itemObj = UserSettings.userSettings.get(this._id) || {};
 
       for (let i = 0; i < defaultItems.length; i++)
         if (!itemObj.hasOwnProperty(defaultItems[i]))
           itemObj[defaultItems[i]] = true;
 
-      userSettings.set(this._id, itemObj);
+      UserSettings.userSettings.set(this._id, itemObj);
 
       for (const i in itemObj) if (itemObj[i]) items.push(i);
     }

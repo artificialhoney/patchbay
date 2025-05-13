@@ -3,7 +3,7 @@
  */
 
 import { Patch } from "@cables/cables";
-import { gui } from "./gui.js";
+import Gui from "./gui.js";
 import namespace from "./namespaceutils.js";
 
 /**
@@ -52,9 +52,9 @@ class UiPatch extends Patch {
 
   getSubPatchOps(subPatchId, recursive = false) {
     if (subPatchId === undefined)
-      subPatchId = gui.patchView.getCurrentSubPatch();
+      subPatchId = Gui.gui.patchView.getCurrentSubPatch();
     if (this.ops.length == 0) return [];
-    const perf = gui.uiProfiler.start("[corepatch ext] getSubPatchOps");
+    const perf = Gui.gui.uiProfiler.start("[corepatch ext] getSubPatchOps");
 
     this._subpatchOpCache = this._subpatchOpCache || {};
 
@@ -125,22 +125,22 @@ class UiPatch extends Patch {
   }
 
   getSubPatch2InnerInputOp(subPatchId) {
-    const ops = gui.corePatch().getSubPatchOps(subPatchId);
+    const ops = Gui.gui.corePatch().getSubPatchOps(subPatchId);
     for (let i = 0; i < ops.length; i++) if (ops[i].innerInput) return ops[i];
   }
 
   getSubPatch2InnerOutputOp(subPatchId) {
-    const ops = gui.corePatch().getSubPatchOps(subPatchId);
+    const ops = Gui.gui.corePatch().getSubPatchOps(subPatchId);
     for (let i = 0; i < ops.length; i++) if (ops[i].innerOutput) return ops[i];
   }
 
   buildSubPatchCache() {
-    const perf = gui.uiProfiler.start("[corePatch ext] buildSubPatchCache");
+    const perf = Gui.gui.uiProfiler.start("[corePatch ext] buildSubPatchCache");
 
-    const ops = gui.corePatch().ops;
+    const ops = Gui.gui.corePatch().ops;
     for (let i = 0; i < ops.length; i++) {
       if (ops[i].uiAttribs.subPatch) {
-        gui.corePatch().getSubPatchOuterOp(ops[i].uiAttribs.subPatch);
+        Gui.gui.corePatch().getSubPatchOuterOp(ops[i].uiAttribs.subPatch);
       }
     }
 
@@ -203,13 +203,13 @@ class UiPatch extends Patch {
   }
 
   getOpsInRect(xa, ya, xb, yb) {
-    const perf = gui.uiProfiler.start("[extPatch] ops in rect");
+    const perf = Gui.gui.uiProfiler.start("[extPatch] ops in rect");
     const x = Math.min(xa, xb);
     const y = Math.min(ya, yb);
     const x2 = Math.max(xa, xb);
     const y2 = Math.max(ya, yb);
     const ops = [];
-    const cops = gui.corePatch().getSubPatchOps();
+    const cops = Gui.gui.corePatch().getSubPatchOps();
 
     for (let j = 0; j < cops.length; j++) {
       if (cops[j]) {
@@ -237,7 +237,7 @@ class UiPatch extends Patch {
 
   getAllAnimPorts() {
     const ports = [];
-    const ops = gui.corePatch().ops;
+    const ops = Gui.gui.corePatch().ops;
     for (let i = 0; i < ops.length; i++) {
       for (let j = 0; j < ops[i].portsIn.length; j++) {
         if (ops[i].portsIn[j].isAnimated()) ports.push(ops[i].portsIn[j]);
@@ -252,7 +252,7 @@ class UiPatch extends Patch {
     const ops = [];
     const oldOps = [];
 
-    gui.patchView.unselectAllOps();
+    Gui.gui.patchView.unselectAllOps();
 
     for (const i in this.ops) {
       if (this.ops[i].objName == objName) {
@@ -334,13 +334,13 @@ class UiPatch extends Patch {
       this.deleteOp(oldOp.id, false, true);
     }
 
-    gui.patchView.unselectAllOps();
+    Gui.gui.patchView.unselectAllOps();
 
     cb(count, ops, refNewOp);
   }
 
   checkExtensionOpPatchAssets() {
-    const perf = gui.uiProfiler.start("checkExtOpsPatchAssets");
+    const perf = Gui.gui.uiProfiler.start("checkExtOpsPatchAssets");
     const allops = this.ops;
     for (let i = 0; i < allops.length; i++) {
       const sop = allops[i];

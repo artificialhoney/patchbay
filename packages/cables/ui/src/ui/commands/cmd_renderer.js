@@ -1,7 +1,7 @@
 import { ele } from "@cables/client";
 import CanvasLens from "../components/canvas/canvaslens.js";
 import ModalDialog from "../dialogs/modaldialog.js";
-import Gui, { gui } from "../gui.js";
+import Gui from "../gui.js";
 
 const CABLES_CMD_RENDERER = {};
 
@@ -13,22 +13,22 @@ const rendererCommands = {
 export default rendererCommands;
 
 CABLES_CMD_RENDERER.screenshot = function () {
-  gui.canvasManager.currentContext().saveScreenshot();
-  gui.corePatch().resume();
+  Gui.gui.canvasManager.currentContext().saveScreenshot();
+  Gui.gui.corePatch().resume();
 };
 
 CABLES_CMD_RENDERER.maximizeCanvas = function () {
-  gui.cycleFullscreen();
+  Gui.gui.cycleFullscreen();
 };
 
 CABLES_CMD_RENDERER.resetSize = function () {
-  gui.rendererWidth = 640;
-  gui.rendererHeight = 360;
-  gui.setLayout();
+  Gui.gui.rendererWidth = 640;
+  Gui.gui.rendererHeight = 360;
+  Gui.gui.setLayout();
 };
 
 CABLES_CMD_RENDERER.canvasMagnifier = function () {
-  gui.canvasMagnifier = new CanvasLens();
+  Gui.gui.canvasMagnifier = new CanvasLens();
 };
 
 CABLES_CMD_RENDERER.scrollingPage = function () {
@@ -56,7 +56,7 @@ CABLES_CMD_RENDERER.aspect = function (a = 0) {
       prompt: true,
       title: "Change Aspect Ratio of Renderer",
       text: "Enter an aspect ratio, e.g.: 16:9 or 0.22",
-      promptValue: gui.corePatch().cgl.canvasScale,
+      promptValue: Gui.gui.corePatch().cgl.canvasScale,
       promptOk: (r) => {
         if (r.indexOf(":") >= 0) {
           const parts = r.split(":");
@@ -71,18 +71,18 @@ CABLES_CMD_RENDERER.aspect = function (a = 0) {
 
     return;
   }
-  const nh = (gui.rendererWidth * 1) / a;
+  const nh = (Gui.gui.rendererWidth * 1) / a;
 
   if (nh < window.innerHeight * 0.6) {
-    gui.rendererHeight = nh;
+    Gui.gui.rendererHeight = nh;
   } else {
-    gui.rendererHeight = window.innerHeight * 0.6;
-    gui.rendererWidth = gui.rendererHeight * a;
+    Gui.gui.rendererHeight = window.innerHeight * 0.6;
+    Gui.gui.rendererWidth = Gui.gui.rendererHeight * a;
   }
 
-  gui.emitEvent(Gui.EVENT_RESIZE_CANVAS);
-  gui.setLayout();
-  gui.canvasManager.getCanvasUiBar().updateCanvasIconBar();
+  Gui.gui.emitEvent(Gui.gui.EVENT_RESIZE_CANVAS);
+  Gui.gui.setLayout();
+  Gui.gui.canvasManager.getCanvasUiBar().updateCanvasIconBar();
 };
 
 CABLES_CMD_RENDERER.scaleCanvas = function () {
@@ -90,11 +90,11 @@ CABLES_CMD_RENDERER.scaleCanvas = function () {
     prompt: true,
     title: "Change Scale of Renderer",
     text: "Enter a new scale",
-    promptValue: gui.corePatch().cgl.canvasScale || 1,
+    promptValue: Gui.gui.corePatch().cgl.canvasScale || 1,
     promptOk: (r) => {
       const s = parseFloat(r);
-      gui.corePatch().cgl.canvasScale = s;
-      gui.setLayout();
+      Gui.gui.corePatch().cgl.canvasScale = s;
+      Gui.gui.setLayout();
     },
   });
 };
@@ -102,28 +102,30 @@ CABLES_CMD_RENDERER.scaleCanvas = function () {
 CABLES_CMD_RENDERER.changeSize = function () {
   let str = "Enter a new size:";
 
-  if (gui.canvasManager.getCanvasUiBar())
-    gui.canvasManager.getCanvasUiBar().showCanvasModal(false);
+  if (Gui.gui.canvasManager.getCanvasUiBar())
+    Gui.gui.canvasManager.getCanvasUiBar().showCanvasModal(false);
 
   const p = new ModalDialog({
     prompt: true,
     title: "Change Canvas size",
     text: str,
     promptValue:
-      Math.round(gui.rendererWidth) + " x " + Math.round(gui.rendererHeight),
+      Math.round(Gui.gui.rendererWidth) +
+      " x " +
+      Math.round(Gui.gui.rendererHeight),
     promptOk: (r) => {
       const matches = r.match(/\d+/g);
       if (matches.length > 0) {
-        gui.rendererWidth = matches[0];
-        gui.rendererHeight = matches[1];
-        gui.setLayout();
+        Gui.gui.rendererWidth = matches[0];
+        Gui.gui.rendererHeight = matches[1];
+        Gui.gui.setLayout();
       }
     },
   });
 };
 
 CABLES_CMD_RENDERER.popoutCanvas = function () {
-  gui.canvasManager.popOut();
+  Gui.gui.canvasManager.popOut();
 };
 
 rendererCommands.commands.push(

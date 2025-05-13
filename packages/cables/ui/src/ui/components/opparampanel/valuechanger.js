@@ -3,7 +3,7 @@ import text from "../../text.js";
 import { hideToolTip } from "../../elements/tooltips.js";
 import undo from "../../utils/undo.js";
 import paramsHelper from "./params_helper.js";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 
 let pointerLockFirstTime = true;
 
@@ -13,7 +13,7 @@ export default valueChanger;
  * mouse and keyboard interactions with port parameters
  */
 function valueChanger(eleId, focus, portName, opid) {
-  gui.showInfo(text.valueChangerInput);
+  Gui.gui.showInfo(text.valueChangerInput);
 
   const eleInput = ele.byId(eleId);
   const eleContainer = ele.byId(eleId + "-container");
@@ -21,7 +21,7 @@ function valueChanger(eleId, focus, portName, opid) {
     "#" + eleId + "-container .numberinput-display",
   );
 
-  const theOp = gui.corePatch().getOpById(opid);
+  const theOp = Gui.gui.corePatch().getOpById(opid);
   if (!theOp) return;
 
   const thePort = theOp.getPort(portName);
@@ -119,33 +119,33 @@ function valueChanger(eleId, focus, portName, opid) {
           undo.add({
             title: "Value mousedrag " + oldVal + " to " + newVal,
             undo() {
-              const op = gui.corePatch().getOpById(opid);
+              const op = Gui.gui.corePatch().getOpById(opid);
               const p = op.getPort(_portName);
-              gui.patchView.showDefaultPanel();
+              Gui.gui.patchView.showDefaultPanel();
 
               p.set(oldVal);
-              gui.opParams.show(op);
-              gui.patchView.focusOp(null);
-              gui.patchView.focusOp(op.id);
-              gui.patchView.centerSelectOp(op.id);
+              Gui.gui.opParams.show(op);
+              Gui.gui.patchView.focusOp(null);
+              Gui.gui.patchView.focusOp(op.id);
+              Gui.gui.patchView.centerSelectOp(op.id);
             },
             redo() {
-              const op = gui.corePatch().getOpById(opid);
+              const op = Gui.gui.corePatch().getOpById(opid);
               const p = op.getPort(_portName);
-              gui.patchView.showDefaultPanel();
+              Gui.gui.patchView.showDefaultPanel();
 
               p.set(newVal);
-              gui.opParams.show(op);
-              gui.patchView.focusOp(null);
-              gui.patchView.focusOp(op.id);
-              gui.patchView.centerSelectOp(op.id);
+              Gui.gui.opParams.show(op);
+              Gui.gui.patchView.focusOp(null);
+              Gui.gui.patchView.focusOp(op.id);
+              Gui.gui.patchView.centerSelectOp(op.id);
             },
           });
       })(portName, opid, parseFloat(startVal), parseFloat(eleInput.value));
     }
 
-    // gui.setStateUnsaved();
-    gui.savedState.setUnSaved("valuechangerUp", thePort.op.getSubPatch());
+    // Gui.gui.setStateUnsaved();
+    Gui.gui.savedState.setUnSaved("valuechangerUp", thePort.op.getSubPatch());
 
     isDown = false;
 
@@ -191,8 +191,8 @@ function valueChanger(eleId, focus, portName, opid) {
 
     if (ele.hasFocus(eleInput)) return;
 
-    // gui.setStateUnsaved();
-    gui.savedState.setUnSaved("valuechangerMove", thePort.op.getSubPatch());
+    // Gui.gui.setStateUnsaved();
+    Gui.gui.savedState.setUnSaved("valuechangerMove", thePort.op.getSubPatch());
     let v = eleInputValue();
     let inc = 0;
 
@@ -257,7 +257,7 @@ function valueChanger(eleId, focus, portName, opid) {
     if (startVal != eleInputValue()) {
       if (opid && portName) {
         if (isNaN(eleInput.value)) {
-          const op = gui.corePatch().getOpById(opid);
+          const op = Gui.gui.corePatch().getOpById(opid);
           const p = op.getPort(portName);
 
           let mathParsed = eleInput.value;

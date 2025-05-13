@@ -6,7 +6,7 @@ import { Op } from "@cables/cables";
 import { portType } from "./core_constants.js";
 import defaultOps from "./defaultops.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
-import { gui } from "./gui.js";
+import Gui from "./gui.js";
 import text from "./text.js";
 
 CABLES.OpUnLinkTempReLinkP1 = null;
@@ -15,7 +15,7 @@ CABLES.OpUnLinkTempReLinkP2 = null;
 /**
  * @extends Op<UiPatch>
  */
-class UiOp extends CABLES.Op {
+class UiOp extends Op {
   constructor(a, b, c) {
     super(a, b, c);
     this.initUi();
@@ -310,10 +310,12 @@ class UiOp extends CABLES.Op {
   }
 
   checkLinkTimeWarnings() {
-    if (!gui.finishedLoading()) return;
+    if (!Gui.gui.finishedLoading()) return;
 
     if (this.isInBlueprint2()) {
-      const outer = gui.patchView.getSubPatchOuterOp(this.uiAttribs.subPatch);
+      const outer = Gui.gui.patchView.getSubPatchOuterOp(
+        this.uiAttribs.subPatch,
+      );
       if (outer) {
         let subPatchOpError = null;
         if (this.objName == outer.objName)
@@ -483,8 +485,10 @@ class UiOp extends CABLES.Op {
       clearTimeout(CABLES.timeoutCheckLinkTimeWarning);
       CABLES.timeoutCheckLinkTimeWarning = setTimeout(() => {
         // check all ops for other follow up warnings to be resolved (possible optimization: check only ops under this one...)
-        const perf = gui.uiProfiler.start("[coreOpExt] checkLinkTimeWarnings");
-        const ops = gui.corePatch().ops;
+        const perf = Gui.gui.uiProfiler.start(
+          "[coreOpExt] checkLinkTimeWarnings",
+        );
+        const ops = Gui.gui.corePatch().ops;
 
         for (let i = 0; i < ops.length; i++)
           if (
@@ -592,7 +596,7 @@ class UiOp extends CABLES.Op {
   isInBlueprint2() {
     if (!this.uiAttribs.subPatch || this.uiAttribs.subPatch == 0) return false;
 
-    const sop = gui.patchView.getSubPatchOuterOp(this.uiAttribs.subPatch);
+    const sop = Gui.gui.patchView.getSubPatchOuterOp(this.uiAttribs.subPatch);
     if (sop) {
       if (sop.isBlueprint2()) return sop.isBlueprint2();
 
@@ -738,7 +742,7 @@ class UiOp extends CABLES.Op {
 
   getParentSubPatch() {
     if (this.uiAttribs.subPatch === 0) return 0;
-    const sop = gui.patchView.getSubPatchOuterOp(this.uiAttribs.subPatch);
+    const sop = Gui.gui.patchView.getSubPatchOuterOp(this.uiAttribs.subPatch);
     if (sop) return sop.uiAttribs.subPatch;
 
     return 0;
@@ -793,7 +797,7 @@ class UiOp extends CABLES.Op {
     let index = 0;
 
     if (this.isSubPatchOp() == 2 && this.patchId) {
-      const portsIn = gui.patchView.getSubPatchExposedPorts(
+      const portsIn = Gui.gui.patchView.getSubPatchExposedPorts(
         this.patchId.get(),
         CABLES.Port.DIR_IN,
       );
@@ -810,7 +814,7 @@ class UiOp extends CABLES.Op {
         index++;
       }
 
-      const portsOut = gui.patchView.getSubPatchExposedPorts(
+      const portsOut = Gui.gui.patchView.getSubPatchExposedPorts(
         this.patchId.get(),
         CABLES.Port.DIR_OUT,
       );

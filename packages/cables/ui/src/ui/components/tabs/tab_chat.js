@@ -1,7 +1,7 @@
 import { Events } from "@cables/client";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 
 export default class Chat extends Events {
   constructor(tabs, socket) {
@@ -65,7 +65,7 @@ export default class Chat extends Events {
 
     const submitAction = (event) => {
       if (event.key === "Enter") {
-        gui.socket.chat.send(document.getElementById("newchatmsg").value);
+        Gui.gui.socket.chat.send(document.getElementById("newchatmsg").value);
         document.getElementById("newchatmsg").value = "";
       }
     };

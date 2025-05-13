@@ -6,7 +6,7 @@ import GlPatch from "../glpatch/glpatch.js";
 import GlPort from "../glpatch/glport.js";
 import namespace from "../namespaceutils.js";
 import opNames from "../opnameutils.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 
 /**
  * op documentation loading
@@ -65,7 +65,7 @@ export default class OpDocs {
       return;
     }
 
-    const perf = gui.uiProfiler.start("[opdocs] portdocs inner");
+    const perf = Gui.gui.uiProfiler.start("[opdocs] portdocs inner");
 
     for (let i = 0; i < opDoc.docs.ports.length; i++) {
       if (opDoc.docs.ports[i].name === port.name) {
@@ -318,7 +318,7 @@ export default class OpDocs {
   }
 
   showPortDoc(opname, portname) {
-    const perf = gui.uiProfiler.start("opdocs.portdoc");
+    const perf = Gui.gui.uiProfiler.start("opdocs.portdoc");
 
     for (let i = 0; i < this._opDocs.length; i++) {
       if (this._opDocs[i].name == opname && this._opDocs[i].layout) {
@@ -337,7 +337,7 @@ export default class OpDocs {
         if (this._opDocs[i].docs && this._opDocs[i].docs.ports) {
           for (let j = 0; j < this._opDocs[i].docs.ports.length; j++) {
             if (this._opDocs[i].docs.ports[j].name == portname) {
-              gui.showInfoParam(
+              Gui.gui.showInfoParam(
                 "<b>" +
                   group +
                   portname +
@@ -350,7 +350,7 @@ export default class OpDocs {
           }
         }
 
-        gui.showInfoParam("<b>" + group + portname + "</b> ");
+        Gui.gui.showInfoParam("<b>" + group + portname + "</b> ");
         perf.finish();
         return;
       }
@@ -360,7 +360,7 @@ export default class OpDocs {
   }
 
   addOpDocs(opDocs = []) {
-    const perf = gui.uiProfiler.start("[opdocs] addOpDocs");
+    const perf = Gui.gui.uiProfiler.start("[opdocs] addOpDocs");
     const newOpDocs = [];
 
     opDocs.forEach((doc) => {
@@ -396,7 +396,7 @@ export default class OpDocs {
   }
 
   checkDefaultOpsOutdated() {
-    const perf = gui.uiProfiler.start("[opdocs] checkDefaultOpsOutdated");
+    const perf = Gui.gui.uiProfiler.start("[opdocs] checkDefaultOpsOutdated");
     for (const i in defaultOps.defaultOpNames) {
       const doc = this.getOpDocByName(defaultOps.defaultOpNames[i]);
 
@@ -451,7 +451,7 @@ export default class OpDocs {
         '" height="' +
         gluiconfig.opHeight +
         '" fill="' +
-        glColorToHtml(gui.theme.colors_patch.opBgRect) +
+        glColorToHtml(Gui.gui.theme.colors_patch.opBgRect) +
         '"/>';
 
       let svgOver = "";
@@ -474,7 +474,7 @@ export default class OpDocs {
               '" height="' +
               gluiconfig.portHeight +
               '" fill="' +
-              glColorToHtml(gui.theme.colors_patch.opBgRect) +
+              glColorToHtml(Gui.gui.theme.colors_patch.opBgRect) +
               '" opacity="0.76"/>';
             svgOver +=
               '<rect x="' +
@@ -524,7 +524,7 @@ export default class OpDocs {
               '" height="' +
               gluiconfig.portHeight +
               '" fill="' +
-              glColorToHtml(gui.theme.colors_patch.opBgRect) +
+              glColorToHtml(Gui.gui.theme.colors_patch.opBgRect) +
               '" opacity="0.76"/>';
             svgOver +=
               '<rect y="' +

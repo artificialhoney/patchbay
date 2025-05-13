@@ -1,5 +1,5 @@
 import { ele, Events } from "@cables/client";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 
 /**
  * debug: show current op in serialized form
@@ -24,14 +24,14 @@ export default class OpSerialized extends Events {
 
     this._op = null;
     this.rebuildHtml();
-    this.setOp(gui.opParams.op);
+    this.setOp(Gui.gui.opParams.op);
 
     this._tab.addButton("Refresh", () => {
       this.rebuildHtml();
     });
 
-    gui.opParams.on("opSelected", () => {
-      this.setOp(gui.opParams.op);
+    Gui.gui.opParams.on("opSelected", () => {
+      this.setOp(Gui.gui.opParams.op);
     });
   }
 

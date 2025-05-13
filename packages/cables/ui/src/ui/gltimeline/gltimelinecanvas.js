@@ -1,7 +1,7 @@
 import { Patch } from "@cables/cables";
 import GlCanvas from "../gldraw/glcanvas.js";
 import { GlTimeline } from "./gltimeline.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 
 /**
  * canvas for the timeline {@link GlTimeline}
@@ -28,7 +28,7 @@ export class glTimelineCanvas extends GlCanvas {
 
   render() {
     if (this.tab.resizing) return;
-    if (gui && gui.corePatch().timer.isPlaying()) this._targetFps = 0; // todo check if time is on screen...?
+    if (gui && Gui.gui.corePatch().timer.isPlaying()) this._targetFps = 0; // todo check if time is on screen...?
 
     if (
       this._targetFps != 0 &&

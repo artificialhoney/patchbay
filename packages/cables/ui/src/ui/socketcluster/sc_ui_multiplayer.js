@@ -2,7 +2,7 @@ import { ele, Events } from "@cables/client";
 import { notify } from "../elements/notification.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import ModalDialog from "../dialogs/modaldialog.js";
-import Gui, { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { platform } from "../platform.js";
 import { contextMenu } from "../elements/contextmenu.js";
 
@@ -15,7 +15,7 @@ export default class ScUiMultiplayer extends Events {
     this._mouseTimeout = null;
 
     if (this._connection.client.isRemoteClient) {
-      gui.setRestriction(Gui.RESTRICT_MODE_REMOTEVIEW);
+      Gui.gui.setRestriction(Gui.gui.RESTRICT_MODE_REMOTEVIEW);
     }
 
     this._pilotRequestTimeout = null;
@@ -24,7 +24,7 @@ export default class ScUiMultiplayer extends Events {
   }
 
   updateMultiplayerBar() {
-    if (gui.unload) return;
+    if (Gui.gui.unload) return;
     if (!this._connection.isConnected()) {
       ele.byId("multiplayerbar").style.display = "none";
       return;
@@ -49,7 +49,7 @@ export default class ScUiMultiplayer extends Events {
     if (clientList.length < 2) {
       if (!this._connection.client.isPilot)
         ele.byId("multiplayerbar").style.display = "none";
-      gui.setRestriction(Gui.RESTRICT_MODE_FULL);
+      Gui.gui.setRestriction(Gui.gui.RESTRICT_MODE_FULL);
       return;
     }
 
@@ -87,8 +87,8 @@ export default class ScUiMultiplayer extends Events {
       });
     });
 
-    gui.restriction.setMessage(null);
-    gui.setRestriction(Gui.RESTRICT_MODE_FULL);
+    Gui.gui.restriction.setMessage(null);
+    Gui.gui.setRestriction(Gui.gui.RESTRICT_MODE_FULL);
 
     const startButton = userList.querySelector(".start-button");
     const joinButton = userList.querySelector(".join-button");
@@ -185,7 +185,7 @@ export default class ScUiMultiplayer extends Events {
       guiEvent.scrollY = client.scrollY;
     }
     if (Object.keys(guiEvent).length > 0) {
-      gui.emitEvent("netGotoPos", guiEvent);
+      Gui.gui.emitEvent("netGotoPos", guiEvent);
     }
   }
 
@@ -219,7 +219,7 @@ export default class ScUiMultiplayer extends Events {
             iconClass: "icon " + icon,
             func: () => {},
           });
-          const projectId = gui.project().shortId;
+          const projectId = Gui.gui.project().shortId;
           if (projectId && client.userid) {
             items.push({
               title: "Open in new window",
@@ -248,7 +248,10 @@ export default class ScUiMultiplayer extends Events {
   }
 
   _modalJoinMultiplayerSession() {
-    if (!gui.getSavedState() && !this._connection.onlyRemoteClientsConnected) {
+    if (
+      !Gui.gui.getSavedState() &&
+      !this._connection.onlyRemoteClientsConnected
+    ) {
       let content =
         "Your unsaved changes will be lost, once you enter a multiplayer session.";
       const options = {
@@ -382,7 +385,7 @@ export default class ScUiMultiplayer extends Events {
               this._pilotRequestTimeout = null;
               this._connection.sendControl("pilotRequest", {
                 state: "declined",
-                username: gui.user.usernameLowercase,
+                username: Gui.gui.user.usernameLowercase,
                 initiator: msg.clientId,
               });
             };
@@ -400,7 +403,7 @@ export default class ScUiMultiplayer extends Events {
                   modal.off(closeListenerId);
                   this._connection.sendControl("pilotRequest", {
                     state: "accepted",
-                    username: gui.user.usernameLowercase,
+                    username: Gui.gui.user.usernameLowercase,
                     initiator: msg.clientId,
                   });
                   modal.close();
@@ -413,7 +416,7 @@ export default class ScUiMultiplayer extends Events {
                   modal.off(closeListenerId);
                   this._connection.sendControl("pilotRequest", {
                     state: "declined",
-                    username: gui.user.usernameLowercase,
+                    username: Gui.gui.user.usernameLowercase,
                     initiator: msg.clientId,
                   });
                   modal.close();
@@ -425,7 +428,7 @@ export default class ScUiMultiplayer extends Events {
               modal.off(closeListenerId);
               this._connection.sendControl("pilotRequest", {
                 state: "accepted",
-                username: gui.user.usernameLowercase,
+                username: Gui.gui.user.usernameLowercase,
                 initiator: msg.clientId,
               });
               modal.close();
@@ -435,7 +438,7 @@ export default class ScUiMultiplayer extends Events {
             // already waiting for pilot request approval/denial, deny other requests
             this._connection.sendControl("pilotRequest", {
               state: "declined",
-              username: gui.user.usernameLowercase,
+              username: Gui.gui.user.usernameLowercase,
               initiator: msg.clientId,
               reason: "PENDING_REQUEST",
             });

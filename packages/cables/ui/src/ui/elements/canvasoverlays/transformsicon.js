@@ -1,4 +1,4 @@
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 
 export default class TransformsIcon {
   constructor(cgl, id) {
@@ -16,7 +16,7 @@ export default class TransformsIcon {
     container.appendChild(this._eleCenter);
 
     this._eleCenter.addEventListener("click", () => {
-      gui.transformOverlay.click(this._screenPos);
+      Gui.gui.transformOverlay.click(this._screenPos);
     });
   }
 

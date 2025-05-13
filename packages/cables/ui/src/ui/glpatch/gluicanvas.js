@@ -1,5 +1,5 @@
 import GlCanvas from "../gldraw/glcanvas.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import GlPatch from "./glpatch.js";
 import GlPatchAPI from "./patchapi.js";
 
@@ -31,10 +31,10 @@ export default class GlUiCanvas extends GlCanvas {
 
     this.setSize(100, 100);
 
-    gui.on("canvasModeChange", (mode) => {
+    Gui.gui.on("canvasModeChange", (mode) => {
       this.canvas.classList.toggle(
         "gluiPatchBg",
-        mode == gui.canvasManager.CANVASMODE_PATCHBG,
+        mode == Gui.gui.canvasManager.CANVASMODE_PATCHBG,
       );
     });
 

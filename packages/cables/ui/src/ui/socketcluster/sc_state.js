@@ -1,5 +1,5 @@
 import { Logger, Events } from "@cables/client";
-import Gui, { gui } from "../gui.js";
+import Gui from "../gui.js";
 import ScClient from "./sc_client.js";
 import paramsHelper from "../components/opparampanel/params_helper.js";
 
@@ -17,11 +17,11 @@ export default class ScState extends Events {
 
     this._clients = {};
     this._clients[connection.clientId] = new ScClient({
-      username: gui.user.username,
-      userid: gui.user.id,
+      username: Gui.gui.user.username,
+      userid: Gui.gui.user.id,
       clientId: connection.clientId,
       isMe: true,
-      isRemoteClient: gui.isRemoteClient,
+      isRemoteClient: Gui.gui.isRemoteClient,
       multiplayerCapable: this._connection.multiplayerCapable,
       isPilot: false,
     });
@@ -105,7 +105,7 @@ export default class ScState extends Events {
           } else {
             if (
               client.clientId === this._connection.clientId &&
-              gui.isRemoteClient
+              Gui.gui.isRemoteClient
             )
               continue;
             client.isPilot = true;
@@ -199,7 +199,7 @@ export default class ScState extends Events {
       this._clients[this._connection.clientId] &&
       !this._clients[this._connection.clientId].isPilot
     ) {
-      if (this._connection.inMultiplayerSession && !gui.isRemoteClient) {
+      if (this._connection.inMultiplayerSession && !Gui.gui.isRemoteClient) {
         this._clients[this._connection.clientId].isPilot = true;
         cleanupChange = true;
       }
@@ -249,16 +249,16 @@ export default class ScState extends Events {
   }
 
   becomePilot() {
-    if (!gui.isRemoteClient) {
+    if (!Gui.gui.isRemoteClient) {
       this._connection.client.isPilot = true;
       this.emitEvent("becamePilot");
-      gui.setRestriction(Gui.RESTRICT_MODE_FULL);
+      Gui.gui.setRestriction(Gui.gui.RESTRICT_MODE_FULL);
     }
   }
 
   requestPilotSeat() {
     const client = this._clients[this._connection.clientId];
-    if (!gui.isRemoteClient && client && !client.isPilot) {
+    if (!Gui.gui.isRemoteClient && client && !client.isPilot) {
       this._connection.sendControl("pilotRequest", {
         username: client.username,
         state: "request",
@@ -310,7 +310,11 @@ export default class ScState extends Events {
       if (this._clients[msg.clientId]) {
         if (this._clients[msg.clientId].subpatch != msg.subpatch) {
           this._clients[msg.clientId].subpatch = msg.subpatch;
-          gui.emitEvent("multiUserSubpatchChanged", msg.clientId, msg.subpatch);
+          Gui.gui.emitEvent(
+            "multiUserSubpatchChanged",
+            msg.clientId,
+            msg.subpatch,
+          );
         }
 
         this._clients[msg.clientId].x = msg.x;
@@ -324,11 +328,11 @@ export default class ScState extends Events {
     });
 
     this.on("clientDisconnected", (client, wasInMultiplayerSession = false) => {
-      gui.emitEvent("netClientRemoved", { clientId: client.clientId });
+      Gui.gui.emitEvent("netClientRemoved", { clientId: client.clientId });
     });
 
     this.on("clientLeft", (client) => {
-      gui.emitEvent("netClientRemoved", { clientId: client.clientId });
+      Gui.gui.emitEvent("netClientRemoved", { clientId: client.clientId });
     });
 
     this.on("patchSynchronized", () => {
@@ -340,14 +344,14 @@ export default class ScState extends Events {
 
     this._connection.on("clientRemoved", (msg) => {
       this._connection.sendUi("netClientRemoved", msg, true);
-      gui.emitEvent("netClientRemoved", msg);
+      Gui.gui.emitEvent("netClientRemoved", msg);
     });
 
-    gui.patchView.on("mouseMove", (x, y) => {
+    Gui.gui.patchView.on("mouseMove", (x, y) => {
       this._sendCursorPos(x, y);
     });
 
-    gui.on("timelineControl", (command, value) => {
+    Gui.gui.on("timelineControl", (command, value) => {
       if (!this._connection.inMultiplayerSession) return;
       if (this._connection.client && this._connection.client.isPilot) {
         if (command !== "scrollTime") {
@@ -371,7 +375,7 @@ export default class ScState extends Events {
       }
     });
 
-    gui.on("portValueEdited", (op, port, value) => {
+    Gui.gui.on("portValueEdited", (op, port, value) => {
       if (!this._connection.inMultiplayerSession) return;
       if (this._connection.client) {
         // && this._connection.client.isPilot)
@@ -400,13 +404,13 @@ export default class ScState extends Events {
         },
       );
 
-    gui.corePatch().on("pacoPortAnimUpdated", (port) => {
+    Gui.gui.corePatch().on("pacoPortAnimUpdated", (port) => {
       if (!port.anim) return;
       if (!this._connection.inMultiplayerSession) return;
-      gui.metaKeyframes.showAnim(port.parent.id, port.name);
+      Gui.gui.metaKeyframes.showAnim(port.parent.id, port.name);
     });
 
-    gui.on(
+    Gui.gui.on(
       "portValueSetAnimated",
       (op, portIndex, targetState, defaultValue) => {
         if (!this._connection.inMultiplayerSession) return;
@@ -428,14 +432,14 @@ export default class ScState extends Events {
       },
     );
 
-    gui.corePatch().on("opReloaded", (opName) => {
+    Gui.gui.corePatch().on("opReloaded", (opName) => {
       if (!this._connection.inMultiplayerSession) return;
       if (this._connection.client && this._connection.client.isPilot) {
         this._connection.sendControl("reloadOp", { opName: opName });
       }
     });
 
-    gui.on("gizmoMove", (opId, portName, newValue) => {
+    Gui.gui.on("gizmoMove", (opId, portName, newValue) => {
       if (!this._connection.inMultiplayerSession) return;
       if (this._connection.client && this._connection.client.isPilot) {
         if (opId && portName) {
@@ -455,7 +459,7 @@ export default class ScState extends Events {
 
     this._connection.on("netCursorPos", (msg) => {
       delete msg.zoom;
-      gui.emitEvent("netCursorPos", msg);
+      Gui.gui.emitEvent("netCursorPos", msg);
     });
 
     this._connection.on("resyncWithPilot", (msg) => {
@@ -470,7 +474,7 @@ export default class ScState extends Events {
       if (this._connection.client.isRemoteClient) return;
       if (this._connection.client.isPilot) return;
 
-      const selectedOp = gui.patchView.getSelectedOps().find((op) => {
+      const selectedOp = Gui.gui.patchView.getSelectedOps().find((op) => {
         return op.id === vars.op;
       });
       if (selectedOp) {
@@ -496,15 +500,15 @@ export default class ScState extends Events {
 
     if (this._mouseTimeout) return;
 
-    const subPatch = gui.patchView.getCurrentSubPatch();
-    const zoom = gui.patchView.patchRenderer.viewBox
-      ? gui.patchView.patchRenderer.viewBox.zoom
+    const subPatch = Gui.gui.patchView.getCurrentSubPatch();
+    const zoom = Gui.gui.patchView.patchRenderer.viewBox
+      ? Gui.gui.patchView.patchRenderer.viewBox.zoom
       : null;
-    const scrollX = gui.patchView.patchRenderer.viewBox
-      ? gui.patchView.patchRenderer.viewBox.scrollX
+    const scrollX = Gui.gui.patchView.patchRenderer.viewBox
+      ? Gui.gui.patchView.patchRenderer.viewBox.scrollX
       : null;
-    const scrollY = gui.patchView.patchRenderer.viewBox
-      ? gui.patchView.patchRenderer.viewBox.scrollY
+    const scrollY = Gui.gui.patchView.patchRenderer.viewBox
+      ? Gui.gui.patchView.patchRenderer.viewBox.scrollY
       : null;
 
     this._mouseTimeout = setTimeout(() => {

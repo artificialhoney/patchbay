@@ -3,10 +3,10 @@ import { CglContext, Port } from "@cables/cables";
 import GlRect from "../gldraw/glrect.js";
 import gluiconfig from "./gluiconfig.js";
 import uiconfig from "../uiconfig.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import GlPatch from "./glpatch.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
-import { userSettings } from "../components/usersettings.js";
+import UserSettings from "../components/usersettings.js";
 import { PortDir } from "../core_constants.js";
 
 /**
@@ -52,12 +52,12 @@ export default class Snap extends Events {
     this._xCoords.length = 0;
     clearTimeout(this._timeout);
     this._timeout = setTimeout(() => {
-      const perf = gui.uiProfiler.start("Snap.update");
+      const perf = Gui.gui.uiProfiler.start("Snap.update");
       const hashmap = {};
       const ops = gui
         .corePatch()
         .getSubPatchOps(this._glPatch.getCurrentSubPatch());
-      const selOps = gui.patchView.getSelectedOps();
+      const selOps = Gui.gui.patchView.getSelectedOps();
       let selOp = null;
 
       if (selOps.length == 1) selOp = selOps[0];
@@ -93,7 +93,7 @@ export default class Snap extends Events {
    */
   snapX(_x) {
     let x = _x;
-    if (userSettings.get("snapToGrid2")) x = Snap.snapOpPosX(_x);
+    if (UserSettings.userSettings.get("snapToGrid2")) x = Snap.snapOpPosX(_x);
 
     return x;
   }
@@ -104,7 +104,8 @@ export default class Snap extends Events {
    * @returns {Number}
    */
   snapY(y, force = false) {
-    if (userSettings.get("snapToGrid2") || force) return Snap.snapOpPosY(y);
+    if (UserSettings.userSettings.get("snapToGrid2") || force)
+      return Snap.snapOpPosY(y);
     else return y;
   }
 
@@ -115,7 +116,8 @@ export default class Snap extends Events {
    * @param {number} dist
    */
   _snapPortX(_x, port, _index, dist) {
-    if (userSettings.get("snapToGrid2")) return Snap.snapOpPosX(_x);
+    if (UserSettings.userSettings.get("snapToGrid2"))
+      return Snap.snapOpPosX(_x);
 
     for (let i = 0; i < port.links.length; i++) {
       const otherPort = port.links[i].getOtherPort(port);
@@ -155,7 +157,8 @@ export default class Snap extends Events {
   }
 
   snapOpX(_x, op, dist) {
-    if (userSettings.get("snapToGrid2")) return Snap.snapOpPosX(_x);
+    if (UserSettings.userSettings.get("snapToGrid2"))
+      return Snap.snapOpPosX(_x);
 
     let hasLinks = false;
     dist = dist || gluiconfig.portWidth;

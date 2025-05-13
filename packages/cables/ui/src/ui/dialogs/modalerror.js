@@ -2,7 +2,7 @@ import { ele } from "@cables/client";
 import defaultOps from "../defaultops.js";
 import ModalDialog from "./modaldialog.js";
 import namespace from "../namespaceutils.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { platform } from "../platform.js";
 
 /**
@@ -23,7 +23,8 @@ export default class ModalError {
   constructor(options) {
     this._options = options;
 
-    const s = typeof gui !== "undefined" ? gui.corePatch()._triggerStack : [];
+    const s =
+      typeof gui !== "undefined" ? Gui.gui.corePatch()._triggerStack : [];
     let stackStr = "";
     for (let i = 0; i < s.length; i++) {
       stackStr += "[" + s[i].op.objName + " - " + s[i].name + "] ";
@@ -39,7 +40,7 @@ export default class ModalError {
     ) {
       const opid = this._options.exception.cause.substring("opId:".length);
 
-      this.opDoc = gui.opDocs.getOpDocById(opid);
+      this.opDoc = Gui.gui.opDocs.getOpDocById(opid);
 
       if (this.opDoc.forbidden) this._options.title = "Forbidden Op";
       if (this.opDoc) this._options.opname = this.opDoc.name;
@@ -103,7 +104,7 @@ export default class ModalError {
       // do not track errors in patchops/userops/teamops
       if (namespace.isPrivateOp(this.opName)) doTrack = false;
       if (window.gui) {
-        const ops = gui.corePatch().getOpsByObjName(this.opName);
+        const ops = Gui.gui.corePatch().getOpsByObjName(this.opName);
         for (let i = 0; i < ops.length; i++) {
           ops[i].uiAttr({
             error: "exception occured - op stopped - reload to run again",
@@ -130,7 +131,7 @@ export default class ModalError {
 
     this._dialog = new ModalDialog(modalOptions);
     ele.clickable(ele.byId("sendErrorReport"), () => {
-      gui.patchView.store.sendErrorReport(CABLES.lastError, true);
+      Gui.gui.patchView.store.sendErrorReport(CABLES.lastError, true);
     });
   }
 
@@ -166,7 +167,7 @@ export default class ModalError {
           "Please check if you have the access rights to this op.<br/><br/>";
       } else if (
         gui &&
-        gui.serverOps.canEditOp(gui.user, this.opName) &&
+        Gui.gui.serverOps.canEditOp(Gui.gui.user, this.opName) &&
         platform
       ) {
         const url = platform.getCablesUrl() + "/op/edit/" + this.opName;
@@ -186,11 +187,11 @@ export default class ModalError {
     if (!isSameHost) {
       str +=
         '<br/><br/>Patch was last saved on a different environment: <a class="link" href="https://' +
-        gui.project().buildInfo.host +
+        Gui.gui.project().buildInfo.host +
         "/edit/" +
-        gui.patchId +
+        Gui.gui.patchId +
         '" target="top">' +
-        gui.project().buildInfo.host +
+        Gui.gui.project().buildInfo.host +
         "</a>";
       str += "<br/><br/>";
     }
@@ -231,12 +232,12 @@ export default class ModalError {
       isPrivateOp = namespace.isPrivateOp(this.opName);
       if (
         window.gui &&
-        (gui.user.isStaff || namespace.isCurrentUserOp(this.opName))
+        (Gui.gui.user.isStaff || namespace.isCurrentUserOp(this.opName))
       ) {
         str +=
-          '<a class="button " onclick="gui.serverOps.edit(\'' +
+          '<a class="button " onclick="Gui.gui.serverOps.edit(\'' +
           this.opName +
-          '\',false,null,true);gui.closeModal();"><span class="icon icon-edit"></span>Edit op</a> &nbsp;&nbsp;';
+          '\',false,null,true);Gui.gui.closeModal();"><span class="icon icon-edit"></span>Edit op</a> &nbsp;&nbsp;';
       }
     }
 
@@ -284,11 +285,11 @@ export default class ModalError {
         platform &&
         platform.isDevEnv() &&
         gui &&
-        gui.user &&
-        !gui.user.isStaff &&
+        Gui.gui.user &&
+        !Gui.gui.user.isStaff &&
         !ignoreErrorReport
       ) {
-        gui.patchView.store.sendErrorReport(CABLES.lastError, false);
+        Gui.gui.patchView.store.sendErrorReport(CABLES.lastError, false);
         str +=
           "<br/><br/>Dev Environment: An automated error report has been created. We will look into it!";
       } else if (showSendButton) {

@@ -6,8 +6,8 @@ import defaultOps from "../defaultops.js";
 import Snap from "./snap.js";
 import gluiconfig from "./gluiconfig.js";
 import { hideToolTip } from "../elements/tooltips.js";
-import { gui } from "../gui.js";
-import { userSettings } from "../components/usersettings.js";
+import Gui from "../gui.js";
+import UserSettings from "../components/usersettings.js";
 import GlPatch from "./glpatch.js";
 import GlRect from "../gldraw/glrect.js";
 
@@ -145,16 +145,16 @@ export default class GlLink {
         this._buttonDown == this._glPatch.mouseState.buttonForLinkInsertOp &&
         pressTime < gluiconfig.clickMaxDuration
       ) {
-        const opIn = this._glOpIn.op; // || gui.corePatch().getOpById(this._opIdInput);
+        const opIn = this._glOpIn.op; // || Gui.gui.corePatch().getOpById(this._opIdInput);
 
         const pIn = opIn.getPortById(this._portIdInput);
         const opOut =
-          this._glOpOut || gui.corePatch().getOpById(this._opIdOutput);
+          this._glOpOut || Gui.gui.corePatch().getOpById(this._opIdOutput);
         const pOut = this._glOpOut.op.getPortById(this._portIdOutput);
         if (!pOut) return;
         const llink = pOut.getLinkTo(pIn);
 
-        gui.opSelect().show(
+        Gui.gui.opSelect().show(
           {
             x: 0,
             y: 0,
@@ -200,7 +200,7 @@ export default class GlLink {
     this._buttonRect.on("mousedown", (e) => {
       if (
         this._glPatch.mouseState.buttonStateForLinkDrag &&
-        userSettings.get("patch_allowCableDrag")
+        UserSettings.userSettings.get("patch_allowCableDrag")
       ) {
         this._glPatch.startLinkButtonDrag = this;
         this._startDragEvent = e;
@@ -285,8 +285,8 @@ export default class GlLink {
     this._glPatch.linkStartedDragging = true;
 
     hideToolTip();
-    const opIn = gui.corePatch().getOpById(this._opIdInput),
-      opOut = gui.corePatch().getOpById(this._opIdOutput);
+    const opIn = Gui.gui.corePatch().getOpById(this._opIdInput),
+      opOut = Gui.gui.corePatch().getOpById(this._opIdOutput);
 
     if (!opIn || !opOut) {
       this._log.log("[gllink] no in/out op");
@@ -344,8 +344,8 @@ export default class GlLink {
     );
     this._glPatch.setDrawableColorByType(this._cable, this._type);
 
-    const op1 = gui.corePatch().getOpById(this._opIdInput);
-    const op2 = gui.corePatch().getOpById(this._opIdOutput);
+    const op1 = Gui.gui.corePatch().getOpById(this._opIdInput);
+    const op2 = Gui.gui.corePatch().getOpById(this._opIdOutput);
 
     if (!op1 || !op1.uiAttribs || !op2 || !op2.uiAttribs) return;
     this.crossSubpatch = op1.uiAttribs.subPatch != op2.uiAttribs.subPatch;
@@ -374,17 +374,17 @@ export default class GlLink {
 
     if (this.crossSubpatch) {
       const subpatchop =
-        gui.patchView.getSubPatchOuterOp(op1.uiAttribs.subPatch) ||
-        gui.patchView.getSubPatchOuterOp(op2.uiAttribs.subPatch);
+        Gui.gui.patchView.getSubPatchOuterOp(op1.uiAttribs.subPatch) ||
+        Gui.gui.patchView.getSubPatchOuterOp(op2.uiAttribs.subPatch);
 
       if (
         subpatchop &&
         subpatchop.uiAttribs &&
         subpatchop.uiAttribs.subPatchOp
       ) {
-        // const opIn = gui.corePatch().getOpById(this._opIdInput);
+        // const opIn = Gui.gui.corePatch().getOpById(this._opIdInput);
         // const pIn = opIn.getPortById(this._portIdInput);
-        // const opOut = gui.corePatch().getOpById(this._opIdOutput);
+        // const opOut = Gui.gui.corePatch().getOpById(this._opIdOutput);
         // const pOut = opOut.getPortById(this._portIdOutput);
         // if (opOut.uiAttribs.subPatch != this._subPatch)
         // {
@@ -492,10 +492,10 @@ export default class GlLink {
         }
       } else {
         if (!this._subPatchOp && this._glOpIn && this._glOpOut) {
-          const a = gui.patchView.getSubPatchOuterOp(
+          const a = Gui.gui.patchView.getSubPatchOuterOp(
             this._glOpIn.op.uiAttribs.subPatch,
           );
-          const b = gui.patchView.getSubPatchOuterOp(
+          const b = Gui.gui.patchView.getSubPatchOuterOp(
             this._glOpOut.op.uiAttribs.subPatch,
           );
 
@@ -835,7 +835,7 @@ export default class GlLink {
   }
 
   isAPortHovering() {
-    const perf = gui.uiProfiler.start(
+    const perf = Gui.gui.uiProfiler.start(
       "[gllink] cableHoverChangeisAPortHoveringd",
     );
 
@@ -862,7 +862,7 @@ export default class GlLink {
   }
 
   cableHoverChanged() {
-    const perf = gui.uiProfiler.start("[gllink] cableHoverChanged");
+    const perf = Gui.gui.uiProfiler.start("[gllink] cableHoverChanged");
 
     if (this._glOpOut && this._glOpOut.op) {
       // console.log("cableHoverChanged", this._glOpOut);

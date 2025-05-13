@@ -1,5 +1,5 @@
-import { Logger, ModalBackground, ele } from "@cables/client";
-import Gui, { gui } from "../gui.js";
+import { Logger } from "@cables/client";
+import Gui from "../gui.js";
 import { fileUploader } from "../dialogs/upload.js";
 
 let pageshowcount = 0;
@@ -16,7 +16,7 @@ export default function setHtmlDefaultListeners() {
 
     // handle people use back and then forward and browser caches whole site state...
     if (pageshowcount > 1) {
-      gui.hide();
+      Gui.gui.hide();
       document.body.prepend(
         "this session has expired... please reload page..........",
       );
@@ -26,7 +26,7 @@ export default function setHtmlDefaultListeners() {
   window.addEventListener("beforeunload", (_event) => {});
 
   document.addEventListener("paste", (e) => {
-    if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
+    if (Gui.gui.getRestriction() < Gui.gui.RESTRICT_MODE_FULL) return;
 
     let items = (e.clipboardData || e.originalEvent.clipboardData).items;
     for (let index in items) {
@@ -44,37 +44,37 @@ export default function setHtmlDefaultListeners() {
     const aEl = document.activeElement;
     if (aEl.tagName == "TEXTAREA" || aEl.tagName == "INPUT") return;
     else if (
-      gui.patchView._patchRenderer &&
-      gui.patchView._patchRenderer.isFocused()
+      Gui.gui.patchView._patchRenderer &&
+      Gui.gui.patchView._patchRenderer.isFocused()
     )
-      gui.patchView._patchRenderer.paste(e);
-    else if (gui.timeLine() && gui.timeLine().isFocused())
-      gui.timeLine().paste(e);
+      Gui.gui.patchView._patchRenderer.paste(e);
+    else if (Gui.gui.timeLine() && Gui.gui.timeLine().isFocused())
+      Gui.gui.timeLine().paste(e);
   });
 
   document.addEventListener("copy", (e) => {
-    if (!gui.patchView._patchRenderer) return;
+    if (!Gui.gui.patchView._patchRenderer) return;
 
     const aEl = document.activeElement;
 
     if (aEl.tagName == "TEXTAREA" || aEl.tagName == "INPUT") return;
     else if (
-      gui.patchView._patchRenderer &&
-      gui.patchView._patchRenderer.isFocused()
+      Gui.gui.patchView._patchRenderer &&
+      Gui.gui.patchView._patchRenderer.isFocused()
     )
-      gui.patchView._patchRenderer.copy(e);
-    else if (gui.timeLine() && gui.timeLine().isFocused())
-      gui.timeLine().copy(e);
+      Gui.gui.patchView._patchRenderer.copy(e);
+    else if (Gui.gui.timeLine() && Gui.gui.timeLine().isFocused())
+      Gui.gui.timeLine().copy(e);
   });
 
   document.addEventListener("cut", (e) => {
     if (
-      gui.patchView._patchRenderer &&
-      gui.patchView._patchRenderer.isFocused()
+      Gui.gui.patchView._patchRenderer &&
+      Gui.gui.patchView._patchRenderer.isFocused()
     )
-      gui.patchView._patchRenderer.cut(e);
-    else if (gui.timeLine() && gui.timeLine().isFocused())
-      gui.timeLine().cut(e);
+      Gui.gui.patchView._patchRenderer.cut(e);
+    else if (Gui.gui.timeLine() && Gui.gui.timeLine().isFocused())
+      Gui.gui.timeLine().cut(e);
   });
 
   // show context menu only on input fields/images etc...
@@ -147,7 +147,7 @@ export default function setHtmlDefaultListeners() {
   window.addEventListener(
     "resize",
     () => {
-      if (window.gui) gui.onResize();
+      if (window.gui) Gui.gui.onResize();
     },
     false,
   );
@@ -167,18 +167,18 @@ export default function setHtmlDefaultListeners() {
   document.addEventListener(
     "visibilitychange",
     function () {
-      if (gui && !document.hidden) {
-        gui.setLayout();
-        gui.patchView.store.checkUpdated(null, false, true);
+      if (Gui.gui && !document.hidden) {
+        Gui.gui.setLayout();
+        Gui.gui.patchView.store.checkUpdated(null, false, true);
       }
     },
     false,
   );
 
   window.addEventListener("focus", () => {
-    if (gui && !document.hidden) {
-      gui.setLayout();
-      gui.patchView.store.checkUpdated(null, false, true);
+    if (Gui.gui && !document.hidden) {
+      Gui.gui.setLayout();
+      Gui.gui.patchView.store.checkUpdated(null, false, true);
     }
   });
 }

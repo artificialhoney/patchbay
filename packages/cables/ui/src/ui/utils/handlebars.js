@@ -1,5 +1,5 @@
 import { Logger } from "@cables/client";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { platform } from "../platform.js";
 
 /**
@@ -30,7 +30,7 @@ export function handleBarPrecompiled(name) {
  */
 export function getHandleBarHtml(name, obj) {
   let perf;
-  if (window.gui) perf = gui.uiProfiler.start("getHandleBarHtml");
+  if (Gui.gui.gui) perf = Gui.gui.Gui.gui.uiProfiler.start("getHandleBarHtml");
 
   const template = handleBarPrecompiled(name);
 

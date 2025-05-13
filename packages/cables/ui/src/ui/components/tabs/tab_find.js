@@ -5,7 +5,7 @@ import text from "../../text.js";
 import { escapeHTML } from "../../utils/helper.js";
 import namespace from "../../namespaceutils.js";
 import opNames from "../../opnameutils.js";
-import { gui } from "../../gui.js";
+import Gui from "../../gui.js";
 import { UiOp } from "../../core_extend_op.js";
 
 /**
@@ -58,8 +58,8 @@ export default class FindTab {
     let colors = [];
     const warnOps = [];
 
-    for (let i = 0; i < gui.corePatch().ops.length; i++) {
-      const op = gui.corePatch().ops[i];
+    for (let i = 0; i < Gui.gui.corePatch().ops.length; i++) {
+      const op = Gui.gui.corePatch().ops[i];
       if (!op) continue;
       if (op.uiAttribs.error) {
         if (namespace.isDeprecatedOp(op.objName)) op.isDeprecated = true;
@@ -79,26 +79,28 @@ export default class FindTab {
 
     this._updateCb = this.searchAfterPatchUpdate.bind(this);
 
-    const listenerChanged = gui.opHistory.on(
+    const listenerChanged = Gui.gui.opHistory.on(
       "changed",
       this.updateHistory.bind(this),
     );
     this._listenerids.push(listenerChanged);
 
     this._listenerids.push(
-      gui.corePatch().on("warningErrorIconChange", this._updateCb),
+      Gui.gui.corePatch().on("warningErrorIconChange", this._updateCb),
     );
-    this._listenerids.push(gui.corePatch().on("onOpDelete", this._updateCb));
-    this._listenerids.push(gui.corePatch().on("onOpAdd", this._updateCb));
     this._listenerids.push(
-      gui.corePatch().on("commentChanged", this._updateCb),
+      Gui.gui.corePatch().on("onOpDelete", this._updateCb),
+    );
+    this._listenerids.push(Gui.gui.corePatch().on("onOpAdd", this._updateCb));
+    this._listenerids.push(
+      Gui.gui.corePatch().on("commentChanged", this._updateCb),
     );
 
     this._tab.on("close", () => {
-      gui.opHistory.off(listenerChanged);
+      Gui.gui.opHistory.off(listenerChanged);
 
       for (let i = 0; i < this._listenerids.length; i++) {
-        gui.corePatch().off(this._listenerids[i]);
+        Gui.gui.corePatch().off(this._listenerids[i]);
       }
 
       this._closed = true;
@@ -236,7 +238,7 @@ export default class FindTab {
       info +
       '" ';
     html +=
-      'onkeypress="ele.keyClick(event,this)" onclick="gui.focusFindResult(\'' +
+      'onkeypress="ele.keyClick(event,this)" onclick="Gui.gui.focusFindResult(\'' +
       String(idx) +
       "','" +
       op.id +
@@ -284,7 +286,7 @@ export default class FindTab {
     html += result.where || "";
 
     let highlightsubpatch = "";
-    if (op.uiAttribs.subPatch == gui.patchView.getCurrentSubPatch())
+    if (op.uiAttribs.subPatch == Gui.gui.patchView.getCurrentSubPatch())
       highlightsubpatch = "highlight";
 
     if (op.uiAttribs.subPatch != 0)
@@ -292,7 +294,7 @@ export default class FindTab {
         '<br/> Subpatch: <span class="' +
         highlightsubpatch +
         '">' +
-        gui.patchView.getSubPatchName(op.uiAttribs.subPatch) +
+        Gui.gui.patchView.getSubPatchName(op.uiAttribs.subPatch) +
         "</span>";
 
     html += "</div>";
@@ -323,7 +325,7 @@ export default class FindTab {
   }
 
   _doSearchTriggers(str, userInvoked, ops, results) {
-    const triggers = gui.corePatch().namedTriggers;
+    const triggers = Gui.gui.corePatch().namedTriggers;
     const foundtriggers = [];
 
     for (let i in triggers) {
@@ -335,7 +337,7 @@ export default class FindTab {
   }
 
   _doSearchVars(str, userInvoked, ops, results) {
-    const vars = gui.corePatch().getVars();
+    const vars = Gui.gui.corePatch().getVars();
     const foundVars = [];
 
     for (let i in vars) {
@@ -362,9 +364,9 @@ export default class FindTab {
     if (str.indexOf(":") == 0) {
       if (str == ":attention") {
         if (
-          gui.project().summary.isBasicExample ||
-          (gui.project().summary.exampleForOps &&
-            gui.project().summary.exampleForOps.length > 0)
+          Gui.gui.project().summary.isBasicExample ||
+          (Gui.gui.project().summary.exampleForOps &&
+            Gui.gui.project().summary.exampleForOps.length > 0)
         ) {
           FindTab.searchOutDated(ops, results);
           for (let i = 0; i < results.length; i++) {
@@ -406,10 +408,10 @@ export default class FindTab {
       }
 
       if (str == ":recent") {
-        const history = gui.opHistory.getAsArray(99);
+        const history = Gui.gui.opHistory.getAsArray(99);
 
         for (let i = 0; i < history.length; i++) {
-          const op = gui.corePatch().getOpById(history[i].id);
+          const op = Gui.gui.corePatch().getOpById(history[i].id);
           results.push({ op, score: 1 });
         }
       }
@@ -493,7 +495,7 @@ export default class FindTab {
           const op = ops[i];
           if (
             op.uiAttribs &&
-            op.uiAttribs.subPatch == gui.patchView.getCurrentSubPatch()
+            op.uiAttribs.subPatch == Gui.gui.patchView.getCurrentSubPatch()
           )
             results.push({ op, score: 1 });
         }
@@ -560,7 +562,7 @@ export default class FindTab {
               if (
                 value &&
                 value.startsWith("/assets/") &&
-                !value.startsWith("/assets/" + gui.patchId)
+                !value.startsWith("/assets/" + Gui.gui.patchId)
               ) {
                 results.push({ op: ops[i], score: 1 });
               }
@@ -576,10 +578,10 @@ export default class FindTab {
             results.push({ op: op, score: 1 });
         }
       } else if (str == ":bookmarked") {
-        const bms = gui.bookmarks.getBookmarks();
+        const bms = Gui.gui.bookmarks.getBookmarks();
 
         for (let i = 0; i < bms.length; i++) {
-          const op = gui.corePatch().getOpById(bms[i]);
+          const op = Gui.gui.corePatch().getOpById(bms[i]);
           results.push({ op, score: 1 });
         }
       } else if (str == ":unconnected") {
@@ -720,7 +722,7 @@ export default class FindTab {
         if (op.storage && op.storage.blueprint) score -= 1;
         if (
           found &&
-          op.uiAttribs.subPatch == gui.patchView.getCurrentSubPatch()
+          op.uiAttribs.subPatch == Gui.gui.patchView.getCurrentSubPatch()
         )
           score++;
         if (found) results.push({ op: ops[i], score, where });
@@ -751,7 +753,7 @@ export default class FindTab {
     }
 
     let results =
-      this._doSearch(strs[0] || "", userInvoked, gui.corePatch().ops) || [];
+      this._doSearch(strs[0] || "", userInvoked, Gui.gui.corePatch().ops) || [];
 
     let resultsTriggers = this._doSearchTriggers(strs[0]);
     let resultsVars = [];
@@ -799,13 +801,13 @@ export default class FindTab {
       for (let i = 0; i < results.length; i++)
         html += this._addResultOp(results[i].op, results[i], i);
 
-      let onclickResults = "gui.patchView.unselectAllOps();";
+      let onclickResults = "Gui.gui.patchView.unselectAllOps();";
 
       for (let i = 0; i < results.length; i++)
         onclickResults +=
-          "gui.patchView.selectOpId('" + results[i].op.id + "');";
+          "Gui.gui.patchView.selectOpId('" + results[i].op.id + "');";
 
-      onclickResults += "gui.patchView.showSelectedOpsPanel();";
+      onclickResults += "Gui.gui.patchView.showSelectedOpsPanel();";
       html +=
         '<div style="background-color:var(--color-02);border-bottom:none;">' +
         results.length +
@@ -820,7 +822,7 @@ export default class FindTab {
     }
 
     this._eleResults.innerHTML = html;
-    gui.patchView.checkPatchErrors();
+    Gui.gui.patchView.checkPatchErrors();
 
     if (!userInvoked) this.focus();
 
@@ -858,7 +860,7 @@ export default class FindTab {
 
 FindTab.searchOutDated = (ops, results) => {
   for (let i = 0; i < ops.length; i++) {
-    const doc = gui.opDocs.getOpDocByName(ops[i].objName);
+    const doc = Gui.gui.opDocs.getOpDocByName(ops[i].objName);
     if ((doc && doc.oldVersion) || namespace.isDeprecatedOp(ops[i].objName))
       results.push({ op: ops[i], score: 1 });
   }

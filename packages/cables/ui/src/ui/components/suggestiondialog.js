@@ -1,6 +1,6 @@
 import { ele, ModalBackground } from "@cables/client";
 import { getHandleBarHtml } from "../utils/handlebars.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 
 /** @typedef SuggestionItem
  * @property {String} name
@@ -114,7 +114,7 @@ export default class SuggestionDialog {
     this._bg.hide();
 
     CABLES.UI.suggestions = null;
-    gui.patchView.focus();
+    Gui.gui.patchView.focus();
   }
 
   showSelect() {

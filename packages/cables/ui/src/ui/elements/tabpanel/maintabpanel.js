@@ -1,6 +1,6 @@
 import { Events } from "@cables/client";
-import { gui } from "../../gui.js";
-import { userSettings } from "../../components/usersettings.js";
+import Gui from "../../gui.js";
+import UserSettings from "../../components/usersettings.js";
 import TabPanel from "./tabpanel.js";
 
 /**
@@ -31,13 +31,13 @@ export default class MainTabPanel extends Events {
       tabs.activateTab("");
       tabs.activateTab(tab.id);
 
-      if (!wasVisible && window.gui) gui.setLayout();
+      if (!wasVisible && window.gui) Gui.gui.setLayout();
     });
 
     this._tabs.on("onTabRemoved", (tab) => {
       if (this._tabs.getNumTabs() == 0) {
         this.hide();
-        gui.setLayout();
+        Gui.gui.setLayout();
       }
     });
   }
@@ -47,7 +47,7 @@ export default class MainTabPanel extends Events {
   }
 
   init() {
-    const showMainTabs = userSettings.get("maintabsVisible");
+    const showMainTabs = UserSettings.userSettings.get("maintabsVisible");
     if (showMainTabs) this.show();
     else this.hide(true);
   }
@@ -66,7 +66,7 @@ export default class MainTabPanel extends Events {
     }
 
     if (!userInteraction) {
-      if (!userSettings.get("maintabsVisible")) {
+      if (!UserSettings.userSettings.get("maintabsVisible")) {
         return;
       }
     }
@@ -75,10 +75,10 @@ export default class MainTabPanel extends Events {
     this._ele.style.display = "block";
     document.getElementById("editorminimized").style.display = "none";
 
-    if (gui.finishedLoading() && userInteraction)
-      userSettings.set("maintabsVisible", true);
+    if (Gui.gui.finishedLoading() && userInteraction)
+      UserSettings.userSettings.set("maintabsVisible", true);
 
-    gui.setLayout();
+    Gui.gui.setLayout();
 
     this._tabs.updateSize();
     if (this._tabs.getActiveTab()) this._tabs.getActiveTab().activate();
@@ -91,20 +91,20 @@ export default class MainTabPanel extends Events {
     this._visible = false;
     document.getElementById("editorminimized").style.display = "block";
     this._ele.style.display = "none";
-    if (window.gui) gui.setLayout();
+    if (window.gui) Gui.gui.setLayout();
 
-    if (!donotsave && gui.finishedLoading())
-      userSettings.set("maintabsVisible", false);
+    if (!donotsave && Gui.gui.finishedLoading())
+      UserSettings.userSettings.set("maintabsVisible", false);
   }
 
   /**
    * @param {boolean} userInteraction
    */
   toggle(userInteraction = false) {
-    if (!gui.finishedLoading()) return;
+    if (!Gui.gui.finishedLoading()) return;
     if (this._visible) {
       this.hide();
-      gui.patchView.focus();
+      Gui.gui.patchView.focus();
       const actTab = this.tabs.getActiveTab();
       if (actTab) actTab.activate();
     } else this.show(userInteraction);

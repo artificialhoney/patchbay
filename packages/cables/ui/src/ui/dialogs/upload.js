@@ -3,7 +3,7 @@ import { Logger } from "@cables/client";
 import { notifyError } from "../elements/notification.js";
 import FileManager from "../components/filemanager.js";
 import ModalDialog from "./modaldialog.js";
-import { gui } from "../gui.js";
+import Gui from "../gui.js";
 import { platform } from "../platform.js";
 
 /**
@@ -43,7 +43,7 @@ export default class FileUploader {
    * @param {DragEvent} event
    */
   uploadDragOver(event) {
-    if (gui.isRemoteClient) return;
+    if (Gui.gui.isRemoteClient) return;
 
     this._uploadDropEvent = event.originalEvent;
 
@@ -83,7 +83,7 @@ export default class FileUploader {
    * @param {File} file
    */
   uploadFile(file, filename = null, opId = null, next = null) {
-    if (gui.isRemoteClient) return;
+    if (Gui.gui.isRemoteClient) return;
 
     if (platform.frontendOptions.uploadFiles || CABLES.reuploadName) {
       // allow reupload in electron via `|| CABLES.reuploadName`
@@ -142,15 +142,15 @@ export default class FileUploader {
         finalPath = file.path.replace(assetPath, "./");
       }
       finalPath = finalPath.replaceAll("\\", "/");
-      gui.patchView.addAssetOpAuto(finalPath, this._uploadDropEventOrig);
+      Gui.gui.patchView.addAssetOpAuto(finalPath, this._uploadDropEventOrig);
     }
   }
 
   handleFileInputReUpload(files) {
     if (!window.gui) return;
-    if (gui.isRemoteClient) return;
+    if (Gui.gui.isRemoteClient) return;
 
-    gui.jobs().start({
+    Gui.gui.jobs().start({
       id: "prepareuploadfiles",
       title: "preparing files for upload...",
     });
@@ -171,14 +171,14 @@ export default class FileUploader {
       }
     }
 
-    gui.jobs().finish("prepareuploadfiles");
+    Gui.gui.jobs().finish("prepareuploadfiles");
   }
 
   uploadFiles(files, opName) {
     if (!window.gui) return;
-    if (gui.isRemoteClient) return;
+    if (Gui.gui.isRemoteClient) return;
 
-    gui.jobs().start({
+    Gui.gui.jobs().start({
       id: "prepareuploadfiles",
       title: "preparing files for upload...",
     });
@@ -187,7 +187,7 @@ export default class FileUploader {
       this.uploadFile(files[i], files[i].name, opName);
     }
 
-    gui.jobs().finish("prepareuploadfiles");
+    Gui.gui.jobs().finish("prepareuploadfiles");
   }
 
   uploadDrop(event) {
@@ -197,11 +197,11 @@ export default class FileUploader {
     event.preventDefault();
     event.stopPropagation();
 
-    if (gui.isRemoteClient) return;
+    if (Gui.gui.isRemoteClient) return;
 
     this._uploadDropEventOrig = event;
 
-    gui.closeModal();
+    Gui.gui.closeModal();
 
     const files = event.dataTransfer.files;
 

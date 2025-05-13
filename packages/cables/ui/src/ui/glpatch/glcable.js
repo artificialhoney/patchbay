@@ -2,8 +2,8 @@ import { Logger } from "@cables/client";
 import gluiconfig from "./gluiconfig.js";
 import text from "../text.js";
 import GlPort from "./glport.js";
-import { gui } from "../gui.js";
-import { userSettings } from "../components/usersettings.js";
+import Gui from "../gui.js";
+import UserSettings from "../components/usersettings.js";
 import GlPatch from "./glpatch.js";
 import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
 import GlRect from "../gldraw/glrect.js";
@@ -39,7 +39,7 @@ export default class GlCable {
 
     this._points = [];
 
-    this._buttonSize = gui.theme.patch.cableButtonSize || 17;
+    this._buttonSize = Gui.gui.theme.patch.cableButtonSize || 17;
     this._linetype = this.LINETYPE_CURVED;
 
     this._subPatch = subpatch;
@@ -68,9 +68,9 @@ export default class GlCable {
       this._unHover();
     });
 
-    gui.on("themeChanged", () => {
+    Gui.gui.on("themeChanged", () => {
       this._oldx = this._oldy = this._oldx2 = this._oldy2 = 0;
-      this._buttonSize = gui.theme.patch.cableButtonSize || 17;
+      this._buttonSize = Gui.gui.theme.patch.cableButtonSize || 17;
       this._setPositionButton();
       this._updateLinePos();
     });
@@ -95,19 +95,19 @@ export default class GlCable {
     // const oldLineType = this._linetype;
     this._linetype = this.LINETYPE_CURVED;
 
-    if (userSettings.get("linetype") == "simple")
+    if (UserSettings.userSettings.get("linetype") == "simple")
       this._linetype = this.LINETYPE_SIMPLE;
-    if (userSettings.get("linetype") == "straight")
+    if (UserSettings.userSettings.get("linetype") == "straight")
       this._linetype = this.LINETYPE_STRAIGHT;
-    if (userSettings.get("linetype") == "h1") {
+    if (UserSettings.userSettings.get("linetype") == "h1") {
       this._linetype = this.LINETYPE_HANGING;
       this._tension = 0.0;
     }
-    if (userSettings.get("linetype") == "h2") {
+    if (UserSettings.userSettings.get("linetype") == "h2") {
       this._linetype = this.LINETYPE_HANGING;
       this._tension = 0.2;
     }
-    if (userSettings.get("linetype") == "h3") {
+    if (UserSettings.userSettings.get("linetype") == "h3") {
       this._linetype = this.LINETYPE_HANGING;
       this._tension = 0.3;
     }
@@ -329,7 +329,7 @@ export default class GlCable {
             posX,
             this._y -
               distY * 0.002 -
-              this._distFromPort * (gui.theme.patch.cablesCurveY || 1.25),
+              this._distFromPort * (Gui.gui.theme.patch.cablesCurveY || 1.25),
             gluiconfig.zPosCables,
 
             (posX + posX2) * 0.5,
@@ -339,7 +339,7 @@ export default class GlCable {
             posX2,
             this._y2 +
               distY * 0.002 +
-              this._distFromPort * (gui.theme.patch.cablesCurveY || 1.25),
+              this._distFromPort * (Gui.gui.theme.patch.cablesCurveY || 1.25),
             gluiconfig.zPosCables,
             posX2,
             this._y2,
@@ -349,8 +349,8 @@ export default class GlCable {
             gluiconfig.zPosCables,
           ];
 
-          // console.log(gui.theme.patch.cablesSubDivde);
-          // for (let i = 0; i < (gui.theme.patch.cablesSubDivde); i++)
+          // console.log(Gui.gui.theme.patch.cablesSubDivde);
+          // for (let i = 0; i < (Gui.gui.theme.patch.cablesSubDivde); i++)
           this._points = this._subdivide(this._points, 5);
 
           // this._points.unshift(posX, this._y, 0);
@@ -534,7 +534,7 @@ export default class GlCable {
       this._log.warn("disposed already!!!?!");
     }
 
-    const perf = gui.uiProfiler.start("glcable collideMouse");
+    const perf = Gui.gui.uiProfiler.start("glcable collideMouse");
 
     // is either end INSIDE the circle?
     // if so, return true immediately
@@ -584,7 +584,7 @@ export default class GlCable {
       this._glPatch.isMouseOverOp() && !this._glPatch.isDraggingOps();
 
     if (distance <= r && !mouseOverLineAndOpButNotDragging) {
-      const selectedOp = gui.patchView.getSelectedOps()[0];
+      const selectedOp = Gui.gui.patchView.getSelectedOps()[0];
       if (
         selectedOp &&
         (!selectedOp.portsIn ||
@@ -596,7 +596,7 @@ export default class GlCable {
 
       if (
         this._glPatch.isDraggingOps() &&
-        gui.patchView.getSelectedOps().length == 1 &&
+        Gui.gui.patchView.getSelectedOps().length == 1 &&
         (this._link._glOpIn.op.id == selectedOp.id ||
           this._link._glOpOut.op.id == selectedOp.id)
       ) {
@@ -624,7 +624,7 @@ export default class GlCable {
       if (this._glPatch.cablesHoverText)
         this._glPatch.cablesHoverText.setPosition(closestX + 10, closestY - 10);
 
-      gui.showInfo(text.linkAddCircle);
+      Gui.gui.showInfo(text.linkAddCircle);
 
       perf.finish();
       return true;
