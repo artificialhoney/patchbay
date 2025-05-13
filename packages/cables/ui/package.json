@@ -28,14 +28,13 @@
     "undo-manager": "^1.1.1"
   },
   "scripts": {
-    "build": "pnpm run build:ui && pnpm run build:libs && pnpm run build:talker && pnpm run build:assets",
+    "build": "pnpm -r --filter @cables/cables build && pnpm run build:ui && pnpm run build:libs && pnpm run build:talker && pnpm run build:assets",
     "build:ui": "rollup -c rollup.config.mjs",
     "watch:ui": "rollup -c rollup.config.mjs -w",
     "build:libs": "rollup -c rollup.config.libs.mjs",
     "watch:libs": "rollup -c rollup.config.libs.mjs -w",
     "build:talker": "rollup -c rollup.config.talker.mjs",
     "watch:talker": "rollup -c rollup.config.talker.mjs -w",
-    "build:assets": "gulp",
-    "postinstall": "pnpm -r --filter @cables/cables build"
+    "build:assets": "gulp"
   }
 }

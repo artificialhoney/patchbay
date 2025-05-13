@@ -10,6 +10,8 @@ const __dirname = fileURLToPath(metaUrl.href);
 const sw = process.env.SW === "true";
 const prod = process.env.NODE_ENV === "production";
 
+const publicDir = fileURLToPath(new URL("./public", import.meta.url));
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 // eslint-disable-next-line no-undef
 export default defineNuxtConfig({
@@ -48,6 +50,15 @@ export default defineNuxtConfig({
     componentDir: "./components/ui",
   },
   nitro: {
+    publicAssets: [
+      {
+        dir: publicDir,
+      },
+      {
+        dir: resolve(__dirname, "../../cables/ui/dist"),
+        baseURL: "/cables/ui",
+      },
+    ],
     routeRules: {
       "/patchbay/**": {
         proxy: {

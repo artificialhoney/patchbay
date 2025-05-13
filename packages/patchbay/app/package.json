@@ -5,11 +5,11 @@
   "type": "module",
   "scripts": {
     "clean": "rimraf .output .nuxt .data ./node_modules/.cache",
-    "build": "nuxt build",
+    "build": "pnpm -r --filter @cables/ui build && nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "pnpm -r --filter @cables/ui build && nuxt prepare"
+    "postinstall": "nuxt prepare"
   },
   "dependencies": {
     "@cables/api": "workspace:*",
