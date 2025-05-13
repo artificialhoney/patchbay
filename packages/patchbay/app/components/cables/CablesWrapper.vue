@@ -2,7 +2,6 @@
 import "@cables/ui/src/web/CablesWebComponent.js";
 import CablesPatchbay from "@patchbay/client";
 import { useTemplateRef, onMounted } from "vue";
-import { EventEmitter } from "eventemitter3";
 
 const { data: platformSettings } = await useFetch(
   "/api/cables/platformSettings",
@@ -38,31 +37,16 @@ const patchbay = {
   })(),
 };
 
-let cablesPatchbay = null;
-
-const talker = new (class extends EventEmitter {
-  send(event, data, callback) {
-    switch (event) {
-      case "requestPatchData":
-        callback(null, cablesPatchbay.editor.config);
-        return;
-      case "getOpDocsAll":
-        callback(null, []);
-        return;
-    }
-  }
-})();
-
 if (process.client) {
   onMounted(async () => {
-    cablesPatchbay = new CablesPatchbay(patchbay, talker, cablesUi.value);
+    const cablesPatchbay = new CablesPatchbay(patchbay, cablesUi.value);
     await cablesPatchbay.init();
   });
 }
 </script>
 
 <template>
-  <div class="flex">
-    <cables-ui ref="cables-ui" :talker="talker"></cables-ui>
+  <div class="flex h-full">
+    <iframe ref="cables-ui" class="w-full h-full" />
   </div>
 </template>

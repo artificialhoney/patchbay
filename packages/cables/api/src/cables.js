@@ -119,7 +119,7 @@ export default class Cables extends SharedUtil {
 
   getUiDistPath() {
     if (this._config.path.uiDist)
-      return path.join(this._dirname, this._config.path.uiDist);
+      return path.join("", this._config.path.uiDist);
     return path.join(this.getUiPath());
   }
 

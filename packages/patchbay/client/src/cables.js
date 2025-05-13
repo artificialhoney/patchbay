@@ -8,14 +8,13 @@ import patchbayCommands from "./cmd.js";
  */
 export default class CablesPatchbay {
   static cablesPatchbay = null;
-  constructor(patchbay, talker, editorElement) {
+  constructor(patchbay, editorElement) {
     CablesPatchbay.cablesPatchbay = this;
 
     this._logger = new Logger("patchbay");
     this._patchbay = patchbay;
     // this._importSync = importSync;
     this._editorElement = editorElement;
-    this._talker = talker;
 
     this.ipcRenderer = this._patchbay.ipcRenderer; // needed to have ipcRenderer in patchbay_editor.js
     this._settings =
@@ -200,32 +199,34 @@ export default class CablesPatchbay {
       false,
     );
 
-    this.editor = new PatchbayEditor({
-      config: {
-        ...this._settings,
-        isTrustedPatch: true,
-        platformClass: "PlatformPatchbay",
-        urlCables: "cables://",
-        urlSandbox: "cables://",
-        communityUrl: this._config.communityUrl,
-        user: this._settings.currentUser,
-        usersettings: { settings: this._usersettings },
-        isDevEnv: !this._config.isPackaged,
-        env: this._config.env,
-        patchId: this._settings.patchId,
-        patchVersion: "",
-        socketcluster: {},
-        remoteClient: false,
-        buildInfo: this._settings.buildInfo,
-        patchConfig: {
-          allowEdit: true,
-          prefixAssetPath: this._settings.currentPatchDir,
-          assetPath: this._settings.paths.assetPath,
-          paths: this._settings.paths,
+    this.editor = new PatchbayEditor(
+      {
+        config: {
+          ...this._settings,
+          isTrustedPatch: true,
+          platformClass: "PlatformPatchbay",
+          urlCables: "cables://",
+          urlSandbox: "cables://",
+          communityUrl: this._config.communityUrl,
+          user: this._settings.currentUser,
+          usersettings: { settings: this._usersettings },
+          isDevEnv: !this._config.isPackaged,
+          env: this._config.env,
+          patchId: this._settings.patchId,
+          patchVersion: "",
+          socketcluster: {},
+          remoteClient: false,
+          buildInfo: this._settings.buildInfo,
+          patchConfig: {
+            allowEdit: true,
+            prefixAssetPath: this._settings.currentPatchDir,
+            assetPath: this._settings.paths.assetPath,
+            paths: this._settings.paths,
+          },
         },
       },
-      talker: this._talker,
-    });
+      this._editorElement,
+    );
   }
 
   openOpDirsTab() {

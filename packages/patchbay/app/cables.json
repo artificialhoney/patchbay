@@ -5,7 +5,7 @@
   "url": "cables://",
   "path": {
     "standaloneDist": "./dist/",
-    "uiDist": "../ui/",
+    "uiDist": "/cables/ui",
     "ops": "../ops/",
     "assets": "../resources/assets/",
     "libs": "../libs/",

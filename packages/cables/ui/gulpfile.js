@@ -29,17 +29,6 @@ function _html() {
     .pipe(gulp.dest("dist/"));
 }
 
-function _htmlweb() {
-  return gulp
-    .src([
-      "html/ui/header.web.html",
-      "html/ui/templates/*.html",
-      "html/ui/footer.web.html",
-    ])
-    .pipe(concat("index.web.html"))
-    .pipe(gulp.dest("dist/"));
-}
-
 function _sass() {
   return gulp
     .src("scss/style-dark.scss")
@@ -78,34 +67,13 @@ function _images() {
     .pipe(gulp.dest("dist/img"));
 }
 
-function _web() {
-  return gulp
-    .src(["src/web/CablesWebComponent.js.jinja"])
-    .pipe(
-      data(() => ({
-        style: readFileSync("dist/css/style-dark.css"),
-        html: readFileSync("dist/index.web.html").toString().replace(/`/g, ""),
-      })),
-    )
-    .pipe(
-      nunjucksRender({
-        envOptions: { autoescape: false },
-        path: ["."],
-      }),
-    )
-    .pipe(rename("CablesWebComponent.js"))
-    .pipe(gulp.dest("src/web"));
-}
-
 const defaultSeries = gulp.series(
   _core,
   _html,
-  _htmlweb,
   _svgcss,
   _sass,
   _fonts,
   _images,
-  _web,
 );
 
 gulp.task("build", defaultSeries);
@@ -116,4 +84,3 @@ gulp.task("svgcss", _svgcss);
 gulp.task("sass", _sass);
 gulp.task("fonts", _fonts);
 gulp.task("images", _images);
-gulp.task("web", _web);

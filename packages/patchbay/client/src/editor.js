@@ -1,3 +1,4 @@
+import { TalkerAPI } from "@cables/client";
 import CablesPatchbay from "./cables.js";
 
 /**
@@ -30,11 +31,9 @@ import CablesPatchbay from "./cables.js";
  * @param {EditorParams} params
  */
 export default class PatchbayEditor {
-  constructor(params) {
+  constructor(params, frame) {
     this.config = params.config;
-    // const frame = document.getElementById("editorIframe");
-    // this._talker = new TalkerAPI(frame.contentWindow);
-    this._talker = params.talker;
+    this._talker = new TalkerAPI(frame.contentWindow);
     this._patchId = this.config.patchId;
 
     window.addEventListener("unhandledrejection", (e) => {
