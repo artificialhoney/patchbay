@@ -1,6 +1,11 @@
 import process from "node:process";
 import tailwindcss from "@tailwindcss/vite";
 import stringImport from "rollup-plugin-string-import";
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const metaUrl = new URL(".", import.meta.url);
+const __dirname = fileURLToPath(metaUrl.href);
 
 const sw = process.env.SW === "true";
 const prod = process.env.NODE_ENV === "production";
@@ -120,6 +125,11 @@ export default defineNuxtConfig({
       navigateFallback: "/",
       navigateFallbackAllowlist: [/^\/$/],
       type: "module",
+    },
+  },
+  runtimeConfig: {
+    cables: {
+      configLocation: resolve(__dirname, "cables.json"),
     },
   },
 });

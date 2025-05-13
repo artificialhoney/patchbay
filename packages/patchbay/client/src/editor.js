@@ -45,12 +45,12 @@ export default class PatchbayEditor {
       this._talker.send("logError", { level: "error", message: e.error });
     });
 
-    CablesPatchbay.cablesPatchbay.ipcRenderer.on(
-      "talkerMessage",
-      (_event, data) => {
-        this._talker.send(data.cmd, data.data);
-      },
-    );
+    // CablesPatchbay.cablesPatchbay.ipcRenderer.on(
+    //   "talkerMessage",
+    //   (_event, data) => {
+    //     this._talker.send(data.cmd, data.data);
+    //   },
+    // );
 
     /**
      * send patch config to ui

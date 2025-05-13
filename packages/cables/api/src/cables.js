@@ -49,10 +49,10 @@ export default class Cables extends SharedUtil {
 
   getConfig() {
     if (!this._config) {
-      if (process.env.npm_config_apiconfig)
+      if (!this.configLocation)
         this.configLocation = path.resolve(
           this._dirname,
-          "./cables_env_" + process.env.npm_config_apiconfig + ".json",
+          "./cables_env_patchbay.json",
         );
 
       if (!fs.existsSync(this.configLocation)) {

@@ -3,6 +3,16 @@ import "@cables/ui/src/web/CablesWebComponent.js";
 import CablesPatchbay from "@patchbay/client";
 import { useTemplateRef, onMounted } from "vue";
 
+const { data: platformSettings } = await useFetch(
+  "/api/cables/platformSettings",
+);
+const { data: cablesConfig } = await useFetch("/api/cables/cablesConfig");
+const { data: getStartupLog } = await useFetch("/api/cables/getStartupLog");
+// const { data: getOpModuleDir } = await useFetch("/api/cables/getOpModuleDir");
+// const { data: getOpModuleLocation } = await useFetch(
+//   "/cables/getOpModuleLocation",
+// );
+
 const cablesUi = useTemplateRef("cables-ui");
 
 const patchbay = {
@@ -10,24 +20,16 @@ const patchbay = {
     sendSync(token) {
       switch (token) {
         case "platformSettings":
-          return {
-            paths: [],
-          };
+          return platformSettings.value;
         case "cablesConfig":
-          return {};
+          return cablesConfig.value;
         case "getStartupLog":
-          return [];
-        case "getOpModuleDir":
-          return "";
-        case "getOpModuleLocation":
-          return "";
+          return getStartupLog.value;
+        // case "getOpModuleDir":
+        //   return getOpModuleDir;
+        // case "getOpModuleLocation":
+        //   return getOpModuleLocation;
       }
-    }
-    invoke(token) {
-      console.log(token);
-    }
-    on(token) {
-      console.log(token);
     }
   })(),
 };

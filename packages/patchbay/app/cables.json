@@ -1,0 +1,16 @@
+{
+  "env": "patchbay",
+  "minifyJs": true,
+  "communityUrl": "https://cables.gl",
+  "url": "cables://",
+  "path": {
+    "standaloneDist": "./dist/",
+    "uiDist": "../ui/",
+    "ops": "../ops/",
+    "assets": "../resources/assets/",
+    "libs": "../libs/",
+    "corelibs": "./libs/",
+    "js": "./"
+  },
+  "sourceMap": false
+}

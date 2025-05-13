@@ -1,0 +1,25 @@
+{
+  "name": "@patchbay/server",
+  "private": true,
+  "version": "1.0.0",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "default": "./src/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {},
+  "dependencies": {
+    "@cables/api": "workspace: *",
+    "archiver": "5.3.1",
+    "chokidar": "^4.0.3",
+    "jsonfile": "6.1.0",
+    "mime": "^4.0.7",
+    "mkdirp": "2.1.3",
+    "pako": "2.0.3",
+    "sanitize-filename": "1.6.3"
+  }
+}

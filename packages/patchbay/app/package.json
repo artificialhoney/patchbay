@@ -13,7 +13,9 @@
   },
   "dependencies": {
     "@cables/ui": "workspace:*",
+    "@cables/api": "workspace:*",
     "@patchbay/client": "workspace:*",
+    "@patchbay/server": "workspace:*",
     "@nuxt/content": "3.5.1",
     "@nuxtjs/i18n": "9.5.4",
     "@pinia/nuxt": "0.11.0",
