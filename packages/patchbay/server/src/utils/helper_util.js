@@ -1,10 +1,10 @@
-import { SharedHelperUtil, utilProvider } from "@cables/api";
+import { SharedHelperUtil } from "@cables/api";
 import path from "path";
 import { fileURLToPath, pathToFileURL } from "url";
 
-class HelperUtil extends SharedHelperUtil {
-  constructor(provider, app) {
-    super(provider);
+export default class HelperUtil extends SharedHelperUtil {
+  constructor(utilProvider, app) {
+    super(utilProvider);
     this._app = app;
     this._settings = app.settings;
   }
@@ -61,4 +61,3 @@ class HelperUtil extends SharedHelperUtil {
     return currentProjectDir && thePath.startsWith(currentProjectDir);
   }
 }
-export default (app) => new HelperUtil(utilProvider, app);

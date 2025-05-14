@@ -1,6 +1,6 @@
 import SharedUtil from "./utils/shared_util.js";
 import Cables from "./cables.js";
-import utilProvider from "./utils/util_provider.js";
+import UtilProvider from "./utils/util_provider.js";
 import SharedDocUtil from "./utils/shared_doc_util.js";
 import SharedHelperUtil from "./utils/shared_helper_util.js";
 import SharedOpsUtil from "./utils/shared_ops_util.js";
@@ -14,7 +14,7 @@ import SharedExportService from "./export/shared_export_service.js";
 import * as CablesConstants from "./api_constants.js";
 
 export {
-  utilProvider,
+  UtilProvider,
   Cables,
   SharedUtil,
   SharedDocUtil,

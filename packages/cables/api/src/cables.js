@@ -4,7 +4,7 @@ import fs from "fs-extra";
 import path from "path";
 import { fileURLToPath } from "url";
 import SharedUtil from "./utils/shared_util.js";
-import { UtilProvider } from "./utils/util_provider.js";
+import UtilProvider from "./utils/util_provider.js";
 
 /**
  * cables configuration class

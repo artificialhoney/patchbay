@@ -1,27 +1,20 @@
-import { SharedProjectsUtil, utilProvider } from "@cables/api";
+import { SharedProjectsUtil } from "@cables/api";
 import path from "path";
 import sanitizeFileName from "sanitize-filename";
 import pako from "pako";
 import crypto from "crypto";
 import jsonfile from "jsonfile";
 import fs from "fs";
-// import helperUtilFactory from "./helper_util.js";
-// import filesUtilFactory from "./files_util.js";
-// import opsUtilFactory from "./ops_util.js";
 
-class ProjectsUtil extends SharedProjectsUtil {
-  constructor(provider, app) {
-    super(provider);
+export default class ProjectsUtil extends SharedProjectsUtil {
+  constructor(utilProvider, app) {
+    super(utilProvider);
     this._app = app;
     this._settings = app.settings;
     this.CABLES_PROJECT_FILE_EXTENSION = "cables";
 
     this._dirInfos = null;
     this._projectOpDocs = null;
-
-    // this._opsUtil = opsUtilFactory(app);
-    // this._filesUtil = filesUtilFactory(app);
-    // this._helperUtil = helperUtilFactory(app);
   }
 
   getAssetPath(projectId) {
@@ -272,12 +265,11 @@ class ProjectsUtil extends SharedProjectsUtil {
 
   getAbsoluteOpDirFromHierarchy(opName) {
     const currentProject = this._settings.getCurrentProject();
-    if (!this._dirInfos) {
+    if (currentProject && !this._dirInfos) {
       this._log.debug("rebuilding opdir-cache, changed by:", opName);
       this._dirInfos = this.getOpDirs(currentProject);
     }
-    if (!this._dirInfos)
-      return this._this._opsUtil.getOpSourceNoHierarchy(opName);
+    if (!this._dirInfos) return this._opsUtil.getOpSourceNoHierarchy(opName);
 
     for (let i = 0; i < this._dirInfos.length; i++) {
       const dirInfo = this._dirInfos[i];
@@ -288,7 +280,7 @@ class ProjectsUtil extends SharedProjectsUtil {
         return dirInfo.opLocations[opName];
       }
     }
-    return this._this._opsUtil.getOpSourceNoHierarchy(opName);
+    return this._opsUtil.getOpSourceNoHierarchy(opName);
   }
 
   invalidateProjectCaches() {
@@ -339,7 +331,7 @@ class ProjectsUtil extends SharedProjectsUtil {
         }
       });
       let opDocs = Object.values(ops);
-      opDocs = this._this._opsUtil.addVersionInfoToOps(opDocs, true);
+      opDocs = this._opsUtil.addVersionInfoToOps(opDocs, true);
       this._projectOpDocs = opDocs;
     }
     let filteredOpDocs = [];
@@ -348,10 +340,10 @@ class ProjectsUtil extends SharedProjectsUtil {
         const opDoc = this._projectOpDocs[i];
         if (
           filterOldVersions &&
-          this._this._opsUtil.isOpOldVersion(opDoc.name, this._projectOpDocs)
+          this._opsUtil.isOpOldVersion(opDoc.name, this._projectOpDocs)
         )
           continue;
-        if (filterDeprecated && this._this._opsUtil.isDeprecated(opDoc.name))
+        if (filterDeprecated && this._opsUtil.isDeprecated(opDoc.name))
           continue;
         filteredOpDocs.push(opDoc);
       }
@@ -362,4 +354,3 @@ class ProjectsUtil extends SharedProjectsUtil {
     return filteredOpDocs;
   }
 }
-export default (app) => new ProjectsUtil(utilProvider, app);

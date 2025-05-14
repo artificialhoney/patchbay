@@ -1,5 +1,5 @@
 import SharedUtil from "./shared_util.js";
-import { UtilProvider } from "./util_provider.js";
+import UtilProvider from "./util_provider.js";
 
 /**
  * @abstract

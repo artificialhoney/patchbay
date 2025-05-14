@@ -6,8 +6,8 @@
   "scripts": {
     "clean": "rimraf .output .nuxt .data ./node_modules/.cache",
     "build": "pnpm -r --filter @cables/ui build && nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
+    "dev": "pnpm -r --filter @cables/ui build && nuxt dev",
+    "generate": "pnpm -r --filter @cables/ui build && nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },

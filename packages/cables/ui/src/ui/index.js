@@ -20,6 +20,7 @@ import gluiconfig from "./glpatch/gluiconfig.js";
 import extendCoreOp from "./core_extend_op.js";
 import PlatformCommunity from "./platform_community.js";
 import PlatformElectron from "./platform_electron.js";
+import PlatformPatchbay from "./platform_patchbay.js";
 import startUi from "./startgui.js";
 import text from "./text.js";
 import LogFilter from "./utils/logfilter.js";
@@ -54,7 +55,7 @@ import {
   Profiler,
 } from "@cables/cables";
 
-window.glMatrix = glmatrix.glmatrix;
+window.glMatrix = glmatrix.glMatrix;
 window.mat2 = glmatrix.mat2;
 window.mat2d = glmatrix.mat2d;
 window.mat3 = glmatrix.mat3;
@@ -135,6 +136,7 @@ CABLES.UI.userSettings = new UserSettings();
 
 // create "mock" to load dependencies, specific class is set in footer.html
 CABLES.PlatformElectron = PlatformElectron;
+CABLES.PlatformPatchbay = PlatformPatchbay;
 CABLES.PlatformCommunity = PlatformCommunity;
 CABLES.platform = new Platform({
   urlCables: "",

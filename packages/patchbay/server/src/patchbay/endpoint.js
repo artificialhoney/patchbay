@@ -2,24 +2,18 @@ import fs from "fs";
 import path from "path";
 import mime from "mime";
 
-import docUtilFactory from "../utils/doc_util.js";
-import opsUtilFactory from "../utils/ops_util.js";
-import subPatchOpUtilFactory from "../utils/subpatchop_util.js";
-import helperUtilFactory from "../utils/helper_util.js";
-import projectsUtilFactory from "../utils/projects_util.js";
-import logger from "../utils/logger.js";
+import { UtilProvider } from "@cables/api";
 
 export default class PatchbayEndpoint {
-  constructor(app) {
-    this._log = logger();
+  constructor(utilProvider, app) {
+    this._log = utilProvider.getUtil(UtilProvider.LOGGER);
+    this._opsUtil = utilProvider.getUtil(UtilProvider.OPS_UTIL);
+    this._helperUtil = utilProvider.getUtil(UtilProvider.HELPER_UTIL);
+    this._docsUtil = utilProvider.getUtil(UtilProvider.DOCS_UTIL);
+    this._subPatchOpUtil = utilProvider.getUtil(UtilProvider.SUBPATCH_OP_UTIL);
+    this._projectsUtil = utilProvider.getUtil(UtilProvider.PROJECTS_UTIL);
     this._app = app;
     this._settings = app.settings;
-
-    this._docUtil = docUtilFactory(app);
-    this._opsUtil = opsUtilFactory(app);
-    this._subPatchOpUtil = subPatchOpUtilFactory(app);
-    this._helperUtil = helperUtilFactory(app);
-    this._projectsUtil = projectsUtilFactory(app);
   }
 
   // init() {
@@ -70,9 +64,9 @@ export default class PatchbayEndpoint {
   // }
 
   async handle(request) {
-    const url = new URL(request.url);
-    const urlPath = url.pathname;
-    const queryParams = new URLSearchParams(url.search);
+    const url = request.url;
+    const urlPath = url.replace("cables/", "");
+    const queryParams = new URLSearchParams(url.split("?")[1]);
     const params = {};
     const req = request;
     req.params = params;
@@ -226,7 +220,7 @@ export default class PatchbayEndpoint {
 
   apiGetCoreOpsCode(req) {
     const preview = req.query.preview;
-    const opDocs = this._docUtil.getOpDocs();
+    const opDocs = this._docsUtil.getOpDocs();
     const code = this._opsUtil.buildCode(
       this._app.getCoreOpsPath(),
       null,
@@ -250,7 +244,7 @@ export default class PatchbayEndpoint {
     let code = "";
     let missingOps = [];
     if (project) {
-      let opDocs = this._docUtil.getOpDocs(true, true);
+      let opDocs = this._docsUtil.getOpDocs(true, true);
       let allOps = [];
       if (project.ops)
         allOps = project.ops.filter((op) => {
@@ -293,7 +287,7 @@ export default class PatchbayEndpoint {
             opsWithCode.push(opName);
           }
         }
-        this._docUtil.addOpToLookup(opId, opName);
+        this._docsUtil.addOpToLookup(opId, opName);
       }
     });
 

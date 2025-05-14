@@ -1,5 +1,3 @@
-import { utilProvider, SharedLibsUtil } from "@cables/api";
+import { SharedLibsUtil } from "@cables/api";
 
-class LibsUtil extends SharedLibsUtil {}
-
-export default () => new LibsUtil(utilProvider);
+export default class LibsUtil extends SharedLibsUtil {}

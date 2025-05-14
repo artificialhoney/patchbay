@@ -1,20 +1,13 @@
-import { SharedFilesUtil, utilProvider } from "@cables/api";
+import { SharedFilesUtil } from "@cables/api";
 import fs from "fs";
 import path from "path";
 import chokidar from "chokidar";
-import helperFactory from "./helper_util.js";
-import opsUtilFactory from "./ops_util.js";
-import projectsUtilFactory from "./projects_util.js";
 
-class FilesUtil extends SharedFilesUtil {
+export default class FilesUtil extends SharedFilesUtil {
   constructor(utilProvider, app) {
     super(utilProvider);
-    this._app = app;
     this._settings = app.settings;
-    this._helper = helperFactory(app);
-    // this._opsUtil = opsUtilFactory(app);
-    // this._projectsUtil = projectsUtilFactory(app);
-
+    this._app = app;
     const watcherOptions = {
       ignored: /(^|[\/\\])\../,
       ignorePermissionErrors: true,
@@ -307,5 +300,3 @@ class FilesUtil extends SharedFilesUtil {
     return filePath.toLowerCase().includes(this._app.getAssetLibraryPath());
   }
 }
-
-export default (app) => new FilesUtil(utilProvider, app);

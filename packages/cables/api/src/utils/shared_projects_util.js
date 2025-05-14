@@ -4,7 +4,7 @@ import path from "path";
 import sanitizeFileName from "sanitize-filename";
 import generate from "project-name-generator";
 import SharedUtil from "./shared_util.js";
-import { UtilProvider } from "./util_provider.js";
+import UtilProvider from "./util_provider.js";
 
 export default class SharedProjectsUtil extends SharedUtil {
   get utilName() {

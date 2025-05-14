@@ -1,14 +1,13 @@
-import { SharedDocUtil, utilProvider } from "@cables/api";
+import { SharedDocUtil } from "@cables/api";
 import fs from "fs";
 import path from "path";
 import jsonfile from "jsonfile";
 import opsUtilFactory from "./ops_util.js";
 import helperFactory from "./helper_util.js";
 
-class DocUtil extends SharedDocUtil {
-  constructor(utilProvider, app) {
+export default class DocUtil extends SharedDocUtil {
+  constructor(utilProvider) {
     super(utilProvider);
-    this._app = app;
   }
   getDocForOp(opName, docs = null) {
     if (!opName) return null;
@@ -59,4 +58,3 @@ class DocUtil extends SharedDocUtil {
     return readables;
   }
 }
-export default (app) => new DocUtil(utilProvider, app);

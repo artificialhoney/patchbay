@@ -3,7 +3,7 @@ import jsonfile from "jsonfile";
 import path from "path";
 
 import SharedUtil from "./shared_util.js";
-import { UtilProvider } from "./util_provider.js";
+import UtilProvider from "./util_provider.js";
 
 /**
  * @abstract
@@ -197,6 +197,7 @@ export default class SharedDocUtil extends SharedUtil {
 
   getOpDocs(filterOldVersions, filterDeprecated) {
     let opDocs = [];
+    console.log();
     if (this._rebuildOpDocCache) {
       let rebuildOpName = null;
       if (this._rebuildOpDocCache !== true)
@@ -226,6 +227,7 @@ export default class SharedDocUtil extends SharedUtil {
               }
             }
           }
+
           if (opDoc) {
             opDocs.push(opDoc);
             const opid = opDoc.id;

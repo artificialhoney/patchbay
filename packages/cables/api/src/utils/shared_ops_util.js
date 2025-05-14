@@ -9,7 +9,7 @@ import eslintAirbnbBase from "eslint-config-airbnb-base";
 import tokenString from "glsl-tokenizer/string.js";
 import XMLWriter from "xml-writer";
 import SharedUtil from "./shared_util.js";
-import { UtilProvider } from "./util_provider.js";
+import UtilProvider from "./util_provider.js";
 
 /**
  * @abstract
@@ -171,7 +171,6 @@ export default class SharedOpsUtil extends SharedUtil {
   getOpAbsolutePath(opName) {
     if (!opName) return null;
     if (!this.isOpNameValid(opName)) return null;
-
     return this.getOpSourceDir(opName);
   }
 
@@ -770,10 +769,8 @@ export default class SharedOpsUtil extends SharedUtil {
 
   getOpAbsoluteFileName(opName) {
     if (this.isOpNameValid(opName)) {
-      return path.join(
-        this.getOpAbsolutePath(opName),
-        this.getOpFileName(opName),
-      );
+      const p = [this.getOpAbsolutePath(opName), this.getOpFileName(opName)];
+      return path.join(...p);
     }
     return null;
   }

@@ -1,13 +1,12 @@
 import path from "path";
 import fs from "fs";
 import mkdirp from "mkdirp";
+import { UtilProvider } from "@cables/api";
 // import jsonfile from "jsonfile";
 
-import logger from "../utils/logger.js";
-
 export default class PatchbaySettings {
-  constructor(storageDir, config) {
-    this._log = logger();
+  constructor(utilProvider, storageDir, config) {
+    this._log = utilProvider.getUtil(UtilProvider.LOGGER);
     this._config = config;
     this.SESSION_PARTITION = "persist:cables:standalone";
 
@@ -46,6 +45,7 @@ export default class PatchbaySettings {
 
     this.refresh();
     this.set("currentUser", this.getCurrentUser(), true);
+    this._currentProject = "project";
   }
 
   refresh() {

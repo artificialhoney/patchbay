@@ -1,4 +1,4 @@
-class UtilProvider {
+export default class UtilProvider {
   constructor() {
     this._utils = {};
   }
@@ -14,7 +14,7 @@ class UtilProvider {
   }
 }
 UtilProvider.CABLES = "cables";
-UtilProvider.DOCS_UTIL = "docsUtil";
+UtilProvider.DOCS_UTIL = "docUtil";
 UtilProvider.HELPER_UTIL = "helperUtil";
 UtilProvider.LOGGER = "logger";
 UtilProvider.OPS_UTIL = "opsUtil";
@@ -24,6 +24,3 @@ UtilProvider.PROJECTS_UTIL = "projectsUtil";
 UtilProvider.FILES_UTIL = "filesUtil";
 UtilProvider.LIBS_UTIL = "libsUtil";
 UtilProvider.EXPORT_SERVICE = "exportService";
-
-export { UtilProvider };
-export default new UtilProvider();

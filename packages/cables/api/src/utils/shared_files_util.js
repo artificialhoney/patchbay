@@ -2,7 +2,8 @@ import fs from "fs";
 import path from "path";
 import sizeOfImage from "image-size";
 import sanitizeFileName from "sanitize-filename";
-import { UtilProvider } from "./util_provider.js";
+import UtilProvider from "./util_provider.js";
+
 import SharedUtil from "./shared_util.js";
 
 /**

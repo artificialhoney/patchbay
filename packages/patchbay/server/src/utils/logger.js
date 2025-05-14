@@ -1,6 +1,6 @@
-import { utilProvider, SharedLogger } from "@cables/api";
+import { SharedLogger } from "@cables/api";
 
-class Logger extends SharedLogger {
+export default class Logger extends SharedLogger {
   constructor(provider) {
     super(provider);
     // const logFormat = "[electron-{processType}] {d}.{m}.{y} {h}:{i}:{s} {text}";
@@ -70,5 +70,3 @@ class Logger extends SharedLogger {
     this.debug(title + " (" + time + "s)");
   }
 }
-
-export default () => new Logger(utilProvider);

@@ -5,35 +5,17 @@ import { promisify } from "util";
 
 import jsonfile from "jsonfile";
 import sanitizeFileName from "sanitize-filename";
-import { utilProvider } from "@cables/api";
-import { createRequire } from "module";
-import logger from "../utils/logger.js";
-
-import docUtilFactory from "../utils/doc_util.js";
-import helperUtilFactory from "../utils/helper_util.js";
-import opsUtilFactory from "../utils/ops_util.js";
-import subPatchOpUtilFactory from "../utils/subpatchop_util.js";
-import projectsUtilFactory from "../utils/projects_util.js";
-import filesUtilFactory from "../utils/files_util.js";
-import libsUtilFactory from "../utils/libs_util.js";
 
 import HtmlExportElectron from "../export/export_html.js";
 import PatchExportElectron from "../export/export_patch.js";
+import { UtilProvider } from "@cables/api";
 
 export default class PatchbayApi {
-  constructor(ipcMain, app) {
-    this._log = logger();
+  constructor(utilProvider, ipcMain, app) {
+    this._log = utilProvider.getUtil(UtilProvider.LOGGER);
     this._ipcMain = ipcMain;
     this._app = app;
     this._settings = app.settings;
-
-    this._docUtil = docUtilFactory(app);
-    this._opsUtil = opsUtilFactory(app);
-    this._subPatchOpUtil = subPatchOpUtilFactory(app);
-    this._helperUtil = helperUtilFactory(app);
-    this._projectsUtil = projectsUtilFactory(app);
-    this._filesUtil = filesUtilFactory(app);
-    this._libsUtil = libsUtilFactory(app);
   }
 
   init() {

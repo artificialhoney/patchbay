@@ -1,18 +1,12 @@
-import { utilProvider, SharedOpsUtil } from "@cables/api";
+import { SharedOpsUtil } from "@cables/api";
 import path from "path";
 import mkdirp from "mkdirp";
 import fs from "fs";
-// import projectsUtilFactory from "./projects_util.js";
-// import filesUtilFactory from "./files_util.js";
-// import helperUtilFactory from "./helper_util.js";
 
-class OpsUtil extends SharedOpsUtil {
-  constructor(provider, app) {
-    super(provider);
+export default class OpsUtil extends SharedOpsUtil {
+  constructor(utilProvider, app) {
+    super(utilProvider);
     this._app = app;
-    // this._projectsUtil = projectsUtilFactory(app);
-    // this._filesUtil = filesUtilFactory(app);
-    // this._helperUtil = helperUtilFactory(app);
     this.PREFIX_LOCAL_OPS = "Ops.Local.";
   }
 
@@ -86,13 +80,13 @@ class OpsUtil extends SharedOpsUtil {
   }
 
   getOpAbsolutePath(opName) {
-    // return this._projectsUtil.getAbsoluteOpDirFromHierarchy(opName);
+    return this._projectsUtil.getAbsoluteOpDirFromHierarchy(opName);
   }
 
   getOpSourceDir(opName, relative = false) {
-    // if (!opName) return null;
-    // if (relative) return super.getOpSourceDir(opName, relative);
-    // return this._projectsUtil.getAbsoluteOpDirFromHierarchy(opName);
+    if (!opName) return null;
+    if (relative) return super.getOpSourceDir(opName, relative);
+    return this._projectsUtil.getAbsoluteOpDirFromHierarchy(opName);
   }
 
   getOpTargetDir(opName, relative = false) {
@@ -369,4 +363,3 @@ class OpsUtil extends SharedOpsUtil {
     return true;
   }
 }
-export default (app) => new OpsUtil(utilProvider, app);

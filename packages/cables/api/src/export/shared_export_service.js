@@ -7,7 +7,7 @@ import path from "path";
 import os from "os";
 import moment from "moment-mini";
 import SharedUtil from "../utils/shared_util.js";
-import { UtilProvider } from "../utils/util_provider.js";
+import UtilProvider from "../utils/util_provider.js";
 import { CablesConstants } from "../index.js";
 
 /**

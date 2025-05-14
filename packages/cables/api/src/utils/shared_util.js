@@ -1,4 +1,4 @@
-import { UtilProvider } from "./util_provider.js";
+import UtilProvider from "./util_provider.js";
 
 /**
  * abstract class for cables utils

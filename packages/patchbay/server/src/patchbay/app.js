@@ -4,8 +4,15 @@ import fs from "fs";
 import mkdirp from "mkdirp";
 
 export default class CablesPatchbay extends Cables {
-  constructor(provider, dirName, writableDirName, configLocation, settings) {
-    super(provider, dirName, writableDirName, configLocation);
+  constructor(
+    utilProvider,
+    dirName,
+    writableDirName,
+    configLocation,
+    settings,
+  ) {
+    super(utilProvider, dirName, writableDirName, configLocation);
+    this._writableDirName = writableDirName;
     this._settings = settings;
     this._config.isPackaged = true;
     this._config.uiIndexHtml = path.join(this.getUiDistPath(), "index.html");
@@ -33,6 +40,10 @@ export default class CablesPatchbay extends Cables {
     if (!filePath) return false;
     if (!this.isPackaged()) return false;
     return filePath.startsWith(this.getOpsPath());
+  }
+
+  getApiPath() {
+    return path.join(this._dirname, "/../");
   }
 
   getPackagedPath() {

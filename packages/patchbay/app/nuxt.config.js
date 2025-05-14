@@ -58,6 +58,18 @@ export default defineNuxtConfig({
         dir: resolve(__dirname, "../../cables/ui/dist"),
         baseURL: "/cables/ui",
       },
+      {
+        dir: resolve(__dirname, "../../cables/cables/src/ops"),
+        baseURL: "/cables/ops",
+      },
+      {
+        dir: resolve(__dirname, "../../cables/client/src/libs"),
+        baseURL: "/cables/libs",
+      },
+      {
+        dir: resolve(__dirname, "../../cables/cables/dist/libs"),
+        baseURL: "/cables/corelibs",
+      },
     ],
     routeRules: {
       "/patchbay/**": {
