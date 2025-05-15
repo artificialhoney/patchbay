@@ -167,7 +167,7 @@ export default defineNuxtConfig({
   // Global
   security: {
     headers: {
-      // crossOriginEmbedderPolicy: "require-corp",
+      crossOriginResourcePolicy: "cross-origin",
       contentSecurityPolicy: {
         "script-src": [
           "'unsafe-eval'",
@@ -185,7 +185,7 @@ export default defineNuxtConfig({
         fullscreen: ["self", '"https://cables.gl"'],
         geolocation: ["self", '"https://cables.gl"'],
         microphone: ["self", '"https://cables.gl"'],
-        "web-share": ["self", '"https://cables.gl"'],
+        // "web-share": ["self", '"https://cables.gl"'],
       },
     },
   },
