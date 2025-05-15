@@ -87,7 +87,6 @@ export default class CablesPatchbay {
         // const waitForAce = this.editorWindow.waitForAce;
         // this.editorWindow.waitForAce = () => {
         //   this._logStartup("loading", this._settings.patchFile);
-
         //   this._incrementStartup();
         //   this._logStartup("checking/installing op dependencies...");
         //   this._patchbay.ipcRenderer
@@ -114,7 +113,6 @@ export default class CablesPatchbay {
         //           const packageName = dirParts[opNameIndex + 2];
         //           const onClick =
         //             "CABLES.CMD.PATCHBAY.openOpDir('', '" + opName + "');";
-
         //           const msg =
         //             'try running this <a onclick="' +
         //             onClick +
@@ -129,7 +127,6 @@ export default class CablesPatchbay {
         //         }
         //       };
         //       waitForAce();
-
         //       if (
         //         npmResult.error &&
         //         npmResult.data &&
@@ -150,7 +147,6 @@ export default class CablesPatchbay {
         //           this._logStartup(result.opName + ": " + npmText);
         //         });
         //       }
-
         //       if (this.gui) {
         //         this.gui.on("uiloaded", () => {
         //           if (this._settings.openFullscreenRenderer)
@@ -160,22 +156,22 @@ export default class CablesPatchbay {
         //       }
         //     });
         // };
-        if (this._settings.uiLoadStart)
-          this.editorWindow.CABLESUILOADER.uiLoadStart -=
-            this._settings.uiLoadStart;
-        this._startUpLogItems.forEach((logEntry) => {
-          this._logStartup(logEntry.title);
-        });
-        if (this.editorWindow.loadjs) {
-          this.editorWindow.loadjs.ready(
-            "cables_core",
-            async () => await this._coreReady(),
-          );
-          this.editorWindow.loadjs.ready(
-            "cablesuinew",
-            async () => await this._uiReady(),
-          );
-        }
+        // if (this._settings.uiLoadStart)
+        //   this.editorWindow.CABLESUILOADER.uiLoadStart -=
+        //     this._settings.uiLoadStart;
+        // this._startUpLogItems.forEach((logEntry) => {
+        //   this._logStartup(logEntry.title);
+        // });
+        // if (this.editorWindow.loadjs) {
+        //   this.editorWindow.loadjs.ready(
+        //     "cables_core",
+        //     async () => await this._coreReady(),
+        //   );
+        //   this.editorWindow.loadjs.ready(
+        //     "cablesuinew",
+        //     async () => await this._uiReady(),
+        //   );
+        // }
       }
     };
 
