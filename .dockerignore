@@ -11,5 +11,5 @@
 # Ignore build directories
 **/dist
 
-# Ignore git
-# .git
+# Ignore git (not)
+!.git
