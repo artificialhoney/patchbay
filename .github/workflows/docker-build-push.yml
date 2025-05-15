@@ -39,6 +39,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          build-args: |
+            BUILDKIT_CONTEXT_KEEP_GIT_DIR=true
 
       - name: Build, Tag, and push the Docker image
         if: ${{ github.ref_name != 'main' }}
@@ -50,3 +52,5 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          build-args: |
+            BUILDKIT_CONTEXT_KEEP_GIT_DIR=true
