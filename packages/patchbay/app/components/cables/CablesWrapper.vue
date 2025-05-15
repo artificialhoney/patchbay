@@ -39,6 +39,10 @@ if (process.client) {
 
 <template>
   <div class="flex h-full">
-    <iframe ref="cables-ui" class="w-full h-full" />
+    <iframe
+      ref="cables-ui"
+      class="w-full h-full"
+      allow="autoplay; camera; microphone"
+    />
   </div>
 </template>

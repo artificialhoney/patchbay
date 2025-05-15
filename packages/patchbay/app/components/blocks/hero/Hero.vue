@@ -63,6 +63,7 @@ const { badge, heading, description, buttons } = defineProps({
           </div>
         </div>
         <iframe
+          allow="autoplay; camera; microphone"
           src="https://cables.gl/view/11bVir"
           class="max-h-96 w-full rounded-md object-cover aspect-video"
         ></iframe>

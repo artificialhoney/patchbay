@@ -183,7 +183,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     cables: {
-      configLocation: "./cables.json",
+      configLocation: prod ? "./app/server/cables.json" : "./cables.json",
     },
   },
 });
