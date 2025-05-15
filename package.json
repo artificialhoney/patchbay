@@ -13,7 +13,7 @@
     "clean:all:dist": "rimraf packages/*/*/dist",
     "clean:all:deps": "rimraf node_modules packages/*/*/node_modules",
     "clean:all:locks": "rimraf pnpm-lock.yaml packages/*/*/pnpm-lock.yaml",
-    "build:all": "pnpm run clean:all && pnpm run -r build",
+    "build:all": "pnpm run -r build",
     "stack:start": "docker compose -f docker-compose.dev.yml up -d",
     "stack:restart": "docker compose -f docker-compose.dev.yml restart",
     "stack:stop": "docker compose -f docker-compose.dev.yml stop",
@@ -62,7 +62,7 @@
     "rollup-plugin-generate-html-template": "^1.7.0",
     "rollup-plugin-string-import": "^1.2.5",
     "rollup-plugin-summary": "^3.0.1",
-    "sass": "^1.87.0"
+    "sass": "1.88.0"
   },
   "workspaces": {
     "packages": [

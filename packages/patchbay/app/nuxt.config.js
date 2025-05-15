@@ -132,10 +132,12 @@ export default defineNuxtConfig({
       ],
     },
     workbox: {
-      globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
+      enabled: false,
+      // globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
     },
     injectManifest: {
-      globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
+      enabled: false,
+      // globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
     },
     client: {
       installPrompt: true,
@@ -144,7 +146,7 @@ export default defineNuxtConfig({
       periodicSyncForUpdates: 20,
     },
     devOptions: {
-      enabled: prod,
+      enabled: !prod,
       suppressWarnings: prod,
       navigateFallback: "/",
       navigateFallbackAllowlist: [/^\/$/],
