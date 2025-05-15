@@ -54,11 +54,11 @@ const patchbayApp = new PatchbayApp(
 );
 
 new DocUtil(utilProvider);
-new FilesUtil(utilProvider, patchbayApp);
-new HelperUtil(utilProvider, patchbayApp);
+new FilesUtil(utilProvider);
+new HelperUtil(utilProvider);
 new LibsUtil(utilProvider);
-new OpsUtil(utilProvider, patchbayApp);
-new ProjectsUtil(utilProvider, patchbayApp);
+new OpsUtil(utilProvider);
+new ProjectsUtil(utilProvider);
 new SubPatchOpUtil(utilProvider);
 
 const patchbayApi = new PatchbayApi(utilProvider, eventEmitter, patchbayApp);
@@ -66,8 +66,9 @@ const patchbayEndpoint = new PatchbayEndpoint(utilProvider, patchbayApp);
 
 patchbayApi.init();
 
-export default defineEventHandler((event) => {
+export default defineEventHandler(async (event) => {
   const slug = event.context.params.slug;
+  const query = event.node.req.query;
   if (
     [
       "platformSettings",
@@ -81,8 +82,16 @@ export default defineEventHandler((event) => {
     eventEmitter.once(slug, (event) => {
       result = event.returnValue;
     });
-    eventEmitter.emit(slug, {});
+    eventEmitter.emit(slug, {}, query);
     return result;
+  } else if (slug.startsWith("talkerMessage")) {
+    const slugElements = slug.split("/");
+    let result = null;
+    eventEmitter.once(slugElements[0], (event) => {
+      result = event.returnValue;
+    });
+    eventEmitter.emit(slugElements[0], {}, slugElements[1], {});
+    return await result;
   } else if (slug.startsWith("ops")) {
     return patchbayEndpoint.handle(event.node.req);
   } else {

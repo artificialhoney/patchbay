@@ -2,8 +2,6 @@ import sanitizeFileName from "sanitize-filename";
 import path from "path";
 import HtmlExportElectron from "./export_html.js";
 
-import opsUtilFactory from "../utils/ops_util.js";
-
 export default class PatchExportElectron extends HtmlExportElectron {
   constructor(provider, _exportOptions, user, app) {
     super(provider, {}, user, app);
@@ -18,8 +16,6 @@ export default class PatchExportElectron extends HtmlExportElectron {
 
     this.finalAssetPath = "assets/";
     this.finalJsPath = "/";
-
-    this._opsUtil = opsUtilFactory(app);
   }
 
   static getName() {

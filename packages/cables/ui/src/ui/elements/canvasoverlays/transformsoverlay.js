@@ -10,7 +10,7 @@ export default class TransformsOverlay {
   }
 
   _cleanUp(diff) {
-    if (!gui || Gui.gui.isRemoteClient) return;
+    if (!Gui.gui || Gui.gui.isRemoteClient) return;
 
     diff = diff || 500;
     for (const i in this._transforms) {

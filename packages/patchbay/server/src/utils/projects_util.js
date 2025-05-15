@@ -7,10 +7,9 @@ import jsonfile from "jsonfile";
 import fs from "fs";
 
 export default class ProjectsUtil extends SharedProjectsUtil {
-  constructor(utilProvider, app) {
+  constructor(utilProvider) {
     super(utilProvider);
-    this._app = app;
-    this._settings = app.settings;
+    this._settings = this._cables.settings;
     this.CABLES_PROJECT_FILE_EXTENSION = "cables";
 
     this._dirInfos = null;
@@ -18,7 +17,7 @@ export default class ProjectsUtil extends SharedProjectsUtil {
   }
 
   getAssetPath(projectId) {
-    return this._app.getAssetPath();
+    return this._cables.getAssetPath();
   }
 
   getAssetPathUrl(projectId) {
@@ -26,7 +25,7 @@ export default class ProjectsUtil extends SharedProjectsUtil {
   }
 
   getScreenShotPath(pId) {
-    return path.join(this._app._writableDirName, "screenshots/");
+    return path.join(this._cables._writableDirName, "screenshots/");
   }
 
   getScreenShotFileName(proj, ext) {
@@ -95,12 +94,12 @@ export default class ProjectsUtil extends SharedProjectsUtil {
       });
     }
     if (includeOsDir) {
-      const osOpsDir = this._app.getOsOpsDir();
+      const osOpsDir = this._cables.getOsOpsDir();
       if (osOpsDir) opsDirs.push(osOpsDir);
     }
-    if (addLocalCoreIfPackaged && !this._app.isPackaged()) {
-      opsDirs.push(this._app.getExtensionOpsPath());
-      opsDirs.push(this._app.getCoreOpsPath());
+    if (addLocalCoreIfPackaged && !this._cables.isPackaged()) {
+      opsDirs.push(this._cables.getExtensionOpsPath());
+      opsDirs.push(this._cables.getCoreOpsPath());
     }
     opsDirs = this._helperUtil.uniqueArray(opsDirs);
     if (reverse) return opsDirs.reverse();
@@ -111,10 +110,10 @@ export default class ProjectsUtil extends SharedProjectsUtil {
     const projectDir = this._settings.getCurrentProjectDir();
     if (projectDir) if (dir === path.join(projectDir, "ops/")) return false;
     if (dir === "./ops") return true;
-    if (dir === this._app.getOsOpsDir()) return true;
-    if (this._app.isPackaged()) return false;
-    if (dir === this._app.getExtensionOpsPath()) return true;
-    return dir === this._app.getCoreOpsPath();
+    if (dir === this._cables.getOsOpsDir()) return true;
+    if (this._cables.isPackaged()) return false;
+    if (dir === this._cables.getExtensionOpsPath()) return true;
+    return dir === this._cables.getCoreOpsPath();
   }
 
   getProjectFileName(project) {

@@ -549,8 +549,8 @@ export default class OpSelect {
     if (this._lastScrollTop != scrollTop) {
       this._lastScrollTop = scrollTop;
       if (this.displayBoxIndex > 5)
-        ele.byClass("searchbrowser").scrollTop =
-          scrollTop; // .scrollTop is expensive!
+        ele.byClass("searchbrowser").scrollTop = scrollTop;
+      // .scrollTop is expensive!
       else ele.byClass("searchbrowser").scrollTop = 1;
     }
     perf3.finish();
@@ -618,7 +618,7 @@ export default class OpSelect {
 
     this._eleSearchinfo = ele.byId("searchinfo");
 
-    if (window.gui) Gui.gui.currentModal = this;
+    if (Gui.gui) Gui.gui.currentModal = this;
 
     this._typedSinceOpening = false;
     this._lastScrollTop = -5711;

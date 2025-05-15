@@ -123,7 +123,7 @@ CABLES_CMD_UI.toggleMaxRenderer = function () {
 
 CABLES_CMD_UI.togglePatchBgPatchField = function () {
   if (
-    gui &&
+    Gui.gui &&
     Gui.gui.canvasManager.mode === Gui.gui.canvasManager.CANVASMODE_PATCHBG
   ) {
     Gui.gui.patchView.toggleVisibility();

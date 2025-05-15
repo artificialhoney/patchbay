@@ -33,7 +33,11 @@ export default class KeyBindingsManager extends Events {
     const k = this._prepareKeysForDisplay(this._keys);
 
     let showDownloadButton = false;
-    if (gui && Gui.gui.user && (Gui.gui.user.isStaff || Gui.gui.user.isAdmin))
+    if (
+      Gui.gui &&
+      Gui.gui.user &&
+      (Gui.gui.user.isStaff || Gui.gui.user.isAdmin)
+    )
       showDownloadButton = true;
 
     const html = getHandleBarHtml("tab_keys", {
@@ -127,7 +131,7 @@ export default class KeyBindingsManager extends Events {
       if (!k.options.ctrlKey && e.ctrlKey) continue;
 
       if (!k.target || k.target == e.target.id) {
-        if (k.options.minRestriction > window.Gui.gui.getRestriction()) {
+        if (k.options.minRestriction > Gui.gui.getRestriction()) {
           notifyError("Not allowed");
           if (!e.dontPreventDefault) e.preventDefault();
 
@@ -161,7 +165,7 @@ export default class KeyBindingsManager extends Events {
       if (k.options.shiftKey && !e.shiftKey) continue;
       if (k.options.altKey && !e.altKey) continue;
       if (!k.options.shiftKey && e.shiftKey) continue;
-      if (k.options.minRestriction > window.Gui.gui.getRestriction()) continue;
+      if (k.options.minRestriction > Gui.gui.getRestriction()) continue;
 
       if (!k.target || k.target == e.target.id) {
         if (

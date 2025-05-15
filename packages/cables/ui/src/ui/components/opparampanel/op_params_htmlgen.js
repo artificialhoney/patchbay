@@ -27,12 +27,9 @@ class PortHtmlGenerator {
     let hasExample = false;
     let doc = null;
 
-    if (op) isBookmarked = Gui.gui.Gui.gui.bookmarks.hasBookmarkWithId(op.id);
+    if (op) isBookmarked = Gui.gui.bookmarks.hasBookmarkWithId(op.id);
 
-    const canEditOp = Gui.gui.Gui.gui.serverOps.canEditOp(
-      Gui.gui.Gui.gui.user,
-      op.objName,
-    );
+    const canEditOp = Gui.gui.serverOps.canEditOp(Gui.gui.user, op.objName);
     if (namespace.isDeprecatedOp(op.objName)) {
       op.isDeprecated = true;
       const notDeprecatedName = op.objName.replace("Deprecated.", "");
@@ -41,9 +38,9 @@ class PortHtmlGenerator {
     }
     if (namespace.isDevOp(op.objName)) op.isExperimental = true;
 
-    if (Gui.gui.Gui.gui.opDocs) {
-      op.summary = Gui.gui.Gui.gui.opDocs.getSummary(op.objName);
-      doc = Gui.gui.Gui.gui.opDocs.getOpDocByName(op.objName);
+    if (Gui.gui.opDocs) {
+      op.summary = Gui.gui.opDocs.getSummary(op.objName);
+      doc = Gui.gui.opDocs.getOpDocByName(op.objName);
     }
 
     if (doc) {
@@ -62,15 +59,12 @@ class PortHtmlGenerator {
       isBookmarked: isBookmarked,
       colorClass: opNames.getNamespaceClassName(op.objName),
       texts: text,
-      user: Gui.gui.Gui.gui.user,
+      user: Gui.gui.user,
       optitle: op.getTitle(),
       canEditOp: canEditOp,
       opChanged: opChanged,
       oldVersion: oldversion,
-      minified:
-        UserSettings.userSettings.UserSettings.userSettings.get(
-          "minifiedOpHead",
-        ),
+      minified: UserSettings.userSettings.get("minifiedOpHead"),
       newestVersion: newestVersion,
       cablesUrl: platform.getCablesUrl(),
       hasExample: hasExample,

@@ -45,7 +45,6 @@ export default class PatchbaySettings {
 
     this.refresh();
     this.set("currentUser", this.getCurrentUser(), true);
-    this._currentProject = "project";
   }
 
   refresh() {

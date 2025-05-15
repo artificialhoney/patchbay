@@ -423,7 +423,7 @@ export default class GradientEditor {
   show(cb) {
     this._callback = cb;
 
-    if (window.gui && Gui.gui.currentModal) Gui.gui.currentModal.close();
+    if (Gui.gui && Gui.gui.currentModal) Gui.gui.currentModal.close();
 
     const html = getHandleBarHtml("GradientEditor", { name: this._portName });
 

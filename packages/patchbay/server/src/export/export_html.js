@@ -4,8 +4,6 @@ import { SharedExportService } from "@cables/api";
 import path from "path";
 import { fileURLToPath } from "url";
 
-import helperUtilFactory from "../utils/helper_util.js";
-
 export default class HtmlExportElectron extends SharedExportService {
   constructor(provider, _exportOptions, user, app) {
     super(provider, {}, user);
@@ -22,8 +20,6 @@ export default class HtmlExportElectron extends SharedExportService {
     this.options.flattenAssetNames = true;
 
     this.finalAssetPath = "assets/";
-
-    this._helperUtil = helperUtilFactory(app);
   }
 
   static getName() {

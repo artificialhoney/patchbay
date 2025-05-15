@@ -36,7 +36,7 @@ PatchConnectionReceiver.prototype._receive = function (ev) {
     if (this._patch.getOpById(data.vars.opId)) return;
     this._log.verbose("op create:", data.vars.objName);
 
-    if (window.gui) {
+    if (Gui.gui) {
       Gui.gui.serverOps.loadOpDependencies(data.vars.objName, () => {
         this._addOp(data);
       });
@@ -45,7 +45,7 @@ PatchConnectionReceiver.prototype._receive = function (ev) {
     }
   } else if (data.event === CABLES.PACO_DESERIALIZE) {
     if (data.vars.json) {
-      if (window.gui) {
+      if (Gui.gui) {
         Gui.gui.serverOps.loadProjectDependencies(data.vars.json, () => {
           this._patch.deSerialize(data.vars.json, { genIds: data.vars.genIds });
         });
@@ -56,7 +56,7 @@ PatchConnectionReceiver.prototype._receive = function (ev) {
   } else if (data.event === CABLES.PACO_LOAD) {
     this._log.verbose("PACO load patch.....");
     this._patch.clear();
-    if (window.gui) {
+    if (Gui.gui) {
       Gui.gui.serverOps.loadProjectDependencies(
         JSON.parse(data.vars.patch),
         () => {
@@ -158,7 +158,7 @@ PatchConnectionReceiver.prototype._receive = function (ev) {
 
     // Gui.gui.serverOps.execute(data.vars.opName);
 
-    if (gui)
+    if (Gui.gui)
       Gui.gui.serverOps.loadOpDependencies(
         data.vars.opName,
         (ops) => {

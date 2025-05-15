@@ -402,7 +402,7 @@ export default class PatchView extends Events {
   }
 
   addAssetOpAuto(filename, event) {
-    if (window.Gui.gui.getRestriction() < Gui.gui.RESTRICT_MODE_FULL) return;
+    if (Gui.gui.getRestriction() < Gui.gui.RESTRICT_MODE_FULL) return;
 
     const ops = opNames.getOpsForFilename(filename);
 
@@ -996,7 +996,7 @@ export default class PatchView extends Events {
   }
 
   deleteSelectedOps() {
-    if (window.Gui.gui.getRestriction() < Gui.gui.RESTRICT_MODE_FULL) return;
+    if (Gui.gui.getRestriction() < Gui.gui.RESTRICT_MODE_FULL) return;
 
     const undoGroup = undo.startGroup();
     const ids = [];

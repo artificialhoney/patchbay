@@ -86,7 +86,7 @@ class namespace {
    * @returns {Boolean}
    */
   isCurrentUserOp(opname) {
-    return this.isUserOpOfUser(opname, Gui.gui.Gui.gui.user.usernameLowercase);
+    return this.isUserOpOfUser(opname, Gui.gui.user.usernameLowercase);
   }
 
   /**

@@ -191,7 +191,7 @@ export default class GlPatch extends Events {
     this._fadeOutRect.setColor(0, 0, 0, 0.0);
     this._fadeOutRect.visible = true;
 
-    this._cursor = CABLES.GLGui.gui.CURSOR_NORMAL;
+    this._cursor = CABLES.GLGUI.CURSOR_NORMAL;
 
     this._viewZoom = 0;
     this.needsRedraw = false;
@@ -1342,7 +1342,7 @@ export default class GlPatch extends Events {
    * @param {number} resY
    */
   render(resX, resY) {
-    if (!gui || !Gui.gui.canvasManager) return;
+    if (!Gui.gui || !Gui.gui.canvasManager) return;
     if (
       Gui.gui.canvasManager.mode == Gui.gui.canvasManager.CANVASMODE_PATCHBG
     ) {

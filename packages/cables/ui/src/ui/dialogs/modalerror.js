@@ -24,7 +24,7 @@ export default class ModalError {
     this._options = options;
 
     const s =
-      typeof gui !== "undefined" ? Gui.gui.corePatch()._triggerStack : [];
+      typeof Gui.gui !== "undefined" ? Gui.gui.corePatch()._triggerStack : [];
     let stackStr = "";
     for (let i = 0; i < s.length; i++) {
       stackStr += "[" + s[i].op.objName + " - " + s[i].name + "] ";
@@ -103,7 +103,7 @@ export default class ModalError {
     if (this.opName) {
       // do not track errors in patchops/userops/teamops
       if (namespace.isPrivateOp(this.opName)) doTrack = false;
-      if (window.gui) {
+      if (Gui.gui) {
         const ops = Gui.gui.corePatch().getOpsByObjName(this.opName);
         for (let i = 0; i < ops.length; i++) {
           ops[i].uiAttr({
@@ -166,7 +166,7 @@ export default class ModalError {
         str +=
           "Please check if you have the access rights to this op.<br/><br/>";
       } else if (
-        gui &&
+        Gui.gui &&
         Gui.gui.serverOps.canEditOp(Gui.gui.user, this.opName) &&
         platform
       ) {
@@ -231,7 +231,7 @@ export default class ModalError {
     if (this.opName) {
       isPrivateOp = namespace.isPrivateOp(this.opName);
       if (
-        window.gui &&
+        Gui.gui &&
         (Gui.gui.user.isStaff || namespace.isCurrentUserOp(this.opName))
       ) {
         str +=
@@ -284,7 +284,7 @@ export default class ModalError {
         CABLES &&
         platform &&
         platform.isDevEnv() &&
-        gui &&
+        Gui.gui &&
         Gui.gui.user &&
         !Gui.gui.user.isStaff &&
         !ignoreErrorReport

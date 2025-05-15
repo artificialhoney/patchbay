@@ -111,7 +111,7 @@ export class CgContext extends Events {
   }
 
   get canvas() {
-    return this.cgCanva?.canvasEle;
+    return this.cgCanvas?.canvasEle;
   }
 
   get viewPort() {

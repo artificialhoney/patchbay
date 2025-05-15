@@ -25,3 +25,6 @@ logs
 
 # Ignore Service Worker
 sw.*
+
+# Ignore user data
+userData

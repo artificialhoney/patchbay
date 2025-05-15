@@ -73,7 +73,7 @@ export default class CanvasUi {
             "0.0") + "ms";
 
         if (
-          window.gui &&
+          Gui.gui &&
           Gui.gui.patchView.patchRenderer.vizLayer &&
           Gui.gui.patchView.patchRenderer.vizLayer.renderMs > 3
         ) {

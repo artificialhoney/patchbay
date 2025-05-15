@@ -51,13 +51,13 @@ export default class LibLoader {
           const i = this._libsToLoad.indexOf(libName);
           this._libsToLoad.splice(i, 1);
           this.checkAllLoaded();
-          if (gui) Gui.gui.emitEvent("libLoadError", libName);
+          if (Gui.gui) Gui.gui.emitEvent("libLoadError", libName);
           return;
         }
 
         if (module.src.startsWith("/assets")) {
           if (
-            gui &&
+            Gui.gui &&
             Gui.gui.corePatch() &&
             Gui.gui.corePatch().config.prefixAssetPath
           ) {
@@ -98,7 +98,7 @@ export default class LibLoader {
               this._libsToLoad.splice(i, 1);
               this.checkAllLoaded();
               this._log.error(e);
-              if (gui) Gui.gui.emitEvent("libLoadError", libName);
+              if (Gui.gui) Gui.gui.emitEvent("libLoadError", libName);
             });
         } else if (libType === "op") {
           Gui.gui.serverOps.loadOpDependencies(
@@ -130,7 +130,7 @@ export default class LibLoader {
               this._libsToLoad.splice(i, 1);
               this.checkAllLoaded();
               this._log.error(e);
-              if (gui) Gui.gui.emitEvent("libLoadError", libName);
+              if (Gui.gui) Gui.gui.emitEvent("libLoadError", libName);
             });
         }
       } else {

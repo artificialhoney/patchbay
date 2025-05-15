@@ -61,7 +61,7 @@ export default class TexturePreviewer {
   }
 
   _initListener() {
-    if (!window.gui) {
+    if (!Gui.gui) {
       setTimeout(this._initListener.bind(this), 300);
       return;
     }
@@ -108,7 +108,7 @@ export default class TexturePreviewer {
       return;
     }
 
-    if (!window.gui) return;
+    if (!Gui.gui) return;
 
     let port = tp;
     if (tp.port) port = tp.port;
@@ -486,7 +486,7 @@ export default class TexturePreviewer {
   }
 
   selectTexturePortId(opid, portid) {
-    if (!window.gui) return;
+    if (!Gui.gui) return;
 
     const op = Gui.gui.corePatch().getOpById(opid);
     if (!op) return;

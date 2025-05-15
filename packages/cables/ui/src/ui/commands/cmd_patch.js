@@ -561,13 +561,13 @@ CABLES_CMD_PATCH.createFile = function () {
 };
 
 CABLES_CMD_PATCH.uploadFile = function () {
-  if (!window.gui) return;
+  if (!Gui.gui) return;
   const fileElem = document.getElementById("hiddenfileElem");
   if (fileElem) fileElem.click();
 };
 
 CABLES_CMD_PATCH.reuploadFile = function (id, fileName) {
-  if (!window.gui || !fileName) return;
+  if (!Gui.gui || !fileName) return;
   CABLES.reuploadName = fileName;
   const fileEle = ele.byId("fileReUpload" + id);
   if (fileEle && fileEle.dataset.filePath)
@@ -577,7 +577,7 @@ CABLES_CMD_PATCH.reuploadFile = function (id, fileName) {
 };
 
 CABLES_CMD_PATCH.uploadFileDialog = function () {
-  if (!window.gui || !Gui.gui.project()) return;
+  if (!Gui.gui || !Gui.gui.project()) return;
   const fileElem = document.getElementById("uploaddialog");
 
   if (!fileElem) {

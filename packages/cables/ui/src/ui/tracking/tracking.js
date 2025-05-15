@@ -3,7 +3,6 @@ import { platform } from "../platform.js";
 
 export default class Tracking {
   constructor() {
-    this.gui = gui;
     this._initListeners();
 
     this._trackEvent("ui", "userIsGuest", "", {
@@ -16,7 +15,7 @@ export default class Tracking {
   }
 
   _initListeners() {
-    this.Gui.gui._corePatch.on(
+    Gui.gui._corePatch.on(
       CABLES.Patch.EVENT_OP_ADDED,
       (op, fromDeserialize) => {
         if (
@@ -34,22 +33,22 @@ export default class Tracking {
       },
     );
 
-    this.Gui.gui.on("uiIdleEnd", (idleSeconds) => {
+    Gui.gui.on("uiIdleEnd", (idleSeconds) => {
       this._trackEvent("ui", "idleEnd", "end", { seconds: idleSeconds });
     });
 
-    this.Gui.gui.on("uiIdleStart", (activeSeconds) => {
+    Gui.gui.on("uiIdleStart", (activeSeconds) => {
       this._trackEvent("ui", "activeDuration", "", { seconds: activeSeconds });
     });
 
-    this.Gui.gui.on("logEvent", (initiator, level, args) => {
+    Gui.gui.on("logEvent", (initiator, level, args) => {
       if (!["error"].includes(level)) return;
       const perf = Gui.gui.uiProfiler.start("logEvent");
       this._trackLogEvent("logging", level, initiator, args);
       perf.finish();
     });
 
-    this.Gui.gui.on("uncaughtError", (report) => {
+    Gui.gui.on("uncaughtError", (report) => {
       let initiator = "unknown";
       if (report.url) initiator = report.url;
       if (report.exception)
@@ -64,7 +63,7 @@ export default class Tracking {
       initiator: initiator,
       arguments: args,
     };
-    const project = this.Gui.gui.project();
+    const project = Gui.gui.project();
     if (project) payload.projectId = project._id;
     if (platform.talkerAPI) {
       payload.platform = platformLib;
@@ -75,8 +74,8 @@ export default class Tracking {
   }
 
   _trackEvent(eventCategory, eventAction, eventLabel, meta = {}) {
-    if (this.Gui.gui.socket) {
-      this.Gui.gui.socket.track(eventCategory, eventAction, eventLabel, meta);
+    if (Gui.gui.socket) {
+      Gui.gui.socket.track(eventCategory, eventAction, eventLabel, meta);
     }
   }
 }

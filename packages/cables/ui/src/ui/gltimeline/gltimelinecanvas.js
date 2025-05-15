@@ -28,7 +28,7 @@ export class glTimelineCanvas extends GlCanvas {
 
   render() {
     if (this.tab.resizing) return;
-    if (gui && Gui.gui.corePatch().timer.isPlaying()) this._targetFps = 0; // todo check if time is on screen...?
+    if (Gui.gui && Gui.gui.corePatch().timer.isPlaying()) this._targetFps = 0; // todo check if time is on screen...?
 
     if (
       this._targetFps != 0 &&

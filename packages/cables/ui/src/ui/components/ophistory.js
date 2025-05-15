@@ -23,7 +23,7 @@ export default class OpHistory extends Events {
     this._position--;
     let opid = this._history[this._position];
 
-    if (Gui.gui.Gui.gui.patchView.isCurrentOpId(opid)) {
+    if (Gui.gui.patchView.isCurrentOpId(opid)) {
       this._position--;
       opid = this._history[this._position];
     }
@@ -33,9 +33,8 @@ export default class OpHistory extends Events {
   _focusCurrent() {
     const opid = this._history[this._position];
 
-    if (!Gui.gui.Gui.gui.keys.shiftKey)
-      Gui.gui.Gui.gui.patchView.focusOp(opid, true);
-    else Gui.gui.Gui.gui.patchView.setSelectedOpById(opid);
+    if (!Gui.gui.keys.shiftKey) Gui.gui.patchView.focusOp(opid, true);
+    else Gui.gui.patchView.setSelectedOpById(opid);
   }
 
   forward() {
@@ -52,7 +51,7 @@ export default class OpHistory extends Events {
 
     for (let i = end; i >= start; i--) {
       const idx = i;
-      const op = Gui.gui.Gui.gui.corePatch().getOpById(this._history[idx]);
+      const op = Gui.gui.corePatch().getOpById(this._history[idx]);
       if (!op) continue;
       const o = {
         id: this._history[idx],

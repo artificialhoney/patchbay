@@ -316,7 +316,7 @@ export class Platform extends Events {
           const libUrl =
             "/assets/" + Gui.gui.project()._id + "/" + options.filename;
           if (
-            gui &&
+            Gui.gui &&
             Gui.gui.opDocs &&
             Gui.gui.opDocs.libs &&
             !Gui.gui.opDocs.libs.includes(libUrl)
@@ -342,7 +342,7 @@ export class Platform extends Events {
         const libUrl =
           "/assets/" + Gui.gui.project()._id + "/" + options.fileName;
         if (
-          gui &&
+          Gui.gui &&
           Gui.gui.opDocs &&
           Gui.gui.opDocs.libs &&
           Gui.gui.opDocs.libs.includes(libUrl)
@@ -395,7 +395,7 @@ export class Platform extends Events {
 
     const modalNotices = [];
     if (
-      gui &&
+      Gui.gui &&
       Gui.gui.user &&
       platform.isTrustedPatch() &&
       Gui.gui.user.supporterFeatures &&

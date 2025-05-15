@@ -20,7 +20,7 @@ export default class MetaOpParams {
   }
 
   updateVisibility(b) {
-    if (!gui) return;
+    if (!Gui.gui) return;
 
     if (this._tabs.getActiveTab() != this._tab)
       this._prevTab = this._tabs.getActiveTab();
@@ -41,6 +41,6 @@ export default class MetaOpParams {
 
   show() {
     this._tab.html('<div id="options_meta"></div>');
-    if (window.gui) Gui.gui.opParams.refresh();
+    if (Gui.gui) Gui.gui.opParams.refresh();
   }
 }

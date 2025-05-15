@@ -41,7 +41,10 @@ export default class LogTab extends Events {
     this._html();
     LogFilter.logFilter.on("initiatorsChanged", this._html.bind(this));
 
-    this._showlogListener = logFilter.on("logAdded", this._showLog.bind(this));
+    this._showlogListener = LogFilter.logFilter.on(
+      "logAdded",
+      this._showLog.bind(this),
+    );
 
     const b = this._tab.addButton("Filter Logs", () => {
       CABLES.CMD.DEBUG.logging();
@@ -61,7 +64,7 @@ export default class LogTab extends Events {
     );
 
     this._tab.addButton("Clear", () => {
-      logFilter.logs.length = 0;
+      LogFilter.logFilter.logs.length = 0;
       this._html();
     });
 
@@ -82,7 +85,7 @@ export default class LogTab extends Events {
 
   close() {
     this.closed = true;
-    logFilter.off(this._showlogListener);
+    LogFilter.logFilter.off(this._showlogListener);
     this.emitEvent("close");
     Gui.gui.hideBottomTabs();
   }
@@ -139,8 +142,8 @@ export default class LogTab extends Events {
       if (el) el.style.zIndex = 1111111;
     }
 
-    for (let i = logFilter.logs.length - 1; i >= 0; i--) {
-      const l = logFilter.logs[i];
+    for (let i = LogFilter.logFilter.logs.length - 1; i >= 0; i--) {
+      const l = LogFilter.logFilter.logs[i];
       for (let j = 0; j < l.args.length; j++) {
         const arg = l.args[j];
 
@@ -164,13 +167,13 @@ export default class LogTab extends Events {
 
     try {
       let lastTime = 0;
-      for (let i = logFilter.logs.length - 1; i >= 0; i--) {
-        const l = logFilter.logs[i];
+      for (let i = LogFilter.logFilter.logs.length - 1; i >= 0; i--) {
+        const l = LogFilter.logFilter.logs[i];
         let currentLine = "";
         const timediff = l.time - lastTime;
         lastTime = l.time;
 
-        if (!logFilter.shouldPrint(l)) continue;
+        if (!LogFilter.logFilter.shouldPrint(l)) continue;
 
         for (let j = 0; j < l.args.length; j++) {
           const arg = l.args[j];
@@ -187,7 +190,7 @@ export default class LogTab extends Events {
             if (errorStack && errorStack.length > 0) {
               let stackHtml = "<table>";
               for (let k = 0; k < Math.min(2, errorStack.length); k++) {
-                if (k === 0 && i == logFilter.logs.length - 1)
+                if (k === 0 && i == LogFilter.logFilter.logs.length - 1)
                   this._logErrorSrcCodeLine(
                     l,
                     errorStack[k].fileName,
@@ -417,8 +420,8 @@ export default class LogTab extends Events {
     report.patchTitle = Gui.gui.project().name;
 
     const log = [];
-    for (let i = logFilter.logs.length - 1; i >= 0; i--) {
-      const l = logFilter.logs[i];
+    for (let i = LogFilter.logFilter.logs.length - 1; i >= 0; i--) {
+      const l = LogFilter.logFilter.logs[i];
       let newLine = {
         initiator: l.initiator,
         errorStack: l.errorStack,
@@ -480,11 +483,11 @@ export default class LogTab extends Events {
 
     report.cablesUrl = platform.getCablesUrl();
     report.platformVersion = platform.getCablesVersion();
-    if (window.gui && Gui.gui.isRemoteClient)
+    if (Gui.gui && Gui.gui.isRemoteClient)
       report.platformVersion += " REMOTE CLIENT";
     report.browserDescription = platform.description;
 
-    if (window.gui) {
+    if (Gui.gui) {
       if (Gui.gui.project()) report.projectId = Gui.gui.project()._id;
       if (Gui.gui.user) {
         report.username = Gui.gui.user.username;

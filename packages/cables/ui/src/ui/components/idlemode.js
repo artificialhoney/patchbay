@@ -20,14 +20,14 @@ function startIdleMode() {
     return;
   if (Gui.gui.patchView.hasFocus() && idleFocus) return;
 
-  if (!window.gui || !Gui.gui.finishedLoading()) return;
+  if (!Gui.gui || !Gui.gui.finishedLoading()) return;
   if (idling) return;
   if (!UserSettings.userSettings.get("idlemode")) return;
   if (Gui.gui.socket && Gui.gui.socket.inMultiplayerSession) return;
 
   const wasActiveSeconds = (performance.now() - activeModeStart) / 1000;
   if (
-    window.gui &&
+    Gui.gui &&
     !(
       Gui.gui.currentModal &&
       Gui.gui.currentModal.persistInIdleMode &&
@@ -61,7 +61,7 @@ function idleInteractivity() {
 }
 
 function stopIdleMode() {
-  if (!window.gui || !Gui.gui.finishedLoading()) return;
+  if (!Gui.gui || !Gui.gui.finishedLoading()) return;
   if (!idling) return;
 
   const idleSeconds = Math.round((Date.now() - idleModeStart) / 1000);

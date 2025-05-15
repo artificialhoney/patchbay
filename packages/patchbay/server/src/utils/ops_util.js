@@ -4,9 +4,8 @@ import mkdirp from "mkdirp";
 import fs from "fs";
 
 export default class OpsUtil extends SharedOpsUtil {
-  constructor(utilProvider, app) {
+  constructor(utilProvider) {
     super(utilProvider);
-    this._app = app;
     this.PREFIX_LOCAL_OPS = "Ops.Local.";
   }
 
@@ -19,7 +18,7 @@ export default class OpsUtil extends SharedOpsUtil {
   }
 
   isCoreOp(opName) {
-    const opsDir = this._app.getCoreOpsPath();
+    const opsDir = this._cables.getCoreOpsPath();
     const opDir = this.getOpSourceDir(opName);
     return opDir.startsWith(opsDir);
   }

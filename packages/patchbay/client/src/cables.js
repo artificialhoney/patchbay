@@ -17,18 +17,6 @@ export default class CablesPatchbay {
     this._editorElement = editorElement;
 
     this.ipcRenderer = this._patchbay.ipcRenderer; // needed to have ipcRenderer in patchbay_editor.js
-    this._settings =
-      this._patchbay.ipcRenderer.sendSync("platformSettings") || {};
-    this._usersettings = this._settings.userSettings;
-    delete this._settings.userSettings;
-    this._config = this._patchbay.ipcRenderer.sendSync("cablesConfig") || {};
-    // this._editorElement = null;
-
-    this._startUpLogItems =
-      this._patchbay.ipcRenderer.sendSync("getStartupLog") || [];
-
-    if (!this._config.isPackaged)
-      window.PATCHBAY_DISABLE_SECURITY_WARNINGS = true;
 
     this._loadedModules = {};
   }
@@ -74,10 +62,25 @@ export default class CablesPatchbay {
    * custom functionality
    */
   async init() {
+    this._settings =
+      (await this.ipcRenderer.sendSync("platformSettings")) || {};
+
+    this._usersettings = this._settings.userSettings;
+    delete this._settings.userSettings;
+    this._config = (await this.ipcRenderer.sendSync("cablesConfig")) || {};
+    // this._editorElement = null;
+
+    this._startUpLogItems =
+      (await this.ipcRenderer.sendSync("getStartupLog")) || [];
+
+    if (!this._config.isPackaged)
+      window.PATCHBAY_DISABLE_SECURITY_WARNINGS = true;
+
     let src = this._config.uiIndexHtml + window.location.search;
     if (window.location.hash) {
       src += window.location.hash;
     }
+
     this._editorElement.src = src;
     this._editorElement.onload = () => {
       if (this.editorWindow) {

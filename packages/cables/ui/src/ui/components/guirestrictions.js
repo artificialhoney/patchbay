@@ -1,7 +1,7 @@
 import { ele } from "@cables/client";
 
 /**
- * gui restrictions,e.g. show an editor to the user, the user can  make changes etc.
+ * Gui.gui restrictions,e.g. show an editor to the user, the user can  make changes etc.
  *
  * @export
  * @class GuiRestrictions

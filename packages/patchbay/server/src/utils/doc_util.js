@@ -2,8 +2,6 @@ import { SharedDocUtil } from "@cables/api";
 import fs from "fs";
 import path from "path";
 import jsonfile from "jsonfile";
-import opsUtilFactory from "./ops_util.js";
-import helperFactory from "./helper_util.js";
 
 export default class DocUtil extends SharedDocUtil {
   constructor(utilProvider) {
@@ -18,10 +16,7 @@ export default class DocUtil extends SharedDocUtil {
   getOpDocsInDir(opDir) {
     const opDocs = [];
     if (fs.existsSync(opDir)) {
-      const opJsons = helperFactory(this._app).getFilesRecursive(
-        opDir,
-        ".json",
-      );
+      const opJsons = this._helperUtil.getFilesRecursive(opDir, ".json");
       for (let jsonPath in opJsons) {
         const opName = path.basename(jsonPath, ".json");
         if (opsUtil.isOpNameValid(opName)) {
@@ -45,12 +40,11 @@ export default class DocUtil extends SharedDocUtil {
 
   makeReadable(opDocs) {
     const readables = super.makeReadable(opDocs);
-    const opsUtil = opsUtilFactory(this._app);
     readables.forEach((opDoc) => {
-      const relativeDir = opsUtil.getOpSourceDir(opDoc.name, true);
-      const absolute = opsUtil.getOpSourceDir(opDoc.name);
+      const relativeDir = this._opsUtil.getOpSourceDir(opDoc.name, true);
+      const absolute = this._opsUtil.getOpSourceDir(opDoc.name);
       const opDir = absolute.replace(relativeDir, "");
-      if (opDir !== this._app.getOpsPath()) {
+      if (opDir !== this._cables.getOpsPath()) {
         opDoc.opDir = opDir;
       }
       opDoc.opDirFull = absolute;

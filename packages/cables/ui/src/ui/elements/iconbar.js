@@ -12,7 +12,7 @@ export default class IconBar {
 
     this._updateItems();
 
-    if (this._id === "sidebar_bottom" && gui) {
+    if (this._id === "sidebar_bottom" && Gui.gui) {
       Gui.gui.on("canvasModeChange", (_mode) => {
         this.refresh();
       });
@@ -31,7 +31,7 @@ export default class IconBar {
       this.vertical = false;
       items.push("Center patch", "Zoom out", "Zoom in");
       if (
-        gui &&
+        Gui.gui &&
         Gui.gui.canvasManager.mode === Gui.gui.canvasManager.CANVASMODE_PATCHBG
       ) {
         items.push("Patch background renderer");

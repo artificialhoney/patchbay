@@ -61,7 +61,7 @@ export default class ScConnection extends Events {
 
   get showGuestUsers() {
     return (
-      gui &&
+      Gui.gui &&
       Gui.gui.project() &&
       Gui.gui.project() &&
       Gui.gui.project().settings &&

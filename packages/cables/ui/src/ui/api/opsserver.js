@@ -1916,7 +1916,7 @@ export default class ServerOps {
         "[opsserver] loadProjectDependencies",
       );
 
-      if (gui && Gui.gui.opSelect() && newOps.length > 0) {
+      if (Gui.gui && Gui.gui.opSelect() && newOps.length > 0) {
         Gui.gui.opSelect().reload();
         Gui.gui.opSelect().prepare();
       }

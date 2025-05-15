@@ -9,6 +9,7 @@ import sanitizeFileName from "sanitize-filename";
 import HtmlExportElectron from "../export/export_html.js";
 import PatchExportElectron from "../export/export_patch.js";
 import { UtilProvider } from "@cables/api";
+import { createRequire } from "module";
 
 export default class PatchbayApi {
   constructor(utilProvider, ipcMain, app) {
@@ -16,24 +17,23 @@ export default class PatchbayApi {
     this._ipcMain = ipcMain;
     this._app = app;
     this._settings = app.settings;
+    this._opsUtil = utilProvider.getUtil(UtilProvider.OPS_UTIL);
+    this._helperUtil = utilProvider.getUtil(UtilProvider.HELPER_UTIL);
+    this._docsUtil = utilProvider.getUtil(UtilProvider.DOCS_UTIL);
+    this._projectsUtil = utilProvider.getUtil(UtilProvider.PROJECTS_UTIL);
   }
 
   init() {
-    this._ipcMain.on(
-      "talkerMessage",
-      async (event, cmd, data, topicConfig = {}) => {
-        try {
-          return this.talkerMessage(cmd, data, topicConfig);
-        } catch (e) {
-          return this.error(e.message, e);
-        }
-      },
-    );
+    this._ipcMain.on("talkerMessage", (event, cmd, data, topicConfig = {}) => {
+      try {
+        event.returnValue = this.talkerMessage(cmd, data, topicConfig);
+      } catch (e) {
+        event.returnValue = this.error(e.message, e);
+      }
+    });
 
     this._ipcMain.on("platformSettings", (event, _cmd, _data) => {
-      // this._settings.data.buildInfo = this._settings.getBuildInfo();
-      // this._settings.data.openFullscreenRenderer =
-      //   this._app.openFullscreenRenderer();
+      this._settings.data.buildInfo = this._settings.getBuildInfo();
       event.returnValue = this._settings.data;
     });
 
@@ -46,39 +46,36 @@ export default class PatchbayApi {
     });
 
     this._ipcMain.on("getOpDir", (event, data) => {
-      // let opName = this._opsUtil.getOpNameById(data.opId);
-      // if (!opName) opName = data.opName;
-      // event.returnValue = this._opsUtil.getOpAbsolutePath(opName);
-      event.returnValue = "";
+      let opName = this._opsUtil.getOpNameById(data.opId);
+      if (!opName) opName = data.opName;
+      event.returnValue = this._opsUtil.getOpAbsolutePath(opName);
     });
 
     this._ipcMain.on("getOpModuleDir", (event, data) => {
-      // let opName = this._opsUtil.getOpNameById(data.opId);
-      // if (!opName) opName = data.opName;
-      // const opDir = this._opsUtil.getOpAbsolutePath(opName);
-      // event.returnValue = path.join(opDir, "node_modules", data.moduleName);
-      event.returnValue = "";
+      let opName = this._opsUtil.getOpNameById(data.opId);
+      if (!opName) opName = data.opName;
+      const opDir = this._opsUtil.getOpAbsolutePath(opName);
+      event.returnValue = path.join(opDir, "node_modules", data.moduleName);
     });
 
     this._ipcMain.on("getOpModuleLocation", (event, data) => {
-      // let opName = this._opsUtil.getOpNameById(data.opId);
-      // if (!opName) opName = data.opName;
-      // const opDir = this._opsUtil.getOpAbsolutePath(opName);
-      // const moduleDir = path.join(opDir, "node_modules");
-      // const moduleRequire = createRequire(moduleDir);
-      // if (moduleRequire) {
-      //   try {
-      //     let location = moduleRequire.resolve(data.moduleName);
-      //     if (data.asUrl) location = this._helperUtil.pathToFileURL(location);
-      //     event.returnValue = location;
-      //   } catch (e) {
-      //     this._log.error(data.moduleName + " " + moduleDir);
-      //     event.returnValue = null;
-      //   }
-      // } else {
-      //   event.returnValue = null;
-      // }
-      event.returnValue = "";
+      let opName = this._opsUtil.getOpNameById(data.opId);
+      if (!opName) opName = data.opName;
+      const opDir = this._opsUtil.getOpAbsolutePath(opName);
+      const moduleDir = path.join(opDir, "node_modules");
+      const moduleRequire = createRequire(moduleDir);
+      if (moduleRequire) {
+        try {
+          let location = moduleRequire.resolve(data.moduleName);
+          if (data.asUrl) location = this._helperUtil.pathToFileURL(location);
+          event.returnValue = location;
+        } catch (e) {
+          this._log.error(data.moduleName + " " + moduleDir);
+          event.returnValue = null;
+        }
+      } else {
+        event.returnValue = null;
+      }
     });
 
     this._ipcMain.on("getOpModules", (event, data) => {
@@ -170,7 +167,7 @@ export default class PatchbayApi {
         const result = { warns: warns };
         result.attachmentFiles = this._opsUtil.getAttachmentFiles(opName);
 
-        const opDocs = this._docUtil.getDocForOp(opName);
+        const opDocs = this._docsUtil.getDocForOp(opName);
         let changelogEntries = [];
         if (opDocs && opDocs.changelog) {
           // copy array to not modify reference
@@ -323,9 +320,9 @@ export default class PatchbayApi {
     projectOps = this._helperUtil.uniqueArray(projectOps);
     usedOpIds = this._helperUtil.uniqueArray(usedOpIds);
     projectNamespaces = this._helperUtil.uniqueArray(projectNamespaces);
-    const coreOpDocs = this._docUtil.getOpDocs();
+    const coreOpDocs = this._docsUtil.getOpDocs();
     projectOps.forEach((opName) => {
-      let opDoc = this._docUtil.getDocForOp(opName, coreOpDocs);
+      let opDoc = this._docsUtil.getDocForOp(opName, coreOpDocs);
       if (opDoc) {
         if (!opDoc.name) opDoc.name = opName;
         opDocs.push(opDoc);
@@ -341,16 +338,16 @@ export default class PatchbayApi {
     this._opsUtil.addPermissionsToOps(opDocs, currentUser, [], project);
     this._opsUtil.addVersionInfoToOps(opDocs);
 
-    opDocs = this._docUtil.makeReadable(opDocs);
+    opDocs = this._docsUtil.makeReadable(opDocs);
     return this.success("OK", opDocs, true);
   }
 
   async getOpDocsAll() {
     const currentUser = this._settings.getCurrentUser();
     const currentProject = this._settings.getCurrentProject();
-    let opDocs = this._docUtil.getOpDocs(true, true);
+    let opDocs = this._docsUtil.getOpDocs(true, true);
     opDocs = opDocs.concat(
-      this._docUtil.getCollectionOpDocs(
+      this._docsUtil.getCollectionOpDocs(
         "Ops.Extension.Standalone",
         currentUser,
       ),
@@ -358,10 +355,10 @@ export default class PatchbayApi {
     opDocs = opDocs.concat(
       this._projectsUtil.getOpDocsInProjectDirs(currentProject, true, true),
     );
-    const cleanDocs = this._docUtil.makeReadable(opDocs);
+    const cleanDocs = this._docsUtil.makeReadable(opDocs);
     this._opsUtil.addPermissionsToOps(cleanDocs, null);
 
-    const extensions = this._docUtil.getAllExtensionDocs(true, true);
+    const extensions = this._docsUtil.getAllExtensionDocs(true, true);
     const libs = this._projectsUtil.getAvailableLibs(currentProject);
     const coreLibs = this._projectsUtil.getCoreLibs();
 
@@ -386,7 +383,7 @@ export default class PatchbayApi {
     const result = {};
     result.opDocs = [];
 
-    const opDoc = this._docUtil.getDocForOp(opName);
+    const opDoc = this._docsUtil.getDocForOp(opName);
     result.content = "No docs yet...";
 
     const opDocs = [];
@@ -411,7 +408,7 @@ export default class PatchbayApi {
           opName,
         );
       }
-      result.opDocs = this._docUtil.makeReadable(opDocs);
+      result.opDocs = this._docsUtil.makeReadable(opDocs);
       result.opDocs = this._opsUtil.addVersionInfoToOps(opDocs);
       result.opDocs = this._opsUtil.addPermissionsToOps(result.opDocs, null);
       return this.success("OK", result, true);
@@ -518,7 +515,7 @@ export default class PatchbayApi {
       this._settings.getCurrentUser(),
       returnedCode,
     );
-    this._docUtil.updateOpDocs(opName);
+    this._docsUtil.updateOpDocs(opName);
 
     return this.success("OK", { opFullCode: returnedCode }, true);
   }
@@ -560,7 +557,7 @@ export default class PatchbayApi {
       "hello attachment",
     );
     this._log.info("created attachment!", p);
-    this._docUtil.updateOpDocs(opName);
+    this._docsUtil.updateOpDocs(opName);
     this.success("OK");
   }
 
@@ -593,7 +590,7 @@ export default class PatchbayApi {
           encoding: "utf-8",
           spaces: 4,
         });
-        this._docUtil.updateOpDocs(opName);
+        this._docsUtil.updateOpDocs(opName);
         this.success("OK", {});
       } catch (writeErr) {
         this.error("WRITE_ERROR");
@@ -626,7 +623,7 @@ export default class PatchbayApi {
           encoding: "utf-8",
           spaces: 4,
         });
-        this._docUtil.updateOpDocs(opName);
+        this._docsUtil.updateOpDocs(opName);
         this.success("OK");
       } catch (writeErr) {
         this.error("WRITE_ERROR", 500);
@@ -656,7 +653,7 @@ export default class PatchbayApi {
           encoding: "utf-8",
           spaces: 4,
         });
-        this._docUtil.updateOpDocs(opName);
+        this._docsUtil.updateOpDocs(opName);
         this.success("OK");
       } catch (writeErr) {
         this.error("WRITE_ERROR", 500);
@@ -685,7 +682,7 @@ export default class PatchbayApi {
           encoding: "utf-8",
           spaces: 4,
         });
-        this._docUtil.updateOpDocs(opName);
+        this._docsUtil.updateOpDocs(opName);
         this.success("OK");
       } catch (writeErr) {
         this.error("WRITE_ERROR", 500);
@@ -714,7 +711,7 @@ export default class PatchbayApi {
     }
     return this.success(
       "OK",
-      { opDocs: this._docUtil.makeReadable(opDocs) },
+      { opDocs: this._docsUtil.makeReadable(opDocs) },
       true,
     );
   }
@@ -767,8 +764,8 @@ export default class PatchbayApi {
   }
 
   saveUserSettings(data) {
-    if (data && data.this._settings) {
-      this._settings.setUserSettings(data.this._settings);
+    if (data && data._settings) {
+      this._settings.setUserSettings(data._settings);
     }
   }
 
@@ -822,12 +819,12 @@ export default class PatchbayApi {
   }
 
   setIconSaved() {
-    let title = this._app.editorWindow.getTitle();
-    const pos = title.lastIndexOf(" *");
-    let newTitle = title;
-    if (pos !== -1) newTitle = title.substring(0, pos);
-    this._app.setDocumentEdited(false);
-    this._app.editorWindow.setTitle(newTitle);
+    // let title = this._app.editorWindow.getTitle();
+    // const pos = title.lastIndexOf(" *");
+    // let newTitle = title;
+    // if (pos !== -1) newTitle = title.substring(0, pos);
+    // this._app.setDocumentEdited(false);
+    // this._app.editorWindow.setTitle(newTitle);
   }
 
   setIconUnsaved() {
@@ -904,7 +901,7 @@ export default class PatchbayApi {
   }
 
   checkOpName(data) {
-    const opDocs = this._docUtil.getOpDocs(false, false);
+    const opDocs = this._docsUtil.getOpDocs(false, false);
     const newName = encodeURIComponent(data.v);
     const sourceName = data.sourceName || null;
     const currentUser = this._settings.getCurrentUser();
@@ -1002,12 +999,12 @@ export default class PatchbayApi {
       let opDoc = jsonfile.readFileSync(opDocFile);
       if (opDoc) {
         opDoc.summary = summary;
-        opDoc = this._docUtil.cleanOpDocData(opDoc);
+        opDoc = this._docsUtil.cleanOpDocData(opDoc);
         jsonfile.writeFileSync(opDocFile, opDoc, {
           encoding: "utf-8",
           spaces: 4,
         });
-        this._docUtil.updateOpDocs();
+        this._docsUtil.updateOpDocs();
       }
       return this.success("OK", opDoc, true);
     } else {
@@ -1040,7 +1037,7 @@ export default class PatchbayApi {
     const currentProject = this._settings.getCurrentProject();
     let opNamespace = this._opsUtil.getNamespace(newName);
 
-    const opDocs = this._docUtil.getOpDocs(false, false);
+    const opDocs = this._docsUtil.getOpDocs(false, false);
     const renameResults = this._getFullRenameResponse(
       opDocs,
       newName,
@@ -1570,7 +1567,7 @@ export default class PatchbayApi {
       this._settings.setProject(null, null);
       this._projectsUtil.getOpDocsInProjectDirs(project);
     }
-    this._app.updateTitle();
+    // this._app.updateTitle();
   }
 
   async addOpDependency(options) {
@@ -1581,7 +1578,7 @@ export default class PatchbayApi {
     const added = this._opsUtil.addOpDependency(opName, dep);
     if (added) {
       this._log.info("added dependency!", opName, dep.src);
-      this._docUtil.updateOpDocs(opName);
+      this._docsUtil.updateOpDocs(opName);
       return await this._installOpDependencies(opName);
     } else {
       return this.error("FAILED_TO_ADD_DEPENDENCY");
@@ -1608,8 +1605,8 @@ export default class PatchbayApi {
         if (fs.existsSync(libPath)) fs.unlinkSync(libPath);
         if (opDoc.dependencies)
           jsonfile.writeFileSync(opDocFile, opDoc, this._opsUtil.OPJSON_FORMAT);
-        this._docUtil.updateOpDocs();
-        this._installOpDependencies(opName);
+        this._docsUtil.updateOpDocs();
+        await this._installOpDependencies(opName);
         return this.success("OK");
       } else {
         return this.error("OP_NOT_FOUND");
@@ -1679,7 +1676,7 @@ export default class PatchbayApi {
       );
       if (newFileName) {
         this._log.info("added op file!", opName, newFileName);
-        this._docUtil.updateOpDocs(opName);
+        this._docsUtil.updateOpDocs(opName);
         return this.success("OK", { filename: newFileName }, true);
       } else {
         return this.error("FAILED_TO_ADD_DEPENDENCY");
@@ -1837,7 +1834,7 @@ export default class PatchbayApi {
 
     let newOpDocs = opDocs;
     if (!this._opsUtil.isCoreOp(newName))
-      newOpDocs = this._docUtil.getCollectionOpDocs(newName, currentUser);
+      newOpDocs = this._docsUtil.getCollectionOpDocs(newName, currentUser);
 
     const nextOpName = this._opsUtil.getNextVersionOpName(newName, newOpDocs);
     const nextShort = this._opsUtil.getOpShortName(nextOpName);

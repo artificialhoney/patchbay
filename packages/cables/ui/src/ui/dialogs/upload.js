@@ -147,7 +147,7 @@ export default class FileUploader {
   }
 
   handleFileInputReUpload(files) {
-    if (!window.gui) return;
+    if (!Gui.gui) return;
     if (Gui.gui.isRemoteClient) return;
 
     Gui.gui.jobs().start({
@@ -175,7 +175,7 @@ export default class FileUploader {
   }
 
   uploadFiles(files, opName) {
-    if (!window.gui) return;
+    if (!Gui.gui) return;
     if (Gui.gui.isRemoteClient) return;
 
     Gui.gui.jobs().start({

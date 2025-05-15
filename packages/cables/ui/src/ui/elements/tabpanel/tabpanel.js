@@ -123,7 +123,7 @@ export default class TabPanel extends Events {
       Gui.gui.cmdPallet.removeDynamic(this._dynCmds[i]);
 
     for (let i = 0; i < this._tabs.length; i++) {
-      if (window.gui && this._eleId == "maintabs") {
+      if (Gui.gui && this._eleId == "maintabs") {
         const t = this._tabs[i];
 
         const cmd = Gui.gui.cmdPallet.addDynamic(

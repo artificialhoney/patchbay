@@ -27,7 +27,7 @@ export default class BottomTabPanel extends Events {
       tabs.activateTab("");
       tabs.activateTab(tab.id);
 
-      if (!wasVisible && window.gui) Gui.gui.setLayout();
+      if (!wasVisible && Gui.gui) Gui.gui.setLayout();
     });
 
     this._tabs.on("onTabRemoved", (_tab) => {
@@ -119,7 +119,7 @@ export default class BottomTabPanel extends Events {
     this._visible = false;
     document.getElementById("editorminimized").style.display = "block";
     this._ele.style.display = "none";
-    if (window.gui) Gui.gui.setLayout();
+    if (Gui.gui) Gui.gui.setLayout();
 
     if (!donotsave && Gui.gui.finishedLoading())
       UserSettings.userSettings.set("bottomTabsVisible", false);

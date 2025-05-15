@@ -173,8 +173,7 @@ export default class GlViewBox {
     this._lastPosPixel[0] = e.offsetX;
     this._lastPosPixel[1] = e.offsetY;
 
-    if (window.Gui.gui.getRestriction() < Gui.gui.RESTRICT_MODE_EXPLORER)
-      return;
+    if (Gui.gui.getRestriction() < Gui.gui.RESTRICT_MODE_EXPLORER) return;
 
     if (
       this.glPatch.mouseState.buttonStateForScrolling ||
@@ -275,8 +274,7 @@ export default class GlViewBox {
   }
 
   wheelZoom(delta) {
-    if (window.Gui.gui.getRestriction() < Gui.gui.RESTRICT_MODE_FOLLOWER)
-      return;
+    if (Gui.gui.getRestriction() < Gui.gui.RESTRICT_MODE_FOLLOWER) return;
 
     if (delta == 0) return;
 

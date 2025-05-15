@@ -54,7 +54,7 @@ export default class Snap extends Events {
     this._timeout = setTimeout(() => {
       const perf = Gui.gui.uiProfiler.start("Snap.update");
       const hashmap = {};
-      const ops = gui
+      const ops = Gui.gui
         .corePatch()
         .getSubPatchOps(this._glPatch.getCurrentSubPatch());
       const selOps = Gui.gui.patchView.getSelectedOps();

@@ -27,7 +27,7 @@ export default class OpDependencyTabPanel extends TabPanel {
       { title: "Op", value: "op" },
       { title: "Core-Lib", value: "corelib" },
     ];
-    if (gui && Gui.gui.user && Gui.gui.user.isStaff) {
+    if (Gui.gui && Gui.gui.user && Gui.gui.user.isStaff) {
       this._sources.push({ title: "Lib", value: "lib", icon: "lock" });
     }
     if (platform.getSupportedOpDependencyTypes().includes("npm")) {

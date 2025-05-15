@@ -56,7 +56,7 @@ export default class GlDragLine {
       if (!ele) return;
 
       if (ele.dataset.opid && ele.dataset.portname) {
-        if (gui && Gui.gui.corePatch()) {
+        if (Gui.gui && Gui.gui.corePatch()) {
           const op = Gui.gui.corePatch().getOpById(ele.dataset.opid);
           if (op) {
             const port = op.getPortByName(ele.dataset.portname);

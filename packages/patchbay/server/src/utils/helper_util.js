@@ -3,10 +3,9 @@ import path from "path";
 import { fileURLToPath, pathToFileURL } from "url";
 
 export default class HelperUtil extends SharedHelperUtil {
-  constructor(utilProvider, app) {
+  constructor(utilProvider) {
     super(utilProvider);
-    this._app = app;
-    this._settings = app.settings;
+    this._settings = this._cables.settings;
   }
 
   fileURLToPath(url, convertRelativeToProject = false) {
@@ -18,14 +17,14 @@ export default class HelperUtil extends SharedHelperUtil {
     let fileUrl = decodeURI(url);
     let filePath = fileUrl;
 
-    const uiDistPath = this._app.getUiDistPath();
+    const uiDistPath = this._cables.getUiDistPath();
     filePath = filePath.replace("file://" + uiDistPath, "");
     if (
       convertRelativeToProject &&
       !filePath.startsWith("file:") &&
       !path.isAbsolute(filePath)
     ) {
-      filePath = path.join(this._app.getAssetPath(), filePath);
+      filePath = path.join(this._cables.getAssetPath(), filePath);
       try {
         fileUrl = pathToFileURL(filePath);
       } catch (e) {
@@ -50,7 +49,8 @@ export default class HelperUtil extends SharedHelperUtil {
   pathToFileURL(thePath, convertRelativeToProject = false) {
     if (thePath && thePath.startsWith("file:")) return thePath;
     if (convertRelativeToProject && !path.isAbsolute(thePath)) {
-      return pathToFileURL(path.join(this._app.getAssetPath(), thePath)).href;
+      return pathToFileURL(path.join(this._cables.getAssetPath(), thePath))
+        .href;
     } else {
       return thePath ? pathToFileURL(thePath).href : null;
     }

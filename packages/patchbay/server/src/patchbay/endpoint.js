@@ -129,7 +129,7 @@ export default class PatchbayEndpoint {
     } else if (urlPath.startsWith("/api/ops/code/project")) {
       const code = this.apiGetProjectOpsCode(req);
       return new Response(code, {
-        headers: { "content-type": "application/json" },
+        headers: { "content-type": "application/javascript" },
       });
     } else if (urlPath.startsWith("/api/ops/code")) {
       const code = this.apiGetCoreOpsCode(req);

@@ -49,6 +49,7 @@ import { contextMenu } from "./elements/contextmenu.js";
 import UserSettings from "./components/usersettings.js";
 import GlTimelineTab from "./components/tabs/tab_gltimeline.js";
 import PatchView from "./components/patchview.js";
+import { UiPatch } from "./core_extend_patch.js";
 
 /**
  * main singleton class for starting the editor
@@ -138,16 +139,16 @@ export default class Gui extends Events {
 
     /** @type {UiPatch} */
     // @ts-ignore
-    this._corePatch = CABLES.patch = new CABLES.Patch(patchConfig);
+    this._corePatch = new UiPatch(patchConfig);
     this._patchLoadEndiD = this._corePatch.on("patchLoadEnd", () => {
       this._corePatch.off(this._patchLoadEndiD);
-      this.corePatch().logStartup("patch loaded 2");
+      this._corePatch.logStartup("patch loaded 2");
 
       this.bookmarks.updateDynamicCommands();
       this.patchView.highlightExamplePatchOps();
       this.savedState.setSaved("patch load end", 0);
 
-      this.corePatch().logStartup("Patch loaded");
+      this._corePatch.logStartup("Patch loaded");
     });
     this.on(
       "libLoadError",
@@ -164,7 +165,7 @@ export default class Gui extends Events {
        * @param {CgShader} shader
        */
       (shader) => {
-        if (this.UserSettings.userSettings.get("showAllShaderErrors"))
+        if (UserSettings.userSettings.get("showAllShaderErrors"))
           CABLES.UI.showShaderError(shader);
       },
     );
@@ -268,7 +269,7 @@ export default class Gui extends Events {
   }
 
   get shouldDrawOverlay() {
-    if (!this.UserSettings.userSettings.get("overlaysShow")) return false;
+    if (!UserSettings.userSettings.get("overlaysShow")) return false;
 
     return true;
   }
@@ -356,13 +357,13 @@ export default class Gui extends Events {
   }
 
   showGuestWarning() {
-    if (Gui.gui.isGuestEditor()) {
+    if (this.isGuestEditor()) {
       CABLES.UI.MODAL.showError(
         "Demo Editor",
         text.guestHint +
           '<br/><br/><a href="' +
           platform.getCablesUrl() +
-          '/signup" target="_blank" class="bluebutton">Sign up</a> <a onclick="Gui.gui.pressedEscape();" target="_blank" class="button">Close</a>',
+          '/signup" target="_blank" class="bluebutton">Sign up</a> <a onclick="this.pressedEscape();" target="_blank" class="button">Close</a>',
       );
       return true;
     }
@@ -373,9 +374,9 @@ export default class Gui extends Events {
 
     const html =
       "You are overwriting your original patch with a backup! Are you sure?<br/><br/>Saving will redirect back to the original patch.<br/><br/>" +
-      '<a class="button" onclick="Gui.gui.patchView.store.checkUpdatedSaveForce(\'\');"><span class="icon icon-save"></span>Yes, save</a>&nbsp;&nbsp;' +
+      '<a class="button" onclick="this.patchView.store.checkUpdatedSaveForce(\'\');"><span class="icon icon-save"></span>Yes, save</a>&nbsp;&nbsp;' +
       '<a class="button" onclick="CABLES.CMD.PATCH.saveAs();"><span class="icon icon-save"></span>No, save as a copy</a>&nbsp;&nbsp;' +
-      '<a class="button" onclick="Gui.gui.closeModal();">Cancel</a>&nbsp;&nbsp;';
+      '<a class="button" onclick="this.closeModal();">Cancel</a>&nbsp;&nbsp;';
 
     new ModalDialog({
       title: "Saving Backup",
@@ -385,7 +386,7 @@ export default class Gui extends Events {
   }
 
   canSaveInMultiplayer() {
-    // if (Gui.gui.socket && !Gui.gui.socket.canSaveInMultiplayer()) return false;
+    // if (this.socket && !this.socket.canSaveInMultiplayer()) return false;
     // else return true;
     return true;
   }
@@ -396,16 +397,16 @@ export default class Gui extends Events {
 
   getParamPanelEleId() {
     let eleId = "options";
-    if (!Gui.gui.showTwoMetaPanels()) eleId = "options_meta";
+    if (!this.showTwoMetaPanels()) eleId = "options_meta";
     return eleId;
   }
 
   isShowingModal() {
-    return Gui.gui.currentModal != null;
+    return this.currentModal != null;
   }
 
   closeModal() {
-    if (Gui.gui.currentModal) Gui.gui.currentModal.close();
+    if (this.currentModal) this.currentModal.close();
   }
 
   showTwoMetaPanels() {
@@ -425,7 +426,7 @@ export default class Gui extends Events {
    * @param {String} which
    */
   watchArray(opid, which) {
-    const op = Gui.gui.corePatch().getOpById(opid);
+    const op = this._corePatch.getOpById(opid);
     if (!op) {
       this._log.warn("opid not found:", opid);
       return;
@@ -433,8 +434,8 @@ export default class Gui extends Events {
     const port = op.getPort(which);
     if (!port) this._log.warn("port not found:", which);
 
-    new WatchArrayTab(Gui.gui.mainTabs, op, port, {});
-    Gui.gui.maintabPanel.show(true);
+    new WatchArrayTab(this.mainTabs, op, port, {});
+    this.maintabPanel.show(true);
   }
 
   pauseInteractionSplitpanes() {
@@ -455,23 +456,23 @@ export default class Gui extends Events {
     if (!this.bottomTabPanel.isVisible()) {
       new LogTab(this.bottomTabs);
       this.bottomTabPanel.show(true);
-      Gui.gui.setLayout();
-      Gui.gui.mainTabs.emitEvent("resize");
+      this.setLayout();
+      this.mainTabs.emitEvent("resize");
     }
   }
 
   hideBottomTabs() {
     this.bottomTabPanel.hide(true);
 
-    Gui.gui.mainTabs.emitEvent("resize");
-    Gui.gui.setLayout();
-    Gui.gui.mainTabs.emitEvent("resize");
+    this.mainTabs.emitEvent("resize");
+    this.setLayout();
+    this.mainTabs.emitEvent("resize");
   }
 
   setLayout() {
     if (this.unload) return;
     this.pauseProfiling();
-    const perf = this.uiProfiler.start("Gui.gui.setlayout");
+    const perf = this.uiProfiler.start("this.setlayout");
     let canvasScale = 1;
     // this._elAceEditor = ele.byId("ace_editors");
     this._elSplitterPatch = this._elSplitterPatch || ele.byId("splitterPatch");
@@ -563,13 +564,13 @@ export default class Gui extends Events {
     if (this.canvasManager.mode == this.canvasManager.CANVASMODE_POPOUT)
       this.rendererHeightScaled = 0;
 
-    this.corePatch().pause();
+    this._corePatch.pause();
     this.patchView.pause();
 
     clearTimeout(this.delayedResizeCanvas);
     this.delayedResizeCanvas = setTimeout(() => {
       this._corePatch.cgl.updateSize();
-      this.corePatch().resume();
+      this._corePatch.resume();
       this.patchView.resume();
     }, 50);
 
@@ -610,7 +611,7 @@ export default class Gui extends Events {
 
       this._elBreadcrumbNav.style.left = editorWidth + iconBarWidth + 15 + "px";
 
-      Gui.gui.mainTabs.updateSize();
+      this.mainTabs.updateSize();
     } else {
       this._elEditorMaximized.style.display = "none";
 
@@ -684,7 +685,7 @@ export default class Gui extends Events {
     }
 
     if (this._elIconbarLeft) {
-      if (this.UserSettings.userSettings.get("hideSizeBar")) {
+      if (UserSettings.userSettings.get("hideSizeBar")) {
         this._elIconbarLeft.style.display = "none";
       } else {
         this._elIconbarLeft.style.display = "block";
@@ -891,7 +892,7 @@ export default class Gui extends Events {
     this.rightPanelWidth = this.rendererWidth;
 
     this.canvasManager.mode = this.canvasManager.CANVASMODE_PATCHBG;
-    this.UserSettings.userSettings.set("canvasMode", "patchbg");
+    UserSettings.userSettings.set("canvasMode", "patchbg");
 
     this.rendererHeight = 100;
     this.rightPanelWidth = this._oldCanvasWidth;
@@ -904,7 +905,7 @@ export default class Gui extends Events {
     if (this.canvasManager.mode == this.canvasManager.CANVASMODE_NORMAL) {
       this._switchCanvasPatchBg();
     } else {
-      this.UserSettings.userSettings.set("canvasMode", "");
+      UserSettings.userSettings.set("canvasMode", "");
       this._switchCanvasSizeNormal();
     }
 
@@ -987,7 +988,7 @@ export default class Gui extends Events {
   hideTiming() {
     this._showTiming = false;
     ele.hide(ele.byId("timing"));
-    Gui.gui.setLayout();
+    this.setLayout();
   }
 
   hideTimeline() {
@@ -995,9 +996,9 @@ export default class Gui extends Events {
   }
 
   toggleTimeline() {
-    console.log(" gui toggle timeline");
+    console.log(" Gui.gui toggle timeline");
     if (this.glTimeline) this.glTimeline.toggle();
-    else this.timeLineTab = new GlTimelineTab(Gui.gui.bottomTabs);
+    else this.timeLineTab = new GlTimelineTab(this.bottomTabs);
   }
 
   refreshFileManager() {
@@ -1034,8 +1035,8 @@ export default class Gui extends Events {
   }
 
   showLogging() {
-    new LoggingTab(Gui.gui.mainTabs);
-    Gui.gui.maintabPanel.show(true);
+    new LoggingTab(this.mainTabs);
+    this.maintabPanel.show(true);
   }
 
   /**
@@ -1046,7 +1047,7 @@ export default class Gui extends Events {
     this.getFileManager(cb, userInteraction);
 
     this.fileManager.show(userInteraction);
-    Gui.gui.mainTabs.activateTabByName("Files");
+    this.mainTabs.activateTabByName("Files");
 
     if (cb) cb();
   }
@@ -1058,18 +1059,15 @@ export default class Gui extends Events {
     if (name && name !== "undefined") {
       ele.byId("patchname").innerHTML = name;
       ele.byId("patchname").dataset.patchname = name;
-      Gui.gui.corePatch().name = name;
+      this._corePatch.name = name;
       if (this._currentProject) this._currentProject.name = name;
     }
   }
 
   createProject() {
-    if (Gui.gui.showGuestWarning()) return;
+    if (this.showGuestWarning()) return;
 
-    const randomize = this.UserSettings.userSettings.get(
-      "randomizePatchName",
-      true,
-    );
+    const randomize = UserSettings.userSettings.get("randomizePatchName", true);
     let title = "Enter a name for your new project";
     if (randomize) title += ", leave empty for random name";
     new ModalDialog({
@@ -1284,7 +1282,7 @@ export default class Gui extends Events {
 
           FileManager.updatedFiles.push(fileId);
         }
-        Gui.gui.refreshFileManager();
+        this.refreshFileManager();
       },
     );
   }
@@ -1293,9 +1291,9 @@ export default class Gui extends Events {
    * @param {Function} cb
    */
   bind(cb) {
-    this.canvasManager.addContext(this.corePatch().cgl);
+    this.canvasManager.addContext(this._corePatch.cgl);
 
-    if (this.UserSettings.userSettings.get("canvasMode") == "patchbg")
+    if (UserSettings.userSettings.get("canvasMode") == "patchbg")
       this._switchCanvasPatchBg();
 
     this.bottomInfoArea.on("changed", this.setLayout.bind(this));
@@ -1369,10 +1367,10 @@ export default class Gui extends Events {
     });
 
     ele.byId("nav_cmdplt").addEventListener("click", () => {
-      Gui.gui.cmdPallet.show();
+      this.cmdPallet.show();
     });
     ele.byId("nav_search").addEventListener("click", () => {
-      Gui.gui.find("");
+      this.find("");
     });
 
     ele.byId("nav_createBackup").addEventListener("click", () => {
@@ -1483,21 +1481,21 @@ export default class Gui extends Events {
 
     // Introduction
     ele.byId("nav_help_introduction").addEventListener("click", () => {
-      Gui.gui.introduction.showIntroduction();
+      this.introduction.showIntroduction();
     });
     ele.byId("nav_help_video").addEventListener("click", () => {
       window.open("https://www.youtube.com/cablesgl", "_blank");
     });
 
     ele.byId("nav_op_createOp").addEventListener("click", () => {
-      Gui.gui.serverOps.createDialog();
+      this.serverOps.createDialog();
     });
     ele.byId("nav_op_patchOp").addEventListener("click", () => {
-      Gui.gui.patchView.unselectAllOps();
+      this.patchView.unselectAllOps();
       CABLES.CMD.PATCH.createSubPatchOp();
     });
     ele.byId("nav_filemanager").addEventListener("click", () => {
-      Gui.gui.showFileManager(null, true);
+      this.showFileManager(null, true);
     });
 
     ele.byId("nav_timeline").addEventListener("click", () => {
@@ -1551,11 +1549,11 @@ export default class Gui extends Events {
     this.mainTabs.emitEvent("resize");
     this.setLayout();
     this.setLayout(); // yes, twice....
-    Gui.gui.emitEvent(Gui.gui.EVENT_RESIZE);
+    this.emitEvent(this.EVENT_RESIZE);
   }
 
   bindKeys() {
-    if (Gui.gui.isRemoteClient) return;
+    if (this.isRemoteClient) return;
 
     this.keys.key(
       "Tab",
@@ -1564,7 +1562,7 @@ export default class Gui extends Events {
       null,
       { altKey: true, ignoreInput: false },
       () => {
-        Gui.gui.maintabPanel.tabs.cycleActiveTab();
+        this.maintabPanel.tabs.cycleActiveTab();
       },
     );
 
@@ -1577,12 +1575,12 @@ export default class Gui extends Events {
       { cmdCtrl: false, shiftKey: true, ignoreInput: true },
       () => {
         if (
-          Gui.gui.patchView.getSelectedOps().length !== 1 ||
-          !Gui.gui.patchView.getSelectedOps()[0].portsIn.length
+          this.patchView.getSelectedOps().length !== 1 ||
+          !this.patchView.getSelectedOps()[0].portsIn.length
         )
           return;
 
-        const selectedOp = Gui.gui.patchView.getSelectedOps();
+        const selectedOp = this.patchView.getSelectedOps();
         const selectedOpId = selectedOp[0].id;
 
         let port = null;
@@ -1612,9 +1610,7 @@ export default class Gui extends Events {
 
     const getSettingKeys = (keybindName, defaultKey) => {
       let val = defaultKey;
-      const setting = String(
-        this.UserSettings.userSettings.get(keybindName) || "",
-      );
+      const setting = String(UserSettings.userSettings.get(keybindName) || "");
       if (setting) {
         if (setting.indexOf(",") > 0) {
           const keys = setting.split(",");
@@ -1638,7 +1634,7 @@ export default class Gui extends Events {
       (e) => {
         if (document.activeElement)
           if (
-            Gui.gui.isShowingModal() ||
+            this.isShowingModal() ||
             (!document.activeElement.classList.contains("ace_text-input") &&
               document.activeElement.tagName != "INPUT" &&
               document.activeElement.tagName != "TEXTAREA") ||
@@ -1752,7 +1748,7 @@ export default class Gui extends Events {
         const eleAceTextEditor = ele.byQuery("#ace_editors textarea");
         if (
           !(eleAceTextEditor && ele.hasFocus(eleAceTextEditor)) &&
-          !Gui.gui.isShowingModal()
+          !this.isShowingModal()
         )
           CABLES.CMD.UI.showSearch();
         else e.dontPreventDefault = true;
@@ -1771,30 +1767,30 @@ export default class Gui extends Events {
     );
 
     this.keys.key("s", "Save patch", "down", null, { cmdCtrl: true }, () => {
-      Gui.gui.corePatch().checkExtensionOpPatchAssets();
+      this._corePatch.checkExtensionOpPatchAssets();
 
       if (
         document.activeElement.classList.contains("ace_text-input") &&
-        Gui.gui.mainTabs.getSaveButton() &&
-        Gui.gui.maintabPanel.isVisible()
+        this.mainTabs.getSaveButton() &&
+        this.maintabPanel.isVisible()
       ) {
         // && !this.patchView.hasFocus()
-        Gui.gui.mainTabs.getSaveButton().cb();
+        this.mainTabs.getSaveButton().cb();
       } else {
-        const subOuter = Gui.gui.patchView.getSubPatchOuterOp(
-          Gui.gui.patchView.getCurrentSubPatch(),
+        const subOuter = this.patchView.getSubPatchOuterOp(
+          this.patchView.getCurrentSubPatch(),
         );
         if (subOuter) {
           const bp = subOuter.isBlueprint2() || subOuter.isInBlueprint2();
           if (bp) {
-            Gui.gui.showLoadingProgress(true);
+            this.showLoadingProgress(true);
 
             subPatchOpUtil.updateSubPatchOpAttachment(
-              Gui.gui.patchView.getSubPatchOuterOp(bp),
+              this.patchView.getSubPatchOuterOp(bp),
               {
                 oldSubId: bp,
                 next: () => {
-                  if (!Gui.gui.savedState.getStateBlueprint(0))
+                  if (!this.savedState.getStateBlueprint(0))
                     CABLES.CMD.PATCH.save();
                 },
               },
@@ -1815,7 +1811,7 @@ export default class Gui extends Events {
       null,
       { cmdCtrl: true, ignoreInput: true },
       () => {
-        Gui.gui.toggleTimeline();
+        this.toggleTimeline();
       },
     );
 
@@ -1830,7 +1826,7 @@ export default class Gui extends Events {
           document.activeElement.tagName == "BODY" ||
           document.activeElement.tagName == "DIV"
         )
-          Gui.gui.toggleTimelinePlay();
+          this.toggleTimelinePlay();
 
         if (this._spaceBarStart === 0) this._spaceBarStart = Date.now();
       },
@@ -1845,7 +1841,7 @@ export default class Gui extends Events {
       () => {
         if (document.activeElement.tagName == "CANVAS") {
           const timeused = Date.now() - this._spaceBarStart;
-          if (timeused < 250) Gui.gui.toggleTimelinePlay();
+          if (timeused < 250) this.toggleTimelinePlay();
         }
         this._spaceBarStart = 0;
       },
@@ -1864,7 +1860,7 @@ export default class Gui extends Events {
   }
 
   toggleTimelinePlay() {
-    Gui.gui.corePatch().timer.togglePlay();
+    this._corePatch.timer.togglePlay();
   }
 
   /**
@@ -1879,8 +1875,8 @@ export default class Gui extends Events {
 
     if (e && (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey)) return;
 
-    if (Gui.gui.longPressConnector.isActive())
-      Gui.gui.longPressConnector.longPressCancel();
+    if (this.longPressConnector.isActive())
+      this.longPressConnector.longPressCancel();
     else if (this.canvasMagnifier)
       this.canvasMagnifier = this.canvasMagnifier.close();
     else if (
@@ -1900,10 +1896,10 @@ export default class Gui extends Events {
     } else if (CABLES.UI.suggestions) {
       CABLES.UI.suggestions.close();
       CABLES.UI.suggestions = null;
-    } else if (Gui.gui.cmdPallet.isVisible()) Gui.gui.cmdPallet.close();
+    } else if (this.cmdPallet.isVisible()) this.cmdPallet.close();
     else if (contextMenu.isVisible()) contextMenu.close();
-    else if (Gui.gui.isShowingModal()) {
-      Gui.gui.closeModal();
+    else if (this.isShowingModal()) {
+      this.closeModal();
 
       if (this.maintabPanel?._tabs?.getActiveTab()?.editor) {
         setTimeout(() => {
@@ -1913,14 +1909,14 @@ export default class Gui extends Events {
     } else if (this._opselect.isOpen()) this._opselect.close();
     else if (
       this.maintabPanel.isVisible() &&
-      Gui.gui.UserSettings.userSettings.get("escape_closetabs")
+      UserSettings.userSettings.get("escape_closetabs")
     )
       this.maintabPanel.hide();
     else {
       if (e) {
         CABLES.UI.OPSELECT.linkNewOpToPort = CABLES.UI.OPSELECT.linkNewLink =
           null;
-        Gui.gui.opSelect().show({
+        this.opSelect().show({
           subPatch: this.patchView.getCurrentSubPatch(),
           x: 0,
           y: 0,
@@ -1981,18 +1977,18 @@ export default class Gui extends Events {
 
     ele.byId("menubar").classList.remove("hidden");
 
-    if (this.UserSettings.userSettings.get("showUIPerf") == true)
-      Gui.gui.uiProfiler.show();
+    if (UserSettings.userSettings.get("showUIPerf") == true)
+      this.uiProfiler.show();
 
     this._elGlCanvasDom.addEventListener("pointerenter", () => {
-      Gui.gui.showInfo(text.canvas);
+      this.showInfo(text.canvas);
     });
 
     this._elGlCanvasDom.addEventListener("pointerleave", () => {
       hideInfo();
     });
 
-    if (this.UserSettings.userSettings.get("presentationmode"))
+    if (UserSettings.userSettings.get("presentationmode"))
       CABLES.CMD.UI.startPresentationMode();
 
     if (this._corePatch.cgl.aborted) {
@@ -2003,30 +1999,26 @@ export default class Gui extends Events {
       return;
     }
 
-    if (this.UserSettings.userSettings.get("glTimelineOpened") == true)
+    if (UserSettings.userSettings.get("glTimelineOpened") == true)
       CABLES.CMD.TIMELINE.openGlTimeline();
-    if (this.UserSettings.userSettings.get("fileManagerOpened") == true)
+    if (UserSettings.userSettings.get("fileManagerOpened") == true)
       this.showFileManager();
-    if (this.UserSettings.userSettings.get("openLogTab") == true)
-      this.showLogging();
+    if (UserSettings.userSettings.get("openLogTab") == true) this.showLogging();
 
-    Gui.gui.transformOverlay.updateVisibility();
+    this.transformOverlay.updateVisibility();
 
     this.iconBarLeft = new IconBar("sidebar_left");
     this.iconBarPatchNav = new IconBar("sidebar_bottom");
     this.iconBarTimeline = new IconBar("sidebar_timeline");
 
     if (
-      this.getRestriction() != Gui.gui.RESTRICT_MODE_REMOTEVIEW &&
-      this.UserSettings.userSettings.get("showTipps") &&
-      this.UserSettings.userSettings.get("introCompleted")
+      this.getRestriction() != this.RESTRICT_MODE_REMOTEVIEW &&
+      UserSettings.userSettings.get("showTipps") &&
+      UserSettings.userSettings.get("introCompleted")
     )
       CABLES.CMD.UI.showTips();
 
-    if (
-      platform.frontendOptions.showWelcome &&
-      this.corePatch().ops.length == 0
-    )
+    if (platform.frontendOptions.showWelcome && this._corePatch.ops.length == 0)
       CABLES.CMD.UI.welcomeTab(true);
 
     let ver = "";
@@ -2035,7 +2027,7 @@ export default class Gui extends Events {
     this._log.groupCollapsed("welcome to cables " + ver + "!");
 
     if (platform.getPatchVersion())
-      Gui.gui.restriction.setMessage(
+      this.restriction.setMessage(
         "backup",
         "This is a backup version, saving will overwrite the current version!",
       );
@@ -2111,15 +2103,15 @@ export default class Gui extends Events {
       this._log.error(msg);
     }
 
-    Gui.gui.savedState.setSavedAll("showUiElements");
-    Gui.gui.savedState.resume();
+    this.savedState.setSavedAll("showUiElements");
+    this.savedState.resume();
 
-    Gui.gui.metaTabs.loadCurrentTabUsersettings();
-    Gui.gui.patchView.focus();
+    this.metaTabs.loadCurrentTabUsersettings();
+    this.patchView.focus();
 
     setTimeout(() => {
-      Gui.gui.setLayout();
-      Gui.gui.mainTabs.emitEvent("resize");
+      this.setLayout();
+      this.mainTabs.emitEvent("resize");
     }, 100);
 
     setTimeout(() => {
@@ -2128,11 +2120,11 @@ export default class Gui extends Events {
   }
 
   showWelcomeNotifications() {
-    if (!Gui.gui.isRemoteClient && platform.showGitBranchWarning)
+    if (!this.isRemoteClient && platform.showGitBranchWarning)
       platform.showGitBranchWarning();
-    if (!Gui.gui.isRemoteClient && platform.showBrowserWarning)
+    if (!this.isRemoteClient && platform.showBrowserWarning)
       platform.showBrowserWarning();
-    if (!Gui.gui.isRemoteClient && platform.showStartupChangelog)
+    if (!this.isRemoteClient && platform.showStartupChangelog)
       platform.showStartupChangelog();
   }
 
@@ -2159,7 +2151,7 @@ export default class Gui extends Events {
       "/patch/" +
       this.project().shortId +
       "/settings?iframe=true";
-    Gui.gui.mainTabs.addIframeTab(
+    this.mainTabs.addIframeTab(
       "Patch Settings",
       url,
       {
@@ -2194,9 +2186,9 @@ export default class Gui extends Events {
     }
 
     idx = idx || 0;
-    if (!this._gizmo[idx]) this._gizmo[idx] = new Gizmo(this.corePatch().cgl);
+    if (!this._gizmo[idx]) this._gizmo[idx] = new Gizmo(this._corePatch.cgl);
 
-    if (!this.UserSettings.userSettings.get("overlaysShow")) {
+    if (!UserSettings.userSettings.get("overlaysShow")) {
       this._gizmo[idx].set(null);
       return;
     }
@@ -2212,7 +2204,7 @@ export default class Gui extends Events {
    */
   setTransform(id, x, y, z) {
     if (this.shouldDrawOverlay)
-      this.transformOverlay.add(this.corePatch().cgl, id, x, y, z);
+      this.transformOverlay.add(this._corePatch.cgl, id, x, y, z);
   }
 
   /**
@@ -2229,7 +2221,7 @@ export default class Gui extends Events {
     el.classList.remove("bgPatternBlue");
 
     el.classList.add(
-      this.UserSettings.userSettings.get("bgpattern") || "bgPatternDark",
+      UserSettings.userSettings.get("bgpattern") || "bgPatternDark",
     );
   }
 
@@ -2241,7 +2233,7 @@ export default class Gui extends Events {
     const idling = (CABLES.now() - this.lastNotIdle) / 1000;
     if (idling > 30 * 60) {
     } else {
-      setTimeout(Gui.gui.checkIdle, 1000 * 60 * 2);
+      setTimeout(this.checkIdle, 1000 * 60 * 2);
     }
   }
 
@@ -2250,7 +2242,7 @@ export default class Gui extends Events {
   }
 
   reloadDocs(cb) {
-    Gui.gui.opDocs.addCoreOpDocs();
+    this.opDocs.addCoreOpDocs();
     if (cb) cb();
   }
 
@@ -2265,7 +2257,7 @@ export default class Gui extends Events {
   }
 
   hideElementsByRestriction(r) {
-    if (r == Gui.gui.RESTRICT_MODE_REMOTEVIEW) {
+    if (r == this.RESTRICT_MODE_REMOTEVIEW) {
       ele.byId("undev").style.display = "none";
       ele.byId("infoAreaContainer").style.display = "none";
       ele.forEachClass("splitter", (el) => {
@@ -2273,7 +2265,7 @@ export default class Gui extends Events {
       });
     }
 
-    if (r < Gui.gui.RESTRICT_MODE_FULL) {
+    if (r < this.RESTRICT_MODE_FULL) {
       const optionsPanel = ele.byId("options");
       if (optionsPanel) optionsPanel.classList.add("readonly");
 
@@ -2310,15 +2302,15 @@ export default class Gui extends Events {
     }
 
     if (this.iconBarLeft)
-      this.iconBarLeft.setVisible(r > Gui.gui.RESTRICT_MODE_FOLLOWER);
+      this.iconBarLeft.setVisible(r > this.RESTRICT_MODE_FOLLOWER);
     if (this.iconBarPatchNav)
-      this.iconBarPatchNav.setVisible(r > Gui.gui.RESTRICT_MODE_FOLLOWER);
+      this.iconBarPatchNav.setVisible(r > this.RESTRICT_MODE_FOLLOWER);
     if (this.bottomInfoArea)
-      this.bottomInfoArea.setVisible(r > Gui.gui.RESTRICT_MODE_FOLLOWER);
+      this.bottomInfoArea.setVisible(r > this.RESTRICT_MODE_FOLLOWER);
   }
 
   init() {
-    // this.canvasManager.getCanvasUiBar() = new CABLES.UI.CanvasUi(this.corePatch().cgl);
+    // this.canvasManager.getCanvasUiBar() = new CABLES.UI.CanvasUi(this._corePatch.cgl);
 
     this.setTheme(JSON.parse(JSON.stringify(defaultTheme)));
 
@@ -2340,14 +2332,13 @@ export default class Gui extends Events {
 
     hljs.configure({ ignoreUnescapedHTML: true });
 
-    if (this.isRemoteClient)
-      this.setRestriction(Gui.gui.RESTRICT_MODE_REMOTEVIEW);
-    else this.setRestriction(Gui.gui.RESTRICT_MODE_FULL);
+    if (this.isRemoteClient) this.setRestriction(this.RESTRICT_MODE_REMOTEVIEW);
+    else this.setRestriction(this.RESTRICT_MODE_FULL);
 
     initSplitPanes();
 
     ele.byId("undev").addEventListener("pointerEnter", () => {
-      Gui.gui.showInfo(text.undevLogo);
+      this.showInfo(text.undevLogo);
     });
     ele.byId("undev").addEventListener("pointerLeave", () => {
       hideInfo();
@@ -2559,7 +2550,7 @@ export default class Gui extends Events {
   }
 
   hide() {
-    if (gui) Gui.gui.unload = true;
+    if (Gui.gui) this.unload = true;
     this._corePatch.pause();
 
     ele.byId("gluiPreviewLayer").style.opacity =

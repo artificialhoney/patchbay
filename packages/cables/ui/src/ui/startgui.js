@@ -24,7 +24,7 @@ export default function startUi(cfg) {
   if (window.logStartup) logStartup("Init UI");
   HandlebarsHelper.initHandleBarsHelper();
 
-  const gui = new Gui(cfg);
+  new Gui(cfg);
 
   Gui.gui.on("uiloaded", () => {
     new Tracking();
@@ -164,7 +164,7 @@ export default function startUi(cfg) {
         Gui.gui.patchParamPanel.show();
 
         setTimeout(() => {
-          window.Gui.gui.emitEvent("uiloaded");
+          Gui.gui.emitEvent("uiloaded");
           Gui.gui.corePatch().timer.setTime(0);
         }, 100);
       });

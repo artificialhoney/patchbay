@@ -28,7 +28,7 @@ export default class Jobs extends Events {
   }
 
   updateJobListing() {
-    if (!window.gui) return;
+    if (!Gui.gui) return;
 
     let str = "";
 
@@ -38,7 +38,7 @@ export default class Jobs extends Events {
     if (this._jobs.length === 0) {
       str += "All server jobs finished...";
       this._visibleJobAnim = false;
-      Gui.gui.Gui.gui.showLoadingProgress(false);
+      Gui.gui.showLoadingProgress(false);
     } else this._visibleJobAnim = true;
 
     this._updateVisibility();
@@ -74,9 +74,9 @@ export default class Jobs extends Events {
       this._log.error("job undefined", job, new Error());
     }
 
-    Gui.gui.Gui.gui.showLoadingProgress(true);
+    Gui.gui.showLoadingProgress(true);
 
-    Gui.gui.Gui.gui.on("uiloaded", () => {
+    Gui.gui.on("uiloaded", () => {
       this.updateJobListing();
     });
 
@@ -92,20 +92,20 @@ export default class Jobs extends Events {
 
     if (!this.addedListeners) {
       this.addedListeners = true;
-      gui
+      Gui.gui
         .corePatch()
         .loading.on("finishedTask", this.updateAssetProgress.bind(this));
-      gui
+      Gui.gui
         .corePatch()
         .loading.on("addTask", this.updateAssetProgress.bind(this));
-      gui
+      Gui.gui
         .corePatch()
         .loading.on("startTask", this.updateAssetProgress.bind(this));
     }
   }
 
   _updateVisibility() {
-    if (Gui.gui.Gui.gui.unload) return;
+    if (Gui.gui.unload) return;
     const elContainer = ele.byId("uploadprogresscontainer");
 
     if (elContainer) return;
@@ -119,7 +119,7 @@ export default class Jobs extends Events {
       }, 100);
     }
 
-    if (Gui.gui.Gui.gui.isRemoteClient) {
+    if (Gui.gui.isRemoteClient) {
       if (!this._visibleJobAnim && !this._visibleProgressBar)
         ele.byId("menubar").classList.add("hidden");
       else ele.byId("menubar").classList.remove("hidden");
@@ -128,7 +128,7 @@ export default class Jobs extends Events {
 
   updateAssetProgress() {
     clearTimeout(this.removeProgressTo);
-    let prog = Gui.gui.Gui.gui.corePatch().loading.getProgress();
+    let prog = Gui.gui.corePatch().loading.getProgress();
 
     if (prog === 1) {
       this.removeProgressTo = setTimeout(() => {
@@ -140,7 +140,7 @@ export default class Jobs extends Events {
       this._visibleProgressBar = false;
       this._updateVisibility();
     } else {
-      if (Gui.gui.Gui.gui.corePatch().loading.getNumAssets() > 2) {
+      if (Gui.gui.corePatch().loading.getNumAssets() > 2) {
         this._visibleProgressBar = true;
         this._updateVisibility();
       }

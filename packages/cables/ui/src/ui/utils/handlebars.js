@@ -30,7 +30,7 @@ export function handleBarPrecompiled(name) {
  */
 export function getHandleBarHtml(name, obj) {
   let perf;
-  if (Gui.gui.gui) perf = Gui.gui.Gui.gui.uiProfiler.start("getHandleBarHtml");
+  if (Gui.gui.gui) perf = Gui.gui.uiProfiler.start("getHandleBarHtml");
 
   const template = handleBarPrecompiled(name);
 

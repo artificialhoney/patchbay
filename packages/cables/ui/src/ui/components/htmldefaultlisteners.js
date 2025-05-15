@@ -147,7 +147,7 @@ export default function setHtmlDefaultListeners() {
   window.addEventListener(
     "resize",
     () => {
-      if (window.gui) Gui.gui.onResize();
+      if (Gui.gui) Gui.gui.onResize();
     },
     false,
   );

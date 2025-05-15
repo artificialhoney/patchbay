@@ -4,10 +4,9 @@ import path from "path";
 import chokidar from "chokidar";
 
 export default class FilesUtil extends SharedFilesUtil {
-  constructor(utilProvider, app) {
+  constructor(utilProvider) {
     super(utilProvider);
-    this._settings = app.settings;
-    this._app = app;
+    this._settings = this._cables.settings;
     const watcherOptions = {
       ignored: /(^|[\/\\])\../,
       ignorePermissionErrors: true,
@@ -26,7 +25,7 @@ export default class FilesUtil extends SharedFilesUtil {
       if (opName) {
         const opId = this._opsUtil.getOpIdByObjName(opName);
         const code = this._opsUtil.getOpCode(opName);
-        this._app.sendTalkerMessage("executeOp", {
+        this._cables.sendTalkerMessage("executeOp", {
           name: opName,
           forceReload: true,
           id: opId,
@@ -38,19 +37,19 @@ export default class FilesUtil extends SharedFilesUtil {
     this._opChangeWatcher.on("unlink", (fileName) => {
       const opName = this._opsUtil.getOpNameByAbsoluteFileName(fileName);
       if (opName) {
-        this._app.sendTalkerMessage("deleteOp", { name: opName });
+        this._cables.sendTalkerMessage("deleteOp", { name: opName });
       }
     });
 
     this._assetChangeWatcher = chokidar.watch([], watcherOptions);
     this._assetChangeWatcher.on("change", (fileName) => {
-      this._app.sendTalkerMessage("fileUpdated", {
+      this._cables.sendTalkerMessage("fileUpdated", {
         filename: this._helper.pathToFileURL(fileName),
       });
     });
 
     this._assetChangeWatcher.on("unlink", (fileName) => {
-      this._app.sendTalkerMessage("fileDeleted", {
+      this._cables.sendTalkerMessage("fileDeleted", {
         fileName: this._helper.pathToFileURL(fileName),
       });
     });
@@ -112,7 +111,7 @@ export default class FilesUtil extends SharedFilesUtil {
       updated: stats.mtime,
       created: stats.ctime,
       cachebuster: cachebuster,
-      isLibraryFile: filePath.includes(this._app.getAssetLibraryPath()),
+      isLibraryFile: filePath.includes(this._cables.getAssetLibraryPath()),
       __v: 0,
       size: stats.size,
       path: filePath,
@@ -128,7 +127,7 @@ export default class FilesUtil extends SharedFilesUtil {
     let assetDir = "";
     let assetFilePath = fileDb.path;
     if (fileDb.isLibraryFile) {
-      assetDir = this._app.getAssetLibraryPath();
+      assetDir = this._cables.getAssetLibraryPath();
       assetFilePath = path.join(assetDir, this.getAssetFileName(fileDb));
     } else if (!assetFilePath) {
       assetFilePath = path.join(assetDir, this.getAssetFileName(fileDb));
@@ -137,7 +136,7 @@ export default class FilesUtil extends SharedFilesUtil {
   }
 
   getLibraryFiles() {
-    const p = this._app.getAssetLibraryPath();
+    const p = this._cables.getAssetLibraryPath();
     return this.readAssetDir(0, p, p);
   }
 
@@ -297,6 +296,6 @@ export default class FilesUtil extends SharedFilesUtil {
 
   isAssetLibraryLocation(filePath) {
     if (!filePath) return false;
-    return filePath.toLowerCase().includes(this._app.getAssetLibraryPath());
+    return filePath.toLowerCase().includes(this._cables.getAssetLibraryPath());
   }
 }
