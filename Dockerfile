@@ -14,6 +14,8 @@ WORKDIR /app
 # Copy the rest of the application files to the working directory
 COPY . ./
 
+RUN apt-get update && apt-get install -y git
+
 ## Install dependencies
 RUN pnpm install --shamefully-hoist
 
