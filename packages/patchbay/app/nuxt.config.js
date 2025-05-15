@@ -81,7 +81,7 @@ export default defineNuxtConfig({
   },
   css: ["~/assets/css/tailwind.css"],
   build: {
-    transpile: ["@cables/ui", "@cables/client"],
+    transpile: ["@cables/ui", "@cables/client", "es6-promise"],
   },
   vue: {
     compilerOptions: {
@@ -90,7 +90,7 @@ export default defineNuxtConfig({
   },
   vite: {
     optimizeDeps: {
-      include: ["@cables/ui", "@cables/client"],
+      include: ["@cables/ui", "@cables/client", "es6-promise"],
     },
     plugins: [
       tailwindcss(),
