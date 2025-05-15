@@ -8,9 +8,6 @@ import svgcss from "gulp-svg-css";
 import rename from "gulp-rename";
 import concat from "gulp-concat";
 import sassCompiler from "sass";
-import nunjucksRender from "gulp-nunjucks-render";
-import data from "gulp-data";
-import { readFileSync } from "node:fs";
 
 sass.compiler = sassCompiler;
 

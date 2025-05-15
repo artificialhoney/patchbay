@@ -21,7 +21,6 @@
   "dependencies": {
     "@cables/client": "workspace:*",
     "@webgpu/types": "^0.1.53",
-    "git-last-commit": "1.0.1",
     "gl-matrix": "3.1.0"
   }
 }
