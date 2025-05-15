@@ -167,6 +167,7 @@ export default defineNuxtConfig({
   // Global
   security: {
     headers: {
+      crossOriginEmbedderPolicy: "require-corp",
       contentSecurityPolicy: {
         "script-src": [
           "'unsafe-eval'",
