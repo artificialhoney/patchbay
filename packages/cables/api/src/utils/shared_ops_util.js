@@ -5,7 +5,7 @@ import path from "path";
 import uuidv4 from "uuid-v4";
 import mkdirp from "mkdirp";
 import sanitizeFileName from "sanitize-filename";
-import eslintAirbnbBase from "eslint-config-airbnb-base";
+// import eslintAirbnbBase from "eslint-config-airbnb-base";
 import tokenString from "glsl-tokenizer/string.js";
 import XMLWriter from "xml-writer";
 import SharedUtil from "./shared_util.js";
@@ -1961,7 +1961,7 @@ export default class SharedOpsUtil extends SharedUtil {
     return {
       fix: true,
       baseConfig: {
-        extends: eslintAirbnbBase.extends,
+        // extends: eslintAirbnbBase.extends,
       },
       envs: ["browser"],
       useEslintrc: false,
