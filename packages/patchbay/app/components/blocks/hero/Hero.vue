@@ -65,8 +65,6 @@ const { badge, heading, description, buttons } = defineProps({
         <iframe
           src="https://cables.gl/view/11bVir"
           class="max-h-96 w-full rounded-md object-cover aspect-video"
-          allow="clipboard-read;clipboard-write;geolocation;camera;microphone;midi;usb;serial;xr-spatial-tracking;web-share;ambient-light-sensor;window-management"
-          sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-presentation allow-downloads allow-popups allow-popups-to-escape-sandbox"
         ></iframe>
       </div>
     </div>

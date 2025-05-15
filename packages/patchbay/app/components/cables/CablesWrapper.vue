@@ -39,11 +39,6 @@ if (process.client) {
 
 <template>
   <div class="flex h-full">
-    <iframe
-      ref="cables-ui"
-      class="w-full h-full"
-      allow="clipboard-read;clipboard-write;geolocation;camera;microphone;midi;usb;serial;xr-spatial-tracking;web-share;ambient-light-sensor;window-management"
-      sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-presentation allow-downloads allow-popups allow-popups-to-escape-sandbox"
-    />
+    <iframe ref="cables-ui" class="w-full h-full" />
   </div>
 </template>
