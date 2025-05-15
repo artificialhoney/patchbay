@@ -84,82 +84,82 @@ export default class CablesPatchbay {
     this._editorElement.src = src;
     this._editorElement.onload = () => {
       if (this.editorWindow) {
-        const waitForAce = this.editorWindow.waitForAce;
-        this.editorWindow.waitForAce = () => {
-          this._logStartup("loading", this._settings.patchFile);
+        // const waitForAce = this.editorWindow.waitForAce;
+        // this.editorWindow.waitForAce = () => {
+        //   this._logStartup("loading", this._settings.patchFile);
 
-          this._incrementStartup();
-          this._logStartup("checking/installing op dependencies...");
-          this._patchbay.ipcRenderer
-            .invoke("talkerMessage", "installProjectDependencies")
-            .then((npmResult) => {
-              this.editorWindow.CABLESUILOADER.cfg.patchConfig.onError = (
-                ...args
-              ) => {
-                // npm runtime error...
-                if (
-                  args &&
-                  args[0] === "core_patch" &&
-                  args[2] &&
-                  args[2].message &&
-                  args[2].message.includes(
-                    "was compiled against a different Node.js version",
-                  )
-                ) {
-                  const dirParts = args[2].message.split("/");
-                  const opNameIndex = dirParts.findIndex((part) => {
-                    return part.startsWith("Ops.");
-                  });
-                  const opName = dirParts[opNameIndex];
-                  const packageName = dirParts[opNameIndex + 2];
-                  const onClick =
-                    "CABLES.CMD.PATCHBAY.openOpDir('', '" + opName + "');";
+        //   this._incrementStartup();
+        //   this._logStartup("checking/installing op dependencies...");
+        //   this._patchbay.ipcRenderer
+        //     .invoke("talkerMessage", "installProjectDependencies")
+        //     .then((npmResult) => {
+        //       this.editorWindow.CABLESUILOADER.cfg.patchConfig.onError = (
+        //         ...args
+        //       ) => {
+        //         // npm runtime error...
+        //         if (
+        //           args &&
+        //           args[0] === "core_patch" &&
+        //           args[2] &&
+        //           args[2].message &&
+        //           args[2].message.includes(
+        //             "was compiled against a different Node.js version",
+        //           )
+        //         ) {
+        //           const dirParts = args[2].message.split("/");
+        //           const opNameIndex = dirParts.findIndex((part) => {
+        //             return part.startsWith("Ops.");
+        //           });
+        //           const opName = dirParts[opNameIndex];
+        //           const packageName = dirParts[opNameIndex + 2];
+        //           const onClick =
+        //             "CABLES.CMD.PATCHBAY.openOpDir('', '" + opName + "');";
 
-                  const msg =
-                    'try running this <a onclick="' +
-                    onClick +
-                    '" > in the op dir</a>:';
-                  this._log.error(msg);
-                  this._log.error(
-                    "`npm --prefix ./ install " + packageName + "`",
-                  );
-                  this._log.error(
-                    '`npx "@patchbay/rebuild" -v ' + process.versions.patchbay,
-                  );
-                }
-              };
-              waitForAce();
+        //           const msg =
+        //             'try running this <a onclick="' +
+        //             onClick +
+        //             '" > in the op dir</a>:';
+        //           this._log.error(msg);
+        //           this._log.error(
+        //             "`npm --prefix ./ install " + packageName + "`",
+        //           );
+        //           this._log.error(
+        //             '`npx "@patchbay/rebuild" -v ' + process.versions.patchbay,
+        //           );
+        //         }
+        //       };
+        //       waitForAce();
 
-              if (
-                npmResult.error &&
-                npmResult.data &&
-                npmResult.msg !== "UNSAVED_PROJECT"
-              ) {
-                npmResult.data.forEach((msg) => {
-                  const opName = msg.opName ? " for " + msg.opName : "";
-                  this._log.error(
-                    "failed dependency" + opName + ": " + msg.stderr,
-                  );
-                });
-              } else if (
-                npmResult.msg !== "EMPTY" &&
-                npmResult.msg !== "UNSAVED_PROJECT"
-              ) {
-                npmResult.data.forEach((result) => {
-                  const npmText = result.stderr || result.stdout;
-                  this._logStartup(result.opName + ": " + npmText);
-                });
-              }
+        //       if (
+        //         npmResult.error &&
+        //         npmResult.data &&
+        //         npmResult.msg !== "UNSAVED_PROJECT"
+        //       ) {
+        //         npmResult.data.forEach((msg) => {
+        //           const opName = msg.opName ? " for " + msg.opName : "";
+        //           this._log.error(
+        //             "failed dependency" + opName + ": " + msg.stderr,
+        //           );
+        //         });
+        //       } else if (
+        //         npmResult.msg !== "EMPTY" &&
+        //         npmResult.msg !== "UNSAVED_PROJECT"
+        //       ) {
+        //         npmResult.data.forEach((result) => {
+        //           const npmText = result.stderr || result.stdout;
+        //           this._logStartup(result.opName + ": " + npmText);
+        //         });
+        //       }
 
-              if (this.gui) {
-                this.gui.on("uiloaded", () => {
-                  if (this._settings.openFullscreenRenderer)
-                    this.gui.cycleFullscreen();
-                  // if (this.editor && this.editor.config && !this.editor.config.patchFile) this.gui.setStateUnsaved();
-                });
-              }
-            });
-        };
+        //       if (this.gui) {
+        //         this.gui.on("uiloaded", () => {
+        //           if (this._settings.openFullscreenRenderer)
+        //             this.gui.cycleFullscreen();
+        //           // if (this.editor && this.editor.config && !this.editor.config.patchFile) this.gui.setStateUnsaved();
+        //         });
+        //       }
+        //     });
+        // };
         if (this._settings.uiLoadStart)
           this.editorWindow.CABLESUILOADER.uiLoadStart -=
             this._settings.uiLoadStart;
