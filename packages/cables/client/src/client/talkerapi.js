@@ -1,4 +1,4 @@
-import * as Talker from "talker.js";
+import Talker from "talker.js";
 import Events from "./eventtarget.js";
 
 /**

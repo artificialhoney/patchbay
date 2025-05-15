@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "clean": "rimraf .output .nuxt .data ./node_modules/.cache",
-    "build": "pnpm -r --filter @cables/ui build && nuxt build",
+    "build": "pnpm -r --filter @cables/ui build && nuxt build && cp cables.json .output/server/cables.json",
     "dev": "pnpm -r --filter @cables/ui build && nuxt dev",
     "generate": "pnpm -r --filter @cables/ui build && nuxt generate",
     "preview": "nuxt preview",

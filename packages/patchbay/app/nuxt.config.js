@@ -178,11 +178,12 @@ export default defineNuxtConfig({
           "'nonce-{{nonce}}'", // Enables CSP nonce support for scripts in SSR mode, supported by almost any browser (level 2)
         ],
       },
+      xFrameOptions: "SAMEORIGIN",
     },
   },
   runtimeConfig: {
     cables: {
-      configLocation: resolve(__dirname, "cables.json"),
+      configLocation: "./cables.json",
     },
   },
 });
