@@ -103,7 +103,7 @@ export default defineNuxtConfig({
     },
   },
   pwa: {
-    enabled: prod,
+    enabled: false,
     strategies: sw ? "injectManifest" : "generateSW",
     srcDir: sw ? "service-worker" : undefined,
     filename: sw ? "sw.ts" : undefined,
@@ -131,27 +131,25 @@ export default defineNuxtConfig({
         },
       ],
     },
-    workbox: {
-      enabled: false,
-      // globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
-    },
-    injectManifest: {
-      enabled: false,
-      // globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
-    },
-    client: {
-      installPrompt: true,
-      // you don't need to include this: only for testing purposes
-      // if enabling periodic sync for update use 1 hour or so (periodicSyncForUpdates: 3600)
-      periodicSyncForUpdates: 20,
-    },
-    devOptions: {
-      enabled: !prod,
-      suppressWarnings: prod,
-      navigateFallback: "/",
-      navigateFallbackAllowlist: [/^\/$/],
-      type: "module",
-    },
+    // workbox: {
+    //   globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
+    // },
+    // injectManifest: {
+    //   globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
+    // },
+    // client: {
+    //   installPrompt: true,
+    //   // you don't need to include this: only for testing purposes
+    //   // if enabling periodic sync for update use 1 hour or so (periodicSyncForUpdates: 3600)
+    //   periodicSyncForUpdates: 20,
+    // },
+    // devOptions: {
+    //   enabled: !prod,
+    //   suppressWarnings: prod,
+    //   navigateFallback: "/",
+    //   navigateFallbackAllowlist: [/^\/$/],
+    //   type: "module",
+    // },
   },
   // Global
   security: {
