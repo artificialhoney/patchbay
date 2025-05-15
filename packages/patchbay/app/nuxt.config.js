@@ -81,7 +81,15 @@ export default defineNuxtConfig({
   },
   css: ["~/assets/css/tailwind.css"],
   build: {
-    transpile: ["@cables/ui", "@cables/client", "es6-promise"],
+    commonjsOptions: {
+      transformMixedEsModules: true,
+    },
+    transpile: [
+      "@cables/ui",
+      "@cables/client",
+      "es6-promise",
+      "eslint-config-airbnb-base",
+    ],
   },
   vue: {
     compilerOptions: {
@@ -90,7 +98,12 @@ export default defineNuxtConfig({
   },
   vite: {
     optimizeDeps: {
-      include: ["@cables/ui", "@cables/client", "es6-promise"],
+      include: [
+        "@cables/ui",
+        "@cables/client",
+        "es6-promise",
+        "eslint-config-airbnb-base",
+      ],
     },
     plugins: [
       tailwindcss(),
@@ -152,21 +165,7 @@ export default defineNuxtConfig({
     // },
   },
   // Global
-  security: {
-    headers: {
-      contentSecurityPolicy: {
-        "script-src": [
-          "'unsafe-eval'",
-          "'self'", // Fallback value, will be ignored by most modern browsers (level 3)
-          "https:", // Fallback value, will be ignored by most modern browsers (level 3)
-          "'unsafe-inline'", // Fallback value, will be ignored by almost any browser (level 2)
-          "'strict-dynamic'", // Strict CSP via 'strict-dynamic', supported by most modern browsers (level 3)
-          "'nonce-{{nonce}}'", // Enables CSP nonce support for scripts in SSR mode, supported by almost any browser (level 2)
-        ],
-      },
-      xFrameOptions: "SAMEORIGIN",
-    },
-  },
+  security: {},
   runtimeConfig: {
     cables: {
       configLocation: resolve(__dirname, "cables.json"),
