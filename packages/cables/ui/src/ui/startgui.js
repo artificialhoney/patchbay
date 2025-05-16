@@ -24,7 +24,7 @@ export default function startUi(cfg) {
   if (window.logStartup) logStartup("Init UI");
   HandlebarsHelper.initHandleBarsHelper();
 
-  window.CABLES.GLGUI = window.gui = new Gui(cfg);
+  window.CABLES.GLGUI = window.gui = window.Gui = new Gui(cfg);
 
   Gui.gui.on("uiloaded", () => {
     new Tracking();
