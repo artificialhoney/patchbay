@@ -6,13 +6,13 @@
   "sourcePath": {
     "libs": "../../../../cables/client/src/libs",
     "corelibs": "../../../../cables/cables/dist/libs",
-    "ops": "../../../../opt/patchbay/ops",
+    "ops": "../../../../opt/patchbay/app/ops",
     "uiDist": "../../../../cables/ui/dist"
   },
   "path": {
     "standaloneDist": "/cables",
     "uiDist": "/cables/ui",
-    "ops": "../../../../opt/patchbay/ops",
+    "ops": "../../../../opt/patchbay/app/ops",
     "assets": "/cables/assets",
     "libs": "../../../../cables/client/src/libs",
     "corelibs": "../../../../cables/cables/dist/libs",
