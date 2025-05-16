@@ -25,10 +25,8 @@ export default function startUi(cfg) {
   HandlebarsHelper.initHandleBarsHelper();
 
   window.CABLES.GLGUI = window.gui = new Gui(cfg);
-
-  Gui.gui.on("uiloaded", () => {
-    new Tracking();
-  });
+  window.Gui = Gui;
+  window.Gui.gui = window.gui;
 
   if (Gui.gui.isRemoteClient) new NoPatchEditor();
   else new GlGuiFull(Gui.gui.corePatch());
