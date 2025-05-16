@@ -4,17 +4,17 @@
   "communityUrl": "https://cables.gl",
   "url": "/",
   "sourcePath": {
-    "libs": "/opt/patchbay/app/libs",
-    "corelibs": "/opt/patchbay/app/corelibs",
-    "ops": "/opt/patchbay/app/ops",
+    "libs": "../libs",
+    "corelibs": "../corelibs",
+    "ops": "../ops",
     "uiDist": "../../../../cables/ui/dist"
   },
   "path": {
     "standaloneDist": "/cables",
     "uiDist": "/cables/ui",
-    "ops": "/opt/patchbay/app/ops",
-    "libs": "/opt/patchbay/app/libs",
-    "corelibs": "/opt/patchbay/app/corelibs",
+    "libs": "../libs",
+    "corelibs": "../corelibs",
+    "ops": "../ops",
     "assets": "/cables/assets",
     "js": "/cables/js"
   },
