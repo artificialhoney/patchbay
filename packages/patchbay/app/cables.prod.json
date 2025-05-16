@@ -1,0 +1,22 @@
+{
+  "env": "patchbay",
+  "minifyJs": true,
+  "communityUrl": "https://cables.gl",
+  "url": "/",
+  "sourcePath": {
+    "libs": "../../../../cables/client/src/libs",
+    "corelibs": "../../../../cables/cables/dist/libs",
+    "ops": "../../../../opt/patchbay/ops",
+    "uiDist": "../../../../cables/ui/dist"
+  },
+  "path": {
+    "standaloneDist": "/cables",
+    "uiDist": "/cables/ui",
+    "ops": "../../../../opt/patchbay/ops",
+    "assets": "/cables/assets",
+    "libs": "../../../../cables/client/src/libs",
+    "corelibs": "../../../../cables/cables/dist/libs",
+    "js": "/cables/js"
+  },
+  "sourceMap": false
+}
