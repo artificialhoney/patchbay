@@ -184,7 +184,7 @@ export default class PatchbayEndpoint {
           status: 404,
         });
       }
-    } else if (urlPath.startsWith("/op/screenshot")) {
+    } else if (urlPath.startsWith("/api/op/screenshot")) {
       let opName = urlPath.split("/", 4)[3];
       if (opName) opName = opName.replace(/.png$/, "");
       const absoluteFile = this._opsUtil.getOpAbsolutePath(opName);
