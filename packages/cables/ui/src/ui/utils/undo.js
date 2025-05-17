@@ -1,3 +1,3 @@
-const undo = typeof window !== "undefined" && new window.UndoManager();
+import UndoManager from "../../libs/undomanager";
 
-export default undo;
+export default UndoManager();
