@@ -160,6 +160,14 @@ export default class PatchbayEndpoint {
           status: 500,
         });
       }
+    } else if (urlPath.startsWith("/api/op/screenshot")) {
+      let opName = urlPath.split("/")[4];
+      if (opName) opName = opName.replace(/.png$/, "");
+      const absoluteFile = this._opsUtil.getOpAbsolutePath(opName);
+      const file = path.join(absoluteFile, "screenshot.png");
+      const response = new Response(fs.readFileSync(file));
+      this._addDefaultHeaders(request, response, file);
+      return response;
     } else if (urlPath.startsWith("/api/op/")) {
       let opName = urlPath.split("/", 4)[3];
       if (this._opsUtil.isOpId(opName)) {
@@ -184,17 +192,8 @@ export default class PatchbayEndpoint {
           status: 404,
         });
       }
-    } else if (urlPath.startsWith("/api/op/screenshot")) {
-      let opName = urlPath.split("/", 4)[3];
-      if (opName) opName = opName.replace(/.png$/, "");
-      const absoluteFile = this._opsUtil.getOpAbsolutePath(opName);
-      const file = path.join(absoluteFile, "screenshot.png");
-      const response = await net.fetch(this._helperUtil.pathToFileURL(file), {
-        bypassCustomProtocolHandlers: true,
-      });
-      this._addDefaultHeaders(request, response, file);
-      return response;
-    } else if (urlPath.startsWith("/edit/")) {
+    }
+    if (urlPath.startsWith("/edit/")) {
       let patchId = urlPath.split("/", 3)[2];
       let projectFile = null;
       if (patchId) {

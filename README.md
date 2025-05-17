@@ -84,6 +84,7 @@ services:
     volumes:
       - ${PATCHBAY_EXTENSIONS_VOLUME:-extensions}:/opt/patchbay/extensions
       - ${PATCHBAY_SNAPSHOTS_VOLUME:-snapshots}:/opt/patchbay/snapshots
+      - ${PATCHBAY_DATA_DIR:-~/patchbay/app}/ops:/opt/patchbay/app
       - ${PATCHBAY_DB_VOLUME:-db}:/opt/patchbay/db
 volumes:
   extensions:

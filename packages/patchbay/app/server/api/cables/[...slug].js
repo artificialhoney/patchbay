@@ -92,11 +92,7 @@ export default defineEventHandler(async (event) => {
     });
     eventEmitter.emit(slugElements[0], {}, slugElements[1], {});
     return await result;
-  } else if (slug.startsWith("ops")) {
-    return patchbayEndpoint.handle(event.node.req);
   } else {
-    throw createError({
-      statusCode: 404,
-    });
+    return patchbayEndpoint.handle(event.node.req);
   }
 });
