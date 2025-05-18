@@ -7,7 +7,7 @@ import patchbayCommands from "./cmd.js";
  * initializes the ui, starts the editor and adds functions custom to this platform
  */
 export default class CablesPatchbay {
-  constructor(patchbay, editorElement) {
+  constructor(patchbay, editorElement, settings) {
     this._logger = new Logger("patchbay");
     this._patchbay = patchbay;
     // this._importSync = importSync;
@@ -16,6 +16,7 @@ export default class CablesPatchbay {
     this.ipcRenderer = this._patchbay.ipcRenderer; // needed to have ipcRenderer in patchbay_editor.js
 
     this._loadedModules = {};
+    this._settings = settings;
   }
 
   /**
@@ -59,21 +60,21 @@ export default class CablesPatchbay {
    * custom functionality
    */
   async init() {
-    this._settings =
-      (await this.ipcRenderer.sendSync("platformSettings")) || {};
+    // this._settings =
+    //   (await this.ipcRenderer.sendSync("platformSettings")) || {};
 
-    this._usersettings = this._settings.userSettings;
-    delete this._settings.userSettings;
-    this._config = (await this.ipcRenderer.sendSync("cablesConfig")) || {};
+    // this._usersettings = this._settings.userSettings;
+    // delete this._settings.userSettings;
+    // this._config = (await this.ipcRenderer.sendSync("cablesConfig")) || {};
     // this._editorElement = null;
 
-    this._startUpLogItems =
-      (await this.ipcRenderer.sendSync("getStartupLog")) || [];
+    // this._startUpLogItems =
+    //   (await this.ipcRenderer.sendSync("getStartupLog")) || [];
 
-    if (!this._config.isPackaged)
+    if (!this._settings.isPackaged)
       window.PATCHBAY_DISABLE_SECURITY_WARNINGS = true;
 
-    let src = this._config.uiIndexHtml + window.location.search;
+    let src = this._settings.uiIndexHtml + window.location.search;
     if (window.location.hash) {
       src += window.location.hash;
     }
@@ -81,84 +82,12 @@ export default class CablesPatchbay {
     this._editorElement.src = src;
     this._editorElement.onload = () => {
       if (this.editorWindow) {
-        // const waitForAce = this.editorWindow.waitForAce;
-        // this.editorWindow.waitForAce = () => {
-        //   this._logStartup("loading", this._settings.patchFile);
-        //   this._incrementStartup();
-        //   this._logStartup("checking/installing op dependencies...");
-        //   this._patchbay.ipcRenderer
-        //     .invoke("talkerMessage", "installProjectDependencies")
-        //     .then((npmResult) => {
-        //       this.editorWindow.CABLESUILOADER.cfg.patchConfig.onError = (
-        //         ...args
-        //       ) => {
-        //         // npm runtime error...
-        //         if (
-        //           args &&
-        //           args[0] === "core_patch" &&
-        //           args[2] &&
-        //           args[2].message &&
-        //           args[2].message.includes(
-        //             "was compiled against a different Node.js version",
-        //           )
-        //         ) {
-        //           const dirParts = args[2].message.split("/");
-        //           const opNameIndex = dirParts.findIndex((part) => {
-        //             return part.startsWith("Ops.");
-        //           });
-        //           const opName = dirParts[opNameIndex];
-        //           const packageName = dirParts[opNameIndex + 2];
-        //           const onClick =
-        //             "CABLES.CMD.PATCHBAY.openOpDir('', '" + opName + "');";
-        //           const msg =
-        //             'try running this <a onclick="' +
-        //             onClick +
-        //             '" > in the op dir</a>:';
-        //           this._log.error(msg);
-        //           this._log.error(
-        //             "`npm --prefix ./ install " + packageName + "`",
-        //           );
-        //           this._log.error(
-        //             '`npx "@patchbay/rebuild" -v ' + process.versions.patchbay,
-        //           );
-        //         }
-        //       };
-        //       waitForAce();
-        //       if (
-        //         npmResult.error &&
-        //         npmResult.data &&
-        //         npmResult.msg !== "UNSAVED_PROJECT"
-        //       ) {
-        //         npmResult.data.forEach((msg) => {
-        //           const opName = msg.opName ? " for " + msg.opName : "";
-        //           this._log.error(
-        //             "failed dependency" + opName + ": " + msg.stderr,
-        //           );
-        //         });
-        //       } else if (
-        //         npmResult.msg !== "EMPTY" &&
-        //         npmResult.msg !== "UNSAVED_PROJECT"
-        //       ) {
-        //         npmResult.data.forEach((result) => {
-        //           const npmText = result.stderr || result.stdout;
-        //           this._logStartup(result.opName + ": " + npmText);
-        //         });
-        //       }
-        //       if (this.gui) {
-        //         this.gui.on("uiloaded", () => {
-        //           if (this._settings.openFullscreenRenderer)
-        //             this.gui.cycleFullscreen();
-        //           // if (this.editor && this.editor.config && !this.editor.config.patchFile) this.gui.setStateUnsaved();
-        //         });
-        //       }
-        //     });
-        // };
         if (this._settings.uiLoadStart)
           this.editorWindow.CABLESUILOADER.uiLoadStart -=
             this._settings.uiLoadStart;
-        this._startUpLogItems.forEach((logEntry) => {
-          this._logStartup(logEntry.title);
-        });
+        // this._startUpLogItems.forEach((logEntry) => {
+        //   this._logStartup(logEntry.title);
+        // });
         if (this.editorWindow.loadjs) {
           this.editorWindow.loadjs.ready(
             "cables_core",
@@ -199,26 +128,6 @@ export default class CablesPatchbay {
       {
         config: {
           ...this._settings,
-          isTrustedPatch: true,
-          platformClass: "PlatformPatchbay",
-          urlCables: location.protocol + "//" + location.host,
-          urlSandbox: location.protocol + "//" + location.host,
-          communityUrl: this._config.communityUrl,
-          user: this._settings.currentUser,
-          usersettings: { settings: this._usersettings },
-          isDevEnv: !this._config.isPackaged,
-          env: this._config.env,
-          patchId: this._settings.patchId,
-          patchVersion: "",
-          socketcluster: {},
-          remoteClient: false,
-          buildInfo: this._settings.buildInfo,
-          patchConfig: {
-            allowEdit: true,
-            prefixAssetPath: this._settings.currentPatchDir,
-            assetPath: this._settings.paths.assetPath,
-            paths: this._settings.paths,
-          },
         },
       },
       this._editorElement,

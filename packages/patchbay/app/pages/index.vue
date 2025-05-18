@@ -3,7 +3,6 @@ import { useI18n } from "vue-i18n";
 const { t } = useI18n({ useScope: "global" });
 
 import Hero from "@/components/blocks/hero/Hero.vue";
-import Footer from "@/components/blocks/footer/Footer.vue";
 
 const title = t("title");
 const description = t("description");
@@ -13,24 +12,16 @@ const buttons = {
   secondary: { text: t("admin"), url: "/patchbay/admin" },
 };
 
-useSeoMeta({
-  title,
-  ogTitle: title,
-  description,
-  ogDescription: description,
-  ogImage: "/icon/favicon.png",
-  twitterCard: "summary_large_image",
+definePageMeta({
+  layout: "default",
 });
 </script>
 
 <template>
-  <div class="px-4">
-    <Hero
-      logo
-      :heading="title"
-      :description="description"
-      :buttons="buttons"
-    ></Hero>
-    <Footer></Footer>
-  </div>
+  <Hero
+    logo
+    :heading="title"
+    :description="description"
+    :buttons="buttons"
+  ></Hero>
 </template>

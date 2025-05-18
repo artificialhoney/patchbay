@@ -1,3 +1,4 @@
+import { useFetch } from "@vueuse/core";
 import { defineStore } from "pinia";
 
 const CONSTANTS = {
@@ -22,11 +23,33 @@ const saveToLocalStorage = (key, value) => {
   }
 };
 
-export const useFreeboardStore = defineStore("patchbay", {
+export const usePatchbayStore = defineStore("patchbay", {
   state: () => ({
-    token: null,
+    token: undefined,
+    cables: {
+      platform: undefined,
+      config: undefined,
+      docs: undefined,
+      ops: undefined,
+      patch: undefined,
+    },
   }),
   actions: {
+    async sendSync(token, data) {
+      let query = "";
+      if (data) {
+        query = `?${new URLSearchParams(Object.entries(data)).toString()}`;
+      }
+      return useFetch(`/api/cables/${token}${query}`).then(
+        (result) => result.data.value && JSON.parse(result.data.value),
+      );
+    },
+    async invoke(context, command, data, topicConfig) {
+      return useFetch(`/api/cables/${context}/${command}`, {
+        method: "POST",
+        body: JSON.stringify({ data, topicConfig }),
+      }).then((result) => result.data.value && JSON.parse(result.data.value));
+    },
     loadSettingsFromLocalStorage() {
       const { token } = loadFromLocalStorage(CONSTANTS.LOCAL_STORAGE_KEY);
       this.token = token;

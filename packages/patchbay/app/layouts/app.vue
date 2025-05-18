@@ -1,6 +1,5 @@
 <script setup lang="js">
 import Sidebar from "@/components/blocks/sidebar/Sidebar.vue";
-import CableWrapper from "@/components/cables/CablesWrapper.vue";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -58,7 +57,7 @@ useSeoMeta({
       </header>
       <div class="flex flex-1 flex-col gap-4 p-4 pt-0">
         <div class="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min">
-          <CablesWrapper></CablesWrapper>
+          <slot></slot>>
         </div>
       </div>
     </SidebarInset>

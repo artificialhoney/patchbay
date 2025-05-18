@@ -1,45 +1,46 @@
 <script setup lang="js">
+import { usePatchbayStore } from "@/stores/patchbay";
 import CablesPatchbay from "@patchbay/client";
-import { useFetch } from "@vueuse/core";
 import { useTemplateRef, onMounted } from "vue";
 
-const cablesUi = useTemplateRef("cables-ui");
-
-const patchbay = {
-  ipcRenderer: new (class {
-    async sendSync(token, data) {
-      let query = "";
-      if (data) {
-        query = `?${new URLSearchParams(Object.entries(data)).toString()}`;
-      }
-      return useFetch(`/api/cables/${token}${query}`).then(
-        (result) => result.data.value && JSON.parse(result.data.value),
-      );
-    }
-
-    async invoke(context, command, data, topicConfig) {
-      return useFetch(`/api/cables/${context}/${command}`, {
-        method: "POST",
-        body: JSON.stringify({ data, topicConfig }),
-      })
-        .then((result) => result.data.value && JSON.parse(result.data.value))
-        .then((data) => {
-          if (this._callback) {
-            this._callback({}, { cmd: command, data });
-          }
-          return data;
-        });
-    }
-
-    onTalkerMessage(callback) {
-      this._callback = callback;
-    }
-  })(),
-};
+const props = defineProps({
+  settings: {
+    type: Object,
+  },
+});
 
 if (process.client) {
+  const DEFAULT_SETTINGS = {
+    isTrustedPatch: true,
+    platformClass: "PlatformPatchbay",
+    urlCables: window.location.protocol + "//" + window.location.host,
+    urlSandbox: window.location.protocol + "//" + window.location.host,
+    communityUrl: "https://cables.gl",
+    user: undefined,
+    usersettings: { settings: undefined },
+    isDevEnv: process.env.NODE_ENV !== "production",
+    env: "patchbay",
+    patchVersion: "",
+    socketcluster: {},
+    remoteClient: false,
+    buildInfo: undefined,
+    patchConfig: {
+      allowEdit: false,
+    },
+    uiIndexHtml: "/cables/ui/index.html",
+  };
+
+  const settings = Object.assign(DEFAULT_SETTINGS, props.settings);
+
+  const cablesUi = useTemplateRef("cables-ui");
+  const store = usePatchbayStore();
+
   onMounted(async () => {
-    const cablesPatchbay = new CablesPatchbay(patchbay, cablesUi.value);
+    const cablesPatchbay = new CablesPatchbay(
+      { ipcRenderer: store },
+      cablesUi.value,
+      settings,
+    );
     await cablesPatchbay.init();
   });
 }

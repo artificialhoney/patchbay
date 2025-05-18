@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen bg-gradient">
+  <NuxtLayout>
     <NuxtPage />
-  </div>
+  </NuxtLayout>
 </template>
