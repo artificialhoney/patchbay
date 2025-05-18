@@ -129,7 +129,7 @@ CABLES_CMD_PATCHBAY.manageOpDirs = () => {
   CablesPatchbay.cablesPatchbay.openOpDirsTab();
 };
 
-CABLES_CMD_PATCHBAY.copyOpDirToClipboard = (opId = null) => {
+CABLES_CMD_PATCHBAY.copyOpDirToClipboard = async (opId = null) => {
   const gui = CablesPatchbay.cablesPatchbay.gui;
   if (gui) {
     if (!opId) {
@@ -137,7 +137,9 @@ CABLES_CMD_PATCHBAY.copyOpDirToClipboard = (opId = null) => {
       if (!ops.length) return;
       opId = ops[0].opId;
     }
-    const modulePath = window.ipcRenderer.sendSync("getOpDir", { opId: opId });
+    const modulePath = await window.ipcRenderer.sendSync("getOpDir", {
+      opId: opId,
+    });
     if (modulePath) {
       navigator.clipboard.writeText(modulePath);
       CablesPatchbay.cablesPatchbay.editor.notify(

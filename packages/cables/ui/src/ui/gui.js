@@ -49,7 +49,7 @@ import { contextMenu } from "./elements/contextmenu.js";
 import UserSettings from "./components/usersettings.js";
 import GlTimelineTab from "./components/tabs/tab_gltimeline.js";
 import PatchView from "./components/patchview.js";
-import { UiPatch } from "./core_extend_patch.js";
+import UiPatch from "./core_extend_patch.js";
 
 /**
  * main singleton class for starting the editor
@@ -136,6 +136,8 @@ export default class Gui extends Events {
     };
     if (cfg.patchConfig)
       patchConfig = Object.assign(patchConfig, cfg.patchConfig);
+
+    //CABLES.EMBED.addPatch("cablescanvas", patchConfig);
 
     /** @type {UiPatch} */
     // @ts-ignore

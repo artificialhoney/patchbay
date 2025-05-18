@@ -75,212 +75,223 @@ export default class EditorTab extends Events {
   /**
    * @param {string} content
    */
-  setContent(content, silent = false) {
+  async setContent(content, silent = false) {
     content = content || "";
     if (!this._editor) {
       if (!ele.byId("editorcontent" + this._tab.id)) {
         this._log.error("ele not found!!", this);
         return;
       }
-      this.createEditor("editorcontent" + this._tab.id, content, (editor) => {
-        this._editor = editor;
+      this.createEditor(
+        "editorcontent" + this._tab.id,
+        content,
+        async (editor) => {
+          this._editor = editor;
 
-        editor.setFontSize(
-          parseInt(UserSettings.userSettings.get("fontsize_ace")) || 12,
-        );
-        editor
-          .getSession()
-          .setUseWrapMode(
-            UserSettings.userSettings.get("wrapmode_ace") || false,
+          editor.setFontSize(
+            parseInt(UserSettings.userSettings.get("fontsize_ace")) || 12,
           );
-
-        if (Gui.gui.UserSettings.userSettings.get("ace_keymode")) {
-          editor.setKeyboardHandler(
-            Gui.gui.UserSettings.userSettings.get("ace_keymode"),
-          );
-
-          ace.config.loadModule("ace/keyboard/vim", (module) => {
-            let VimApi = module.CodeMirror.Vim;
-            VimApi.defineEx("write", "w", (cm, input) => {
-              this.save();
-            });
-          });
-        }
-
-        if (this._options.allowEdit) {
-          if (this._options.onSave || this._options.showSaveButton)
-            this._tab.addButton(text.editorSaveButton, () => {
-              this.save();
-            });
-
-          let hideFormatButton = !!this._options.hideFormatButton;
-          if (
-            !hideFormatButton &&
-            this._options.syntax &&
-            this._options.syntax === "js"
-          )
-            hideFormatButton = false;
-          else hideFormatButton = true;
-          if (!platform.frontendOptions.showFormatCodeButton)
-            hideFormatButton = true;
-
-          if (this._options.allowEdit && !hideFormatButton)
-            this._tab.addButton(
-              text.editorFormatButton,
-              this.format.bind(this),
+          editor
+            .getSession()
+            .setUseWrapMode(
+              UserSettings.userSettings.get("wrapmode_ace") || false,
             );
-        } else {
-          this._editor.setOptions({
-            readOnly: "true",
-            highlightActiveLine: false,
-            highlightGutterLine: false,
-          });
-          this._editor.renderer.setStyle("disabled", true);
-          this._editor.blur();
-        }
 
-        let opname = null;
-        this._options.editorObj = this._options.editorObj || {};
-        if (this._options.editorObj.type === "op")
-          opname = this._options.editorObj.name;
-        if (this._options.editorObj.data && this._options.editorObj.data.opname)
-          opname = this._options.editorObj.data.opname;
+          if (Gui.gui.UserSettings.userSettings.get("ace_keymode")) {
+            editor.setKeyboardHandler(
+              Gui.gui.UserSettings.userSettings.get("ace_keymode"),
+            );
 
-        if (!opname) {
-          const d = Gui.gui.opDocs.getOpDocById(this._options.name);
-          if (d) opname = d.name;
-        }
-
-        let opId = null;
-        if (opname) {
-          const opdoc = Gui.gui.opDocs.getOpDocByName(opname);
-          if (opdoc) {
-            opId = opdoc.id;
-          } else {
-            this._log.warn("could not get opdoc:" + opname);
+            ace.config.loadModule("ace/keyboard/vim", (module) => {
+              let VimApi = module.CodeMirror.Vim;
+              VimApi.defineEx("write", "w", (cm, input) => {
+                this.save();
+              });
+            });
           }
 
-          this._tab.addButton(
-            '<span class="icon icon-op"></span> Manage Op',
-            () => {
-              new ManageOp(Gui.gui.mainTabs, opId);
-            },
-          );
+          if (this._options.allowEdit) {
+            if (this._options.onSave || this._options.showSaveButton)
+              this._tab.addButton(text.editorSaveButton, () => {
+                this.save();
+              });
 
-          if (opdoc && opdoc.attachmentFiles && opdoc.attachmentFiles.length) {
-            const el = this._tab.addButton(
-              '<span class="icon icon-chevron-down"></span>Op Files',
+            let hideFormatButton = !!this._options.hideFormatButton;
+            if (
+              !hideFormatButton &&
+              this._options.syntax &&
+              this._options.syntax === "js"
+            )
+              hideFormatButton = false;
+            else hideFormatButton = true;
+            if (!platform.frontendOptions.showFormatCodeButton)
+              hideFormatButton = true;
+
+            if (this._options.allowEdit && !hideFormatButton)
+              this._tab.addButton(
+                text.editorFormatButton,
+                this.format.bind(this),
+              );
+          } else {
+            this._editor.setOptions({
+              readOnly: "true",
+              highlightActiveLine: false,
+              highlightGutterLine: false,
+            });
+            this._editor.renderer.setStyle("disabled", true);
+            this._editor.blur();
+          }
+
+          let opname = null;
+          this._options.editorObj = this._options.editorObj || {};
+          if (this._options.editorObj.type === "op")
+            opname = this._options.editorObj.name;
+          if (
+            this._options.editorObj.data &&
+            this._options.editorObj.data.opname
+          )
+            opname = this._options.editorObj.data.opname;
+
+          if (!opname) {
+            const d = Gui.gui.opDocs.getOpDocById(this._options.name);
+            if (d) opname = d.name;
+          }
+
+          let opId = null;
+          if (opname) {
+            const opdoc = Gui.gui.opDocs.getOpDocByName(opname);
+            if (opdoc) {
+              opId = opdoc.id;
+            } else {
+              this._log.warn("could not get opdoc:" + opname);
+            }
+
+            this._tab.addButton(
+              '<span class="icon icon-op"></span> Manage Op',
               () => {
-                const items = [];
+                new ManageOp(Gui.gui.mainTabs, opId);
+              },
+            );
 
-                items.push({
-                  title: opdoc.name + ".js",
-                  func: () => {
-                    Gui.gui.serverOps.edit(opdoc.name, false, null, true);
-                  },
-                });
+            if (
+              opdoc &&
+              opdoc.attachmentFiles &&
+              opdoc.attachmentFiles.length
+            ) {
+              const el = this._tab.addButton(
+                '<span class="icon icon-chevron-down"></span>Op Files',
+                () => {
+                  const items = [];
 
-                for (let i = 0; i < opdoc.attachmentFiles.length; i++) {
-                  const fn = opdoc.attachmentFiles[i];
                   items.push({
-                    title: opdoc.attachmentFiles[i],
+                    title: opdoc.name + ".js",
                     func: () => {
-                      Gui.gui.serverOps.editAttachment(opname, fn);
+                      Gui.gui.serverOps.edit(opdoc.name, false, null, true);
                     },
                   });
-                }
 
-                contextMenu.show({ items: items }, el);
+                  for (let i = 0; i < opdoc.attachmentFiles.length; i++) {
+                    const fn = opdoc.attachmentFiles[i];
+                    items.push({
+                      title: opdoc.attachmentFiles[i],
+                      func: () => {
+                        Gui.gui.serverOps.editAttachment(opname, fn);
+                      },
+                    });
+                  }
+
+                  contextMenu.show({ items: items }, el);
+                },
+              );
+            }
+
+            this._tab.addButton("Op Docs", () => {
+              window.open(platform.getCablesDocsUrl() + "/op/" + opname);
+            });
+          }
+
+          if (
+            platform.frontendOptions.openLocalFiles &&
+            this._options.allowEdit
+          ) {
+            this._tab.addButton(
+              '<span class="info nomargin icon icon-1_25x icon-folder" data-info="electron_openfolder" ></span>',
+              async (e) => {
+                if (e.ctrlKey || e.metaKey)
+                  await CABLES.CMD.ELECTRON.copyOpDirToClipboard(opId);
+                else CABLES.CMD.ELECTRON.openOpDir(opId, opname);
               },
             );
           }
-
-          this._tab.addButton("Op Docs", () => {
-            window.open(platform.getCablesDocsUrl() + "/op/" + opname);
-          });
-        }
-
-        if (
-          platform.frontendOptions.openLocalFiles &&
-          this._options.allowEdit
-        ) {
           this._tab.addButton(
-            '<span class="info nomargin icon icon-1_25x icon-folder" data-info="electron_openfolder" ></span>',
-            (e) => {
-              if (e.ctrlKey || e.metaKey)
-                CABLES.CMD.ELECTRON.copyOpDirToClipboard(opId);
-              else CABLES.CMD.ELECTRON.openOpDir(opId, opname);
+            '<span class="nomargin icon icon-1_25x icon-help"></span>',
+            () => {
+              window.open(
+                platform.getCablesDocsUrl() +
+                  "/docs/5_writing_ops/dev_ops/dev_ops",
+              );
             },
           );
-        }
-        this._tab.addButton(
-          '<span class="nomargin icon icon-1_25x icon-help"></span>',
-          () => {
-            window.open(
-              platform.getCablesDocsUrl() +
-                "/docs/5_writing_ops/dev_ops/dev_ops",
-            );
-          },
-        );
 
-        this._editor.resize();
+          this._editor.resize();
 
-        const undoManager = this._editor.session.getUndoManager();
-        undoManager.reset();
-        this._editor.session.setUndoManager(undoManager);
+          const undoManager = this._editor.session.getUndoManager();
+          undoManager.reset();
+          this._editor.session.setUndoManager(undoManager);
 
-        this._editor.on("change", (e) => {
-          Gui.gui.mainTabs.setChanged(this._tab.id, true);
-          if (this._options.onChange) this._options.onChange();
-        });
+          this._editor.on("change", (e) => {
+            Gui.gui.mainTabs.setChanged(this._tab.id, true);
+            if (this._options.onChange) this._options.onChange();
+          });
 
-        this._editor.getSession().setUseWorker(true);
+          this._editor.getSession().setUseWorker(true);
 
-        if (this._options.syntax === "md")
-          this._editor.session.setMode("ace/mode/Markdown");
-        else if (this._options.syntax === "js")
-          this._editor.session.setMode("ace/mode/javascript");
-        else if (this._options.syntax === "glsl")
-          this._editor.session.setMode("ace/mode/glsl");
-        else if (this._options.syntax === "css")
-          this._editor.session.setMode("ace/mode/css");
-        else if (this._options.syntax === "html")
-          this._editor.session.setMode("ace/mode/html");
-        else if (this._options.syntax === "json")
-          this._editor.session.setMode("ace/mode/json");
-        else if (this._options.syntax === "sql")
-          this._editor.session.setMode("ace/mode/sql");
-        else if (this._options.syntax === "inline-css") {
-          this._editor.session.setMode("ace/mode/css");
-          this._editor.getSession().setUseWorker(false);
-        } else {
-          if (this._options.syntax)
-            this._log.warn(
-              "unknown syntax highlighter for ace",
-              this._options.syntax,
-            );
-          this._editor.session.setMode("ace/mode/plain_text");
-          this._editor.getSession().setUseWorker(false);
-        }
+          if (this._options.syntax === "md")
+            this._editor.session.setMode("ace/mode/Markdown");
+          else if (this._options.syntax === "js")
+            this._editor.session.setMode("ace/mode/javascript");
+          else if (this._options.syntax === "glsl")
+            this._editor.session.setMode("ace/mode/glsl");
+          else if (this._options.syntax === "css")
+            this._editor.session.setMode("ace/mode/css");
+          else if (this._options.syntax === "html")
+            this._editor.session.setMode("ace/mode/html");
+          else if (this._options.syntax === "json")
+            this._editor.session.setMode("ace/mode/json");
+          else if (this._options.syntax === "sql")
+            this._editor.session.setMode("ace/mode/sql");
+          else if (this._options.syntax === "inline-css") {
+            this._editor.session.setMode("ace/mode/css");
+            this._editor.getSession().setUseWorker(false);
+          } else {
+            if (this._options.syntax)
+              this._log.warn(
+                "unknown syntax highlighter for ace",
+                this._options.syntax,
+              );
+            this._editor.session.setMode("ace/mode/plain_text");
+            this._editor.getSession().setUseWorker(false);
+          }
 
-        this._tab.addEventListener("close", this._options.onClose);
-        this._tab.addEventListener("onActivate", () => {
-          this._editor.resize(true);
-          this._editor.focus();
-          if (this._tab.editorObj && this._tab.editorObj.name)
-            UserSettings.userSettings.set(
-              "editortab",
-              this._tab.editorObj.name,
-            );
-        });
+          this._tab.addEventListener("close", this._options.onClose);
+          this._tab.addEventListener("onActivate", () => {
+            this._editor.resize(true);
+            this._editor.focus();
+            if (this._tab.editorObj && this._tab.editorObj.name)
+              UserSettings.userSettings.set(
+                "editortab",
+                this._tab.editorObj.name,
+              );
+          });
 
-        setTimeout(() => {
-          this._editor.focus();
-          this._tab.updateSize();
-          this._editor.resize(true);
-          if (this._options.onFinished) this._options.onFinished();
-        }, 100);
-      });
+          setTimeout(() => {
+            this._editor.focus();
+            this._tab.updateSize();
+            this._editor.resize(true);
+            if (this._options.onFinished) this._options.onFinished();
+          }, 100);
+        },
+      );
     } else {
       this._editor.setValue(content, 1);
       if (silent) Gui.gui.mainTabs.setChanged(this._tab.id, false);

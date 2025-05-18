@@ -9,7 +9,7 @@ import namespace from "./namespaceutils.js";
 /**
  * @extends Patch<UiOp>
  */
-class UiPatch extends Patch {
+export default class UiPatch extends Patch {
   _opIdsToOps(opids) {
     let ops = [];
     for (let i = 0; i < opids.length; i++) {
@@ -375,8 +375,3 @@ class UiPatch extends Patch {
     perf.finish();
   }
 }
-
-CABLES.Patch = UiPatch;
-export { UiPatch };
-
-export default function extendCorePatch() {}

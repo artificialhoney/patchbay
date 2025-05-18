@@ -1,12 +1,11 @@
 import { TalkerAPI } from "@cables/client";
-import CablesPatchbay from "./cables.js";
 
 /**
  * @name EditorParams
  * @type {object}
  * @property {{}} config config options for the ui
- * @property {boolean} config.isTrustedPatch does the user have write permission in the patch, always true in CablesPatchbay.cablesPatchbay
- * @property {string} config.platformClass the platform class to use in the ui, allows for hooks and overrides in community vs CablesPatchbay.cablesPatchbay
+ * @property {boolean} config.isTrustedPatch does the user have write permission in the patch, always true in this
+ * @property {string} config.platformClass the platform class to use in the ui, allows for hooks and overrides in community vs this
  * @property {string} config.urlCables url used for links to outside the sandbox on community platform
  * @property {string} config.urlSandbox url used for links to inside the sandbox on community platform
  * @property {{}} config.user current user object
@@ -20,19 +19,20 @@ import CablesPatchbay from "./cables.js";
  * @property {boolean} config.remoteClient are we a remote client?
  * @property {{}} config.buildInfo buildinfo for the currently running version
  * @property {{}} config.patchConfig configuration handed over to the loaded patch
- * @property {boolean} config.patchConfig.allowEdit is the user allowed to edit the pacht, always true in CablesPatchbay.cablesPatchbay
+ * @property {boolean} config.patchConfig.allowEdit is the user allowed to edit the pacht, always true in this
  * @property {string} config.patchConfig.prefixAssetPath where to look for assets that are set to relative paths in the project
  */
 
 /**
- * cables editor instance for patchbay CablesPatchbay.cablesPatchbay version
+ * cables editor instance for patchbay this version
  * handles ipc messages from and to the ui
  *
  * @param {EditorParams} params
  */
 export default class PatchbayEditor {
-  constructor(params, frame) {
+  constructor(params, frame, ipcRenderer) {
     this.config = params.config;
+    this.ipcRenderer = ipcRenderer;
     this._talker = new TalkerAPI(frame.contentWindow);
     this._patchId = this.config.patchId;
 
@@ -44,12 +44,9 @@ export default class PatchbayEditor {
       this._talker.send("logError", { level: "error", message: e.error });
     });
 
-    // CablesPatchbay.cablesPatchbay.ipcRenderer.on(
-    //   "talkerMessage",
-    //   (_event, data) => {
-    //     this._talker.send(data.cmd, data.data);
-    //   },
-    // );
+    // this.ipcRenderer.onTalkerMessage((_event, data) => {
+    //   this._talker.send(data.cmd, data.data);
+    // });
 
     /**
      * send patch config to ui
@@ -147,16 +144,9 @@ export default class PatchbayEditor {
             message: error.msg || error,
           });
         } else {
-          if (
-            CablesPatchbay.cablesPatchbay &&
-            CablesPatchbay.cablesPatchbay.gui &&
-            r
-          ) {
-            CablesPatchbay.cablesPatchbay.gui.patchView.addAssetOpAuto(r);
-            CablesPatchbay.cablesPatchbay.gui.fileManagerEditor.editAssetTextFile(
-              "file:" + r,
-              "text",
-            );
+          if (this && this.gui && r) {
+            this.gui.patchView.addAssetOpAuto(r);
+            this.gui.fileManagerEditor.editAssetTextFile("file:" + r, "text");
           }
         }
         next(error, r);
@@ -181,15 +171,13 @@ export default class PatchbayEditor {
         html +=
           'Enter <a href="https://docs.npmjs.com/cli/v10/commands/npm-install">package.json</a> location (git, npm, thz, url, ...):';
 
-        new CablesPatchbay.cablesPatchbay.CABLES.UI.ModalDialog({
+        new this.CABLES.UI.ModalDialog({
           prompt: true,
           title: "Install ops from package",
           html: html,
           promptOk: (packageLocation) => {
             const loadingModal =
-              CablesPatchbay.cablesPatchbay.gui.startModalLoading(
-                "Installing ops...",
-              );
+              this.gui.startModalLoading("Installing ops...");
             const packageOptions = {
               targetDir: opTargetDir,
               package: packageLocation,
@@ -215,15 +203,14 @@ export default class PatchbayEditor {
                 loadingModal.setTask("done");
                 if (next) next(_err, r);
                 setTimeout(() => {
-                  CablesPatchbay.cablesPatchbay.gui.endModalLoading();
+                  this.gui.endModalLoading();
                 }, 3000);
               }
             });
           },
         });
 
-        const dirSelect =
-          CablesPatchbay.cablesPatchbay.editorWindow.ele.byId("opTargetDir");
+        const dirSelect = this.editorWindow.ele.byId("opTargetDir");
         if (dirSelect) {
           dirSelect.addEventListener("change", () => {
             opTargetDir = dirSelect.value;
@@ -295,7 +282,7 @@ export default class PatchbayEditor {
     Object.keys(this._talkerTopics).forEach((talkerTopic) => {
       this._talker.on(talkerTopic, (data, next) => {
         const topicConfig = this._talkerTopics[talkerTopic];
-        CablesPatchbay.cablesPatchbay.ipcRenderer
+        this.ipcRenderer
           .invoke("talkerMessage", talkerTopic, data, topicConfig)
           .then((r) => {
             const error = r && r.hasOwnProperty("error") ? r : null;
@@ -319,7 +306,7 @@ export default class PatchbayEditor {
    */
   api(cmd, data, next) {
     const topicConfig = this._talkerTopics[cmd];
-    CablesPatchbay.cablesPatchbay.ipcRenderer
+    this.ipcRenderer
       .invoke("talkerMessage", cmd, data, topicConfig)
       .then((r) => {
         const error = r && r.hasOwnProperty("error") ? r : null;

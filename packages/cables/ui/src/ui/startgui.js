@@ -28,6 +28,10 @@ export default function startUi(cfg) {
   window.Gui = Gui;
   window.Gui.gui = window.gui;
 
+  Gui.gui.on("uiloaded", () => {
+    new Tracking();
+  });
+
   if (Gui.gui.isRemoteClient) new NoPatchEditor();
   else new GlGuiFull(Gui.gui.corePatch());
 

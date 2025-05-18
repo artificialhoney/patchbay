@@ -242,8 +242,8 @@ export default class GlOp extends Events {
       });
 
       if (this._op.objName.indexOf("Ops.Ui.Comment") === 0)
-        this.displayType =
-          this.DISPLAY_COMMENT; // todo: better use uiattr comment_title
+        this.displayType = this.DISPLAY_COMMENT;
+      // todo: better use uiattr comment_title
       else if (this._op.objName.indexOf("Ops.Ui.Area") === 0)
         this.displayType = this.DISPLAY_UI_AREA;
     }
@@ -1570,9 +1570,8 @@ export default class GlOp extends Events {
 
     if (this.opUiAttribs.comment_title) {
       if (this.opUiAttribs.hasOwnProperty("color") && this.opUiAttribs.color)
-        this._glTitle.setColor(
-          chroma.hex(this.opUiAttribs.color).gl(),
-        ); // this._glTitle.setColor(1, 1, 1);
+        this._glTitle.setColor(chroma.hex(this.opUiAttribs.color).gl());
+      // this._glTitle.setColor(1, 1, 1);
       else this._glTitle.setColorArray(Gui.gui.theme.colors_patch.patchComment);
     } else {
       if (this._OpNameSpaceColor)

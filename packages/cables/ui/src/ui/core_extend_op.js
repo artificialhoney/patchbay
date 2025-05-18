@@ -15,7 +15,7 @@ CABLES.OpUnLinkTempReLinkP2 = null;
 /**
  * @extends Op<UiPatch>
  */
-class UiOp extends Op {
+export default class UiOp extends Op {
   constructor(a, b, c) {
     super(a, b, c);
     this.initUi();
@@ -874,8 +874,3 @@ class UiOp extends Op {
     return portOut;
   }
 }
-
-CABLES.Op = UiOp;
-export { UiOp };
-
-export default function extendCoreOp() {}

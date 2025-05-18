@@ -501,7 +501,7 @@ export class Patch extends Events {
       if (uiAttribs.hasOwnProperty("errors")) delete uiAttribs.errors;
       if (uiAttribs.hasOwnProperty("error")) delete uiAttribs.error;
       uiAttribs.subPatch = uiAttribs.subPatch || 0;
-      op.setUiAttribs(uiAttribs);
+      op.setUiAttrib(uiAttribs);
       if (op.onCreate) op.onCreate();
 
       if (op.hasOwnProperty("onAnimFrame")) this.addOnAnimFrame(op);

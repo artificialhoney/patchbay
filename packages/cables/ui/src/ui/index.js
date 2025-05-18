@@ -8,7 +8,6 @@ import setHtmlDefaultListeners from "./components/htmldefaultlisteners.js";
 import UserSettings from "./components/usersettings.js";
 import paramsHelper from "./components/opparampanel/params_helper.js";
 import FindTab from "./components/tabs/tab_find.js";
-import extendCoreAnim from "./components/timelinesvg/core_anim_extend.js";
 import defaultOps from "./defaultops.js";
 import GradientEditor from "./dialogs/gradienteditor.js";
 import ModalDialog from "./dialogs/modaldialog.js";
@@ -17,7 +16,7 @@ import oldModalWrap from "./dialogs/modal_old_wrap.js";
 import { contextMenu } from "./elements/contextmenu.js";
 import Tab from "./elements/tabpanel/tab.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
-import extendCoreOp from "./core_extend_op.js";
+import UiOp from "./core_extend_op.js";
 import PlatformCommunity from "./platform_community.js";
 import PlatformElectron from "./platform_electron.js";
 import PlatformPatchbay from "./platform_patchbay.js";
@@ -26,7 +25,7 @@ import text from "./text.js";
 import LogFilter from "./utils/logfilter.js";
 import undo from "./utils/undo.js";
 import TabPortObjectInspect from "./components/tabs/tab_portobjectionspect.js";
-import extendCorePatch from "./core_extend_patch.js";
+import UiPatch from "./core_extend_patch.js";
 import Gizmo from "./elements/canvasoverlays/transformgizmo.js";
 import ModalSourceCode from "./dialogs/modalsourcecode.js";
 import { showShaderError } from "./dialogs/modalshadererrorgl.js";
@@ -188,10 +187,8 @@ CABLES.UI.showShaderErrorCgp = showShaderErrorCgp;
 
 setHtmlDefaultListeners();
 
-extendCoreOp();
-
-extendCorePatch();
-extendCoreAnim();
+CABLES.Op = UiOp;
+CABLES.Patch = UiPatch;
 
 CABLES.UI.startUi = startUi;
 

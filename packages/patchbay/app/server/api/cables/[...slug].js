@@ -68,7 +68,6 @@ patchbayApi.init();
 
 export default defineEventHandler(async (event) => {
   const slug = event.context.params.slug;
-  const query = event.node.req.query;
   if (
     [
       "platformSettings",
@@ -78,6 +77,7 @@ export default defineEventHandler(async (event) => {
       "getOpModuleLocation",
     ].includes(slug)
   ) {
+    const query = await getQuery(event);
     let result = null;
     eventEmitter.once(slug, (event) => {
       result = event.returnValue;
@@ -85,12 +85,19 @@ export default defineEventHandler(async (event) => {
     eventEmitter.emit(slug, {}, query);
     return result;
   } else if (slug.startsWith("talkerMessage")) {
+    const body = await readBody(event);
     const slugElements = slug.split("/");
     let result = null;
     eventEmitter.once(slugElements[0], (event) => {
       result = event.returnValue;
     });
-    eventEmitter.emit(slugElements[0], {}, slugElements[1], {});
+    eventEmitter.emit(
+      slugElements[0],
+      {},
+      slugElements[1],
+      body,
+      body.topicConfig,
+    );
     return await result;
   } else {
     return patchbayEndpoint.handle(event.node.req);

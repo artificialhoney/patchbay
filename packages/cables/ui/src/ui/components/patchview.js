@@ -1,5 +1,4 @@
 import { Logger, ele, Events } from "@cables/client";
-import { Op } from "@cables/cables";
 import PatchSaveServer from "../api/patchserverapi.js";
 import defaultOps from "../defaultops.js";
 import ModalDialog from "../dialogs/modaldialog.js";
@@ -69,24 +68,32 @@ export default class PatchView extends Events {
 
     corepatch.on(CABLES.Patch.EVENT_OP_ADDED, (op) => {
       if (!undo.paused())
-        Gui.gui.savedState.setUnSaved("onOpAdd", op.getSubPatch());
+        Gui.gui.savedState.setUnSaved(
+          "onOpAdd",
+          op.getSubPatch && op.getSubPatch(),
+        );
     });
     corepatch.on(CABLES.Patch.EVENT_OP_DELETED, (op) => {
       if (!undo.paused())
-        Gui.gui.savedState.setUnSaved("onOpDelete", op.getSubPatch());
+        Gui.gui.savedState.setUnSaved(
+          "onOpDelete",
+          op.getSubPatch && op.getSubPatch(),
+        );
     });
     corepatch.on("onLink", (p1, p2) => {
       if (!undo.paused())
         Gui.gui.savedState.setUnSaved(
           "onLink",
-          p1.op.getSubPatch() || p2.op.getSubPatch(),
+          (p1.op.getSubPatch && p1.op.getSubPatch()) ||
+            (p2.op.getSubPatch && p2.op.getSubPatch()),
         );
     });
     corepatch.on("onUnLink", (p1, p2) => {
       if (!undo.paused())
         Gui.gui.savedState.setUnSaved(
           "onUnLink",
-          p1.op.getSubPatch() || p2.op.getSubPatch(),
+          (p1.op.getSubPatch && p1.op.getSubPatch()) ||
+            (p2.op.getSubPatch && p2.op.getSubPatch()),
         );
     });
   }

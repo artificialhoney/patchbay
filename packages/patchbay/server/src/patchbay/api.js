@@ -828,9 +828,9 @@ export default class PatchbayApi {
   }
 
   setIconUnsaved() {
-    const title = this._app.editorWindow.getTitle();
-    this._app.setDocumentEdited(true);
-    this._app.editorWindow.setTitle(title + " *");
+    // const title = this._app.editorWindow.getTitle();
+    // this._app.setDocumentEdited(true);
+    // this._app.editorWindow.setTitle(title + " *");
   }
 
   saveScreenshot(data) {

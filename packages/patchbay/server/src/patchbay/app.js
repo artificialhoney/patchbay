@@ -3,7 +3,7 @@ import path from "path";
 import fs from "fs";
 import mkdirp from "mkdirp";
 
-export default class CablesPatchbay extends Cables {
+export default class PatchbayApp extends Cables {
   constructor(
     utilProvider,
     dirName,
@@ -154,5 +154,14 @@ export default class CablesPatchbay extends Cables {
 
   get settings() {
     return this._settings;
+  }
+
+  // mock
+  openPatch() {
+    console.warn(`PatchbayApp.openPatch()`, "Not implemented!");
+  }
+
+  pickProjectFileDialog() {
+    console.warn(`PatchbayApp.pickProjectFileDialog()`, "Not implemented!");
   }
 }

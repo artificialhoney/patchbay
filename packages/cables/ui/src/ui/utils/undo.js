@@ -1,3 +1,5 @@
 import UndoManager from "../../libs/undomanager";
 
-export default UndoManager();
+const undo = UndoManager();
+
+export default undo;

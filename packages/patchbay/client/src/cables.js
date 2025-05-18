@@ -7,10 +7,7 @@ import patchbayCommands from "./cmd.js";
  * initializes the ui, starts the editor and adds functions custom to this platform
  */
 export default class CablesPatchbay {
-  static cablesPatchbay = null;
   constructor(patchbay, editorElement) {
-    CablesPatchbay.cablesPatchbay = this;
-
     this._logger = new Logger("patchbay");
     this._patchbay = patchbay;
     // this._importSync = importSync;
@@ -156,22 +153,22 @@ export default class CablesPatchbay {
         //       }
         //     });
         // };
-        // if (this._settings.uiLoadStart)
-        //   this.editorWindow.CABLESUILOADER.uiLoadStart -=
-        //     this._settings.uiLoadStart;
-        // this._startUpLogItems.forEach((logEntry) => {
-        //   this._logStartup(logEntry.title);
-        // });
-        // if (this.editorWindow.loadjs) {
-        //   this.editorWindow.loadjs.ready(
-        //     "cables_core",
-        //     async () => await this._coreReady(),
-        //   );
-        //   this.editorWindow.loadjs.ready(
-        //     "cablesuinew",
-        //     async () => await this._uiReady(),
-        //   );
-        // }
+        if (this._settings.uiLoadStart)
+          this.editorWindow.CABLESUILOADER.uiLoadStart -=
+            this._settings.uiLoadStart;
+        this._startUpLogItems.forEach((logEntry) => {
+          this._logStartup(logEntry.title);
+        });
+        if (this.editorWindow.loadjs) {
+          this.editorWindow.loadjs.ready(
+            "cables_core",
+            async () => await this._coreReady(),
+          );
+          this.editorWindow.loadjs.ready(
+            "cablesuinew",
+            async () => await this._uiReady(),
+          );
+        }
       }
     };
 
@@ -225,6 +222,7 @@ export default class CablesPatchbay {
         },
       },
       this._editorElement,
+      this.ipcRenderer,
     );
   }
 
@@ -285,7 +283,7 @@ export default class CablesPatchbay {
 
     try {
       // load module by directory name
-      modulePath = this._patchbay.ipcRenderer.sendSync("getOpModuleDir", {
+      modulePath = await this._patchbay.ipcRenderer.sendSync("getOpModuleDir", {
         opName: op.objName,
         opId: op.opId,
         moduleName: moduleName,
@@ -297,7 +295,7 @@ export default class CablesPatchbay {
     } catch (ePath) {
       try {
         // load module by resolved filename from package.json
-        moduleFile = this._patchbay.ipcRenderer.sendSync(
+        moduleFile = await this._patchbay.ipcRenderer.sendSync(
           "getOpModuleLocation",
           {
             opName: op.objName,
@@ -318,7 +316,7 @@ export default class CablesPatchbay {
           return this._loadedModules[moduleName];
         } catch (eName) {
           try {
-            moduleFile = this._patchbay.ipcRenderer.sendSync(
+            moduleFile = await this._patchbay.ipcRenderer.sendSync(
               "getOpModuleLocation",
               {
                 opName: op.objName || op.name,
