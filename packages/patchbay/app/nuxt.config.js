@@ -194,7 +194,7 @@ export default defineNuxtConfig({
     cables: {
       configLocation: prod ? "./app/server/cables.json" : "./cables.json",
       examplePath: prod
-        ? "../public/examples/jungle-jungle"
+        ? "/opt/patchbay/app/public/examples/jungle-jungle"
         : resolve(__dirname, "./public/examples/jungle-jungle"),
     },
   },
