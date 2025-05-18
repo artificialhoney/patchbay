@@ -1,21 +1,25 @@
-const geometry = op.inObject("Geometry"),
-  outGeom = op.outObject("Result"),
-  doFlip = op.inValueBool("Flip", true);
+const
+    geometry = op.inObject("Geometry"),
+    outGeom = op.outObject("Result"),
+    doFlip = op.inValueBool("Flip", true);
 
-doFlip.onChange = geometry.onChange = flip;
+doFlip.onChange =
+    geometry.onChange = flip;
 
-function flip() {
-  let oldGeom = geometry.get();
+function flip()
+{
+    let oldGeom = geometry.get();
 
-  if (!oldGeom) {
+    if (!oldGeom)
+    {
+        outGeom.set(null);
+        return;
+    }
+
+    let geom = oldGeom.copy();
+
+    if (doFlip.get())geom.flipVertDir();
+
     outGeom.set(null);
-    return;
-  }
-
-  let geom = oldGeom.copy();
-
-  if (doFlip.get()) geom.flipVertDir();
-
-  outGeom.set(null);
-  outGeom.set(geom);
+    outGeom.set(geom);
 }

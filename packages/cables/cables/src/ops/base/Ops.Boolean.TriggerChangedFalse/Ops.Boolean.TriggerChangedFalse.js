@@ -3,12 +3,16 @@ let next = op.outTrigger("Next");
 
 let oldVal = 0;
 
-val.onChange = function () {
-  let newVal = val.get();
-  if (oldVal && !newVal) {
-    oldVal = false;
-    next.trigger();
-  } else {
-    oldVal = true;
-  }
+val.onChange = function ()
+{
+    let newVal = val.get();
+    if (oldVal && !newVal)
+    {
+        oldVal = false;
+        next.trigger();
+    }
+    else
+    {
+        oldVal = true;
+    }
 };

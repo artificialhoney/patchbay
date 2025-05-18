@@ -1,9 +1,11 @@
-const inTheme = op.inObject("Theme"),
-  outMissing = op.outObject("Missing");
+const
+    inTheme = op.inObject("Theme"),
+    outMissing = op.outObject("Missing");
 
-inTheme.onChange = () => {
-  if (!CABLES.UI) return;
+inTheme.onChange = () =>
+{
+    if (!CABLES.UI) return;
 
-  const missing = gui.setTheme(inTheme.get());
-  outMissing.setRef(missing);
+    const missing = gui.setTheme(inTheme.get());
+    outMissing.setRef(missing);
 };

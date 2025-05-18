@@ -13,69 +13,65 @@ const outProjection = op.outTexture("Cubemap Projection");
 
 let sizeChanged = false;
 
-inWidth.onChange = inHeight.onChange = () => {
-  sizeChanged = true;
+inWidth.onChange = inHeight.onChange = () =>
+{
+    sizeChanged = true;
 };
 // * FRAMEBUFFER *
 let fb = null;
 const IS_WEBGL_1 = cgl.glVersion == 1;
 
-if (IS_WEBGL_1) {
-  fb = new CGL.Framebuffer(cgl, inWidth.get(), inHeight.get(), {
-    isFloatingPointTexture: true,
-    filter: CGL.Texture.FILTER_LINEAR,
-    wrap: CGL.Texture.WRAP_REPEAT,
-  });
-} else {
-  fb = new CGL.Framebuffer2(cgl, inWidth.get(), inHeight.get(), {
-    isFloatingPointTexture: true,
-    filter: CGL.Texture.FILTER_LINEAR,
-    wrap: CGL.Texture.WRAP_REPEAT,
-  });
+if (IS_WEBGL_1)
+{
+    fb = new CGL.Framebuffer(cgl, inWidth.get(), inHeight.get(), {
+        "isFloatingPointTexture": true,
+        "filter": CGL.Texture.FILTER_LINEAR,
+        "wrap": CGL.Texture.WRAP_REPEAT
+    });
+}
+else
+{
+    fb = new CGL.Framebuffer2(cgl, inWidth.get(), inHeight.get(), {
+        "isFloatingPointTexture": true,
+        "filter": CGL.Texture.FILTER_LINEAR,
+        "wrap": CGL.Texture.WRAP_REPEAT,
+    });
 }
 
 const projectionShader = new CGL.Shader(cgl, "cubemapProjection");
 projectionShader.offScreenPass = true;
 const uniformCubemap = new CGL.Uniform(projectionShader, "t", "cubemap", 0);
 
-projectionShader.setModules([
-  "MODULE_VERTEX_POSITION",
-  "MODULE_COLOR",
-  "MODULE_BEGIN_FRAG",
-]);
-projectionShader.setSource(
-  attachments.projection_vert,
-  attachments.projection_frag,
-);
+projectionShader.setModules(["MODULE_VERTEX_POSITION", "MODULE_COLOR", "MODULE_BEGIN_FRAG"]);
+projectionShader.setSource(attachments.projection_vert, attachments.projection_frag);
 
 projectionShader.toggleDefine("EQUIRECTANGULAR", inEquirect);
 
-inTrigger.onTriggered = function () {
-  if (!inCubemap.get()) {
+inTrigger.onTriggered = function ()
+{
+    if (!inCubemap.get())
+    {
+        outTrigger.trigger();
+        return;
+    }
+
+    if (sizeChanged)
+    {
+        if (fb) fb.setSize(inWidth.get(), inHeight.get());
+        sizeChanged = false;
+    }
+    projectionShader.popTextures();
+
+    cgl.tempData.renderOffscreen = true;
+
+    fb.renderStart(cgl);
+    projectionShader.pushTexture(uniformCubemap, inCubemap.get().cubemap, cgl.gl.TEXTURE_CUBE_MAP);
+    mesh.render(projectionShader);
+    fb.renderEnd();
+    cgl.tempData.renderOffscreen = false;
+
+    outProjection.set(null);
+    outProjection.set(fb.getTextureColor());
+
     outTrigger.trigger();
-    return;
-  }
-
-  if (sizeChanged) {
-    if (fb) fb.setSize(inWidth.get(), inHeight.get());
-    sizeChanged = false;
-  }
-  projectionShader.popTextures();
-
-  cgl.tempData.renderOffscreen = true;
-
-  fb.renderStart(cgl);
-  projectionShader.pushTexture(
-    uniformCubemap,
-    inCubemap.get().cubemap,
-    cgl.gl.TEXTURE_CUBE_MAP,
-  );
-  mesh.render(projectionShader);
-  fb.renderEnd();
-  cgl.tempData.renderOffscreen = false;
-
-  outProjection.set(null);
-  outProjection.set(fb.getTextureColor());
-
-  outTrigger.trigger();
 };

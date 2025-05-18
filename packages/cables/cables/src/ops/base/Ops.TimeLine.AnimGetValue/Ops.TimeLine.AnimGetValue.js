@@ -1,10 +1,15 @@
-const inAnim = op.inObject("Anim"),
-  inTime = op.inFloat("Time", 0),
-  outValue = op.outNumber("Value");
+const
+    inAnim = op.inObject("Anim"),
+    inTime = op.inFloat("Time", 0),
+    outValue = op.outNumber("Value"),
+    outLoobIdc = op.outNumber("Loop");
 
-inTime.onChange = inAnim.onChange = update;
+inTime.onChange =
+inAnim.onChange = update;
 
-function update() {
-  const anim = inAnim.get() || new CABLES.Anim();
-  outValue.set(anim.getValue(inTime.get()));
+function update()
+{
+    const anim = inAnim.get() || new CABLES.Anim();
+    outValue.set(anim.getValue(inTime.get()));
+    outLoobIdc.set(anim.getLoopIndex(inTime.get()));
 }

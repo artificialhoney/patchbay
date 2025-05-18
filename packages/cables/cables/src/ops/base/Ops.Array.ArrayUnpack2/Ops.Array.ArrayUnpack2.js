@@ -1,7 +1,7 @@
 const inArray1 = op.inArray("Array in xyz"),
-  outArray1 = op.outArray("Array 1 out"),
-  outArray2 = op.outArray("Array 2 out"),
-  outArrayLength = op.outNumber("Array lengths");
+    outArray1 = op.outArray("Array 1 out"),
+    outArray2 = op.outArray("Array 2 out"),
+    outArrayLength = op.outNumber("Array lengths");
 
 let showingError = false;
 
@@ -10,44 +10,51 @@ const arr2 = [];
 
 inArray1.onChange = update;
 
-function update() {
-  let array1 = inArray1.get();
+function update()
+{
+    let array1 = inArray1.get();
 
-  if (!array1) {
-    outArray1.set(null);
-    return;
-  }
-
-  if (array1.length % 2 !== 0) {
-    if (!showingError) {
-      op.uiAttr({ error: "Arrays length not divisible by 2 !" });
-      outArrayLength.set(0);
-      showingError = true;
+    if (!array1)
+    {
+        outArray1.set(null);
+        return;
     }
-    return;
-  }
-  if (array1.length === 0) {
-    outArrayLength.set(0);
-    outArray1.set(null);
-    outArray2.set(null);
-  }
 
-  if (showingError) {
-    showingError = false;
-    op.uiAttr({ error: null });
-  }
+    if (array1.length % 2 !== 0)
+    {
+        if (!showingError)
+        {
+            op.uiAttr({ "error": "Arrays length not divisible by 2 !" });
+            outArrayLength.set(0);
+            showingError = true;
+        }
+        return;
+    }
+    if (array1.length === 0)
+    {
+        outArrayLength.set(0);
+        outArray1.set(null);
+        outArray2.set(null);
+    }
 
-  arr1.length = Math.floor(array1.length / 2);
-  arr2.length = Math.floor(array1.length / 2);
+    if (showingError)
+    {
+        showingError = false;
+        op.uiAttr({ "error": null });
+    }
 
-  for (let i = 0; i < array1.length / 2; i++) {
-    arr1[i] = array1[i * 2];
-    arr2[i] = array1[i * 2 + 1];
-  }
+    arr1.length = Math.floor(array1.length / 2);
+    arr2.length = Math.floor(array1.length / 2);
 
-  // outArray1.set(null);
-  // outArray2.set(null);
-  outArray1.setRef(arr1);
-  outArray2.setRef(arr2);
-  outArrayLength.set(arr1.length);
+    for (let i = 0; i < array1.length / 2; i++)
+    {
+        arr1[i] = array1[i * 2];
+        arr2[i] = array1[i * 2 + 1];
+    }
+
+    // outArray1.set(null);
+    // outArray2.set(null);
+    outArray1.setRef(arr1);
+    outArray2.setRef(arr2);
+    outArrayLength.set(arr1.length);
 }

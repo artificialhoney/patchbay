@@ -1,25 +1,30 @@
-const colName = op.inValueString("Column Name", "name");
-const inArr = op.inArray("CSV Array");
-const result = op.outArray("Result");
+const colName=op.inValueString("Column Name","name");
+const inArr=op.inArray("CSV Array");
+const result=op.outArray("Result");
 
-colName.onChange = update;
-inArr.onChange = update;
+colName.onChange=update;
+inArr.onChange=update;
 
-function update() {
-  var iArr = inArr.get();
-  var iName = colName.get();
-
-  if (!iArr) {
-    result.set(null);
-    return;
-  }
-
-  if (iArr[0].hasOwnProperty(iName)) {
-    var arr = [];
-
-    for (var i = 0; i < iArr.length; i++) {
-      arr.push(iArr[i][iName]);
+function update()
+{
+    var iArr=inArr.get();
+    var iName=colName.get();
+    
+    if(!iArr)
+    {
+        result.set(null);
+        return;
     }
-    result.set(arr);
-  }
+    
+    if(iArr[0].hasOwnProperty(iName))
+    {
+        var arr=[];
+
+        for(var i=0;i<iArr.length;i++)
+        {
+            arr.push(iArr[i][iName]);
+        }
+        result.set(arr);
+    }
+    
 }

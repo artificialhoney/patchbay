@@ -11,17 +11,19 @@ let showingError = false;
 inArr.onChange = update;
 
 // TODO revalute error checking code !!
-function update() {
-  // create an array called 'tempArray' and assign
-  // the array coming in to it
-  let tempArray = inArr.get();
+function update()
+{
+    // create an array called 'tempArray' and assign
+    // the array coming in to it
+    let tempArray = inArr.get();
 
-  // error checking section
-  // check if arrays come in correctly on startup
-  // if no array comes in just return to avoid errors
-  if (!inArr) {
-    return;
-  }
-  // set outArray to tempArray
-  outArray.set(tempArray);
+    // error checking section
+    // check if arrays come in correctly on startup
+    // if no array comes in just return to avoid errors
+    if (!inArr)
+    {
+        return;
+    }
+    // set outArray to tempArray
+    outArray.set(tempArray);
 }

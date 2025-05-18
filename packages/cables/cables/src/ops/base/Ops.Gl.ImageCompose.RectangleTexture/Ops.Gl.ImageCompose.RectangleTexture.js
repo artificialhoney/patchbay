@@ -9,7 +9,7 @@ const r = op.inValueSlider("r", Math.random());
 const g = op.inValueSlider("g", Math.random());
 const b = op.inValueSlider("b", Math.random());
 const a = op.inValueSlider("a", 1.0);
-r.setUiAttribs({ colorPick: true });
+r.setUiAttribs({ "colorPick": true });
 
 let trigger = op.outTrigger("trigger");
 
@@ -35,35 +35,38 @@ let uniformG = new CGL.Uniform(shader, "f", "g", g);
 let uniformB = new CGL.Uniform(shader, "f", "b", b);
 let uniformA = new CGL.Uniform(shader, "f", "a", a);
 
-render.onTriggered = function () {
-  let w = inWidth.get();
-  let h = inHeight.get();
-  let x = inPosX.get();
-  let y = inPosY.get();
+render.onTriggered = function ()
+{
+    let w = inWidth.get();
+    let h = inHeight.get();
+    let x = inPosX.get();
+    let y = inPosY.get();
 
-  if (w < 0) {
-    x += w;
-    w *= -1;
-  }
-  if (h < 0) {
-    y += h;
-    h *= -1;
-  }
+    if (w < 0)
+    {
+        x += w;
+        w *= -1;
+    }
+    if (h < 0)
+    {
+        y += h;
+        h *= -1;
+    }
 
-  uniX.set(x);
-  uniY.set(y);
-  uniHeight.set(h);
-  unWidth.set(w);
+    uniX.set(x);
+    uniY.set(y);
+    uniHeight.set(h);
+    unWidth.set(w);
 
-  if (!CGL.TextureEffect.checkOpInEffect(op)) return;
+    if (!CGL.TextureEffect.checkOpInEffect(op)) return;
 
-  cgl.pushShader(shader);
-  cgl.currentTextureEffect.bind();
+    cgl.pushShader(shader);
+    cgl.currentTextureEffect.bind();
 
-  cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
+    cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
 
-  cgl.currentTextureEffect.finish();
-  cgl.popShader();
+    cgl.currentTextureEffect.finish();
+    cgl.popShader();
 
-  trigger.trigger();
+    trigger.trigger();
 };

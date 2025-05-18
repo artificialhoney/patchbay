@@ -4,8 +4,8 @@ Only keep objects that have specified key-value pair!
 
 ```
 var arr = [
-  { animal: "dog", food: "veggies" },
-  { animal: "cat", food: "bird" },
+  { animal: "dog", food: "veggies" }, 
+  { animal: "cat", food: "bird" }, 
   { animal: "bird", food: "veggies" }
 ];
 

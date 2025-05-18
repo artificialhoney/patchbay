@@ -3,17 +3,21 @@
 // drops below the threshold and go's above it again
 
 const inValue = op.inValue("Input"),
-  inThreshold = op.inValue("Threshold"),
-  output = op.outTrigger("Output");
+    inThreshold = op.inValue("Threshold"),
+    output = op.outTrigger("Output");
 
 let hasThresholdBeenExceeded = false;
 
 inValue.onChange = update;
-function update() {
-  if (!hasThresholdBeenExceeded && inValue.get() >= inThreshold.get()) {
-    hasThresholdBeenExceeded = true;
-    output.trigger();
-  } else if (hasThresholdBeenExceeded && inValue.get() <= inThreshold.get()) {
-    hasThresholdBeenExceeded = false;
-  }
+function update()
+{
+    if (!hasThresholdBeenExceeded && inValue.get() >= inThreshold.get())
+    {
+        hasThresholdBeenExceeded = true;
+        output.trigger();
+    }
+    else if (hasThresholdBeenExceeded && inValue.get() <= inThreshold.get())
+    {
+        hasThresholdBeenExceeded = false;
+    }
 }

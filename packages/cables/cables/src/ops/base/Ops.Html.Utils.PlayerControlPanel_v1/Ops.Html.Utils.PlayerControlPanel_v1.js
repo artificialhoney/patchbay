@@ -20,21 +20,22 @@ let cgl = op.patch.cgl;
 let canvas = op.patch.cgl.canvas.parentElement;
 canvas.appendChild(div);
 
-function addButton(title) {
-  let button = document.createElement("div");
-  button.innerHTML = title;
-  button.style.cursor = "pointer";
-  button.style["box-sizing"] = "border-box";
-  button.style.float = "left";
-  // button.style.border="1px solid #777";
-  button.style.background = "rgba(0,0,0,0.4)";
+function addButton(title)
+{
+    let button = document.createElement("div");
+    button.innerHTML = title;
+    button.style.cursor = "pointer";
+    button.style["box-sizing"] = "border-box";
+    button.style.float = "left";
+    // button.style.border="1px solid #777";
+    button.style.background = "rgba(0,0,0,0.4)";
 
-  button.style.padding = "5px";
-  button.style["padding-left"] = "10px";
-  button.style["padding-right"] = "10px";
-  button.style["margin-right"] = "5px";
-  button.style["border-radius"] = "5px";
-  return button;
+    button.style.padding = "5px";
+    button.style["padding-left"] = "10px";
+    button.style["padding-right"] = "10px";
+    button.style["margin-right"] = "5px";
+    button.style["border-radius"] = "5px";
+    return button;
 }
 
 let time = document.createElement("div");
@@ -67,47 +68,60 @@ div.appendChild(rewindButton);
 
 updatePlayButton();
 
-function updatePlayButton() {
-  if (op.patch.timer.isPlaying()) {
-    playButton.innerHTML = "pause";
-  } else {
-    playButton.innerHTML = "play";
-  }
+function updatePlayButton()
+{
+    if (op.patch.timer.isPlaying())
+    {
+        playButton.innerHTML = "pause";
+    }
+    else
+    {
+        playButton.innerHTML = "play";
+    }
 }
 
-playButton.addEventListener("click", function () {
-  if (op.patch.timer.isPlaying()) {
-    op.patch.timer.pause();
-  } else {
-    op.patch.timer.play();
-  }
+playButton.addEventListener("click", function ()
+{
+    if (op.patch.timer.isPlaying())
+    {
+        op.patch.timer.pause();
+    }
+    else
+    {
+        op.patch.timer.play();
+    }
 
-  updatePlayButton();
+    updatePlayButton();
 });
 
-rewindButton.addEventListener("click", function () {
-  op.patch.timer.setTime(0);
+rewindButton.addEventListener("click", function ()
+{
+    op.patch.timer.setTime(0);
 });
 
-op.onDelete = function () {
-  if (div) div.remove();
+op.onDelete = function ()
+{
+    if (div) div.remove();
 };
 
 let lasttime = -1;
 
-function updateTime() {
-  if (CABLES.GUI && window.gui) {
-    let p = op.patch.timer.getTime() / gui.getTimeLineLength();
-    timeline.style.width = p * 100 + "%";
-  }
+function updateTime()
+{
+    if (CABLES.GUI && window.gui)
+    {
+        let p = op.patch.timer.getTime() / gui.getTimeLineLength();
+        timeline.style.width = (p * 100) + "%";
+    }
 
-  let t = Math.floor(op.patch.timer.getTime());
-  if (t != lasttime) {
-    time.innerHTML = t;
-    lasttime = t;
-  }
+    let t = Math.floor(op.patch.timer.getTime());
+    if (t != lasttime)
+    {
+        time.innerHTML = t;
+        lasttime = t;
+    }
 
-  setTimeout(updateTime, 30);
+    setTimeout(updateTime, 30);
 }
 
 updateTime();

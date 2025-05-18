@@ -13,16 +13,17 @@ const uniformR = new CGL.Uniform(shader, "f", "r", r);
 const uniformG = new CGL.Uniform(shader, "f", "g", g);
 const uniformB = new CGL.Uniform(shader, "f", "b", b);
 
-render.onTriggered = function () {
-  if (!CGL.TextureEffect.checkOpInEffect(op)) return;
+render.onTriggered = function ()
+{
+    if (!CGL.TextureEffect.checkOpInEffect(op)) return;
 
-  cgl.pushShader(shader);
-  cgl.currentTextureEffect.bind();
+    cgl.pushShader(shader);
+    cgl.currentTextureEffect.bind();
 
-  cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
+    cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
 
-  cgl.currentTextureEffect.finish();
-  cgl.popShader();
+    cgl.currentTextureEffect.finish();
+    cgl.popShader();
 
-  trigger.trigger();
+    trigger.trigger();
 };

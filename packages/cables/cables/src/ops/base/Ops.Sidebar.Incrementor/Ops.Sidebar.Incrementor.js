@@ -29,8 +29,9 @@ let valueEl = document.createElement("span");
 valueEl.style.marginRight = "10px";
 
 let valueText = document.createTextNode(inMin.get());
-if (Array.isArray(inValues.get())) {
-  valueText = document.createTextNode(inValues.get()[currentPosition]);
+if (Array.isArray(inValues.get()))
+{
+    valueText = document.createTextNode(inValues.get()[currentPosition]);
 }
 
 valueEl.appendChild(valueText);
@@ -71,86 +72,108 @@ inValues.onChange = onValueChange;
 labelPort.onChange = onLabelTextChanged;
 op.onDelete = onDelete;
 
-function onValueChange() {
-  const values = inValues.get();
-  let value = inMin.get();
-  if (Array.isArray(values)) {
-    value = values[currentPosition];
-    inMin.setUiAttribs({ greyout: true });
-    inMax.set(values.length - 1);
-    inMax.setUiAttribs({ greyout: true });
-    inStepsize.setUiAttribs({ greyout: true });
-    inStepsize.set(1);
-  } else {
-    inMin.setUiAttribs({ greyout: false });
-    inMax.setUiAttribs({ greyout: false });
-    inStepsize.setUiAttribs({ greyout: false });
-  }
-  outValue.set(value);
-  valueText.textContent = value;
-}
-
-function onNext() {
-  const values = inValues.get();
-  let value = 0;
-  if (!Array.isArray(values)) {
-    // no array given, increment/decrement according to params
-    const currentValue = outValue.get();
-    value = Math.min(currentValue + inStepsize.get(), inMax.get());
-  } else {
-    // user inputs an array, iterate fields, ignore min/max/stepsize
-    if (currentPosition < values.length - 1) {
-      currentPosition += Math.ceil(inStepsize.get());
+function onValueChange()
+{
+    const values = inValues.get();
+    let value = inMin.get();
+    if (Array.isArray(values))
+    {
+        value = values[currentPosition];
+        inMin.setUiAttribs({ "greyout": true });
+        inMax.set(values.length - 1);
+        inMax.setUiAttribs({ "greyout": true });
+        inStepsize.setUiAttribs({ "greyout": true });
+        inStepsize.set(1);
     }
-    value = values[currentPosition];
-  }
-  valueText.textContent = value;
-  outValue.set(value);
-}
-
-function onPrev() {
-  const values = inValues.get();
-  let value = 0;
-  if (!Array.isArray(values)) {
-    // no array given, increment/decrement according to params
-    const currentValue = outValue.get();
-    value = Math.max(currentValue - inStepsize.get(), inMin.get());
-  } else {
-    // user inputs an array, iterate fields, ignore min/max/stepsize
-    if (currentPosition > 0) {
-      currentPosition -= Math.ceil(inStepsize.get());
+    else
+    {
+        inMin.setUiAttribs({ "greyout": false });
+        inMax.setUiAttribs({ "greyout": false });
+        inStepsize.setUiAttribs({ "greyout": false });
     }
-    value = values[currentPosition];
-  }
-  valueText.textContent = value;
-  outValue.set(value);
+    outValue.set(value);
+    valueText.textContent = value;
 }
 
-function onParentChanged() {
-  let parent = parentPort.get();
-  if (parent && parent.parentElement) {
-    parent.parentElement.appendChild(containerEl);
-    siblingsPort.set(null);
-    siblingsPort.set(parent);
-  } else if (containerEl.parentElement) {
-    // detach
-    containerEl.parentElement.removeChild(containerEl);
-  }
+function onNext()
+{
+    const values = inValues.get();
+    let value = 0;
+    if (!Array.isArray(values))
+    {
+        // no array given, increment/decrement according to params
+        const currentValue = outValue.get();
+        value = Math.min(currentValue + inStepsize.get(), inMax.get());
+    }
+    else
+    {
+        // user inputs an array, iterate fields, ignore min/max/stepsize
+        if (currentPosition < values.length - 1)
+        {
+            currentPosition += Math.ceil(inStepsize.get());
+        }
+        value = values[currentPosition];
+    }
+    valueText.textContent = value;
+    outValue.set(value);
 }
 
-function onLabelTextChanged() {
-  let labelText = labelPort.get();
-  label.textContent = labelText;
-
-  if (CABLES.UI) op.setUiAttrib({ extendTitle: labelText });
+function onPrev()
+{
+    const values = inValues.get();
+    let value = 0;
+    if (!Array.isArray(values))
+    {
+        // no array given, increment/decrement according to params
+        const currentValue = outValue.get();
+        value = Math.max(currentValue - inStepsize.get(), inMin.get());
+    }
+    else
+    {
+        // user inputs an array, iterate fields, ignore min/max/stepsize
+        if (currentPosition > 0)
+        {
+            currentPosition -= Math.ceil(inStepsize.get());
+        }
+        value = values[currentPosition];
+    }
+    valueText.textContent = value;
+    outValue.set(value);
 }
 
-function onDelete() {
-  removeElementFromDOM(containerEl);
+function onParentChanged()
+{
+    let parent = parentPort.get();
+    if (parent && parent.parentElement)
+    {
+        parent.parentElement.appendChild(containerEl);
+        siblingsPort.set(null);
+        siblingsPort.set(parent);
+    }
+    else if (containerEl.parentElement)
+    {
+        // detach
+        containerEl.parentElement.removeChild(containerEl);
+    }
 }
 
-function removeElementFromDOM(el) {
-  if (el && el.parentNode && el.parentNode.removeChild) {
-    el.parentNode.removeChild(el);
-  }
+function onLabelTextChanged()
+{
+    let labelText = labelPort.get();
+    label.textContent = labelText;
+
+    if (CABLES.UI) op.setUiAttrib({ "extendTitle": labelText });
+}
+
+function onDelete()
+{
+    removeElementFromDOM(containerEl);
+}
+
+function removeElementFromDOM(el)
+{
+    if (el && el.parentNode && el.parentNode.removeChild)
+    {
+        el.parentNode.removeChild(el);
+    }
 }

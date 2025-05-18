@@ -21,72 +21,82 @@ const mat = mat4.create();
 let lastTime = 0;
 let timeDiff = 0;
 
-reset.onTriggered = function () {
-  vec3.set(pos, resetVecX.get(), resetVecY.get(), resetVecZ.get());
+reset.onTriggered = function ()
+{
+    vec3.set(pos,
+        (resetVecX.get()),
+        (resetVecY.get()),
+        (resetVecZ.get())
+    );
 };
 
 let dir = false;
-function changeDir(d) {
-  dir = !dir;
+function changeDir(d)
+{
+    dir = !dir;
 
-  move();
+    move();
 }
 
-function isOutside() {
-  if (
-    pos[0] > max.get() ||
-    pos[0] < -max.get() ||
-    pos[1] > max.get() ||
-    pos[1] < -max.get() ||
-    pos[2] > max.get() ||
-    pos[2] < -max.get()
-  )
-    return true;
-  return false;
+function isOutside()
+{
+    if (
+        pos[0] > max.get() || pos[0] < -max.get()
+        || pos[1] > max.get() || pos[1] < -max.get()
+        || pos[2] > max.get() || pos[2] < -max.get())
+        return true;
+    return false;
 }
 
-function move() {}
+function move()
+{
+}
 
-exec.onTriggered = function () {
-  timeDiff = op.patch.freeTimer.get() - lastTime;
-  const m = speed.get() * timeDiff * 0.1;
+exec.onTriggered = function ()
+{
+    timeDiff = op.patch.freeTimer.get() - lastTime;
+    const m = speed.get() * timeDiff * 0.1;
 
-  vec3.set(vec, vecX.get(), vecY.get(), vecZ.get());
+    vec3.set(vec,
+        (vecX.get()),
+        (vecY.get()),
+        (vecZ.get())
+    );
 
-  vec3.normalize(vec, vec);
+    vec3.normalize(vec, vec);
 
-  vec[0] *= m;
-  vec[1] *= m;
-  vec[2] *= m;
+    vec[0] *= m;
+    vec[1] *= m;
+    vec[2] *= m;
 
-  lastTime = op.patch.freeTimer.get();
+    lastTime = op.patch.freeTimer.get();
 
-  move();
+    move();
 
-  // if(isOutside())
-  // {
-  //     op.log("OUTSIDE");
-  //     changeDir();
-  //     var count=0;
-  //     while(isOutside() && count<10)
-  //     {
-  //         randomize();
-  // count++;
-  //         move();
-  //     }
-  // }
+    // if(isOutside())
+    // {
+    //     op.log("OUTSIDE");
+    //     changeDir();
+    //     var count=0;
+    //     while(isOutside() && count<10)
+    //     {
+    //         randomize();
+    // count++;
+    //         move();
+    //     }
+    // }
 
-  // if(pos[0]>max.get() || pos[0]<-max.get()) changeDir();
-  //     else if(pos[1]>max.get() || pos[1]<-max.get()) changeDir();
-  //         else if(pos[2]>max.get() || pos[2]<-max.get()) changeDir();
+    // if(pos[0]>max.get() || pos[0]<-max.get()) changeDir();
+    //     else if(pos[1]>max.get() || pos[1]<-max.get()) changeDir();
+    //         else if(pos[2]>max.get() || pos[2]<-max.get()) changeDir();
 
-  vec3.add(pos, pos, vec);
+    vec3.add(pos, pos, vec);
 
-  cgl.pushModelMatrix();
+    cgl.pushModelMatrix();
 
-  mat4.translate(cgl.mMatrix, cgl.mMatrix, pos);
+    mat4.translate(cgl.mMatrix, cgl.mMatrix, pos);
 
-  next.trigger();
+    next.trigger();
 
-  cgl.popModelMatrix();
+    cgl.popModelMatrix();
 };

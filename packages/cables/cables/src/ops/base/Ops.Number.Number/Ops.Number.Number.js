@@ -1,10 +1,19 @@
-const v = op.inValueFloat("value"),
-  result = op.outNumber("result");
+const
+    v = op.inValueFloat("value"),
+    result = op.outNumber("result");
 
 v.onChange = exec;
 
-function exec() {
-  if (CABLES.UI) op.setUiAttribs({ extendTitle: v.get() });
+let isLinked = false;
+v.onLinkChanged = () =>
+{
+    if (!isLinked && v.isLinked())op.setUiAttribs({ "extendTitle": null });
+    isLinked = v.isLinked();
+};
 
-  result.set(Number(v.get()));
+function exec()
+{
+    if (CABLES.UI && !isLinked) op.setUiAttribs({ "extendTitle": v.get() });
+
+    result.set(Number(v.get()));
 }

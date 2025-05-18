@@ -17,9 +17,10 @@ x2.onChange = calc;
 y2.onChange = calc;
 z2.onChange = calc;
 
-function calc() {
-  let xd = x2.get() - x1.get();
-  let yd = y2.get() - y1.get();
-  let zd = z2.get() - z1.get();
-  dist.set(Math.sqrt(xd * xd + yd * yd + zd * zd));
+function calc()
+{
+    let xd = x2.get() - x1.get();
+    let yd = y2.get() - y1.get();
+    let zd = z2.get() - z1.get();
+    dist.set(Math.sqrt(xd * xd + yd * yd + zd * zd));
 }

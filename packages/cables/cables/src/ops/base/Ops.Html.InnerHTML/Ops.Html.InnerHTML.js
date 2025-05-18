@@ -1,39 +1,47 @@
-const inEle = op.inObject("Element"),
-  inValue = op.inString("Value"),
-  inWhat = op.inSwitch("Type", ["HTML", "Text"], "HTML"),
-  inActive = op.inBool("Active", true),
-  outEle = op.outObject("HTML Element");
+const
+    inEle = op.inObject("Element"),
+    inValue = op.inString("Value"),
+    inWhat = op.inSwitch("Type", ["HTML", "Text"], "HTML"),
+    inActive = op.inBool("Active", true),
+    outEle = op.outObject("HTML Element");
 
 let ele = null;
 
-inWhat.onChange = inEle.onChange = inValue.onChange = update;
+inWhat.onChange =
+    inEle.onChange =
+    inValue.onChange = update;
 
 inEle.onLinkChanged = removeProp;
 
-inActive.onChange = () => {
-  if (!inActive.get()) removeProp();
-  else update();
+inActive.onChange = () =>
+{
+    if (!inActive.get()) removeProp();
+    else update();
 };
 
-function removeProp() {
-  if (ele) {
-    ele.innerText = "";
-    ele.innerHTML = "";
-  }
+function removeProp()
+{
+    if (ele)
+    {
+        ele.innerText = "";
+        ele.innerHTML = "";
+    }
 }
 
-function update() {
-  if (!inActive.get()) return;
+function update()
+{
+    if (!inActive.get()) return;
 
-  if (ele != inEle.get()) removeProp();
+    if (ele != inEle.get())removeProp();
 
-  ele = inEle.get();
-  if (ele) {
-    const str = inValue.get();
+    ele = inEle.get();
+    if (ele)
+    {
+        const str = inValue.get();
 
-    if (inWhat.get() == "HTML") ele.innerHTML = str;
-    else ele.innerText = str;
-  }
+        if (inWhat.get() == "HTML") ele.innerHTML = str;
+        else ele.innerText = str;
+    }
 
-  outEle.setRef(ele);
+    outEle.setRef(ele);
 }

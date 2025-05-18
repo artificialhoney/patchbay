@@ -10,48 +10,56 @@ init();
 
 updateVarNamesDropdown();
 
-function updateVarNamesDropdown() {
-  if (CABLES.UI) {
-    let varnames = [];
-    let vars = op.patch.getVars();
+function updateVarNamesDropdown()
+{
+    if (CABLES.UI)
+    {
+        let varnames = [];
+        let vars = op.patch.getVars();
 
-    for (let i in vars)
-      if (i != "0" && vars[i].type == "object") varnames.push(i);
+        for (let i in vars) if (i != "0" && vars[i].type == "object") varnames.push(i);
 
-    op.varName.uiAttribs.values = varnames;
-  }
+        op.varName.uiAttribs.values = varnames;
+    }
 }
 
-op.varName.onChange = function () {
-  init();
+op.varName.onChange = function ()
+{
+    init();
 };
 
-function init() {
-  updateVarNamesDropdown();
+function init()
+{
+    updateVarNamesDropdown();
 
-  if (variable && changeListenerId) {
-    variable.off(changeListenerId);
-  }
-  variable = op.patch.getVar(op.varName.get());
+    if (variable && changeListenerId)
+    {
+        variable.off(changeListenerId);
+    }
+    variable = op.patch.getVar(op.varName.get());
 
-  if (variable) {
-    changeListenerId = variable.on("change", onChange);
-    op.uiAttr({ error: null });
-    op.setTitle("#" + op.varName.get());
-    onChange(variable.getValue());
-  } else {
-    op.uiAttr({
-      error: "unknown variable! - there is no setVariable with this name",
-    });
-    op.setTitle("#invalid");
-  }
+    if (variable)
+    {
+        changeListenerId = variable.on("change", onChange);
+        op.uiAttr({ "error": null, });
+        op.setTitle("#" + op.varName.get());
+        onChange(variable.getValue());
+    }
+    else
+    {
+        op.uiAttr({ "error": "unknown variable! - there is no setVariable with this name" });
+        op.setTitle("#invalid");
+    }
 }
 
-function onChange(v) {
-  updateVarNamesDropdown();
-  val.set(v);
+
+function onChange(v)
+{
+    updateVarNamesDropdown();
+    val.set(v);
 }
 
-op.onDelete = function () {
-  if (variable && changeListenerId) variable.off(changeListenerId);
+op.onDelete = function ()
+{
+    if (variable && changeListenerId) variable.off(changeListenerId);
 };

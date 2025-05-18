@@ -15,7 +15,7 @@ const inFogR = op.inFloatSlider("Fog R", 0.6);
 const inFogG = op.inFloatSlider("Fog G", 0.6);
 const inFogB = op.inFloatSlider("Fog B", 0.6);
 const inFogA = op.inFloatSlider("Fog A", 1);
-inFogR.setUiAttribs({ colorPick: true });
+inFogR.setUiAttribs({ "colorPick": true });
 
 const trigger = op.outTrigger("trigger");
 
@@ -39,70 +39,60 @@ const uniFarplane = new CGL.Uniform(shader, "f", "farPlane", farPlane);
 const uniNearplane = new CGL.Uniform(shader, "f", "nearPlane", nearPlane);
 
 const uniAspect = new CGL.Uniform(shader, "f", "aspectRatio", 0);
-const uniFogColor = new CGL.Uniform(
-  shader,
-  "4f",
-  "inFogColor",
-  inFogR,
-  inFogG,
-  inFogB,
-  inFogA,
-);
-const uniFogDensity = new CGL.Uniform(
-  shader,
-  "f",
-  "inFogDensity",
-  inFogDensity,
-);
+const uniFogColor = new CGL.Uniform(shader, "4f", "inFogColor", inFogR, inFogG, inFogB, inFogA);
+const uniFogDensity = new CGL.Uniform(shader, "f", "inFogDensity", inFogDensity);
 const uniFogStart = new CGL.Uniform(shader, "f", "inFogStart", inFogStart);
 const uniFogEnd = new CGL.Uniform(shader, "f", "inFogEnd", inFogEnd);
 
 CGL.TextureEffect.setupBlending(op, shader, blendMode, inAmount);
 
 let texturesChanged = false;
-inGradientTexture.onChange = inBgTex.onChange = () => {
-  texturesChanged = true;
+inGradientTexture.onChange =
+inBgTex.onChange = () =>
+{
+    texturesChanged = true;
 };
 
-function updateDefines() {
-  shader.toggleDefine("HAS_BG_TEX", inBgTex.get() && inBgTex.get().tex);
+function updateDefines()
+{
+    shader.toggleDefine("HAS_BG_TEX", inBgTex.get() && inBgTex.get().tex);
 
-  if (inGradientTexture.get() && inGradientTexture.get().tex)
-    shader.define("HAS_GRADIENT_TEX");
-  else shader.removeDefine("HAS_GRADIENT_TEX");
+    if (inGradientTexture.get() && inGradientTexture.get().tex) shader.define("HAS_GRADIENT_TEX");
+    else shader.removeDefine("HAS_GRADIENT_TEX");
 }
 
-render.onTriggered = function () {
-  if (!CGL.TextureEffect.checkOpInEffect(op)) return;
-  if (!image.get()) {
-    op.setUiError(
-      "noDepthTex",
-      "This op needs a depth texture to work properly!",
-      0,
-    );
-  } else {
-    op.setUiError("noDepthTex", null);
-  }
+render.onTriggered = function ()
+{
+    if (!CGL.TextureEffect.checkOpInEffect(op)) return;
+    if (!image.get())
+    {
+        op.setUiError("noDepthTex", "This op needs a depth texture to work properly!", 0);
+    }
+    else
+    {
+        op.setUiError("noDepthTex", null);
+    }
 
-  if (texturesChanged) updateDefines();
+    if (texturesChanged)updateDefines();
 
-  if (image.get() && image.get().tex) {
-    const a =
-      cgl.currentTextureEffect.getCurrentSourceTexture().height /
-      cgl.currentTextureEffect.getCurrentSourceTexture().width;
+    if (image.get() && image.get().tex)
+    {
+        const a =
+            cgl.currentTextureEffect.getCurrentSourceTexture().height
+            / cgl.currentTextureEffect.getCurrentSourceTexture().width;
 
-    uniAspect.set(a);
+        uniAspect.set(a);
 
-    cgl.pushShader(shader);
-    cgl.currentTextureEffect.bind();
+        cgl.pushShader(shader);
+        cgl.currentTextureEffect.bind();
 
-    cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
-    if (image.get()) cgl.setTexture(1, image.get().tex);
-    if (inGradientTexture.get()) cgl.setTexture(2, inGradientTexture.get().tex);
-    if (inBgTex.get()) cgl.setTexture(3, inBgTex.get().tex);
-    cgl.currentTextureEffect.finish();
-    cgl.popShader();
-  }
+        cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
+        if (image.get()) cgl.setTexture(1, image.get().tex);
+        if (inGradientTexture.get()) cgl.setTexture(2, inGradientTexture.get().tex);
+        if (inBgTex.get()) cgl.setTexture(3, inBgTex.get().tex);
+        cgl.currentTextureEffect.finish();
+        cgl.popShader();
+    }
 
-  trigger.trigger();
+    trigger.trigger();
 };

@@ -20,21 +20,23 @@ const amountYUniform = new CGL.Uniform(shader, "f", "amountY", amountY);
 
 CGL.TextureEffect.setupBlending(op, shader, blendMode, amount);
 
-mulTex.onChange = () => {
-  shader.toggleDefine("HAS_MASK", mulTex.get());
+mulTex.onChange = () =>
+{
+    shader.toggleDefine("HAS_MASK", mulTex.get());
 };
 
-render.onTriggered = function () {
-  if (!CGL.TextureEffect.checkOpInEffect(op)) return;
+render.onTriggered = function ()
+{
+    if (!CGL.TextureEffect.checkOpInEffect(op)) return;
 
-  cgl.pushShader(shader);
-  cgl.currentTextureEffect.bind();
+    cgl.pushShader(shader);
+    cgl.currentTextureEffect.bind();
 
-  cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
-  if (mulTex.get()) cgl.setTexture(2, mulTex.get().tex);
+    cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
+    if (mulTex.get())cgl.setTexture(2, mulTex.get().tex);
 
-  cgl.currentTextureEffect.finish();
-  cgl.popShader();
+    cgl.currentTextureEffect.finish();
+    cgl.popShader();
 
-  trigger.trigger();
+    trigger.trigger();
 };

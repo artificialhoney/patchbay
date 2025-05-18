@@ -7,15 +7,16 @@ val.onChange = update;
 char.onChange = update;
 num.onChange = update;
 
-function update() {
-  let v = val.get();
-  let n = num.get();
+function update()
+{
+    let v = val.get();
+    let n = num.get();
 
-  let pad = "";
-  for (let i = 0; i < n; i++) pad += "" + char.get();
+    let pad = "";
+    for (let i = 0; i < n; i++)pad += ("" + char.get());
 
-  let str = v + "";
-  str = pad.substring(0, pad.length - str.length) + str;
+    let str = v + "";
+    str = pad.substring(0, pad.length - str.length) + str;
 
-  out.set(str);
+    out.set(str);
 }

@@ -1,6 +1,7 @@
-const trigger = op.inTriggerButton("Trigger"),
-  val = op.inString("Value", "New String"),
-  next = op.outTrigger("Next");
+const
+    trigger = op.inTriggerButton("Trigger"),
+    val = op.inString("Value", "New String"),
+    next = op.outTrigger("Next");
 
 op.varName = op.inDropDown("Variable", [], "", true);
 

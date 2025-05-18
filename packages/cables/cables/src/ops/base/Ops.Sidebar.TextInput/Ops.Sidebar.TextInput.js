@@ -36,54 +36,68 @@ op.onDelete = onDelete;
 
 // functions
 
-function onInput(ev) {
-  valuePort.set(ev.target.value);
+function onInput(ev)
+{
+    valuePort.set(ev.target.value);
 }
 
-function onDefaultValueChanged() {
-  let defaultValue = defaultValuePort.get();
-  valuePort.set(defaultValue);
-  input.value = defaultValue;
+function onDefaultValueChanged()
+{
+    let defaultValue = defaultValuePort.get();
+    valuePort.set(defaultValue);
+    input.value = defaultValue;
 }
 
-function onLabelTextChanged() {
-  let labelText = labelPort.get();
-  label.textContent = labelText;
-  if (CABLES.UI) op.setUiAttrib({ extendTitle: labelText });
+function onLabelTextChanged()
+{
+    let labelText = labelPort.get();
+    label.textContent = labelText;
+    if (CABLES.UI) op.setUiAttrib({ "extendTitle": labelText });
 }
 
-function onParentChanged() {
-  let parent = parentPort.get();
-  if (parent && parent.parentElement) {
-    parent.parentElement.appendChild(el);
-    siblingsPort.set(null);
-    siblingsPort.set(parent);
-  } else {
-    // detach
-    if (el.parentElement) {
-      el.parentElement.removeChild(el);
+function onParentChanged()
+{
+    let parent = parentPort.get();
+    if (parent && parent.parentElement)
+    {
+        parent.parentElement.appendChild(el);
+        siblingsPort.set(null);
+        siblingsPort.set(parent);
     }
-  }
+    else
+    { // detach
+        if (el.parentElement)
+        {
+            el.parentElement.removeChild(el);
+        }
+    }
 }
 
-function showElement(el) {
-  if (el) {
-    el.style.display = "block";
-  }
+function showElement(el)
+{
+    if (el)
+    {
+        el.style.display = "block";
+    }
 }
 
-function hideElement(el) {
-  if (el) {
-    el.style.display = "none";
-  }
+function hideElement(el)
+{
+    if (el)
+    {
+        el.style.display = "none";
+    }
 }
 
-function onDelete() {
-  removeElementFromDOM(el);
+function onDelete()
+{
+    removeElementFromDOM(el);
 }
 
-function removeElementFromDOM(el) {
-  if (el && el.parentNode && el.parentNode.removeChild) {
-    el.parentNode.removeChild(el);
-  }
+function removeElementFromDOM(el)
+{
+    if (el && el.parentNode && el.parentNode.removeChild)
+    {
+        el.parentNode.removeChild(el);
+    }
 }

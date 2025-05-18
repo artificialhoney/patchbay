@@ -18,7 +18,7 @@ const setDefaultValueButtonPort = op.inTriggerButton("Set Default");
 const reset = op.inTriggerButton("Reset");
 
 const defaultValuePort = op.inValue("Default", 0.5);
-defaultValuePort.setUiAttribs({ hidePort: true, greyout: true });
+defaultValuePort.setUiAttribs({ "hidePort": true, "greyout": true });
 
 // outputs
 const siblingsPort = op.outObject("childs");
@@ -73,8 +73,7 @@ input.setAttribute("max", maxPort.get());
 input.setAttribute("type", "range");
 input.setAttribute("step", stepPort.get());
 input.setAttribute("value", defaultValuePort.get());
-input.style.display =
-  "block"; /* needed because offsetWidth returns 0 otherwise */
+input.style.display = "block"; /* needed because offsetWidth returns 0 otherwise */
 inputWrapper.appendChild(input);
 
 updateActiveTrack();
@@ -92,197 +91,209 @@ stepPort.onChange = stepPortChanged;
 op.onDelete = onDelete;
 
 // op.onLoadedValueSet=function()
-op.onLoaded = op.onInit = function () {
-  if (op.patch.config.sidebar) {
-    op.patch.config.sidebar[labelPort.get()];
-    valuePort.set(op.patch.config.sidebar[labelPort.get()]);
-  } else {
-    valuePort.set(parseFloat(defaultValuePort.get()));
-    inputValuePort.set(parseFloat(defaultValuePort.get()));
-    // onInputValuePortChanged();
-  }
-};
-
-reset.onTriggered = function () {
-  const newValue = parseFloat(defaultValuePort.get());
-  valuePort.set(newValue);
-  value.value = newValue;
-  input.value = newValue;
-  inputValuePort.set(newValue);
-  updateActiveTrack();
-};
-
-inGreyOut.onChange = function () {
-  greyOut.style.display = inGreyOut.get() ? "block" : "none";
-};
-
-inVisible.onChange = function () {
-  el.style.display = inVisible.get() ? "block" : "none";
-};
-
-function onTextInputBlur(ev) {
-  let newValue = parseFloat(ev.target.value);
-  if (isNaN(newValue)) newValue = 0;
-  const min = minPort.get();
-  const max = maxPort.get();
-
-  if (blur) {
-    let resetValue = false;
-    if (newValue < min) {
-      newValue = min;
-      resetValue = true;
-    } else if (newValue > max) {
-      newValue = max;
-      resetValue = true;
+op.onLoaded = op.onInit = function ()
+{
+    if (op.patch.config.sidebar)
+    {
+        op.patch.config.sidebar[labelPort.get()];
+        valuePort.set(op.patch.config.sidebar[labelPort.get()]);
     }
-
-    if (resetValue) {
-      value.removeEventListener("input", onTextInputChanged);
-      // value.oninput = null;
-      value.value = newValue;
-      input.value = newValue;
-      value.addEventListener("input", onTextInputChanged);
-      // value.oninput = onTextInputChanged;
+    else
+    {
+        valuePort.set(parseFloat(defaultValuePort.get()));
+        inputValuePort.set(parseFloat(defaultValuePort.get()));
+        // onInputValuePortChanged();
     }
-  }
-  valuePort.set(newValue);
-  updateActiveTrack();
-  inputValuePort.set(newValue);
-  op.refreshParams();
+};
+
+reset.onTriggered = function ()
+{
+    const newValue = parseFloat(defaultValuePort.get());
+    valuePort.set(newValue);
+    value.value = newValue;
+    input.value = newValue;
+    inputValuePort.set(newValue);
+    updateActiveTrack();
+};
+
+inGreyOut.onChange = function ()
+{
+    greyOut.style.display = inGreyOut.get() ? "block" : "none";
+};
+
+inVisible.onChange = function ()
+{
+    el.style.display = inVisible.get() ? "block" : "none";
+};
+
+function onTextInputBlur(ev)
+{
+    let newValue = parseFloat(ev.target.value);
+    if (isNaN(newValue)) newValue = 0;
+    const min = minPort.get();
+    const max = maxPort.get();
+
+    if (blur)
+    {
+        let resetValue = false;
+        if (newValue < min) { newValue = min; resetValue = true; }
+        else if (newValue > max) { newValue = max; resetValue = true; }
+
+        if (resetValue)
+        {
+            value.removeEventListener("input", onTextInputChanged);
+            // value.oninput = null;
+            value.value = newValue;
+            input.value = newValue;
+            value.addEventListener("input", onTextInputChanged);
+            // value.oninput = onTextInputChanged;
+        }
+    }
+    valuePort.set(newValue);
+    updateActiveTrack();
+    inputValuePort.set(newValue);
+    op.refreshParams();
 }
 
-function onTextInputChanged(ev, blur) {
-  let newValue = parseFloat(ev.target.value);
-  if (isNaN(newValue)) newValue = 0;
-  valuePort.set(newValue);
-  updateActiveTrack();
-  inputValuePort.set(newValue);
-  op.refreshParams();
+function onTextInputChanged(ev, blur)
+{
+    let newValue = parseFloat(ev.target.value);
+    if (isNaN(newValue)) newValue = 0;
+    valuePort.set(newValue);
+    updateActiveTrack();
+    inputValuePort.set(newValue);
+    op.refreshParams();
 }
 
-function onInputValuePortChanged() {
-  let newValue = parseFloat(inputValuePort.get());
-  const minValue = minPort.get();
-  const maxValue = maxPort.get();
-  value.value = newValue;
+function onInputValuePortChanged()
+{
+    let newValue = parseFloat(inputValuePort.get());
+    const minValue = minPort.get();
+    const maxValue = maxPort.get();
+    value.value = newValue;
 
-  if (newValue > maxValue) {
-    newValue = maxValue;
-  } else if (newValue < minValue) {
-    newValue = minValue;
-  }
-  input.value = newValue;
-  valuePort.set(newValue);
-  updateActiveTrack();
+    if (newValue > maxValue) { newValue = maxValue; }
+    else if (newValue < minValue) { newValue = minValue; }
+    input.value = newValue;
+    valuePort.set(newValue);
+    updateActiveTrack();
 }
 
-function onSetDefaultValueButtonPress() {
-  let newValue = parseFloat(inputValuePort.get());
-  const minValue = minPort.get();
-  const maxValue = maxPort.get();
-  if (newValue > maxValue) {
-    newValue = maxValue;
-  } else if (newValue < minValue) {
-    newValue = minValue;
-  }
-  value.value = newValue;
-  input.value = newValue;
-  valuePort.set(newValue);
-  defaultValuePort.set(newValue);
-  op.refreshParams();
+function onSetDefaultValueButtonPress()
+{
+    let newValue = parseFloat(inputValuePort.get());
+    const minValue = minPort.get();
+    const maxValue = maxPort.get();
+    if (newValue > maxValue) { newValue = maxValue; }
+    else if (newValue < minValue) { newValue = minValue; }
+    value.value = newValue;
+    input.value = newValue;
+    valuePort.set(newValue);
+    defaultValuePort.set(newValue);
+    op.refreshParams();
 
-  updateActiveTrack();
+    updateActiveTrack();
 }
 
-function onSliderInput(ev) {
-  ev.preventDefault();
-  ev.stopPropagation();
-  value.value = ev.target.value;
-  const inputFloat = parseFloat(ev.target.value);
-  valuePort.set(inputFloat);
-  inputValuePort.set(inputFloat);
-  op.refreshParams();
+function onSliderInput(ev)
+{
+    ev.preventDefault();
+    ev.stopPropagation();
+    value.value = ev.target.value;
+    const inputFloat = parseFloat(ev.target.value);
+    valuePort.set(inputFloat);
+    inputValuePort.set(inputFloat);
+    op.refreshParams();
 
-  updateActiveTrack();
-  return false;
+    updateActiveTrack();
+    return false;
 }
 
-function stepPortChanged() {
-  const step = stepPort.get();
-  input.setAttribute("step", step);
-  updateActiveTrack();
+function stepPortChanged()
+{
+    const step = stepPort.get();
+    input.setAttribute("step", step);
+    updateActiveTrack();
 }
 
-function updateActiveTrack(val) {
-  let valueToUse = parseFloat(input.value);
-  if (typeof val !== "undefined") valueToUse = val;
-  let availableWidth =
-    input.offsetWidth; /* this returns 0 at the beginning... */
-  if (availableWidth === 0) {
-    availableWidth = 206;
-  }
-  const trackWidth = CABLES.map(
-    valueToUse,
-    parseFloat(input.min),
-    parseFloat(input.max),
-    0,
-    availableWidth - 16 /* subtract slider thumb width */,
-  );
-  // activeTrack.style.width = 'calc(' + percentage + '%' + ' - 9px)';
-  activeTrack.style.width = trackWidth + "px";
+function updateActiveTrack(val)
+{
+    let valueToUse = parseFloat(input.value);
+    if (typeof val !== "undefined") valueToUse = val;
+    let availableWidth = input.offsetWidth; /* this returns 0 at the beginning... */
+    if (availableWidth === 0) { availableWidth = 206; }
+    const trackWidth = CABLES.map(
+        valueToUse,
+        parseFloat(input.min),
+        parseFloat(input.max),
+        0,
+        availableWidth - 16 /* subtract slider thumb width */
+    );
+    // activeTrack.style.width = 'calc(' + percentage + '%' + ' - 9px)';
+    activeTrack.style.width = trackWidth + "px";
 }
 
-function onMinPortChange() {
-  const min = minPort.get();
-  input.setAttribute("min", min);
-  updateActiveTrack();
+function onMinPortChange()
+{
+    const min = minPort.get();
+    input.setAttribute("min", min);
+    updateActiveTrack();
 }
 
-function onMaxPortChange() {
-  const max = maxPort.get();
-  input.setAttribute("max", max);
-  updateActiveTrack();
+function onMaxPortChange()
+{
+    const max = maxPort.get();
+    input.setAttribute("max", max);
+    updateActiveTrack();
 }
 
-function onDefaultValueChanged() {
-  const defaultValue = defaultValuePort.get();
-  valuePort.set(parseFloat(defaultValue));
-  onMinPortChange();
-  onMaxPortChange();
-  input.value = defaultValue;
-  value.value = defaultValue;
+function onDefaultValueChanged()
+{
+    const defaultValue = defaultValuePort.get();
+    valuePort.set(parseFloat(defaultValue));
+    onMinPortChange();
+    onMaxPortChange();
+    input.value = defaultValue;
+    value.value = defaultValue;
 
-  updateActiveTrack(defaultValue); // needs to be passed as argument, is this async?
+    updateActiveTrack(defaultValue); // needs to be passed as argument, is this async?
 }
 
-function onLabelTextChanged() {
-  const labelText = labelPort.get();
-  label.textContent = labelText;
-  if (CABLES.UI) op.setUiAttrib({ extendTitle: labelText });
+function onLabelTextChanged()
+{
+    const labelText = labelPort.get();
+    label.textContent = labelText;
+    if (CABLES.UI) op.setUiAttrib({ "extendTitle": labelText });
 }
 
-function onParentChanged() {
-  const parent = parentPort.get();
-  if (parent && parent.parentElement) {
-    parent.parentElement.appendChild(el);
-    siblingsPort.set(null);
-    siblingsPort.set(parent);
-  } else if (el.parentElement) el.parentElement.removeChild(el);
+function onParentChanged()
+{
+    const parent = parentPort.get();
+    if (parent && parent.parentElement)
+    {
+        parent.parentElement.appendChild(el);
+        siblingsPort.set(null);
+        siblingsPort.set(parent);
+    }
+    else if (el.parentElement) el.parentElement.removeChild(el);
 }
 
-function showElement(el) {
-  if (el) el.style.display = "block";
+function showElement(el)
+{
+    if (el)el.style.display = "block";
 }
 
-function hideElement(el) {
-  if (el) el.style.display = "none";
+function hideElement(el)
+{
+    if (el)el.style.display = "none";
 }
 
-function onDelete() {
-  removeElementFromDOM(el);
+function onDelete()
+{
+    removeElementFromDOM(el);
 }
 
-function removeElementFromDOM(el) {
-  if (el && el.parentNode && el.parentNode.removeChild)
-    el.parentNode.removeChild(el);
+function removeElementFromDOM(el)
+{
+    if (el && el.parentNode && el.parentNode.removeChild) el.parentNode.removeChild(el);
 }

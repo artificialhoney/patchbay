@@ -13,15 +13,18 @@ let nth = DEFAULT_NTH;
 exePort.onTriggered = onExeTriggered;
 nthPort.onChange = valueChanged;
 
-function onExeTriggered() {
-  count++;
-  if (count % nth === 0) {
-    count = 0;
-    triggerPort.trigger();
-  }
+function onExeTriggered()
+{
+    count++;
+    if (count % nth === 0)
+    {
+        count = 0;
+        triggerPort.trigger();
+    }
 }
 
-function valueChanged() {
-  nth = nthPort.get();
-  count = 0;
+function valueChanged()
+{
+    nth = nthPort.get();
+    count = 0;
 }

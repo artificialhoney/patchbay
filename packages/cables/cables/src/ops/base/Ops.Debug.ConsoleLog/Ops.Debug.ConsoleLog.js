@@ -1,10 +1,14 @@
-const inNumber = op.inFloat("Number", 0),
-  inString = op.inString("String", "");
+const
+    inNumber=op.inFloat("Number",0),
+    inString=op.inString("String","");
 
-inNumber.onChange = function () {
-  console.log(inNumber.get());
+
+inNumber.onChange=function()
+{
+    console.log(inNumber.get());
 };
 
-inString.onChange = function () {
-  console.log(inString.get());
+inString.onChange=function()
+{
+    console.log(inString.get());
 };

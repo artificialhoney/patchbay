@@ -9,17 +9,17 @@ const smoothStep = op.inValueBool("Smoothstep", true);
 const r = op.inValueSlider("r", Math.random());
 const g = op.inValueSlider("g", Math.random());
 const b = op.inValueSlider("b", Math.random());
-r.setUiAttribs({ colorPick: true });
+r.setUiAttribs({ "colorPick": true });
 
 const r2 = op.inValueSlider("r2", Math.random());
 const g2 = op.inValueSlider("g2", Math.random());
 const b2 = op.inValueSlider("b2", Math.random());
-r2.setUiAttribs({ colorPick: true });
+r2.setUiAttribs({ "colorPick": true });
 
 const r3 = op.inValueSlider("r3", Math.random());
 const g3 = op.inValueSlider("g3", Math.random());
 const b3 = op.inValueSlider("b3", Math.random());
-r3.setUiAttribs({ colorPick: true });
+r3.setUiAttribs({ "colorPick": true });
 
 smoothStep.onChange = updateSmoothstep;
 
@@ -50,65 +50,72 @@ updateCol2();
 updateCol3();
 updateSmoothstep();
 
-function updateSmoothstep() {
-  if (smoothStep.get()) shader.define("GRAD_SMOOTHSTEP");
-  else shader.removeDefine("GRAD_SMOOTHSTEP");
+function updateSmoothstep()
+{
+    if (smoothStep.get()) shader.define("GRAD_SMOOTHSTEP");
+    else shader.removeDefine("GRAD_SMOOTHSTEP");
 }
 
-gType.onChange = function () {
-  shader.removeDefine("GRAD_X");
-  shader.removeDefine("GRAD_Y");
-  shader.removeDefine("GRAD_XY");
-  shader.removeDefine("GRAD_RADIAL");
+gType.onChange = function ()
+{
+    shader.removeDefine("GRAD_X");
+    shader.removeDefine("GRAD_Y");
+    shader.removeDefine("GRAD_XY");
+    shader.removeDefine("GRAD_RADIAL");
 
-  if (gType.get() == "XY") shader.define("GRAD_XY");
-  if (gType.get() == "X") shader.define("GRAD_X");
-  if (gType.get() == "Y") shader.define("GRAD_Y");
-  if (gType.get() == "Radial") shader.define("GRAD_RADIAL");
+    if (gType.get() == "XY") shader.define("GRAD_XY");
+    if (gType.get() == "X") shader.define("GRAD_X");
+    if (gType.get() == "Y") shader.define("GRAD_Y");
+    if (gType.get() == "Radial")shader.define("GRAD_RADIAL");
 };
 
 CGL.TextureEffect.setupBlending(op, shader, blendMode, amount);
 
-randomize.onTriggered = function () {
-  r.set(Math.random());
-  g.set(Math.random());
-  b.set(Math.random());
+randomize.onTriggered = function ()
+{
+    r.set(Math.random());
+    g.set(Math.random());
+    b.set(Math.random());
 
-  r2.set(Math.random());
-  g2.set(Math.random());
-  b2.set(Math.random());
+    r2.set(Math.random());
+    g2.set(Math.random());
+    b2.set(Math.random());
 
-  r3.set(Math.random());
-  g3.set(Math.random());
-  b3.set(Math.random());
+    r3.set(Math.random());
+    g3.set(Math.random());
+    b3.set(Math.random());
 };
 
-function updateCol() {
-  const colA = [r.get(), g.get(), b.get()];
-  if (!runiform) runiform = new CGL.Uniform(shader, "3f", "colA", colA);
-  else runiform.setValue(colA);
+function updateCol()
+{
+    const colA = [r.get(), g.get(), b.get()];
+    if (!runiform) runiform = new CGL.Uniform(shader, "3f", "colA", colA);
+    else runiform.setValue(colA);
 }
 
-function updateCol2() {
-  const colB = [r2.get(), g2.get(), b2.get()];
-  if (!r2uniform) r2uniform = new CGL.Uniform(shader, "3f", "colB", colB);
-  else r2uniform.setValue(colB);
+function updateCol2()
+{
+    const colB = [r2.get(), g2.get(), b2.get()];
+    if (!r2uniform) r2uniform = new CGL.Uniform(shader, "3f", "colB", colB);
+    else r2uniform.setValue(colB);
 }
 
-function updateCol3() {
-  const colC = [r3.get(), g3.get(), b3.get()];
-  if (!r3uniform) r3uniform = new CGL.Uniform(shader, "3f", "colC", colC);
-  else r3uniform.setValue(colC);
+function updateCol3()
+{
+    const colC = [r3.get(), g3.get(), b3.get()];
+    if (!r3uniform) r3uniform = new CGL.Uniform(shader, "3f", "colC", colC);
+    else r3uniform.setValue(colC);
 }
 
-render.onTriggered = function () {
-  if (!CGL.TextureEffect.checkOpInEffect(op)) return;
+render.onTriggered = function ()
+{
+    if (!CGL.TextureEffect.checkOpInEffect(op)) return;
 
-  cgl.pushShader(shader);
-  cgl.currentTextureEffect.bind();
-  cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
-  cgl.currentTextureEffect.finish();
-  cgl.popShader();
+    cgl.pushShader(shader);
+    cgl.currentTextureEffect.bind();
+    cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
+    cgl.currentTextureEffect.finish();
+    cgl.popShader();
 
-  next.trigger();
+    next.trigger();
 };

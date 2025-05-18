@@ -1,4 +1,4 @@
-This op is able to output the note numbers and velocities of up to 3 different midi notes at once. Useful when playing chords.
+This op is able to output the note numbers and velocities of up to 3 different midi notes at once. Useful when playing chords. 
 
 You can press "learn" and then play the notes on your midi-keyboard / in your DAW to automatically assign them to MidiChord3.
 

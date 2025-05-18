@@ -36,40 +36,45 @@ mat4.identity(transMatrix);
 
 const arr = [];
 
-render.onTriggered = function () {
-  if (cgl.tempData.shadowPass) return trigger.trigger();
 
-  if (op.isCurrentUiOp())
-    gui.setTransformGizmo({
-      posX: eyeX,
-      posY: eyeY,
-      posZ: eyeZ,
-    });
+render.onTriggered = function ()
+{
+    if (cgl.tempData.shadowPass) return trigger.trigger();
 
-  cgl.pushViewMatrix();
 
-  arr[0] = eyeX.get();
-  arr[1] = eyeY.get();
-  arr[2] = eyeZ.get();
+    if (op.isCurrentUiOp())
+        gui.setTransformGizmo(
+            {
+                "posX": eyeX,
+                "posY": eyeY,
+                "posZ": eyeZ
+            });
 
-  arr[3] = centerX.get();
-  arr[4] = centerY.get();
-  arr[5] = centerZ.get();
 
-  arr[6] = vecUpX.get();
-  arr[7] = vecUpY.get();
-  arr[8] = vecUpZ.get();
+    cgl.pushViewMatrix();
 
-  outArr.setRef(arr);
+    arr[0] = eyeX.get();
+    arr[1] = eyeY.get();
+    arr[2] = eyeZ.get();
 
-  vec3.set(vUp, vecUpX.get(), vecUpY.get(), vecUpZ.get());
-  vec3.set(vEye, eyeX.get(), eyeY.get(), eyeZ.get());
-  vec3.set(vCenter, centerX.get(), centerY.get(), centerZ.get());
+    arr[3] = centerX.get();
+    arr[4] = centerY.get();
+    arr[5] = centerZ.get();
 
-  mat4.lookAt(transMatrix, vEye, vCenter, vUp);
+    arr[6] = vecUpX.get();
+    arr[7] = vecUpY.get();
+    arr[8] = vecUpZ.get();
 
-  mat4.multiply(cgl.vMatrix, cgl.vMatrix, transMatrix);
+    outArr.setRef(arr);
 
-  trigger.trigger();
-  cgl.popViewMatrix();
+    vec3.set(vUp, vecUpX.get(), vecUpY.get(), vecUpZ.get());
+    vec3.set(vEye, eyeX.get(), eyeY.get(), eyeZ.get());
+    vec3.set(vCenter, centerX.get(), centerY.get(), centerZ.get());
+
+    mat4.lookAt(transMatrix, vEye, vCenter, vUp);
+
+    mat4.multiply(cgl.vMatrix, cgl.vMatrix, transMatrix);
+
+    trigger.trigger();
+    cgl.popViewMatrix();
 };

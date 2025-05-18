@@ -1,17 +1,20 @@
-const parentPort = op.inObject("link"),
-  labelPort = op.inString("Label", "Incrementor"),
-  inMin = op.inValue("min", 0),
-  inMax = op.inValue("max", 10),
-  inStepsize = op.inValue("stepsize", 1),
-  inDefault = op.inValue("Default", 0),
-  inGreyOut = op.inBool("Grey Out", false),
-  inTriggerInc = op.inTriggerButton("Increment"),
-  inTriggerDec = op.inTriggerButton("Decrement"),
-  inSetDefault = op.inTriggerButton("Set Default"),
-  inReset = op.inTriggerButton("Reset"),
-  siblingsPort = op.outObject("childs"),
-  outValue = op.outNumber("value"),
-  outChanged = op.outTrigger("Changed");
+const
+    parentPort = op.inObject("link"),
+    labelPort = op.inString("Label", "Incrementor"),
+    inMin = op.inValue("min", 0),
+    inMax = op.inValue("max", 10),
+    inStepsize = op.inValue("stepsize", 1),
+    inDefault = op.inValue("Default", 0),
+    inGreyOut = op.inBool("Grey Out", false),
+    inTriggerInc = op.inTriggerButton("Increment"),
+    inTriggerDec = op.inTriggerButton("Decrement"),
+
+    inSetDefault = op.inTriggerButton("Set Default"),
+    inReset = op.inTriggerButton("Reset"),
+
+    siblingsPort = op.outObject("childs"),
+    outValue = op.outNumber("value"),
+    outChanged = op.outTrigger("Changed");
 
 inSetDefault.onTriggered = setDefaultValue;
 let currentPosition = 0;
@@ -24,9 +27,10 @@ containerEl.classList.add("cablesEle");
 containerEl.classList.add("sidebar__item");
 const label = document.createElement("div");
 label.classList.add("sidebar__item-label");
-label.addEventListener("dblclick", function () {
-  outValue.set(inDefault.get());
-  outChanged.trigger();
+label.addEventListener("dblclick", function ()
+{
+    outValue.set(inDefault.get());
+    outChanged.trigger();
 });
 
 inTriggerInc.onTriggered = onNext;
@@ -82,9 +86,10 @@ greyOut.style.display = "none";
 
 op.toWorkNeedsParent("Ops.Sidebar.Sidebar");
 
-function setDefaultValue() {
-  inDefault.set(outValue.get());
-  op.refreshParams();
+function setDefaultValue()
+{
+    inDefault.set(outValue.get());
+    op.refreshParams();
 }
 
 // events
@@ -92,74 +97,88 @@ parentPort.onChange = onParentChanged;
 labelPort.onChange = onLabelTextChanged;
 op.onDelete = onDelete;
 
-inGreyOut.onChange = function () {
-  greyOut.style.display = inGreyOut.get() ? "block" : "none";
+inGreyOut.onChange = function ()
+{
+    greyOut.style.display = inGreyOut.get() ? "block" : "none";
 };
 
-op.onLoaded = op.onInit = function () {
-  outValue.set(inDefault.get());
-  valueText.textContent = inDefault.get();
-  outChanged.trigger();
+op.onLoaded = op.onInit = function ()
+{
+    outValue.set(inDefault.get());
+    valueText.textContent = inDefault.get();
+    outChanged.trigger();
 };
 
-inReset.onTriggered = () => {
-  outValue.set(inDefault.get());
-  outChanged.trigger();
-  valueText.textContent = inDefault.get();
+inReset.onTriggered = () =>
+{
+    outValue.set(inDefault.get());
+    outChanged.trigger();
+    valueText.textContent = inDefault.get();
 };
 
-function onValueChange() {
-  inMin.setUiAttribs({ greyout: false });
-  inMax.setUiAttribs({ greyout: false });
-  inStepsize.setUiAttribs({ greyout: false });
-  inDefault.setUiAttribs({ greyout: false });
-  outValue.set(value);
-  outChanged.trigger();
-  valueText.textContent = value;
+function onValueChange()
+{
+    inMin.setUiAttribs({ "greyout": false });
+    inMax.setUiAttribs({ "greyout": false });
+    inStepsize.setUiAttribs({ "greyout": false });
+    inDefault.setUiAttribs({ "greyout": false });
+    outValue.set(value);
+    outChanged.trigger();
+    valueText.textContent = value;
 }
 
-function onNext() {
-  const currentValue = outValue.get();
-  const value = Math.min(currentValue + inStepsize.get(), inMax.get());
-  valueText.textContent = value;
-  outValue.set(value);
-  outChanged.trigger();
+function onNext()
+{
+    const currentValue = outValue.get();
+    const value = Math.min(currentValue + inStepsize.get(), inMax.get());
+    valueText.textContent = value;
+    outValue.set(value);
+    outChanged.trigger();
 }
 
-function onPrev() {
-  // no array given, increment/decrement according to params
-  const currentValue = outValue.get();
-  const value = Math.max(currentValue - inStepsize.get(), inMin.get());
-  valueText.textContent = value;
-  outValue.set(value);
-  outChanged.trigger();
+function onPrev()
+{
+    // no array given, increment/decrement according to params
+    const currentValue = outValue.get();
+    const value = Math.max(currentValue - inStepsize.get(), inMin.get());
+    valueText.textContent = value;
+    outValue.set(value);
+    outChanged.trigger();
 }
 
-function onParentChanged() {
-  siblingsPort.set(null);
-  const parent = parentPort.get();
-  if (parent && parent.parentElement) {
-    parent.parentElement.appendChild(containerEl);
-    siblingsPort.set(parent);
-  } else if (containerEl.parentElement) {
-    // detach
-    containerEl.parentElement.removeChild(containerEl);
-  }
+function onParentChanged()
+{
+    siblingsPort.set(null);
+    const parent = parentPort.get();
+    if (parent && parent.parentElement)
+    {
+        parent.parentElement.appendChild(containerEl);
+        siblingsPort.set(parent);
+    }
+    else if (containerEl.parentElement)
+    {
+        // detach
+        containerEl.parentElement.removeChild(containerEl);
+    }
 }
 
-function onLabelTextChanged() {
-  const labelText = labelPort.get();
-  label.textContent = labelText;
+function onLabelTextChanged()
+{
+    const labelText = labelPort.get();
+    label.textContent = labelText;
 
-  if (CABLES.UI) op.setUiAttrib({ extendTitle: labelText });
+    if (CABLES.UI) op.setUiAttrib({ "extendTitle": labelText });
 }
 
-function onDelete() {
-  removeElementFromDOM(containerEl);
+function onDelete()
+{
+    removeElementFromDOM(containerEl);
 }
 
-function removeElementFromDOM(el) {
-  if (el && el.parentNode && el.parentNode.removeChild) {
-    el.parentNode.removeChild(el);
-  }
+function removeElementFromDOM(el)
+{
+    if (el && el.parentNode && el.parentNode.removeChild)
+    {
+        el.parentNode.removeChild(el);
+    }
 }

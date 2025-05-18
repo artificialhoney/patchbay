@@ -10,7 +10,7 @@ let aspect = op.inValue("Aspect", 1);
 const r = op.inValueSlider("r", Math.random());
 const g = op.inValueSlider("g", Math.random());
 const b = op.inValueSlider("b", Math.random());
-r.setUiAttribs({ colorPick: true });
+r.setUiAttribs({ "colorPick": true });
 
 let cgl = op.patch.cgl;
 let shader = new CGL.Shader(cgl, op.name, op);
@@ -27,16 +27,17 @@ let unir = new CGL.Uniform(shader, "f", "r", r);
 let unig = new CGL.Uniform(shader, "f", "g", g);
 let unib = new CGL.Uniform(shader, "f", "b", b);
 
-render.onTriggered = function () {
-  if (!CGL.TextureEffect.checkOpInEffect(op)) return;
+render.onTriggered = function ()
+{
+    if (!CGL.TextureEffect.checkOpInEffect(op)) return;
 
-  cgl.pushShader(shader);
-  cgl.currentTextureEffect.bind();
+    cgl.pushShader(shader);
+    cgl.currentTextureEffect.bind();
 
-  cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
+    cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
 
-  cgl.currentTextureEffect.finish();
-  cgl.popShader();
+    cgl.currentTextureEffect.finish();
+    cgl.popShader();
 
-  trigger.trigger();
+    trigger.trigger();
 };

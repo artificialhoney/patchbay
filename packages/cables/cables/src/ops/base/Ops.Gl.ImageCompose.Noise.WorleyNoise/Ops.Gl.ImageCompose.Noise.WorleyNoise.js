@@ -33,28 +33,31 @@ updateInvert();
 
 CGL.TextureEffect.setupBlending(op, shader, blendMode, amount);
 
-function updateInvert() {
-  if (inv.get()) shader.define("DO_INVERT");
-  else shader.removeDefine("DO_INVERT");
+function updateInvert()
+{
+    if (inv.get())shader.define("DO_INVERT");
+    else shader.removeDefine("DO_INVERT");
 }
 
 let tile = op.inValueBool("Tileable", false);
 tile.onChange = updateTileable;
-function updateTileable() {
-  if (tile.get()) shader.define("DO_TILEABLE");
-  else shader.removeDefine("DO_TILEABLE");
+function updateTileable()
+{
+    if (tile.get())shader.define("DO_TILEABLE");
+    else shader.removeDefine("DO_TILEABLE");
 }
 
-render.onTriggered = function () {
-  if (!CGL.TextureEffect.checkOpInEffect(op)) return;
+render.onTriggered = function ()
+{
+    if (!CGL.TextureEffect.checkOpInEffect(op)) return;
 
-  cgl.pushShader(shader);
-  cgl.currentTextureEffect.bind();
+    cgl.pushShader(shader);
+    cgl.currentTextureEffect.bind();
 
-  cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
+    cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
 
-  cgl.currentTextureEffect.finish();
-  cgl.popShader();
+    cgl.currentTextureEffect.finish();
+    cgl.popShader();
 
-  trigger.trigger();
+    trigger.trigger();
 };

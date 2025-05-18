@@ -1,4 +1,4 @@
-var val = op.outString("Value");
-op.varName = op.inValueSelect("Variable", [], "", true);
+var val=op.outString("Value");
+op.varName=op.inValueSelect("Variable",[],"",true);
 
-new CABLES.VarGetOpWrapper(op, "string", op.varName, val);
+new CABLES.VarGetOpWrapper(op,"string",op.varName,val);

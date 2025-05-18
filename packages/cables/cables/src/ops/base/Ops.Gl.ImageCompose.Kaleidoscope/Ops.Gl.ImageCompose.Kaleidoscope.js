@@ -9,9 +9,7 @@ let slidey = op.inValueSlider("Slide Y", 0);
 let centerX = op.inValueSlider("Center X", 0.5);
 let centerY = op.inValueSlider("Center Y", 0.5);
 
-let trigger = op.addOutPort(
-  new CABLES.Port(op, "Next", CABLES.OP_PORT_TYPE_FUNCTION),
-);
+let trigger = op.addOutPort(new CABLES.Port(op, "Next", CABLES.OP_PORT_TYPE_FUNCTION));
 
 let cgl = op.patch.cgl;
 let shader = new CGL.Shader(cgl, op.name, op);
@@ -26,22 +24,20 @@ let uniAmount = new CGL.Uniform(shader, "f", "amount", amount);
 
 CGL.TextureEffect.setupBlending(op, shader, blendMode, amount);
 
-shader.setSource(
-  shader.getDefaultVertexShader(),
-  attachments.kaleidoscope_frag,
-);
+shader.setSource(shader.getDefaultVertexShader(), attachments.kaleidoscope_frag);
 let textureUniform = new CGL.Uniform(shader, "t", "tex", 0);
 
-render.onTriggered = function () {
-  if (!CGL.TextureEffect.checkOpInEffect(op)) return;
+render.onTriggered = function ()
+{
+    if (!CGL.TextureEffect.checkOpInEffect(op)) return;
 
-  cgl.pushShader(shader);
-  cgl.currentTextureEffect.bind();
+    cgl.pushShader(shader);
+    cgl.currentTextureEffect.bind();
 
-  cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
+    cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
 
-  cgl.currentTextureEffect.finish();
-  cgl.popShader();
+    cgl.currentTextureEffect.finish();
+    cgl.popShader();
 
-  trigger.trigger();
+    trigger.trigger();
 };

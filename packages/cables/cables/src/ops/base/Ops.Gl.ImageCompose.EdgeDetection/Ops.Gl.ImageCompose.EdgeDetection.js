@@ -14,19 +14,20 @@ let uniWidth = new CGL.Uniform(shader, "f", "texWidth", 128);
 let uniHeight = new CGL.Uniform(shader, "f", "texHeight", 128);
 let uniMulColor = new CGL.Uniform(shader, "f", "mulColor", mulColor);
 
-render.onTriggered = function () {
-  if (!CGL.TextureEffect.checkOpInEffect(op)) return;
+render.onTriggered = function ()
+{
+    if (!CGL.TextureEffect.checkOpInEffect(op)) return;
 
-  cgl.pushShader(shader);
-  cgl.currentTextureEffect.bind();
+    cgl.pushShader(shader);
+    cgl.currentTextureEffect.bind();
 
-  cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
+    cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
 
-  uniWidth.setValue(cgl.currentTextureEffect.getCurrentSourceTexture().width);
-  uniHeight.setValue(cgl.currentTextureEffect.getCurrentSourceTexture().height);
+    uniWidth.setValue(cgl.currentTextureEffect.getCurrentSourceTexture().width);
+    uniHeight.setValue(cgl.currentTextureEffect.getCurrentSourceTexture().height);
 
-  cgl.currentTextureEffect.finish();
-  cgl.popShader();
+    cgl.currentTextureEffect.finish();
+    cgl.popShader();
 
-  trigger.trigger();
+    trigger.trigger();
 };

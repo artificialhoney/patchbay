@@ -6,6 +6,7 @@ const defaultValuePort = op.inValueString("Default", "");
 const inGreyOut = op.inBool("Grey Out", false);
 const inVisible = op.inBool("Visible", true);
 
+
 // outputs
 const siblingsPort = op.outObject("Children");
 const valuePort = op.outValue("Result", defaultValuePort.get());
@@ -30,13 +31,16 @@ greyOut.classList.add("sidebar__greyout");
 el.appendChild(greyOut);
 greyOut.style.display = "none";
 
-inGreyOut.onChange = function () {
-  greyOut.style.display = inGreyOut.get() ? "block" : "none";
+inGreyOut.onChange = function ()
+{
+    greyOut.style.display = inGreyOut.get() ? "block" : "none";
 };
 
-inVisible.onChange = function () {
-  el.style.display = inVisible.get() ? "block" : "none";
+inVisible.onChange = function ()
+{
+    el.style.display = inVisible.get() ? "block" : "none";
 };
+
 
 // events
 parentPort.onChange = onParentChanged;
@@ -48,92 +52,118 @@ valuesPort.onChange = onValuesPortChange;
 let options = [];
 // functions
 
-function onValuesPortChange() {
-  // remove all children
-  while (input.lastChild) {
-    input.removeChild(input.lastChild);
-  }
-  options = valuesPort.get();
-  let defaultValue = defaultValuePort.get();
-  if (options) {
-    options.forEach(function (option) {
-      const optionEl = document.createElement("option");
-      optionEl.setAttribute("value", option);
-      if (option === defaultValue) {
-        optionEl.setAttribute("selected", "");
-      }
-      const textEl = document.createTextNode(option);
-      optionEl.appendChild(textEl);
-      input.appendChild(optionEl);
+function onValuesPortChange()
+{
+    // remove all children
+    while (input.lastChild)
+    {
+        input.removeChild(input.lastChild);
+    }
+    options = valuesPort.get();
+    let defaultValue = defaultValuePort.get();
+    if (options)
+    {
+        options.forEach(function (option)
+        {
+            const optionEl = document.createElement("option");
+            optionEl.setAttribute("value", option);
+            if (option === defaultValue)
+            {
+                optionEl.setAttribute("selected", "");
+            }
+            const textEl = document.createTextNode(option);
+            optionEl.appendChild(textEl);
+            input.appendChild(optionEl);
+        });
+    }
+    else
+    {
+        valuePort.set("");
+    }
+    setSelectedProperty(); /* set the selected property for the default value */
+}
+
+function setSelectedProperty()
+{
+    const defaultItem = defaultValuePort.get();
+    const optionElements = input.querySelectorAll("option");
+    optionElements.forEach(function (optionElement)
+    {
+        if (optionElement.value === defaultItem)
+        {
+            optionElement.setAttribute("selected", "");
+        }
+        else
+        {
+            optionElement.removeAttribute("selected");
+        }
     });
-  } else {
-    valuePort.set("");
-  }
-  setSelectedProperty(); /* set the selected property for the default value */
 }
 
-function setSelectedProperty() {
-  const defaultItem = defaultValuePort.get();
-  const optionElements = input.querySelectorAll("option");
-  optionElements.forEach(function (optionElement) {
-    if (optionElement.value === defaultItem) {
-      optionElement.setAttribute("selected", "");
-    } else {
-      optionElement.removeAttribute("selected");
+function onInput(ev)
+{
+    valuePort.set(ev.target.value);
+    outIndex.set(options.indexOf(ev.target.value));
+}
+
+function onDefaultValueChanged()
+{
+    let defaultValue = defaultValuePort.get();
+    valuePort.set(defaultValue);
+    // input.value = defaultValue;
+    setSelectedProperty();
+}
+
+function onLabelTextChanged()
+{
+    let labelText = labelPort.get();
+    label.textContent = labelText;
+    if (CABLES.UI) op.setUiAttrib({ "extendTitle": labelText });
+}
+
+function onParentChanged()
+{
+    let parent = parentPort.get();
+    if (parent && parent.parentElement)
+    {
+        parent.parentElement.appendChild(el);
+        siblingsPort.set(null);
+        siblingsPort.set(parent);
     }
-  });
-}
-
-function onInput(ev) {
-  valuePort.set(ev.target.value);
-  outIndex.set(options.indexOf(ev.target.value));
-}
-
-function onDefaultValueChanged() {
-  let defaultValue = defaultValuePort.get();
-  valuePort.set(defaultValue);
-  // input.value = defaultValue;
-  setSelectedProperty();
-}
-
-function onLabelTextChanged() {
-  let labelText = labelPort.get();
-  label.textContent = labelText;
-  if (CABLES.UI) op.setUiAttrib({ extendTitle: labelText });
-}
-
-function onParentChanged() {
-  let parent = parentPort.get();
-  if (parent && parent.parentElement) {
-    parent.parentElement.appendChild(el);
-    siblingsPort.set(null);
-    siblingsPort.set(parent);
-  } else {
-    // detach
-    if (el.parentElement) {
-      el.parentElement.removeChild(el);
+    else
+    { // detach
+        if (el.parentElement)
+        {
+            el.parentElement.removeChild(el);
+        }
     }
-  }
 }
 
-function showElement(el) {
-  if (el) {
-    el.style.display = "block";
-  }
+function showElement(el)
+{
+    if (el)
+    {
+        el.style.display = "block";
+    }
 }
 
-function hideElement(el) {
-  if (el) {
-    el.style.display = "none";
-  }
+function hideElement(el)
+{
+    if (el)
+    {
+        el.style.display = "none";
+    }
 }
 
-function onDelete() {
-  removeElementFromDOM(el);
+function onDelete()
+{
+    removeElementFromDOM(el);
 }
 
-function removeElementFromDOM(el) {
-  if (el && el.parentNode && el.parentNode.removeChild) {
-    el.parentNode.removeChild(el);
-  }
+function removeElementFromDOM(el)
+{
+    if (el && el.parentNode && el.parentNode.removeChild)
+    {
+        el.parentNode.removeChild(el);
+    }
 }

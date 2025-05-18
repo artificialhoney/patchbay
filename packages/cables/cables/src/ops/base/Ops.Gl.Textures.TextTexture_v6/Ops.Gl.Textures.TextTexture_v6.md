@@ -9,3 +9,4 @@ MANUAL - texture height will be calculated automatically. Line breaks will be ad
 ### Padding
 
 Padding will add Pixels to the left,right,up and bottom sides of the texture. This will be added on top of the size parameter settings.
+

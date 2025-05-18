@@ -1,7 +1,9 @@
-const outUrl = op.outString("URL");
+const
+    outUrl = op.outString("URL");
 
-if (CABLES && CABLES.platform) {
-  outUrl.set(CABLES.platform.getCablesUrl());
+if (CABLES && CABLES.platform)
+{
+    outUrl.set(CABLES.platform.getCablesUrl());
 }
 
 // const buildInfo = CABLESUILOADER.buildInfo;

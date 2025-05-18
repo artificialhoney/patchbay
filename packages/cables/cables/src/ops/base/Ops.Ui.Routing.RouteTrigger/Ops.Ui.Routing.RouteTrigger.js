@@ -1,8 +1,10 @@
-const exec = op.inTrigger("Trigger"),
-  next = op.outTrigger("Next");
+const
+    exec = op.inTrigger("Trigger"),
+    next = op.outTrigger("Next");
 
-op.setUiAttribs({ display: "reroute" });
+op.setUiAttribs({ "display": "reroute" });
 
-exec.onTriggered = () => {
-  next.trigger();
+exec.onTriggered = () =>
+{
+    next.trigger();
 };

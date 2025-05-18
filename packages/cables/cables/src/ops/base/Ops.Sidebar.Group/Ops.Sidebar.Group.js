@@ -9,8 +9,9 @@ const inVisible = op.inBool("Visible", true);
 let nextPort = op.outObject("next");
 let childrenPort = op.outObject("childs");
 
-inVisible.onChange = function () {
-  el.style.display = inVisible.get() ? "block" : "none";
+inVisible.onChange = function ()
+{
+    el.style.display = inVisible.get() ? "block" : "none";
 };
 
 // vars
@@ -48,66 +49,84 @@ op.onDelete = onDelete;
 
 // functions
 
-inShowTitle.onChange = () => {
-  if (inShowTitle.get()) header.style.display = "block";
-  else header.style.display = "none";
+inShowTitle.onChange = () =>
+{
+    if (inShowTitle.get())header.style.display = "block";
+    else header.style.display = "none";
 };
 
-function onDefaultMinimizedPortChanged() {
-  if (defaultMinimizedPort.get()) {
-    el.classList.add("sidebar__group--closed");
-  } else {
-    el.classList.remove("sidebar__group--closed");
-  }
-}
-
-function onClick(ev) {
-  ev.stopPropagation();
-  el.classList.toggle("sidebar__group--closed");
-}
-
-function onLabelTextChanged() {
-  let labelText = labelPort.get();
-  headerTitleText.textContent = labelText;
-  if (CABLES.UI) op.setUiAttrib({ extendTitle: labelText });
-}
-
-function onParentChanged() {
-  childrenPort.set(null);
-  let parent = parentPort.get();
-  if (parent && parent.parentElement) {
-    parent.parentElement.appendChild(el);
-    childrenPort.set({
-      parentElement: groupItems,
-      parentOp: op,
-    });
-    nextPort.set(parent);
-  } else {
-    // detach
-    if (el.parentElement) {
-      el.parentElement.removeChild(el);
+function onDefaultMinimizedPortChanged()
+{
+    if (defaultMinimizedPort.get())
+    {
+        el.classList.add("sidebar__group--closed");
     }
-  }
+    else
+    {
+        el.classList.remove("sidebar__group--closed");
+    }
 }
 
-function showElement(el) {
-  if (el) {
-    el.style.display = "block";
-  }
+function onClick(ev)
+{
+    ev.stopPropagation();
+    el.classList.toggle("sidebar__group--closed");
 }
 
-function hideElement(el) {
-  if (el) {
-    el.style.display = "none";
-  }
+function onLabelTextChanged()
+{
+    let labelText = labelPort.get();
+    headerTitleText.textContent = labelText;
+    if (CABLES.UI) op.setUiAttrib({ "extendTitle": labelText });
 }
 
-function onDelete() {
-  removeElementFromDOM(el);
+function onParentChanged()
+{
+    childrenPort.set(null);
+    let parent = parentPort.get();
+    if (parent && parent.parentElement)
+    {
+        parent.parentElement.appendChild(el);
+        childrenPort.set({
+            "parentElement": groupItems,
+            "parentOp": op,
+        });
+        nextPort.set(parent);
+    }
+    else
+    { // detach
+        if (el.parentElement)
+        {
+            el.parentElement.removeChild(el);
+        }
+    }
 }
 
-function removeElementFromDOM(el) {
-  if (el && el.parentNode && el.parentNode.removeChild) {
-    el.parentNode.removeChild(el);
-  }
+function showElement(el)
+{
+    if (el)
+    {
+        el.style.display = "block";
+    }
+}
+
+function hideElement(el)
+{
+    if (el)
+    {
+        el.style.display = "none";
+    }
+}
+
+function onDelete()
+{
+    removeElementFromDOM(el);
+}
+
+function removeElementFromDOM(el)
+{
+    if (el && el.parentNode && el.parentNode.removeChild)
+    {
+        el.parentNode.removeChild(el);
+    }
 }

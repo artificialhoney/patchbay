@@ -30,25 +30,27 @@ let uniAmount = new CGL.Uniform(shader, "f", "amount", amount);
 
 CGL.TextureEffect.setupBlending(op, shader, blendMode, amount);
 
-inMethod.onChange = () => {
-  shader.toggleDefine("METH_LUMI", inMethod.get() == "Luminance");
-  shader.toggleDefine("METH_CHANNELS", inMethod.get() == "Channels");
+inMethod.onChange = () =>
+{
+    shader.toggleDefine("METH_LUMI", inMethod.get() == "Luminance");
+    shader.toggleDefine("METH_CHANNELS", inMethod.get() == "Channels");
 };
 
-render.onTriggered = function () {
-  if (!CGL.TextureEffect.checkOpInEffect(op)) return;
-  if (!inGradient.get()) return;
+render.onTriggered = function ()
+{
+    if (!CGL.TextureEffect.checkOpInEffect(op)) return;
+    if (!inGradient.get()) return;
 
-  cgl.pushShader(shader);
-  cgl.currentTextureEffect.bind();
+    cgl.pushShader(shader);
+    cgl.currentTextureEffect.bind();
 
-  cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
+    cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
 
-  cgl.setTexture(1, inGradient.get().tex);
-  // cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, inGradient.get().tex );
+    cgl.setTexture(1, inGradient.get().tex);
+    // cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, inGradient.get().tex );
 
-  cgl.currentTextureEffect.finish();
-  cgl.popShader();
+    cgl.currentTextureEffect.finish();
+    cgl.popShader();
 
-  trigger.trigger();
+    trigger.trigger();
 };

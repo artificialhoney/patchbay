@@ -26,19 +26,24 @@ update();
 
 // functions
 
-function update() {
-  let arrLength = Math.max(0, arrayLengthPort.get());
-  let activeIndex = Math.round(activeIndexPort.get());
-  let inactiveValue = inactiveValuePort.get();
-  let activeValue = activeValuePort.get();
-  for (let i = 0; i < arrLength; i++) {
-    if (i === activeIndex) {
-      stateArray[i] = activeValue;
-    } else {
-      stateArray[i] = inactiveValue;
+function update()
+{
+    let arrLength = Math.max(0, arrayLengthPort.get());
+    let activeIndex = Math.round(activeIndexPort.get());
+    let inactiveValue = inactiveValuePort.get();
+    let activeValue = activeValuePort.get();
+    for (let i = 0; i < arrLength; i++)
+    {
+        if (i === activeIndex)
+        {
+            stateArray[i] = activeValue;
+        }
+        else
+        {
+            stateArray[i] = inactiveValue;
+        }
     }
-  }
-  stateArray.length = arrLength;
-  stateArrayPort.set(null);
-  stateArrayPort.set(stateArray);
+    stateArray.length = arrLength;
+    stateArrayPort.set(null);
+    stateArrayPort.set(stateArray);
 }

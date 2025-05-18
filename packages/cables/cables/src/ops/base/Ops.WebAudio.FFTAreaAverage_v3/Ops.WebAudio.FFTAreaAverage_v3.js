@@ -1,22 +1,24 @@
 const cgl = op.patch.cgl;
 const TEX_SIZES = ["128", "256", "512", "1024", "2048"];
-const refresh = op.inTriggerButton("Refresh"),
-  fftArr = op.inArray("FFT Array"),
-  x = op.inValueSlider("X Position"),
-  y = op.inValueSlider("Y Position"),
-  w = op.inValueSlider("Width", 0.2),
-  h = op.inValueSlider("Height", 0.2),
-  drawTex = op.inValueBool("Create Texture", true),
-  inCanvasSize = op.inSwitch("Texture Size", TEX_SIZES, "128"),
-  texOut = op.outTexture("Texture Out", null, "texture"),
-  value = op.outNumber("Area Average Volume");
+const
+    refresh = op.inTriggerButton("Refresh"),
+    fftArr = op.inArray("FFT Array"),
+    x = op.inValueSlider("X Position"),
+    y = op.inValueSlider("Y Position"),
+    w = op.inValueSlider("Width", 0.2),
+    h = op.inValueSlider("Height", 0.2),
+    drawTex = op.inValueBool("Create Texture", true),
+    inCanvasSize = op.inSwitch("Texture Size", TEX_SIZES, "128"),
+    texOut = op.outTexture("Texture Out", null, "texture"),
+    value = op.outNumber("Area Average Volume");
 
 op.setPortGroup("Area Settings", [x, y, w, h]);
 op.setPortGroup("Texture Settings", [drawTex, inCanvasSize]);
 
 let updateTexture = false;
-inCanvasSize.onChange = () => {
-  updateTexture = true;
+inCanvasSize.onChange = () =>
+{
+    updateTexture = true;
 };
 const data = [];
 const line = 0;
@@ -39,73 +41,75 @@ let areaW = 20;
 let areaH = 20;
 let amount = 0;
 
-refresh.onTriggered = function () {
-  const arr = fftArr.get();
-  if (!arr) return;
+refresh.onTriggered = function ()
+{
+    const arr = fftArr.get();
+    if (!arr) return;
 
-  const width = arr.length;
-  const draw = drawTex.get();
+    const width = arr.length;
+    const draw = drawTex.get();
 
-  if (updateTexture) {
-    size = Number(inCanvasSize.get());
-    canvas.width = canvas.height = size;
+    if (updateTexture)
+    {
+        size = Number(inCanvasSize.get());
+        canvas.width = canvas.height = size;
 
-    const indexOfSize = TEX_SIZES.indexOf(String(inCanvasSize.get()));
-    multiplier = MULTIPLIERS[indexOfSize];
+        const indexOfSize = TEX_SIZES.indexOf(String(inCanvasSize.get()));
+        multiplier = MULTIPLIERS[indexOfSize];
 
-    updateTexture = false;
-  }
+        updateTexture = false;
+    }
 
-  ctx.save();
+    ctx.save();
 
-  ctx.translate(0, canvas.height);
-  ctx.scale(1, -1);
+    ctx.translate(0, canvas.height);
+    ctx.scale(1, -1);
 
-  if (draw) {
-    ctx.beginPath();
-    ctx.fillStyle = "#000";
-    ctx.strokeStyle = "#ff0";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    if (draw)
+    {
+        ctx.beginPath();
+        ctx.fillStyle = "#000";
+        ctx.strokeStyle = "#ff0";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = "#888";
-    for (let i = 0; i < arr.length; i++)
-      ctx.fillRect(i, size - arr[i] * multiplier, 1, arr[i] * multiplier);
-  }
+        ctx.fillStyle = "#888";
+        for (let i = 0; i < arr.length; i++)
+            ctx.fillRect(i, size - arr[i] * multiplier, 1, arr[i] * multiplier);
+    }
 
-  areaX = x.get() * canvas.width;
-  areaY = y.get() * canvas.height;
+    areaX = x.get() * canvas.width;
+    areaY = y.get() * canvas.height;
 
-  areaW = (w.get() * size) / 2;
-  areaH = (h.get() * size) / 2;
+    areaW = w.get() * size / 2;
+    areaH = h.get() * size / 2;
 
-  if (draw) ctx.rect(areaX, areaY, areaW, areaH);
-  if (draw) {
-    ctx.lineWidth = 2 * multiplier;
-    ctx.stroke();
-  }
+    if (draw)ctx.rect(areaX, areaY, areaW, areaH);
+    if (draw)
+    {
+        ctx.lineWidth = 2 * multiplier;
+        ctx.stroke();
+    }
 
-  const val = 0;
-  let count = 0;
-  for (let xc = areaX; xc < areaX + areaW; xc++)
-    for (let yc = areaY; yc < areaY + areaH; yc++)
-      if (arr[Math.round(xc)] * multiplier > size - yc) count++;
+    const val = 0;
+    let count = 0;
+    for (let xc = areaX; xc < areaX + areaW; xc++)
+        for (let yc = areaY; yc < areaY + areaH; yc++)
+            if (arr[Math.round(xc)] * multiplier > size - yc)count++;
 
-  if (amount != amount) amount = 0;
-  amount += count / (areaW * areaH);
-  amount /= 2;
-  value.set(amount);
+    if (amount != amount)amount = 0;
+    amount += count / (areaW * areaH);
+    amount /= 2;
+    value.set(amount);
 
-  if (draw) {
-    ctx.fillStyle = "#ff0";
-    ctx.fillRect(0, 0, amount * canvas.width, 6 * multiplier);
+    if (draw)
+    {
+        ctx.fillStyle = "#ff0";
+        ctx.fillRect(0, 0, amount * canvas.width, 6 * multiplier);
 
-    if (!tex)
-      tex = new CGL.Texture.createFromImage(cgl, canvas, {
-        filter: CGL.Texture.FILTER_NEAREST,
-      });
-    tex.initTexture(canvas, CGL.Texture.FILTER_NEAREST);
-    texOut.setRef(tex);
-  }
+        if (!tex)tex = new CGL.Texture.createFromImage(cgl, canvas, { "filter": CGL.Texture.FILTER_NEAREST });
+        tex.initTexture(canvas, CGL.Texture.FILTER_NEAREST);
+        texOut.setRef(tex);
+    }
 
-  ctx.restore();
+    ctx.restore();
 };

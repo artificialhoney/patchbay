@@ -1,58 +1,56 @@
+
 class IOSMediaRecorder {
   /**
    * @param {MediaStream} stream The audio stream to record.
    */
-  constructor(stream, config = null) {
+  constructor (stream, config = null) {
     /**
      * The `MediaStream` passed into the constructor.
      * @type {MediaStream}
      */
-    this.stream = stream;
-    this.config = config;
+    this.stream = stream
+    this.config = config
     /**
      * The current state of recording process.
      * @type {"inactive"|"recording"|"paused"}
      */
-    this.state = "inactive";
+    this.state = 'inactive'
 
-    this.em = document.createDocumentFragment();
-    const blob = new Blob([attachments.waveencoder_js], {
-      type: "text/javascript",
-    });
+    this.em = document.createDocumentFragment()
+    const blob = new Blob([attachments.waveencoder_js], { "type": "text/javascript" });
     const fileURL = URL.createObjectURL(blob);
     this.blob = blob;
     this.fileURL = fileURL;
-    this.encoder = new Worker(this.fileURL, {
-      name: "AudioRecorder Encoder with op-id: " + op.id,
-    });
-    this.encoder.onmessage = (e) => {
-      let event = new Event("dataavailable");
+    this.encoder = new Worker(this.fileURL, { "name": "AudioRecorder Encoder with op-id: " + op.id });
+    this.encoder.onmessage = e => {
+        let event = new Event('dataavailable');
 
-      event.data = new Blob([e.data], { type: this.mimeType });
-      this.em.dispatchEvent(event);
+        event.data = new Blob([e.data], { type: this.mimeType });
+        this.em.dispatchEvent(event);
 
-      // clean up worker after recording
-      this.encoder.terminate();
-      this.encoder = null;
+        // clean up worker after recording
+        this.encoder.terminate();
+        this.encoder = null;
 
-      if (this.state === "inactive") {
-        this.em.dispatchEvent(new Event("stop"));
-      }
+        if (this.state === 'inactive') {
+            this.em.dispatchEvent(new Event('stop'))
+        }
     };
+
   }
 
-  error(method) {
-    let event = new Event("error");
-    event.data = new Error("Wrong state for " + method);
-    return event;
-  }
-
-  terminateWorker() {
-    if (this.encoder) {
-      this.encoder.terminate();
-      this.encoder = null;
+    error(method) {
+        let event = new Event('error')
+        event.data = new Error('Wrong state for ' + method)
+        return event
     }
-  }
+
+    terminateWorker() {
+        if (this.encoder) {
+            this.encoder.terminate();
+            this.encoder = null;
+        }
+    }
   /**
    * Begins recording media.
    *
@@ -67,68 +65,66 @@ class IOSMediaRecorder {
    *   recorder.start()
    * })
    */
-  start(timeslice) {
+  start (timeslice) {
+
+
     if (!this.encoder) {
-      this.encoder = new Worker(this.fileURL, {
-        name: "AudioRecorder Encoder with op-id: " + op.id,
-      });
-      this.encoder.onmessage = (e) => {
-        let event = new Event("dataavailable");
+        this.encoder = new Worker(this.fileURL, { "name": "AudioRecorder Encoder with op-id: " + op.id });
+        this.encoder.onmessage = e => {
+            let event = new Event('dataavailable');
 
-        event.data = new Blob([e.data], { type: this.mimeType });
-        this.em.dispatchEvent(event);
+            event.data = new Blob([e.data], { type: this.mimeType });
+            this.em.dispatchEvent(event);
 
-        // clean up worker after recording
-        this.encoder.terminate();
-        this.encoder = null;
-        if (this.state === "inactive") {
-          this.em.dispatchEvent(new Event("stop"));
-        }
-      };
+            // clean up worker after recording
+            this.encoder.terminate();
+            this.encoder = null;
+            if (this.state === 'inactive') {
+                this.em.dispatchEvent(new Event('stop'))
+            }
+        };
     }
 
-    if (this.state !== "inactive") {
-      return this.em.dispatchEvent(this.error("start"));
+    if (this.state !== 'inactive') {
+      return this.em.dispatchEvent(this.error('start'))
     }
 
-    this.state = "recording";
+    this.state = 'recording'
 
-    this.clone = this.stream.clone();
-    this.input = audioCtx.createMediaStreamSource(this.clone);
+
+
+    this.clone = this.stream.clone()
+    this.input = audioCtx.createMediaStreamSource(this.clone)
 
     this.numberOfChannels = this.input.channelCount;
 
-    this.processor = audioCtx.createScriptProcessor(
-      2048,
-      this.numberOfChannels,
-      this.numberOfChannels,
-    );
+    this.processor = audioCtx.createScriptProcessor(2048, this.numberOfChannels, this.numberOfChannels);
 
-    this.encoder.postMessage(["init", audioCtx.sampleRate]);
+    this.encoder.postMessage(['init', audioCtx.sampleRate])
 
-    this.processor.onaudioprocess = (e) => {
-      if (this.state === "recording") {
+    this.processor.onaudioprocess = e => {
+      if (this.state === 'recording') {
         this.encoder.postMessage([
-          "encode",
-          [
-            [e.inputBuffer.getChannelData(0), e.inputBuffer.getChannelData(1)],
-            this.numberOfChannels,
-          ],
+            'encode',
+            [
+                [e.inputBuffer.getChannelData(0), e.inputBuffer.getChannelData(1)],
+                this.numberOfChannels
+            ],
         ]);
       }
-    };
+    }
 
-    this.input.connect(this.processor);
-    this.processor.connect(audioCtx.destination);
+    this.input.connect(this.processor)
+    this.processor.connect(audioCtx.destination)
 
-    this.em.dispatchEvent(new Event("start"));
+    this.em.dispatchEvent(new Event('start'))
 
     if (timeslice) {
       this.slicing = setInterval(() => {
-        if (this.state === "recording") this.requestData();
-      }, timeslice);
+        if (this.state === 'recording') this.requestData()
+      }, timeslice)
     }
-    return undefined;
+    return undefined
   }
 
   /**
@@ -141,19 +137,19 @@ class IOSMediaRecorder {
    *   recorder.stop()
    * })
    */
-  stop() {
-    if (this.state === "inactive") {
-      return this.em.dispatchEvent(this.error("stop"));
+  stop () {
+    if (this.state === 'inactive') {
+      return this.em.dispatchEvent(this.error('stop'))
     }
 
-    this.requestData();
-    this.state = "inactive";
-    this.clone.getTracks().forEach((track) => {
-      track.stop();
-    });
-    this.processor.disconnect();
-    this.input.disconnect();
-    return clearInterval(this.slicing);
+    this.requestData()
+    this.state = 'inactive'
+    this.clone.getTracks().forEach(track => {
+      track.stop()
+    })
+    this.processor.disconnect()
+    this.input.disconnect()
+    return clearInterval(this.slicing)
   }
 
   /**
@@ -166,13 +162,13 @@ class IOSMediaRecorder {
    *   recorder.pause()
    * })
    */
-  pause() {
-    if (this.state !== "recording") {
-      return this.em.dispatchEvent(this.error("pause"));
+  pause () {
+    if (this.state !== 'recording') {
+      return this.em.dispatchEvent(this.error('pause'))
     }
 
-    this.state = "paused";
-    return this.em.dispatchEvent(new Event("pause"));
+    this.state = 'paused'
+    return this.em.dispatchEvent(new Event('pause'))
   }
 
   /**
@@ -185,13 +181,13 @@ class IOSMediaRecorder {
    *   recorder.resume()
    * })
    */
-  resume() {
-    if (this.state !== "paused") {
-      return this.em.dispatchEvent(this.error("resume"));
+  resume () {
+    if (this.state !== 'paused') {
+      return this.em.dispatchEvent(this.error('resume'))
     }
 
-    this.state = "recording";
-    return this.em.dispatchEvent(new Event("resume"));
+    this.state = 'recording'
+    return this.em.dispatchEvent(new Event('resume'))
   }
 
   /**
@@ -204,14 +200,14 @@ class IOSMediaRecorder {
    *   recorder.requestData()
    * })
    */
-  requestData() {
-    if (this.state === "inactive") {
-      return this.em.dispatchEvent(this.error("requestData"));
+  requestData () {
+    if (this.state === 'inactive') {
+      return this.em.dispatchEvent(this.error('requestData'))
     }
 
     return this.encoder.postMessage([
-      "dump",
-      [audioCtx.sampleRate, this.numberOfChannels],
+        'dump',
+        [audioCtx.sampleRate, this.numberOfChannels],
     ]);
   }
 
@@ -229,8 +225,8 @@ class IOSMediaRecorder {
    *   audio.src = URL.createObjectURL(e.data)
    * })
    */
-  addEventListener(...args) {
-    this.em.addEventListener(...args);
+  addEventListener (...args) {
+    this.em.addEventListener(...args)
   }
 
   /**
@@ -242,8 +238,8 @@ class IOSMediaRecorder {
    *
    * @return {undefined}
    */
-  removeEventListener(...args) {
-    this.em.removeEventListener(...args);
+  removeEventListener (...args) {
+    this.em.removeEventListener(...args)
   }
 
   /**
@@ -253,8 +249,8 @@ class IOSMediaRecorder {
    *
    * @return {boolean} Is event was no canceled by any listener.
    */
-  dispatchEvent(...args) {
-    this.em.dispatchEvent(...args);
+  dispatchEvent (...args) {
+    this.em.dispatchEvent(...args)
   }
 }
 
@@ -262,7 +258,7 @@ class IOSMediaRecorder {
  * The MIME type that is being used for recording.
  * @type {string}
  */
-IOSMediaRecorder.prototype.mimeType = "audio/wav";
+IOSMediaRecorder.prototype.mimeType = 'audio/wav'
 
 /**
  * Returns `true` if the MIME type specified is one the polyfill can record.
@@ -273,9 +269,9 @@ IOSMediaRecorder.prototype.mimeType = "audio/wav";
  *
  * @return {boolean} `true` on `audio/wav` and `audio/mpeg` MIME type.
  */
-IOSMediaRecorder.isTypeSupported = (mimeType) => {
-  return IOSMediaRecorder.prototype.mimeType === mimeType;
-};
+IOSMediaRecorder.isTypeSupported = mimeType => {
+  return IOSMediaRecorder.prototype.mimeType === mimeType
+}
 
 /**
  * `true` if MediaRecorder can not be polyfilled in the current browser.
@@ -286,7 +282,7 @@ IOSMediaRecorder.isTypeSupported = (mimeType) => {
  *   showWarning('Audio recording is not supported in this browser')
  * }
  */
-IOSMediaRecorder.notSupported = !navigator.mediaDevices || !AudioContext;
+IOSMediaRecorder.notSupported = !navigator.mediaDevices || !AudioContext
 
 /**
  * Converts RAW audio buffer to compressed audio files.

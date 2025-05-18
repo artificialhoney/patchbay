@@ -281,7 +281,6 @@ export default class SharedOpsUtil extends SharedUtil {
 
   getOpInfo(opName) {
     let info = {};
-
     const jsonFilename = this.getOpAbsoluteJsonFilename(opName);
     if (jsonFilename) {
       const screenshotFilename = this.getExampleScreenshotPath(opName);

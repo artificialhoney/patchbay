@@ -1,17 +1,20 @@
-const inObj = op.inObject("Object"),
-  outObject = op.outObject("Last Valid Object"),
-  outValid = op.outBool("Is Valid");
+const
+    inObj = op.inObject("Object"),
+    outObject = op.outObject("Last Valid Object"),
+    outValid = op.outBool("Is Valid");
 
-inObj.onChange = update;
+inObj.onChange =
+    update;
 
-function update() {
-  const obj = inObj.get();
+function update()
+{
+    const obj = inObj.get();
 
-  let r = true;
+    let r = true;
 
-  if (!obj) r = false;
+    if (!obj) r = false;
 
-  if (r) outObject.setRef(obj);
+    if (r) outObject.setRef(obj);
 
-  outValid.set(r);
+    outValid.set(r);
 }

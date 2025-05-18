@@ -1,4 +1,4 @@
-useful when working with nested data structures.
+useful when working with  nested data structures. 
 
 the path defines the way to the array. the given array will be returned
 
@@ -6,8 +6,8 @@ given an object like this:
 
 ```
 {
-    "data": {
-        "persons": [
+    "data": { 
+        "persons": [ 
             {
                 "name": "alyx"
             },
@@ -17,7 +17,7 @@ given an object like this:
             {
                 "name": "gordon"
             }
-        ]
+        ] 
     }
 }
 ```
@@ -25,7 +25,7 @@ given an object like this:
 a path of `data.persons` will result in this array:
 
 ```
- [
+ [ 
             {
                 "name": "alyx"
             },
@@ -35,5 +35,5 @@ a path of `data.persons` will result in this array:
             {
                 "name": "gordon"
             }
-        ]
+        ] 
 ```

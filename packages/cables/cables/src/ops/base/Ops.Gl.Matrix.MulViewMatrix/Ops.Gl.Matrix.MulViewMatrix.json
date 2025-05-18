@@ -1,41 +1,41 @@
 {
-  "authorName": "pandur",
-  "id": "c2833486-717e-4f3c-9dd8-c62cc92ea46e",
-  "created": 1517222044303,
-  "layout": {
-    "portsIn": [
-      {
-        "type": 1,
-        "name": "render"
-      },
-      {
-        "type": 3,
-        "name": "matrix"
-      },
-      {
-        "type": 0,
-        "name": "Identity",
-        "subType": "boolean"
-      }
+    "authorName": "pandur",
+    "id": "c2833486-717e-4f3c-9dd8-c62cc92ea46e",
+    "created": 1517222044303,
+    "layout": {
+        "portsIn": [
+            {
+                "type": 1,
+                "name": "render"
+            },
+            {
+                "type": 3,
+                "name": "matrix"
+            },
+            {
+                "type": 0,
+                "name": "Identity",
+                "subType": "boolean"
+            }
+        ],
+        "portsOut": [
+            {
+                "type": 1,
+                "name": "trigger"
+            }
+        ]
+    },
+    "summary": "multiply view matrix",
+    "docs": {
+        "ports": []
+    },
+    "changelog": [
+        {
+            "message": "Ops.Gl.Matrix.mulViewMatrix renamed to Ops.Gl.Matrix.MulViewMatrix",
+            "author": "pandur",
+            "date": 1560333452550
+        }
     ],
-    "portsOut": [
-      {
-        "type": 1,
-        "name": "trigger"
-      }
-    ]
-  },
-  "summary": "multiply view matrix",
-  "docs": {
-    "ports": []
-  },
-  "changelog": [
-    {
-      "message": "Ops.Gl.Matrix.mulViewMatrix renamed to Ops.Gl.Matrix.MulViewMatrix",
-      "author": "pandur",
-      "date": 1560333452550
-    }
-  ],
-  "license": "MIT",
-  "exampleProjectId": "hDWuci"
+    "license": "MIT",
+    "exampleProjectId": "hDWuci"
 }

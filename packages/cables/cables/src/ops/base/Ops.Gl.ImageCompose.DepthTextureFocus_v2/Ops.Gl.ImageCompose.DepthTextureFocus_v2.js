@@ -25,29 +25,32 @@ const uniFocus = new CGL.Uniform(shader, "f", "focus", inFocus);
 const uniwidth = new CGL.Uniform(shader, "f", "width", inWidth);
 const uniAspect = new CGL.Uniform(shader, "f", "aspectRatio", 0);
 
-inInv.onChange = function () {
-  if (inInv.get()) shader.define("INVERT");
-  else shader.removeDefine("INVERT");
+inInv.onChange = function ()
+{
+    if (inInv.get())shader.define("INVERT");
+    else shader.removeDefine("INVERT");
 };
 
-render.onTriggered = function () {
-  if (!CGL.TextureEffect.checkOpInEffect(op)) return;
+render.onTriggered = function ()
+{
+    if (!CGL.TextureEffect.checkOpInEffect(op)) return;
 
-  if (depthTexture.get() && depthTexture.get().tex) {
-    const a =
-      cgl.currentTextureEffect.getCurrentSourceTexture().height /
-      cgl.currentTextureEffect.getCurrentSourceTexture().width;
+    if (depthTexture.get() && depthTexture.get().tex)
+    {
+        const a =
+            cgl.currentTextureEffect.getCurrentSourceTexture().height
+            / cgl.currentTextureEffect.getCurrentSourceTexture().width;
 
-    uniAspect.set(a);
+        uniAspect.set(a);
 
-    cgl.pushShader(shader);
-    cgl.currentTextureEffect.bind();
+        cgl.pushShader(shader);
+        cgl.currentTextureEffect.bind();
 
-    cgl.setTexture(0, depthTexture.get().tex);
+        cgl.setTexture(0, depthTexture.get().tex);
 
-    cgl.currentTextureEffect.finish();
-    cgl.popShader();
-  }
+        cgl.currentTextureEffect.finish();
+        cgl.popShader();
+    }
 
-  trigger.trigger();
+    trigger.trigger();
 };

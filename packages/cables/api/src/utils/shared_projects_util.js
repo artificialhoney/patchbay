@@ -329,9 +329,8 @@ export default class SharedProjectsUtil extends SharedUtil {
     let first = true;
     if (proj && proj.ops)
       for (let i = 0; i < proj.ops.length; i++) {
-        const info = this._opsUtil.getOpInfo(
-          this._opsUtil.getOpNameById(proj.ops[i].opId),
-        );
+        const opName = this._opsUtil.getOpNameById(proj.ops[i].opId);
+        const info = opName && this._opsUtil.getOpInfo(opName);
         if (info && info.authorName) {
           if (first) {
             credits.push("OP AUTHORS:");
@@ -378,7 +377,7 @@ export default class SharedProjectsUtil extends SharedUtil {
     const legal = {};
 
     for (let i = 0; i < usedOpsNames.length; i++) {
-      const info = this._opsUtil.getOpInfo(usedOpsNames[i]);
+      const info = usedOpsNames[i] && this._opsUtil.getOpInfo(usedOpsNames[i]);
       if (info && info.credits) {
         for (let j = 0; j < info.credits.length; j++) {
           const credit = info.credits[j];

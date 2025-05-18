@@ -28,66 +28,80 @@ update();
 
 // functions
 
-function onIdChanged() {
-  el.id = inId.get();
+function onIdChanged()
+{
+    el.id = inId.get();
 }
 
-function update() {
-  // var labelText = labelPort.get();
-  // label.textContent = labelText;
-  // if(CABLES.UI) {
-  //     if(labelText && typeof labelText === 'string') {
-  //         op.setTitle('Text: ' + labelText.substring(0, 10)); // display first 10 characters of text in op title
-  //     } else {
-  //         op.setTitle('Text');
-  //     }
-  // }
+function update()
+{
+    // var labelText = labelPort.get();
+    // label.textContent = labelText;
+    // if(CABLES.UI) {
+    //     if(labelText && typeof labelText === 'string') {
+    //         op.setTitle('Text: ' + labelText.substring(0, 10)); // display first 10 characters of text in op title
+    //     } else {
+    //         op.setTitle('Text');
+    //     }
+    // }
 
-  let vars = op.patch.getVars();
-  let html = '<table style="font-size:13px;">';
-  for (let ki in vars) {
-    let v = vars[ki].getValue();
+    let vars = op.patch.getVars();
+    let html = "<table style=\"font-size:13px;\">";
+    for (let ki in vars)
+    {
+        let v = vars[ki].getValue();
 
-    if (typeof v == "object") v = "[object]";
-    html += "<tr><td>" + ki + "</td><td><b>" + v + "</b></td></tr>";
-  }
-  html += "</table>";
-
-  label.innerHTML = html;
-}
-
-function onParentChanged() {
-  siblingsPort.set(null);
-  let parent = parentPort.get();
-  if (parent && parent.parentElement) {
-    parent.parentElement.appendChild(el);
-    siblingsPort.set(parent);
-  } else {
-    // detach
-    if (el.parentElement) {
-      el.parentElement.removeChild(el);
+        if (typeof v == "object") v = "[object]";
+        html += "<tr><td>" + ki + "</td><td><b>" + v + "</b></td></tr>";
     }
-  }
+    html += "</table>";
+
+    label.innerHTML = html;
 }
 
-function showElement(el) {
-  if (el) {
-    el.style.display = "block";
-  }
+function onParentChanged()
+{
+    siblingsPort.set(null);
+    let parent = parentPort.get();
+    if (parent && parent.parentElement)
+    {
+        parent.parentElement.appendChild(el);
+        siblingsPort.set(parent);
+    }
+    else
+    { // detach
+        if (el.parentElement)
+        {
+            el.parentElement.removeChild(el);
+        }
+    }
 }
 
-function hideElement(el) {
-  if (el) {
-    el.style.display = "none";
-  }
+function showElement(el)
+{
+    if (el)
+    {
+        el.style.display = "block";
+    }
 }
 
-function onDelete() {
-  removeElementFromDOM(el);
+function hideElement(el)
+{
+    if (el)
+    {
+        el.style.display = "none";
+    }
 }
 
-function removeElementFromDOM(el) {
-  if (el && el.parentNode && el.parentNode.removeChild) {
-    el.parentNode.removeChild(el);
-  }
+function onDelete()
+{
+    removeElementFromDOM(el);
+}
+
+function removeElementFromDOM(el)
+{
+    if (el && el.parentNode && el.parentNode.removeChild)
+    {
+        el.parentNode.removeChild(el);
+    }
 }

@@ -1,6 +1,8 @@
-const i = op.inObject("Object"),
-  r = op.outObject("Result");
+const
+    i = op.inObject("Object"),
+    r = op.outObject("Result");
 
-i.onChange = () => {
-  r.setRef(i.get());
+i.onChange = () =>
+{
+    r.setRef(i.get());
 };

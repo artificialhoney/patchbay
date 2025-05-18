@@ -19,23 +19,26 @@ const uniNearplane = new CGL.Uniform(shader, "f", "n", nearPlane);
 const uniFocus = new CGL.Uniform(shader, "f", "focus", inFocus);
 const uniwidth = new CGL.Uniform(shader, "f", "width", inWidth);
 
-inInv.onChange = function () {
-  if (inInv.get()) shader.define("INVERT");
-  else shader.removeDefine("INVERT");
+inInv.onChange = function ()
+{
+    if (inInv.get())shader.define("INVERT");
+    else shader.removeDefine("INVERT");
 };
 
-render.onTriggered = function () {
-  if (!CGL.TextureEffect.checkOpInEffect(op)) return;
+render.onTriggered = function ()
+{
+    if (!CGL.TextureEffect.checkOpInEffect(op)) return;
 
-  if (image.get() && image.get().tex) {
-    cgl.pushShader(shader);
-    cgl.currentTextureEffect.bind();
+    if (image.get() && image.get().tex)
+    {
+        cgl.pushShader(shader);
+        cgl.currentTextureEffect.bind();
 
-    cgl.setTexture(0, image.get().tex);
+        cgl.setTexture(0, image.get().tex);
 
-    cgl.currentTextureEffect.finish();
-    cgl.popShader();
-  }
+        cgl.currentTextureEffect.finish();
+        cgl.popShader();
+    }
 
-  trigger.trigger();
+    trigger.trigger();
 };

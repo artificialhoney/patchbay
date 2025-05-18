@@ -1,9 +1,3 @@
-function clamp(val, min, max) {
-  return Math.min(Math.max(val, min), max);
-}
-
-const audioCtx = CABLES.WEBAUDIO.createAudioContext(op);
-
 const inAudio0 = op.inObject("Audio In 0", null, "audioNode");
 const inAudio1 = op.inObject("Audio In 1", null, "audioNode");
 const inAudio2 = op.inObject("Audio In 2", null, "audioNode");
@@ -30,136 +24,119 @@ const inAudio4Pan = op.inFloat("In 4 Pan", 0);
 const inAudio5Pan = op.inFloat("In 5 Pan", 0);
 const inAudio6Pan = op.inFloat("In 6 Pan", 0);
 const inAudio7Pan = op.inFloat("In 7 Pan", 0);
-
 const inMasterGain = op.inFloatSlider("Output Gain", 1);
-
-let isIOS = false;
-let panNode = null;
-
-let createPanner = () => {};
-if (audioCtx.createStereoPanner) {
-  isIOS = false;
-} else {
-  isIOS = true;
-}
-
 const audioOut = op.outObject("Audio Out", null, "audioNode");
 
+const audioCtx = CABLES.WEBAUDIO.createAudioContext(op);
+let useStereoPanner = !audioCtx.createPanner && audioCtx.createStereoPanner;
+useStereoPanner = false;
 const gain = audioCtx.createGain();
 audioOut.set(gain);
 
-const N_PORTS = 8;
-
-const audioIns = [
-  inAudio0,
-  inAudio1,
-  inAudio2,
-  inAudio3,
-  inAudio4,
-  inAudio5,
-  inAudio6,
-  inAudio7,
-];
-const audioInGains = [
-  inAudio0Gain,
-  inAudio1Gain,
-  inAudio2Gain,
-  inAudio3Gain,
-  inAudio4Gain,
-  inAudio5Gain,
-  inAudio6Gain,
-  inAudio7Gain,
-];
-const audioInPans = [
-  inAudio0Pan,
-  inAudio1Pan,
-  inAudio2Pan,
-  inAudio3Pan,
-  inAudio4Pan,
-  inAudio5Pan,
-  inAudio6Pan,
-  inAudio7Pan,
-];
+const audioIns = [inAudio0, inAudio1, inAudio2, inAudio3, inAudio4, inAudio5, inAudio6, inAudio7];
+const audioInGains = [inAudio0Gain, inAudio1Gain, inAudio2Gain, inAudio3Gain, inAudio4Gain, inAudio5Gain, inAudio6Gain, inAudio7Gain];
+const audioInPans = [inAudio0Pan, inAudio1Pan, inAudio2Pan, inAudio3Pan, inAudio4Pan, inAudio5Pan, inAudio6Pan, inAudio7Pan];
 op.setPortGroup("Audio Inputs", audioIns);
 op.setPortGroup("Input", audioInGains);
 op.setPortGroup("Panning", audioInPans);
 op.setPortGroup("Output ", [inMasterGain]);
-const oldAudioIns = audioIns.map(() => ({ node: null, isConnected: false }));
-
-audioInGains.forEach((port, index) => {
-  port.gainNode = audioCtx.createGain();
-  port.onChange = () =>
-    port.gainNode.gain.linearRampToValueAtTime(
-      audioInGains[index].get() || 0,
-      audioCtx.currentTime + 0.01,
-    );
+const oldAudioIns = audioIns.map(() =>
+{
+    return {
+        "node": null,
+        "isConnected": false
+    };
 });
 
-audioInPans.forEach((port, index) => {
-  if (isIOS) {
-    port.panNode = audioCtx.createPanner();
-    port.panNode.panningModel = "equalpower";
-  } else {
-    port.panNode = audioCtx.createStereoPanner();
-  }
-
-  port.panNode.connect(audioInGains[index].gainNode);
-
-  port.onChange = () => {
-    const panning = clamp(audioInPans[index].get(), -1, 1);
-    if (!isIOS)
-      port.panNode.pan.linearRampToValueAtTime(
-        panning,
-        audioCtx.currentTime + 0.01,
-      );
-    else port.panNode.setPosition(panning, 0, 1 - Math.abs(panning));
-  };
+audioInGains.forEach((port, index) =>
+{
+    port.gainNode = audioCtx.createGain();
+    port.onChange = () => { return port.gainNode.gain.linearRampToValueAtTime((audioInGains[index].get() || 0), audioCtx.currentTime + 0.01); };
 });
 
-audioIns.forEach((port, index) => {
-  port.onChange = () => {
-    const audioNode = audioIns[index].get();
-    try {
-      if (audioNode) {
-        if (audioNode.connect) {
-          const bufferedNode = oldAudioIns[index];
-          bufferedNode.node = audioNode;
-          const gainNodePort = audioInGains[index].gainNode;
-          const panNodePort = audioInPans[index].panNode;
-
-          if (!bufferedNode.isConnected) {
-            bufferedNode.node.connect(panNodePort);
-            gainNodePort.connect(gain);
-            bufferedNode.isConnected = true;
-          }
-        }
-      } else {
-        const bufferedNode = oldAudioIns[index];
-        const gainNodePort = audioInGains[index].gainNode;
-        const panNodePort = audioInPans[index].panNode;
-
-        if (bufferedNode.isConnected) {
-          bufferedNode.node.disconnect(panNodePort);
-          gainNodePort.disconnect(gain);
-          bufferedNode.isConnected = false;
-        }
-      }
-    } catch (e) {
-      op.log(e);
+audioInPans.forEach((port, index) =>
+{
+    if (useStereoPanner)
+    {
+        port.panNode = audioCtx.createStereoPanner();
     }
-  };
+    else
+    {
+        port.panNode = audioCtx.createPanner();
+        port.panNode.panningModel = "equalpower";
+    }
 
-  port.audioInPortNr = index;
+    port.panNode.connect(audioInGains[index].gainNode);
+
+    port.onChange = () =>
+    {
+        const panning = CABLES.clamp(audioInPans[index].get(), -1, 1);
+        if (useStereoPanner)
+        {
+            port.panNode.pan.linearRampToValueAtTime(panning, audioCtx.currentTime + 0.01);
+        }
+        else
+        {
+            port.panNode.positionX.linearRampToValueAtTime(panning, audioCtx.currentTime + 0.01);
+            port.panNode.positionY.linearRampToValueAtTime(0, audioCtx.currentTime + 0.01);
+            port.panNode.positionZ.linearRampToValueAtTime(1 - Math.abs(panning), audioCtx.currentTime + 0.01);
+        }
+    };
 });
 
-inMasterGain.onChange = () =>
-  gain.gain.linearRampToValueAtTime(
-    inMasterGain.get() || 0,
-    audioCtx.currentTime + 0.01,
-  );
+audioIns.forEach((port, index) =>
+{
+    port.onChange = () =>
+    {
+        const audioNode = audioIns[index].get();
+        try
+        {
+            if (audioNode)
+            {
+                if (audioNode.connect)
+                {
+                    const bufferedNode = oldAudioIns[index];
+                    bufferedNode.node = audioNode;
+                    const gainNodePort = audioInGains[index].gainNode;
+                    const panNodePort = audioInPans[index].panNode;
 
-op.onDelete = () => {
-  for (let i = 0; i < audioInPans.length; i += 1) {
-    audioInPans[i].panNode.disconnect();
-  }
+                    if (!bufferedNode.isConnected)
+                    {
+                        bufferedNode.node.connect(panNodePort);
+                        gainNodePort.connect(gain);
+                        bufferedNode.isConnected = true;
+                    }
+                }
+            }
+            else
+            {
+                const bufferedNode = oldAudioIns[index];
+                const gainNodePort = audioInGains[index].gainNode;
+                const panNodePort = audioInPans[index].panNode;
+
+                if (bufferedNode.isConnected)
+                {
+                    bufferedNode.node.disconnect(panNodePort);
+                    gainNodePort.disconnect(gain);
+                    bufferedNode.isConnected = false;
+                }
+            }
+        }
+        catch (e)
+        {
+            op.log(e);
+        }
+    };
+
+    port.audioInPortNr = index;
+});
+
+inMasterGain.onChange = () => { return gain.gain.linearRampToValueAtTime((inMasterGain.get() || 0), audioCtx.currentTime + 0.01); };
+
+op.onDelete = () =>
+{
+    for (let i = 0; i < audioInPans.length; i += 1)
+    {
+        audioInPans[i].panNode.disconnect();
+    }
 };

@@ -1,8 +1,10 @@
-const inval = op.inArray("Array"),
-  next = op.outTrigger("Changed"),
-  outArr = op.outArray("Result");
+const
+    inval = op.inArray("Array"),
+    next = op.outTrigger("Changed"),
+    outArr = op.outArray("Result");
 
-inval.onChange = function () {
-  outArr.set(inval.get());
-  next.trigger();
+inval.onChange = function ()
+{
+    outArr.set(inval.get());
+    next.trigger();
 };

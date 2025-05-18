@@ -1,8 +1,9 @@
-const parentPort = op.inObject("link"),
-  inItemStyle = op.inBool("Border", true),
-  inVisible = op.inBool("Visible", true),
-  siblingsPort = op.outObject("childs"),
-  outEle = op.outObject("Element");
+const
+    parentPort = op.inObject("link"),
+    inItemStyle = op.inBool("Border", true),
+    inVisible = op.inBool("Visible", true),
+    siblingsPort = op.outObject("childs"),
+    outEle = op.outObject("Element");
 
 const el = document.createElement("div");
 el.dataset.op = op.id;
@@ -18,13 +19,17 @@ op.toWorkNeedsParent("Ops.Sidebar.Sidebar");
 
 let oldEle = null;
 
-inVisible.onChange = function () {
-  el.style.display = inVisible.get() ? "block" : "none";
+inVisible.onChange = function ()
+{
+    el.style.display = inVisible.get() ? "block" : "none";
 };
 
-inItemStyle.onChange = () => {
-  if (inItemStyle.get()) el.classList.add("sidebar__item");
-  else el.classList.remove("sidebar__item");
+inItemStyle.onChange = () =>
+{
+    if (inItemStyle.get())
+        el.classList.add("sidebar__item");
+    else
+        el.classList.remove("sidebar__item");
 };
 
 // function updateChild()
@@ -50,23 +55,27 @@ inItemStyle.onChange = () => {
 //     }
 // }
 
-function onParentChanged() {
-  siblingsPort.set(null);
-  const parent = parentPort.get();
-  if (parent && parent.parentElement) {
-    parent.parentElement.appendChild(el);
-    siblingsPort.set(parent);
-  } else {
-    // detach
-    if (el.parentElement) el.parentElement.removeChild(el);
-  }
+function onParentChanged()
+{
+    siblingsPort.set(null);
+    const parent = parentPort.get();
+    if (parent && parent.parentElement)
+    {
+        parent.parentElement.appendChild(el);
+        siblingsPort.set(parent);
+    }
+    else
+    { // detach
+        if (el.parentElement) el.parentElement.removeChild(el);
+    }
 }
 
-function onDelete() {
-  removeElementFromDOM(el);
+function onDelete()
+{
+    removeElementFromDOM(el);
 }
 
-function removeElementFromDOM(el) {
-  if (el && el.parentNode && el.parentNode.removeChild)
-    el.parentNode.removeChild(el);
+function removeElementFromDOM(el)
+{
+    if (el && el.parentNode && el.parentNode.removeChild) el.parentNode.removeChild(el);
 }

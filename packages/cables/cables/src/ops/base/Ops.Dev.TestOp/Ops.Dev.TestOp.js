@@ -11,8 +11,9 @@ const lala = op.outObject("Test");
 const cgl = op.patch.cgl;
 const meshRect = new CGL.WireframeRect(cgl);
 
-trig.onTriggered = () => {
-  meshRect.render();
+trig.onTriggered = () =>
+{
+    meshRect.render();
 };
 
 lala.set(new Float32Array(100));

@@ -1,31 +1,33 @@
-const inExec = op.inTrigger("Exec"),
-  r = op.inValueSlider("r", Math.random()),
-  g = op.inValueSlider("g", Math.random()),
-  b = op.inValueSlider("b", Math.random()),
-  inWidth = op.inFloat("LineWidth", 3),
-  inLineDash = op.inString("LineDash", ""),
-  next = op.outTrigger("Next");
+const
+    inExec = op.inTrigger("Exec"),
+    r = op.inValueSlider("r", Math.random()),
+    g = op.inValueSlider("g", Math.random()),
+    b = op.inValueSlider("b", Math.random()),
+    inWidth = op.inFloat("LineWidth", 3),
+    inLineDash = op.inString("LineDash", ""),
 
-r.setUiAttribs({ colorPick: true });
+    next = op.outTrigger("Next");
 
-inExec.onTriggered = () => {
-  if (op.patch.tempData.canvasCompose) {
-    const ctx = op.patch.tempData.canvasCompose.ctx;
-    ctx.save();
+r.setUiAttribs({ "colorPick": true });
 
-    const red = parseInt(r.get() * 255);
-    const green = parseInt(g.get() * 255);
-    const blue = parseInt(b.get() * 255);
+inExec.onTriggered = () =>
+{
+    if (op.patch.tempData.canvasCompose)
+    {
+        const ctx = op.patch.tempData.canvasCompose.ctx;
+        ctx.save();
 
-    const str = (blue | (green << 8) | (red << 16) | (1 << 24))
-      .toString(16)
-      .slice(1);
+        const red = parseInt(r.get() * 255);
+        const green = parseInt(g.get() * 255);
+        const blue = parseInt(b.get() * 255);
 
-    ctx.strokeStyle = "#" + str;
+        const str = (((blue | green << 8 | red << 16) | 1 << 24).toString(16).slice(1));
 
-    ctx.lineWidth = inWidth.get();
+        ctx.strokeStyle = "#" + str;
 
-    next.trigger();
-    ctx.restore();
-  }
+        ctx.lineWidth = inWidth.get();
+
+        next.trigger();
+        ctx.restore();
+    }
 };

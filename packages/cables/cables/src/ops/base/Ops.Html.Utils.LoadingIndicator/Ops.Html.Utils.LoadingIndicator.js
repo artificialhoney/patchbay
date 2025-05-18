@@ -1,5 +1,6 @@
-const inVisible = op.inBool("Visible", true),
-  inStyle = op.inSwitch("Style", ["Spinner", "Ring", "Ellipsis"], "Ring");
+const
+    inVisible = op.inBool("Visible", true),
+    inStyle = op.inSwitch("Style", ["Spinner", "Ring", "Ellipsis"], "Ring");
 
 const div = document.createElement("div");
 div.dataset.op = op.id;
@@ -36,40 +37,50 @@ styleEle.id = eleId;
 let head = document.getElementsByTagName("body")[0];
 head.appendChild(styleEle);
 
-op.onDelete = () => {
-  remove();
-  if (styleEle) styleEle.remove();
+op.onDelete = () =>
+{
+    remove();
+    if (styleEle)styleEle.remove();
 };
 
 canvas.appendChild(div);
 updateStyle();
 
-function updateStyle() {
-  const st = inStyle.get();
-  if (st == "Spinner") {
-    div.classList.add("_cables_spinner");
-    styleEle.textContent = attachments.css_spinner_css;
-  } else div.classList.remove("_cables_spinner");
+function updateStyle()
+{
+    const st = inStyle.get();
+    if (st == "Spinner")
+    {
+        div.classList.add("_cables_spinner");
+        styleEle.textContent = attachments.css_spinner_css;
+    }
+    else div.classList.remove("_cables_spinner");
 
-  if (st == "Ring") {
-    div.classList.add("lds-ring");
-    styleEle.textContent = attachments.css_ring_css;
-  } else div.classList.remove("lds-ring");
+    if (st == "Ring")
+    {
+        div.classList.add("lds-ring");
+        styleEle.textContent = attachments.css_ring_css;
+    }
+    else div.classList.remove("lds-ring");
 
-  if (st == "Ellipsis") {
-    div.classList.add("lds-ellipsis");
-    styleEle.textContent = attachments.css_ellipsis_css;
-  } else div.classList.remove("lds-ellipsis");
+    if (st == "Ellipsis")
+    {
+        div.classList.add("lds-ellipsis");
+        styleEle.textContent = attachments.css_ellipsis_css;
+    }
+    else div.classList.remove("lds-ellipsis");
 }
 
-function remove() {
-  div.remove();
+function remove()
+{
+    div.remove();
 }
 
-function updateVisible() {
-  // remove();
-  // if (inVisible.get()) canvas.appendChild(div);
+function updateVisible()
+{
+    // remove();
+    // if (inVisible.get()) canvas.appendChild(div);
 
-  // div.style.display = inVisible.get() ? "block" : "none";
-  div.style.opacity = inVisible.get() ? 1 : 0;
+    // div.style.display = inVisible.get() ? "block" : "none";
+    div.style.opacity = inVisible.get() ? 1 : 0;
 }

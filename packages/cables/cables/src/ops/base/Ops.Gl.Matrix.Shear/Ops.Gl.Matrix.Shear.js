@@ -1,24 +1,28 @@
-const render = op.inTrigger("render"),
-  shearX = op.inValueFloat("shearX", 0.5),
-  shearY = op.inValueFloat("shearY"),
-  trigger = op.outTrigger("trigger");
+const
+    render=op.inTrigger('render'),
+    shearX=op.inValueFloat("shearX",0.5),
+    shearY=op.inValueFloat("shearY"),
+    trigger=op.outTrigger('trigger');
 
-const cgl = op.patch.cgl;
+const cgl=op.patch.cgl;
 const shearMatrix = mat4.create();
 
-shearY.onChange = shearX.onChange = update;
+shearY.onChange=shearX.onChange=update;
 
-function update() {
-  mat4.identity(shearMatrix);
-  shearMatrix[1] = Math.tan(shearX.get());
-  shearMatrix[4] = Math.tan(shearY.get());
+function update()
+{
+    mat4.identity(shearMatrix);
+    shearMatrix[1]=Math.tan(shearX.get());
+    shearMatrix[4]=Math.tan(shearY.get());
 }
 
-render.onTriggered = function () {
-  cgl.pushModelMatrix();
+render.onTriggered=function()
+{
+    cgl.pushModelMatrix();
 
-  mat4.multiply(cgl.mMatrix, cgl.mMatrix, shearMatrix);
-  trigger.trigger();
+    mat4.multiply(cgl.mMatrix,cgl.mMatrix,shearMatrix);
+    trigger.trigger();
 
-  cgl.popModelMatrix();
+    cgl.popModelMatrix();
 };
+

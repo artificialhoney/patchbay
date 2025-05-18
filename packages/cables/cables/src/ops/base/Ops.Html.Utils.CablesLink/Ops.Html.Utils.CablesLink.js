@@ -3,13 +3,15 @@ let opacity = op.inValue("Opacity", 0.5);
 
 let element = document.createElement("div");
 
-size.onChange = function () {
-  element.style.width = size.get() + "px";
-  element.style.height = size.get() + "px";
+size.onChange = function ()
+{
+    element.style.width = size.get() + "px";
+    element.style.height = size.get() + "px";
 };
 
-opacity.onChange = function () {
-  element.style.opacity = opacity.get();
+opacity.onChange = function ()
+{
+    element.style.opacity = opacity.get();
 };
 
 element.style.padding = "10px";
@@ -21,8 +23,7 @@ element.style.width = "40px";
 element.style.height = "40px";
 element.style.opacity = "0.4";
 element.style.cursor = "pointer";
-element.style["background-image"] =
-  "url(https://cables.gl/img/cables-logo.svg)";
+element.style["background-image"] = "url(https://cables.gl/img/cables-logo.svg)";
 element.style["z-index"] = "9999";
 element.style["background-size"] = "80%";
 element.style["background-repeat"] = "no-repeat";
@@ -30,10 +31,12 @@ element.style["background-repeat"] = "no-repeat";
 let canvas = op.patch.cgl.canvas.parentElement;
 canvas.appendChild(element);
 
-element.addEventListener("click", function () {
-  document.location.href = "https://cables.gl";
+element.addEventListener("click", function ()
+{
+    document.location.href = "https://cables.gl";
 });
 
-op.onDelete = function () {
-  element.remove();
+op.onDelete = function ()
+{
+    element.remove();
 };

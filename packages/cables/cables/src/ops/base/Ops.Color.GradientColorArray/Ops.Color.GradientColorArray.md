@@ -6,7 +6,6 @@ Drag the small squares around to change the relationship between the different c
 Click once in the thin line at the bottom to add extra squares/gradient points.
 
 This will produce a datastructure like this, which can also go into the 'Gradient Array'-Port:
-
 ```
 [
   {

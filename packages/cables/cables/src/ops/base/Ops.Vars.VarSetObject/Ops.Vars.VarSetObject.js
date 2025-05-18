@@ -1,54 +1,61 @@
-op.varName = op.inDropDown("Variable", [], "", true);
-const btnCreate = op.inTriggerButton("Create new variable");
-const val = op.inObject("Object", 0);
+op.varName=op.inDropDown("Variable",[],"",true);
+const btnCreate=op.inTriggerButton("Create new variable");
+const val=op.inObject("Object",0);
 
-btnCreate.setUiAttribs({ hidePort: true });
-btnCreate.onTriggered = createVar;
-op.varName.onChange = updateName;
-val.onChange = update;
-val.changeAlways = true;
-op.setPortGroup("Variable", [op.varName, btnCreate]);
-op.patch.addEventListener("variablesChanged", updateVarNamesDropdown);
-op.init = updateErrorUi;
+btnCreate.setUiAttribs({hidePort:true});
+btnCreate.onTriggered=createVar;
+op.varName.onChange=updateName;
+val.onChange=update;
+val.changeAlways=true;
+op.setPortGroup("Variable",[op.varName,btnCreate]);
+op.patch.addEventListener("variablesChanged",updateVarNamesDropdown);
+op.init=updateErrorUi;
 updateVarNamesDropdown();
 
-function updateErrorUi() {
-  if (CABLES.UI) {
-    if (!op.varName.get()) op.setUiError("novarname", "no variable selected");
-    else op.setUiError("novarname", null);
-  }
+function updateErrorUi()
+{
+    if(CABLES.UI)
+    {
+        if(!op.varName.get()) op.setUiError('novarname','no variable selected');
+        else op.setUiError('novarname',null);
+    }
 }
 
-function updateVarNamesDropdown() {
-  updateName();
+function updateVarNamesDropdown()
+{
+    updateName()
 
-  if (CABLES.UI) {
-    var varnames = [];
-    var vars = op.patch.getVars();
-    for (var i in vars)
-      if (i != "0" && vars[i].type == "object") varnames.push(i);
-    op.varName.uiAttribs.values = varnames;
-  }
+    if(CABLES.UI)
+    {
+        var varnames=[];
+        var vars=op.patch.getVars();
+        for(var i in vars) if(i!="0" && vars[i].type=="object") varnames.push(i);
+        op.varName.uiAttribs.values=varnames;
+    }
 }
 
-function createVar() {
-  CABLES.CMD.PATCH.createVariable(op);
-  updateName();
+function createVar()
+{
+    CABLES.CMD.PATCH.createVariable(op);
+    updateName()
 }
 
-function updateName() {
-  if (CABLES.UI) op.setTitle("set #" + op.varName.get());
-  updateErrorUi();
+function updateName()
+{
+    if(CABLES.UI) op.setTitle('set #' + op.varName.get());
+    updateErrorUi();
 
-  const vari = op.patch.getVar(op.varName.get());
-  if (vari) vari.type = "object";
+    const vari=op.patch.getVar(op.varName.get());
+    if(vari)vari.type="object";
 
-  update();
+    update();
 }
 
-function update() {
-  op.patch.setVarValue(op.varName.get(), val.get());
+function update()
+{
+    op.patch.setVarValue(op.varName.get(),val.get());
 }
+
 
 // var val=op.inObject("Object");
 // op.varName=op.inValueSelect("Variable",[],"",true);
@@ -58,6 +65,7 @@ function update() {
 
 // // op.patch.addVariableListener(updateVarNamesDropdown);
 // op.patch.addEventListener("variablesChanged",updateVarNamesDropdown);
+
 
 // updateVarNamesDropdown();
 
@@ -104,8 +112,10 @@ function update() {
 
 // val.ignoreValueSerialize = true;
 
+
 // // op.patch.addVariableListener(updateVarNamesDropdown);
 // op.patch.addEventListener("variablesChanged",updateVarNamesDropdown);
+
 
 // updateVarNamesDropdown();
 

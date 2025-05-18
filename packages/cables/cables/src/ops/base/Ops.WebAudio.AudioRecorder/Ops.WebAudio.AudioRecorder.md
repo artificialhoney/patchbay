@@ -18,4 +18,5 @@ The AudioRecorder has 5 states:
 "recording" - the recorder is currently recording
 "processing" - the recorder is currently processing the recorded audio
 "ready" - the recorder is ready to play back/download
-"playing" - the recorder is currently playing back the recorded audio
+"playing"  - the recorder is currently playing back the recorded audio
+

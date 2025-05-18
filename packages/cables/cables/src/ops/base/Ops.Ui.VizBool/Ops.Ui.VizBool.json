@@ -1,62 +1,62 @@
 {
-  "id": "cf194306-175b-416a-b90e-31ff2192a190",
-  "changelog": [
-    {
-      "message": "created op",
-      "author": "pandur",
-      "date": 1645174841480
-    },
-    {
-      "message": "Ops.User.pandur.ValueLogger renamed to Ops.Dev.Logger",
-      "author": "pandur",
-      "date": 1645187910828
-    },
-    {
-      "message": "Ops.Dev.Logger renamed to Ops.Dev.VizLogger",
-      "author": "pandur",
-      "date": 1645187932105
-    },
-    {
-      "message": "cloned op from Ops.Dev.VizLogger",
-      "author": "pandur",
-      "date": 1649238794135
-    },
-    {
-      "message": "Ops.User.pandur.VizBool renamed to Ops.Dev.VizBool",
-      "author": "pandur",
-      "date": 1651126681345
-    },
-    {
-      "message": "Ops.Dev.VizBool renamed to Ops.Ui.VizBool",
-      "author": "pandur",
-      "date": 1651219287608
-    }
-  ],
-  "layout": {
-    "portsIn": [
-      {
-        "type": 0,
-        "name": "Boolean",
-        "subType": "boolean"
-      }
+    "id": "cf194306-175b-416a-b90e-31ff2192a190",
+    "changelog": [
+        {
+            "message": "created op",
+            "author": "pandur",
+            "date": 1645174841480
+        },
+        {
+            "message": "Ops.User.pandur.ValueLogger renamed to Ops.Dev.Logger",
+            "author": "pandur",
+            "date": 1645187910828
+        },
+        {
+            "message": "Ops.Dev.Logger renamed to Ops.Dev.VizLogger",
+            "author": "pandur",
+            "date": 1645187932105
+        },
+        {
+            "message": "cloned op from Ops.Dev.VizLogger",
+            "author": "pandur",
+            "date": 1649238794135
+        },
+        {
+            "message": "Ops.User.pandur.VizBool renamed to Ops.Dev.VizBool",
+            "author": "pandur",
+            "date": 1651126681345
+        },
+        {
+            "message": "Ops.Dev.VizBool renamed to Ops.Ui.VizBool",
+            "author": "pandur",
+            "date": 1651219287608
+        }
     ],
-    "portsOut": [
-      {
-        "type": 0,
-        "name": "Bool",
-        "subType": "boolean"
-      }
-    ]
-  },
-  "authorName": "pandur",
-  "created": 1649238794135,
-  "summary": "Visualize the state of a boolean input in the patch, useful for debugging",
-  "issues": "",
-  "caniusequery": "",
-  "youtubeids": [],
-  "exampleProjectId": "9SHiq4",
-  "docs": {
-    "ports": []
-  },
-  "license": "MIT"
+    "layout": {
+        "portsIn": [
+            {
+                "type": 0,
+                "name": "Boolean",
+                "subType": "boolean"
+            }
+        ],
+        "portsOut": [
+            {
+                "type": 0,
+                "name": "Bool",
+                "subType": "boolean"
+            }
+        ]
+    },
+    "authorName": "pandur",
+    "created": 1649238794135,
+    "summary": "Visualize the state of a boolean input in the patch, useful for debugging",
+    "issues": "",
+    "caniusequery": "",
+    "youtubeids": [],
+    "exampleProjectId": "9SHiq4",
+    "docs": {
+        "ports": []
+    },
+    "license": "MIT"
 }

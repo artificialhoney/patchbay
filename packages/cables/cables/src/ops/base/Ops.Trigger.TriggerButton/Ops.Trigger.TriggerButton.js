@@ -1,6 +1,8 @@
-const inTrig = op.inTriggerButton("Trigger"),
-  outTrig = op.outTrigger("Next");
+const
+    inTrig = op.inTriggerButton("Trigger"),
+    outTrig = op.outTrigger("Next");
 
-inTrig.onTriggered = function () {
-  outTrig.trigger();
+inTrig.onTriggered = function ()
+{
+    outTrig.trigger();
 };

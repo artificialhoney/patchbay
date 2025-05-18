@@ -15,21 +15,26 @@ reset();
 /**
  * On Value change
  */
-function update() {
-  let value = valuePort.get();
-  if (first) {
-    maxPort.set(value);
-    lastMax = value;
-  } else {
-    lastMax = Math.max(lastMax, value);
-    maxPort.set(lastMax);
-  }
-  first = false;
+function update()
+{
+    let value = valuePort.get();
+    if (first)
+    {
+        maxPort.set(value);
+        lastMax = value;
+    }
+    else
+    {
+        lastMax = Math.max(lastMax, value);
+        maxPort.set(lastMax);
+    }
+    first = false;
 }
 
 /**
  * On Reset
  */
-function reset() {
-  first = true;
+function reset()
+{
+    first = true;
 }

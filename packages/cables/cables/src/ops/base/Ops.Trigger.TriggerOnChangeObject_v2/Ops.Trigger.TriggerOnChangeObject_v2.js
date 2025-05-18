@@ -1,14 +1,17 @@
-const inval = op.inObject("Object"),
-  next = op.outTrigger("Changed"),
-  outObj = op.outObject("Result");
+const
+    inval = op.inObject("Object"),
+    next = op.outTrigger("Changed"),
+    outObj = op.outObject("Result");
 
 outObj.ignoreValueSerialize = true;
 
-inval.onChange = function () {
-  outObj.setRef(inval.get());
-  next.trigger();
+inval.onChange = function ()
+{
+    outObj.setRef(inval.get());
+    next.trigger();
 };
 
-op.init = () => {
-  if (inval.get()) next.trigger();
+op.init = () =>
+{
+    if (inval.get())next.trigger();
 };

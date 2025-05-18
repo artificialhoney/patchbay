@@ -8,6 +8,7 @@ const outKeyVal = op.outObject("Object Out");
 inObj.onChange = update;
 
 // this function runs every time the input port changes
-function update() {
-  outKeyVal.setRef(inObj.get());
+function update()
+{
+    outKeyVal.setRef(inObj.get());
 }

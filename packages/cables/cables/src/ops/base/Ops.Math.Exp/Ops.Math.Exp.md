@@ -1,1 +1,1 @@
-See [Euler’s number](<https://en.wikipedia.org/wiki/E_(mathematical_constant)>) (e^1, e^2, …)
+See [Euler’s number](https://en.wikipedia.org/wiki/E_(mathematical_constant)) (e^1, e^2, …)

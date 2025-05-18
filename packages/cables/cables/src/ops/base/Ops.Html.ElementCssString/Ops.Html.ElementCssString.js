@@ -1,13 +1,15 @@
-const inEle = op.inObject("Element", null, "element"),
-  outStr = op.outString("CSS");
+const
+    inEle = op.inObject("Element", null, "element"),
+    outStr = op.outString("CSS");
 
-inEle.onChange = () => {
-  const ele = inEle.get();
-  if (!ele) return outStr.set("");
+inEle.onChange = () =>
+{
+    const ele = inEle.get();
+    if (!ele) return outStr.set("");
 
-  let str = ele.style.cssText;
-  str = str.replaceAll("; ", ";\n");
-  outStr.set(str);
+    let str = ele.style.cssText;
+    str = str.replaceAll("; ", ";\n");
+    outStr.set(str);
 
-  // outStr.set(ele.style)
+    // outStr.set(ele.style)
 };

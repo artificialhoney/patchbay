@@ -9,3 +9,7 @@ The process prerendering jumps to the timeline-time of those events and renders 
 3. "Num Events" should show the number of detected events.
 4. it may be necessary to repeat step 2 a few times, until all huge spikes at scene changes in the performance op graph are gone...
 5. uncheck "record events" and save patch again
+
+
+
+

@@ -3,3 +3,5 @@ If an array contains :
 
 Putting index to 2 returns 3 values
 6,7,8
+
+

@@ -10,22 +10,23 @@ let newArr = [];
 outArray.set(newArr);
 
 inArray.onChange =
-  inValue.onChange =
-  inArray.onChange =
-    function () {
-      let arr = inArray.get();
-      if (!arr) return;
+inValue.onChange = inArray.onChange = function ()
+{
+    let arr = inArray.get();
+    if (!arr) return;
 
-      let pow = inValue.get();
-      if (pow < 0.0) {
+    let pow = inValue.get();
+    if (pow < 0.0)
+    {
         pow = 0.0;
-      }
+    }
 
-      if (newArr.length !== arr.length) newArr.length = arr.length;
+    if (newArr.length !== arr.length)newArr.length = arr.length;
 
-      for (let i = 0; i < arr.length; i++) {
+    for (let i = 0; i < arr.length; i++)
+    {
         newArr[i] = Math.pow(arr[i], pow);
-      }
-      outArray.set(null);
-      outArray.set(newArr);
-    };
+    }
+    outArray.set(null);
+    outArray.set(newArr);
+};

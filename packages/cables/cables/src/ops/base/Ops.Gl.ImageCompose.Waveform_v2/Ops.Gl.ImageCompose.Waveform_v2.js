@@ -1,27 +1,24 @@
-const render = op.inTrigger("render"),
-  blendMode = CGL.TextureEffect.AddBlendSelect(op, "Blend Mode", "normal"),
-  amount = op.inValueSlider("Amount", 1),
-  waveSelect = op.inValueSelect(
-    "Waveform",
-    ["Sine", "Sawtooth", "Triangle", "Square"],
-    "Sine",
-  ),
-  amplitude = op.inValueSlider("Amplitude", 0.5),
-  frequency = op.inFloat("Frequency", 2.0),
-  lineWidth = op.inValueSlider("Line Width", 0.1),
-  lineGlow = op.inValueSlider("Line Glow", 0.1),
-  invertCol = op.inValueBool("invert color", false),
-  solidFill = op.inValueBool("Solid fill", false),
-  offsetX = op.inValueSlider("Offset X", 0.0),
-  offsetY = op.inValueSlider("Offset Y", 0.5),
-  rotate = op.inValueSlider("Rotate", 0.0),
-  r = op.inValueSlider("r", 1.0),
-  g = op.inValueSlider("g", 1.0),
-  b = op.inValueSlider("b", 1.0);
+const
+    render = op.inTrigger("render"),
+    blendMode = CGL.TextureEffect.AddBlendSelect(op, "Blend Mode", "normal"),
+    amount = op.inValueSlider("Amount", 1),
+    waveSelect = op.inValueSelect("Waveform", ["Sine", "Sawtooth", "Triangle", "Square"], "Sine"),
+    amplitude = op.inValueSlider("Amplitude", 0.5),
+    frequency = op.inFloat("Frequency", 2.0),
+    lineWidth = op.inValueSlider("Line Width", 0.1),
+    lineGlow = op.inValueSlider("Line Glow", 0.1),
+    invertCol = op.inValueBool("invert color", false),
+    solidFill = op.inValueBool("Solid fill", false),
+    offsetX = op.inValueSlider("Offset X", 0.0),
+    offsetY = op.inValueSlider("Offset Y", 0.5),
+    rotate = op.inValueSlider("Rotate", 0.0),
+    r = op.inValueSlider("r", 1.0),
+    g = op.inValueSlider("g", 1.0),
+    b = op.inValueSlider("b", 1.0);
 
 const trigger = op.outTrigger("trigger");
 
-r.setUiAttribs({ colorPick: true });
+r.setUiAttribs({ "colorPick": true });
 
 const cgl = op.patch.cgl;
 const shader = new CGL.Shader(cgl, op.name, op);
@@ -48,26 +45,28 @@ const rotateUniform = new CGL.Uniform(shader, "f", "uRotate", rotate);
 waveSelect.onChange = invertCol.onChange = updateDefines;
 updateDefines();
 
-function updateDefines() {
-  shader.toggleDefine("SINE", waveSelect.get() == "Sine");
-  shader.toggleDefine("SAWTOOTH", waveSelect.get() == "Sawtooth");
-  shader.toggleDefine("TRIANGLE", waveSelect.get() == "Triangle");
-  shader.toggleDefine("SQUARE", waveSelect.get() == "Square");
-  shader.toggleDefine("INVERT", invertCol.get() == true);
+function updateDefines()
+{
+    shader.toggleDefine("SINE", waveSelect.get() == "Sine");
+    shader.toggleDefine("SAWTOOTH", waveSelect.get() == "Sawtooth");
+    shader.toggleDefine("TRIANGLE", waveSelect.get() == "Triangle");
+    shader.toggleDefine("SQUARE", waveSelect.get() == "Square");
+    shader.toggleDefine("INVERT", invertCol.get() == true);
 }
 
 CGL.TextureEffect.setupBlending(op, shader, blendMode, amount);
 
-render.onTriggered = function () {
-  if (!CGL.TextureEffect.checkOpInEffect(op)) return;
+render.onTriggered = function ()
+{
+    if (!CGL.TextureEffect.checkOpInEffect(op)) return;
 
-  cgl.pushShader(shader);
-  cgl.currentTextureEffect.bind();
+    cgl.pushShader(shader);
+    cgl.currentTextureEffect.bind();
 
-  cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
+    cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
 
-  cgl.currentTextureEffect.finish();
-  cgl.popShader();
+    cgl.currentTextureEffect.finish();
+    cgl.popShader();
 
-  trigger.trigger();
+    trigger.trigger();
 };

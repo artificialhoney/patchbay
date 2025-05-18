@@ -12,28 +12,31 @@ let textureUniform = new CGL.Uniform(shader, "t", "tex", 0);
 let masktextureUniform = new CGL.Uniform(shader, "t", "mask", 1);
 let amountUniform = new CGL.Uniform(shader, "f", "amount", amount);
 
-invertMask.onChange = function () {
-  if (invertMask.get()) shader.define("INVERTMASK");
-  else shader.removeDefine("INVERTMASK");
+invertMask.onChange = function ()
+{
+    if (invertMask.get())shader.define("INVERTMASK");
+    else shader.removeDefine("INVERTMASK");
 };
 
-inMask.onChange = function () {
-  if (inMask.get()) shader.define("MASK");
-  else shader.removeDefine("MASK");
+inMask.onChange = function ()
+{
+    if (inMask.get())shader.define("MASK");
+    else shader.removeDefine("MASK");
 };
 
-render.onTriggered = function () {
-  if (!CGL.TextureEffect.checkOpInEffect(op)) return;
+render.onTriggered = function ()
+{
+    if (!CGL.TextureEffect.checkOpInEffect(op)) return;
 
-  cgl.pushShader(shader);
-  cgl.currentTextureEffect.bind();
+    cgl.pushShader(shader);
+    cgl.currentTextureEffect.bind();
 
-  cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
+    cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
 
-  if (inMask.get()) cgl.setTexture(1, inMask.get().tex);
+    if (inMask.get()) cgl.setTexture(1, inMask.get().tex);
 
-  cgl.currentTextureEffect.finish();
-  cgl.popShader();
+    cgl.currentTextureEffect.finish();
+    cgl.popShader();
 
-  trigger.trigger();
+    trigger.trigger();
 };

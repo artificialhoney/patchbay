@@ -28,20 +28,24 @@ enableVerticalPanPort.onChange = onEnableVerticalPanPortChange;
 onEnableVerticalSwipePortChange();
 onEnableVerticalPanPortChange();
 
-function onEnableVerticalSwipePortChange() {
-  let direction = Hammer.DIRECTION_HORIZONTAL;
-  if (enableVerticalSwipePort.get()) {
-    direction = Hammer.DIRECTION_ALL;
-  }
-  mc.get("swipe").set({ direction: direction });
+function onEnableVerticalSwipePortChange()
+{
+    let direction = Hammer.DIRECTION_HORIZONTAL;
+    if (enableVerticalSwipePort.get())
+    {
+        direction = Hammer.DIRECTION_ALL;
+    }
+    mc.get("swipe").set({ "direction": direction });
 }
 
-function onEnableVerticalPanPortChange() {
-  let direction = Hammer.DIRECTION_HORIZONTAL;
-  if (enableVerticalPanPort.get()) {
-    direction = Hammer.DIRECTION_ALL;
-  }
-  mc.get("pan").set({ direction: direction });
+function onEnableVerticalPanPortChange()
+{
+    let direction = Hammer.DIRECTION_HORIZONTAL;
+    if (enableVerticalPanPort.get())
+    {
+        direction = Hammer.DIRECTION_ALL;
+    }
+    mc.get("pan").set({ "direction": direction });
 }
 
 /*
@@ -59,52 +63,60 @@ mc.on("swipedown", onSwipeDown);
 mc.on("press", onPress);
 mc.on("pressup", onPressUp);
 
-function onPress(ev) {
-  if (!inEnabled.get()) return;
-  eventPort.set(ev);
-  pressPort.trigger();
+function onPress(ev)
+{
+    if (!inEnabled.get()) return;
+    eventPort.set(ev);
+    pressPort.trigger();
 }
 
-function onPressUp(ev) {
-  if (!inEnabled.get()) return;
-  eventPort.set(ev);
-  pressUpPort.trigger();
+function onPressUp(ev)
+{
+    if (!inEnabled.get()) return;
+    eventPort.set(ev);
+    pressUpPort.trigger();
 }
 
-function onPanLeft(ev) {
-  if (!inEnabled.get()) return;
-  eventPort.set(ev);
-  panLeftPort.trigger();
+function onPanLeft(ev)
+{
+    if (!inEnabled.get()) return;
+    eventPort.set(ev);
+    panLeftPort.trigger();
 }
 
-function onPanRight(ev) {
-  if (!inEnabled.get()) return;
-  eventPort.set(ev);
-  panRightPort.trigger();
+function onPanRight(ev)
+{
+    if (!inEnabled.get()) return;
+    eventPort.set(ev);
+    panRightPort.trigger();
 }
 
-function onSwipeLeft(ev) {
-  if (!inEnabled.get()) return;
-  eventPort.set(ev);
-  swipeLeftPort.trigger();
+function onSwipeLeft(ev)
+{
+    if (!inEnabled.get()) return;
+    eventPort.set(ev);
+    swipeLeftPort.trigger();
 }
 
-function onSwipeRight(ev) {
-  if (!inEnabled.get()) return;
-  eventPort.set(ev);
-  swipeRightPort.trigger();
+function onSwipeRight(ev)
+{
+    if (!inEnabled.get()) return;
+    eventPort.set(ev);
+    swipeRightPort.trigger();
 }
 
-function onSwipeUp(ev) {
-  if (!inEnabled.get()) return;
-  eventPort.set(ev);
-  swipeUpPort.trigger();
+function onSwipeUp(ev)
+{
+    if (!inEnabled.get()) return;
+    eventPort.set(ev);
+    swipeUpPort.trigger();
 }
 
-function onSwipeDown(ev) {
-  if (!inEnabled.get()) return;
-  eventPort.set(ev);
-  swipeDownPort.trigger();
+function onSwipeDown(ev)
+{
+    if (!inEnabled.get()) return;
+    eventPort.set(ev);
+    swipeDownPort.trigger();
 }
 
 /*

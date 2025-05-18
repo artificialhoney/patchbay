@@ -10,27 +10,32 @@ let inTexUniform = null;
 render.onLinkChanged = removeModule;
 render.onTriggered = doRender;
 
-function removeModule() {
-  if (shader && mod) {
-    shader.removeModule(mod);
-    shader = null;
-  }
+function removeModule()
+{
+    if (shader && mod)
+    {
+        shader.removeModule(mod);
+        shader = null;
+    }
 }
 
-function doRender() {
-  if (cgl.getShader() != shader) {
-    if (shader) removeModule();
-    shader = cgl.getShader();
-    mod = shader.addModule({
-      priority: -4,
-      name: "MODULE_VERTEX_POSITION",
-      srcHeadVert: attachments.bulge_head_vert || "",
-      srcBodyVert: attachments.bulge_body_vert || "",
-    });
+function doRender()
+{
+    if (cgl.getShader() != shader)
+    {
+        if (shader) removeModule();
+        shader = cgl.getShader();
+        mod = shader.addModule(
+            {
+                "priority": -4,
+                "name": "MODULE_VERTEX_POSITION",
+                "srcHeadVert": attachments.bulge_head_vert || "",
+                "srcBodyVert": attachments.bulge_body_vert || ""
+            });
 
-    inTexUniform = new CGL.Uniform(shader, "t", mod.prefix + "tex", 3);
-  }
+        inTexUniform = new CGL.Uniform(shader, "t", mod.prefix + "tex", 3);
+    }
 
-  if (inTex.get()) cgl.setTexture(3, inTex.get().tex);
-  trigger.trigger();
+    if (inTex.get()) cgl.setTexture(3, inTex.get().tex);
+    trigger.trigger();
 }

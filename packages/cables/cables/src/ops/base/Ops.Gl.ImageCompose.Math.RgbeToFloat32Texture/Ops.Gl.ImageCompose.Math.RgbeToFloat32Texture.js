@@ -1,5 +1,6 @@
-const render = op.inTrigger("render"),
-  trigger = op.outTrigger("trigger");
+const
+    render = op.inTrigger("render"),
+    trigger = op.outTrigger("trigger");
 
 const cgl = op.patch.cgl;
 const shader = new CGL.Shader(cgl, op.name, op);
@@ -10,18 +11,19 @@ shader.setSource(shader.getDefaultVertexShader(), attachments.rgbe2fp_frag);
 
 // CGL.TextureEffect.setupBlending(op, shader, blendMode, amount);
 
-render.onTriggered = function () {
-  if (!CGL.TextureEffect.checkOpInEffect(op)) return;
+render.onTriggered = function ()
+{
+    if (!CGL.TextureEffect.checkOpInEffect(op)) return;
 
-  cgl.pushShader(shader);
-  cgl.currentTextureEffect.bind();
+    cgl.pushShader(shader);
+    cgl.currentTextureEffect.bind();
 
-  cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
+    cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
 
-  cgl.currentTextureEffect.finish();
-  cgl.popShader();
+    cgl.currentTextureEffect.finish();
+    cgl.popShader();
 
-  trigger.trigger();
+    trigger.trigger();
 };
 
 // const

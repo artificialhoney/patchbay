@@ -1,5 +1,4 @@
 The following operations are available, if they evaluate to true then the value becomes 1 else 0 :
-
 ```
 >
 <
@@ -8,9 +7,7 @@ The following operations are available, if they evaluate to true then the value 
 ==
 !=
 ```
-
 With the pass mode if the test evaluates to true then array 0 is passed through
-
 ```
 >pass
 <pass
@@ -19,3 +16,5 @@ With the pass mode if the test evaluates to true then array 0 is passed through
 ==pass
 !=pass
 ```
+
+

@@ -11,19 +11,20 @@ let textureUniform = new CGL.Uniform(shader, "t", "tex", 0);
 let textureUniform2 = new CGL.Uniform(shader, "t", "texLut", 1);
 let uniPos = new CGL.Uniform(shader, "f", "amount", inAmount);
 
-render.onTriggered = function () {
-  if (!CGL.TextureEffect.checkOpInEffect(op)) return;
-  if (!inLut.get()) return;
+render.onTriggered = function ()
+{
+    if (!CGL.TextureEffect.checkOpInEffect(op)) return;
+    if (!inLut.get()) return;
 
-  cgl.pushShader(shader);
-  cgl.currentTextureEffect.bind();
+    cgl.pushShader(shader);
+    cgl.currentTextureEffect.bind();
 
-  cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
+    cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
 
-  cgl.setTexture(1, inLut.get().tex);
+    cgl.setTexture(1, inLut.get().tex);
 
-  cgl.currentTextureEffect.finish();
-  cgl.popShader();
+    cgl.currentTextureEffect.finish();
+    cgl.popShader();
 
-  trigger.trigger();
+    trigger.trigger();
 };

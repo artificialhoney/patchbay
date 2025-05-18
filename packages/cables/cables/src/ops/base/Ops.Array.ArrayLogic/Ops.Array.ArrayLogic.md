@@ -1,8 +1,7 @@
 The following operations are available
 If any of the following evaluates to true then the output is 1 else 0
-
 ```
->
+> 
 <
 >=
 <=

@@ -1,12 +1,14 @@
-const update = op.inTrigger("Update"),
-  next = op.outTrigger("Next"),
-  outArr = op.outString("Result");
+const
+    update = op.inTrigger("Update"),
+    next = op.outTrigger("Next"),
+    outArr = op.outString("Result");
 
-update.onTriggered = () => {
-  op.patch.tempData.compString = op.patch.tempData.compString || "";
+update.onTriggered = () =>
+{
+    op.patch.tempData.compString = op.patch.tempData.compString || "";
 
-  op.patch.tempData.compString = "";
-  next.trigger();
+    op.patch.tempData.compString = "";
+    next.trigger();
 
-  outArr.setRef(op.patch.tempData.compString);
+    outArr.setRef(op.patch.tempData.compString);
 };

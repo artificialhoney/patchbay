@@ -9,5 +9,5 @@ Year,Make,Model,Description,Price
 air, moon roof, loaded",4799.00
 ```
 
-If your CSV-file has a header-row, you have to manually ignore it (index 0), or just delete it from the file.
+If your CSV-file has a header-row, you have to manually ignore it (index 0), or just delete it from the file. 
 The result will be a two-dimensional array containing the rows and individual row-values.

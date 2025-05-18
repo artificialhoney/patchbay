@@ -11,36 +11,34 @@ const outExpressionIsValid = op.outBool("Expression Valid");
 let currentFunction = inExpression.get();
 let functionValid = false;
 
-const createFunction = () => {
-  try {
-    currentFunction = new Function(
-      "m",
-      "a",
-      "b",
-      "c",
-      "d",
-      `with(m) { return ${inExpression.get()} }`,
-    );
-    functionValid = true;
-    evaluateFunction();
-    outExpressionIsValid.set(functionValid);
-  } catch (e) {
-    functionValid = false;
-    outExpressionIsValid.set(functionValid);
-    if (e instanceof ReferenceError || e instanceof SyntaxError) return;
-  }
+const createFunction = () =>
+{
+    try
+    {
+        currentFunction = new Function("m", "a", "b", "c", "d", `with(m) { return ${inExpression.get()} }`);
+        functionValid = true;
+        evaluateFunction();
+        outExpressionIsValid.set(functionValid);
+    }
+    catch (e)
+    {
+        functionValid = false;
+        outExpressionIsValid.set(functionValid);
+        if (e instanceof ReferenceError || e instanceof SyntaxError) return;
+    }
 };
 
-const evaluateFunction = () => {
-  if (functionValid) {
-    outResult.set(
-      currentFunction(Math, inA.get(), inB.get(), inC.get(), inD.get()),
-    );
-    if (!inExpression.get()) outResult.set(0);
-  }
+const evaluateFunction = () =>
+{
+    if (functionValid)
+    {
+        outResult.set(currentFunction(Math, inA.get(), inB.get(), inC.get(), inD.get()));
+        if (!inExpression.get()) outResult.set(0);
+    }
 
-  outExpressionIsValid.set(functionValid);
+    outExpressionIsValid.set(functionValid);
 };
+
 
 inA.onChange = inB.onChange = inC.onChange = inD.onChange = evaluateFunction;
 inExpression.onChange = createFunction;

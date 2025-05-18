@@ -5,3 +5,5 @@ e.g.:
 `time` input will set `result time` output as an interpolated time value.
 
 time interpolation is linear if frames are consecutive, otherwise absolute
+
+

@@ -6,17 +6,19 @@ let newArr = [];
 outArray.set(newArr);
 op.toWorkPortsNeedToBeLinked(inArray);
 
-inValue.onChange = inArray.onChange = function () {
-  let arr = inArray.get();
-  if (!arr) return;
+inValue.onChange = inArray.onChange = function ()
+{
+    let arr = inArray.get();
+    if (!arr) return;
 
-  let inMax = inValue.get();
+    let inMax = inValue.get();
 
-  if (newArr.length != arr.length) newArr.length = arr.length;
+    if (newArr.length != arr.length)newArr.length = arr.length;
 
-  let i = 0;
-  for (i = 0; i < arr.length; i++) {
-    newArr[i] = Math.max(arr[i], inMax);
-  }
-  outArray.setRef(newArr);
+    let i = 0;
+    for (i = 0; i < arr.length; i++)
+    {
+        newArr[i] = Math.max(arr[i], inMax);
+    }
+    outArray.setRef(newArr);
 };

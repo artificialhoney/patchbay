@@ -1,30 +1,38 @@
-const width = op.inValue("width", 400),
-  height = op.inValue("height", 400),
-  src = op.inValueString("URL", "https://undev.studio"),
-  elId = op.inValueString("ID"),
-  inBorder = op.inBool("Show Border", false),
-  outEle = op.outObject("Element");
+const
+    width = op.inValue("width", 400),
+    height = op.inValue("height", 400),
+    src = op.inValueString("URL", "https://undev.studio"),
+    elId = op.inValueString("ID"),
+    inBorder = op.inBool("Show Border", false),
+    outEle = op.outObject("Element");
 
-function updateSize() {
-  element.style.width = width.get() + "px";
-  element.style.height = width.get() + "px";
+function updateSize()
+{
+    element.style.width = width.get() + "px";
+    element.style.height = width.get() + "px";
 }
 
-function updateURL() {
-  element.setAttribute("src", src.get());
-  updateBorder();
+function updateURL()
+{
+    element.setAttribute("src", src.get());
+    updateBorder();
 }
 
-function updateID() {
-  element.setAttribute("id", elId.get());
+function updateID()
+{
+    element.setAttribute("id", elId.get());
 }
 
-function updateBorder() {
-  if (inBorder.get()) {
-    element.style.border = null;
-  } else {
-    element.style.border = "0";
-  }
+function updateBorder()
+{
+    if (inBorder.get())
+    {
+        element.style.border = null;
+    }
+    else
+    {
+        element.style.border = "0";
+    }
 }
 
 var element = document.createElement("iframe");
@@ -46,7 +54,8 @@ inBorder.onChange = updateBorder;
 updateSize();
 updateURL();
 
-op.onDelete = function () {
-  // element.remove();
-  element.parentNode.removeChild(element);
+op.onDelete = function ()
+{
+    // element.remove();
+    element.parentNode.removeChild(element);
 };

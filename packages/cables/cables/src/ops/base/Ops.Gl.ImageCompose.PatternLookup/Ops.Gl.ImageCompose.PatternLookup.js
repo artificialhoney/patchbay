@@ -12,44 +12,33 @@ const shader = new CGL.Shader(cgl, op.name, op);
 
 op.toWorkPortsNeedToBeLinked(multiplierTex);
 
-shader.setSource(
-  shader.getDefaultVertexShader(),
-  attachments.patternlookup_frag,
-);
+shader.setSource(shader.getDefaultVertexShader(), attachments.patternlookup_frag);
 
 const textureUniform = new CGL.Uniform(shader, "t", "tex", 0);
 const textureMultiplierUniform = new CGL.Uniform(shader, "t", "patternTex", 1);
 const amountUniform = new CGL.Uniform(shader, "f", "amount", amount);
-const ptrnWidthUniform = new CGL.Uniform(
-  shader,
-  "f",
-  "patternWidth",
-  patternWidth,
-);
-const patternHeightUniform = new CGL.Uniform(
-  shader,
-  "f",
-  "patternHeight",
-  patternHeight,
-);
+const ptrnWidthUniform = new CGL.Uniform(shader, "f", "patternWidth", patternWidth);
+const patternHeightUniform = new CGL.Uniform(shader, "f", "patternHeight", patternHeight);
 
 CGL.TextureEffect.setupBlending(op, shader, blendMode, amount);
 
-render.onTriggered = function () {
-  if (!CGL.TextureEffect.checkOpInEffect(op)) return;
+render.onTriggered = function ()
+{
+    if (!CGL.TextureEffect.checkOpInEffect(op)) return;
 
-  let multex = multiplierTex.get();
-  if (multex) {
-    cgl.pushShader(shader);
-    cgl.currentTextureEffect.bind();
+    let multex = multiplierTex.get();
+    if (multex)
+    {
+        cgl.pushShader(shader);
+        cgl.currentTextureEffect.bind();
 
-    cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
+        cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
 
-    if (multex) cgl.setTexture(1, multex.tex);
+        if (multex) cgl.setTexture(1, multex.tex);
 
-    cgl.currentTextureEffect.finish();
-    cgl.popShader();
-  }
+        cgl.currentTextureEffect.finish();
+        cgl.popShader();
+    }
 
-  trigger.trigger();
+    trigger.trigger();
 };

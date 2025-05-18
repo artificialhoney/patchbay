@@ -6,7 +6,7 @@ const labelPort = op.inString("Text", "Toggle");
 const inputValuePort = op.inValueBool("Input", DEFAULT_VALUE_DEFAULT);
 const setDefaultValueButtonPort = op.inTriggerButton("Set Default");
 const defaultValuePort = op.inValueBool("Default", DEFAULT_VALUE_DEFAULT);
-defaultValuePort.setUiAttribs({ hidePort: true, greyout: true });
+defaultValuePort.setUiAttribs({ "hidePort": true, "greyout": true });
 const inGreyOut = op.inBool("Grey Out", false);
 const inVisible = op.inBool("Visible", true);
 
@@ -22,9 +22,10 @@ el.classList.add("sidebar__reloadable");
 
 if (DEFAULT_VALUE_DEFAULT) el.classList.add("sidebar__toggle--active");
 
-el.addEventListener("dblclick", function () {
-  valuePort.set(defaultValuePort.get());
-  inputValuePort.set(defaultValuePort.get());
+el.addEventListener("dblclick", function ()
+{
+    valuePort.set(defaultValuePort.get());
+    inputValuePort.set(defaultValuePort.get());
 });
 
 const label = document.createElement("div");
@@ -59,47 +60,58 @@ op.onDelete = onDelete;
 setDefaultValueButtonPort.onTriggered = setDefaultValue;
 // op.toWorkNeedsParent('Ops.Sidebar.Sidebar');
 
-function setDefaultValue() {
-  const defaultValue = inputValuePort.get();
-  defaultValuePort.set(defaultValue);
-  valuePort.set(defaultValue);
-  op.refreshParams();
+function setDefaultValue()
+{
+    const defaultValue = inputValuePort.get();
+    defaultValuePort.set(defaultValue);
+    valuePort.set(defaultValue);
+    op.refreshParams();
 }
 
-function onInputClick() {
-  el.classList.toggle("sidebar__toggle--active");
-  if (el.classList.contains("sidebar__toggle--active")) {
-    valuePort.set(true);
-    inputValuePort.set(true);
-    // value.textContent = 'true';
-    icon.classList.add("icon_toggle_true");
-    icon.classList.remove("icon_toggle_false");
-  } else {
-    icon.classList.remove("icon_toggle_true");
-    icon.classList.add("icon_toggle_false");
+function onInputClick()
+{
+    el.classList.toggle("sidebar__toggle--active");
+    if (el.classList.contains("sidebar__toggle--active"))
+    {
+        valuePort.set(true);
+        inputValuePort.set(true);
+        // value.textContent = 'true';
+        icon.classList.add("icon_toggle_true");
+        icon.classList.remove("icon_toggle_false");
+    }
+    else
+    {
+        icon.classList.remove("icon_toggle_true");
+        icon.classList.add("icon_toggle_false");
 
-    valuePort.set(false);
-    inputValuePort.set(false);
-    // value.textContent = 'false';
-  }
-  op.refreshParams();
+        valuePort.set(false);
+        inputValuePort.set(false);
+        // value.textContent = 'false';
+    }
+    op.refreshParams();
 }
 
-function onInputValuePortChanged() {
-  const inputValue = inputValuePort.get();
-  if (inputValue) {
-    el.classList.add("sidebar__toggle--active");
-    valuePort.set(true);
-    // value.textContent = 'true';
-  } else {
-    el.classList.remove("sidebar__toggle--active");
-    valuePort.set(false);
-    // value.textContent = 'false';
-  }
+function onInputValuePortChanged()
+{
+    const inputValue = inputValuePort.get();
+    if (inputValue)
+    {
+        el.classList.add("sidebar__toggle--active");
+        valuePort.set(true);
+        // value.textContent = 'true';
+    }
+    else
+    {
+        el.classList.remove("sidebar__toggle--active");
+        valuePort.set(false);
+        // value.textContent = 'false';
+    }
 }
 
-function onDefaultValueChanged() {
-  /*
+function onDefaultValueChanged()
+{
+
+    /*
     var defaultValue = defaultValuePort.get();
     if(defaultValue) {
         el.classList.add('sidebar__toggle--active');
@@ -111,42 +123,51 @@ function onDefaultValueChanged() {
     */
 }
 
-function onLabelTextChanged() {
-  const labelText = labelPort.get();
-  label.textContent = labelText;
-  if (CABLES.UI) op.setUiAttrib({ extendTitle: labelText });
+function onLabelTextChanged()
+{
+    const labelText = labelPort.get();
+    label.textContent = labelText;
+    if (CABLES.UI) op.setUiAttrib({ "extendTitle": labelText });
 }
 
-function onParentChanged() {
-  const parent = parentPort.get();
-  if (parent && parent.parentElement) {
-    parent.parentElement.appendChild(el);
-    siblingsPort.set(null);
-    siblingsPort.set(parent);
-  } else if (el.parentElement) el.parentElement.removeChild(el);
+function onParentChanged()
+{
+    const parent = parentPort.get();
+    if (parent && parent.parentElement)
+    {
+        parent.parentElement.appendChild(el);
+        siblingsPort.set(null);
+        siblingsPort.set(parent);
+    }
+    else if (el.parentElement) el.parentElement.removeChild(el);
 }
 
-function showElement(el) {
-  if (el) el.style.display = "block";
+function showElement(el)
+{
+    if (el) el.style.display = "block";
 }
 
-function hideElement(el) {
-  if (el) el.style.display = "none";
+function hideElement(el)
+{
+    if (el) el.style.display = "none";
 }
 
-function onDelete() {
-  removeElementFromDOM(el);
+function onDelete()
+{
+    removeElementFromDOM(el);
 }
 
-function removeElementFromDOM(el) {
-  if (el && el.parentNode && el.parentNode.removeChild)
-    el.parentNode.removeChild(el);
+function removeElementFromDOM(el)
+{
+    if (el && el.parentNode && el.parentNode.removeChild) el.parentNode.removeChild(el);
 }
 
-inGreyOut.onChange = function () {
-  greyOut.style.display = inGreyOut.get() ? "block" : "none";
+inGreyOut.onChange = function ()
+{
+    greyOut.style.display = inGreyOut.get() ? "block" : "none";
 };
 
-inVisible.onChange = function () {
-  el.style.display = inVisible.get() ? "block" : "none";
+inVisible.onChange = function ()
+{
+    el.style.display = inVisible.get() ? "block" : "none";
 };

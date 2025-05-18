@@ -1,11 +1,9 @@
 ## CSS Rule Conflicts
-
 HTML element created by cables always have a class called "cablesEle".
 
 If you have problems with existing styles of cables, use css selectors to define them to use only childs:
-
 ```
-.cablesEle.myDiv
+.cablesEle.myDiv 
 {
     background-color:red;
     border:10px solid blue;

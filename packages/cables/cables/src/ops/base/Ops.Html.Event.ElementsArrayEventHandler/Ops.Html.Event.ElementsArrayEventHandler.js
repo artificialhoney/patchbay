@@ -15,39 +15,43 @@ const indexKey = "op" + op.id + "listenerIndex";
 let currentElements = [];
 let currentEventName = "";
 
-const handleEvent = (event) => {
-  const element = event.currentTarget;
-  outIndex.set(-1);
-  if (element.dataset.hasOwnProperty(indexKey))
-    outIndex.set(parseInt(element.dataset[indexKey], 10));
-  eventObjPort.setRef(event);
-  eventElementPort.setRef(element);
-  triggerPort.trigger();
+const handleEvent = (event) =>
+{
+    const element = event.currentTarget;
+    outIndex.set(-1);
+    if (element.dataset.hasOwnProperty(indexKey)) outIndex.set(parseInt(element.dataset[indexKey], 10));
+    eventObjPort.setRef(event);
+    eventElementPort.setRef(element);
+    triggerPort.trigger();
 };
 
 eventNamePort.onChange =
-  useCapturePort.onChange =
-  preventDefaultPort.onChange =
-  stopPropagationPort.onChange =
-  inElements.onChange =
-    () => {
-      if (!eventNamePort.get()) return;
-      removeListeners(currentEventName);
-      currentElements = inElements.get() || [];
-      currentEventName = eventNamePort.get();
-      addListeners(currentEventName);
-    };
+useCapturePort.onChange =
+preventDefaultPort.onChange =
+stopPropagationPort.onChange =
+inElements.onChange = () =>
+{
+    if (!eventNamePort.get()) return;
+    removeListeners(currentEventName);
+    currentElements = inElements.get() || [];
+    currentEventName = eventNamePort.get();
+    addListeners(currentEventName);
+};
 
-function addListeners(eventName) {
-  currentElements.forEach((element, index) => {
-    element.dataset[indexKey] = index;
-    element.addEventListener(eventName, handleEvent, useCapturePort.get());
-  });
+function addListeners(eventName)
+{
+    currentElements.forEach((element, index) =>
+    {
+        element.dataset[indexKey] = index;
+        element.addEventListener(eventName, handleEvent, useCapturePort.get());
+    });
 }
 
-function removeListeners(eventName) {
-  currentElements.forEach((element) => {
-    element.removeEventListener(eventName, handleEvent, useCapturePort.get());
-    element.removeEventListener(eventName, handleEvent, !useCapturePort.get());
-  });
+function removeListeners(eventName)
+{
+    currentElements.forEach((element) =>
+    {
+        element.removeEventListener(eventName, handleEvent, useCapturePort.get());
+        element.removeEventListener(eventName, handleEvent, !useCapturePort.get());
+    });
 }

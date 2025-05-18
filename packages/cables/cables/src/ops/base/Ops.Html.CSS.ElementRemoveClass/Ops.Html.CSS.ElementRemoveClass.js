@@ -4,9 +4,10 @@ const outClassList = op.outArray("Classes");
 
 inEle.onChange = update;
 
-function update() {
-  let ele = inEle.get();
-  if (!ele || !inClassName.get()) return;
-  ele.classList.remove(inClassName.get());
-  outClassList.setRef(Array.from(ele.classList));
+function update()
+{
+    let ele = inEle.get();
+    if (!ele || !inClassName.get()) return;
+    ele.classList.remove(inClassName.get());
+    outClassList.setRef(Array.from(ele.classList));
 }

@@ -1,7 +1,13 @@
 when given an array with "non" unique items, like:
 
 ```javascript
-const a = ["maus", "hund", "maus", "katze", "maus"];
+const a = [
+  "maus",
+  "hund",
+  "maus",
+  "katze",
+  "maus",
+];
 ```
 
 will return an object with information on the ocurrences of every unique value, so:

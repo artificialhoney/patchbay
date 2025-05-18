@@ -23,20 +23,22 @@ let uniAdd = new CGL.Uniform(shader, "f", "add", add);
 let uniDisplace = new CGL.Uniform(shader, "f", "displace", displace);
 let uniScroll = new CGL.Uniform(shader, "f", "scroll", inScroll);
 
-direction.onChange = function () {
-  shader.toggleDefine("DIRECTION", direction.get());
+direction.onChange = function ()
+{
+    shader.toggleDefine("DIRECTION", direction.get());
 };
 
-render.onTriggered = function () {
-  if (!CGL.TextureEffect.checkOpInEffect(op)) return;
+render.onTriggered = function ()
+{
+    if (!CGL.TextureEffect.checkOpInEffect(op)) return;
 
-  cgl.pushShader(shader);
-  cgl.currentTextureEffect.bind();
+    cgl.pushShader(shader);
+    cgl.currentTextureEffect.bind();
 
-  cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
+    cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
 
-  cgl.currentTextureEffect.finish();
-  cgl.popShader();
+    cgl.currentTextureEffect.finish();
+    cgl.popShader();
 
-  trigger.trigger();
+    trigger.trigger();
 };

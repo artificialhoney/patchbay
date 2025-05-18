@@ -1,39 +1,39 @@
 {
-  "id": "bac20d9b-15c2-424b-9b6b-fd0a9af14f48",
-  "changelog": [
-    {
-      "message": "created op",
-      "author": "pandur",
-      "date": 1584356190476
-    }
-  ],
-  "authorName": "pandur",
-  "created": 1584356265847,
-  "layout": {
-    "portsIn": [
-      {
-        "type": "5",
-        "name": "String"
-      },
-      {
-        "type": "0",
-        "name": "Add Num Breaks",
-        "subType": "integer"
-      }
+    "id": "bac20d9b-15c2-424b-9b6b-fd0a9af14f48",
+    "changelog": [
+        {
+            "message": "created op",
+            "author": "pandur",
+            "date": 1584356190476
+        }
     ],
-    "portsOut": [
-      {
-        "type": "5",
-        "name": "HTML"
-      }
-    ]
-  },
-  "summary": "Convert linebreaks to html breaks",
-  "issues": "",
+    "authorName": "pandur",
+    "created": 1584356265847,
+    "layout": {
+        "portsIn": [
+            {
+                "type": "5",
+                "name": "String"
+            },
+            {
+                "type": "0",
+                "name": "Add Num Breaks",
+                "subType": "integer"
+            }
+        ],
+        "portsOut": [
+            {
+                "type": "5",
+                "name": "HTML"
+            }
+        ]
+    },
+    "summary": "Convert linebreaks to html breaks",
+    "issues": "",
 
-  "youtubeids": [],
-  "docs": {
-    "ports": []
-  },
-  "exampleProjectId": "M0BG16"
+    "youtubeids": [],
+    "docs": {
+        "ports": []
+    },
+    "exampleProjectId": "M0BG16"
 }

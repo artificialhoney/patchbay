@@ -1,9 +1,11 @@
-const inValue = op.inValue("Value"),
-  result = op.outNumber("Result");
+const
+    inValue = op.inValue("Value"),
+    result = op.outNumber("Result");
 
 inValue.onChange = update;
 update();
 
-function update() {
-  result.set(1 - inValue.get());
+function update()
+{
+    result.set(1 - inValue.get());
 }

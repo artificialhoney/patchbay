@@ -1,17 +1,20 @@
 // input
-var queryPort = op.inValueString("Query");
+var queryPort = op.inValueString('Query');
 
 // output
-var elementPort = op.outObject("Element");
+var elementPort = op.outObject('Element');
 
 queryPort.onChange = update;
 
 function update() {
-  var q = queryPort.get();
-  try {
-    var el = document.querySelector(q);
-    elementPort.set(el);
-  } catch (e) {
-    console.log(e);
-  }
+    var q = queryPort.get();
+    try
+    {
+        var el = document.querySelector(q);
+        elementPort.set(el);
+    }
+    catch(e)
+    {
+        console.log(e);
+    }
 }

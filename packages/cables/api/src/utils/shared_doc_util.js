@@ -197,7 +197,6 @@ export default class SharedDocUtil extends SharedUtil {
 
   getOpDocs(filterOldVersions, filterDeprecated) {
     let opDocs = [];
-    console.log();
     if (this._rebuildOpDocCache) {
       let rebuildOpName = null;
       if (this._rebuildOpDocCache !== true)

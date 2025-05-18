@@ -15,21 +15,22 @@ let uniRadius = new CGL.Uniform(shader, "f", "radius", radius);
 let unicenterX = new CGL.Uniform(shader, "f", "centerX", centerX);
 let unicenterY = new CGL.Uniform(shader, "f", "centerY", centerY);
 
-render.onTriggered = function () {
-  if (!CGL.TextureEffect.checkOpInEffect(op)) return;
+render.onTriggered = function ()
+{
+    if (!CGL.TextureEffect.checkOpInEffect(op)) return;
 
-  let texture = cgl.currentTextureEffect.getCurrentSourceTexture();
+    let texture = cgl.currentTextureEffect.getCurrentSourceTexture();
 
-  uniamount.setValue(amount.get() * (1 / texture.width));
+    uniamount.setValue(amount.get() * (1 / texture.width));
 
-  cgl.pushShader(shader);
-  cgl.currentTextureEffect.bind();
+    cgl.pushShader(shader);
+    cgl.currentTextureEffect.bind();
 
-  cgl.setTexture(0, texture.tex);
-  // cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, texture.tex );
+    cgl.setTexture(0, texture.tex);
+    // cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, texture.tex );
 
-  cgl.currentTextureEffect.finish();
-  cgl.popShader();
+    cgl.currentTextureEffect.finish();
+    cgl.popShader();
 
-  trigger.trigger();
+    trigger.trigger();
 };

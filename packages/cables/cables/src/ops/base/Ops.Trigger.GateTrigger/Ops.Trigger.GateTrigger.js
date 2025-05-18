@@ -1,7 +1,10 @@
-const exe = op.inTrigger("Execute"),
-  passThrough = op.inValueBool("Pass Through", true),
-  triggerOut = op.outTrigger("Trigger out");
+const
+    exe = op.inTrigger('Execute'),
+    passThrough = op.inValueBool('Pass Through',true),
+    triggerOut = op.outTrigger('Trigger out');
 
-exe.onTriggered = function () {
-  if (passThrough.get()) triggerOut.trigger();
-};
+exe.onTriggered = function()
+{
+    if(passThrough.get())
+        triggerOut.trigger();
+}

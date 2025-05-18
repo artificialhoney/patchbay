@@ -1,8 +1,9 @@
-const render = op.inTrigger("render"),
-  blendMode = CGL.TextureEffect.AddBlendSelect(op, "Blend Mode", "normal"),
-  amount = op.inValueSlider("Amount", 1),
-  inClamp = op.inBool("Clamp", true),
-  trigger = op.outTrigger("trigger");
+const
+    render = op.inTrigger("render"),
+    blendMode = CGL.TextureEffect.AddBlendSelect(op, "Blend Mode", "normal"),
+    amount = op.inValueSlider("Amount", 1),
+    inClamp = op.inBool("Clamp", true),
+    trigger = op.outTrigger("trigger");
 
 const cgl = op.patch.cgl;
 const shader = new CGL.Shader(cgl, "skewstrechimage");
@@ -22,20 +23,22 @@ inClamp.onChange = updateDefines;
 
 updateDefines();
 
-function updateDefines() {
-  shader.toggleDefine("CLAMP", inClamp.get());
+function updateDefines()
+{
+    shader.toggleDefine("CLAMP", inClamp.get());
 }
 
-render.onTriggered = function () {
-  if (!CGL.TextureEffect.checkOpInEffect(op, 3)) return;
+render.onTriggered = function ()
+{
+    if (!CGL.TextureEffect.checkOpInEffect(op, 3)) return;
 
-  cgl.pushShader(shader);
-  cgl.currentTextureEffect.bind();
+    cgl.pushShader(shader);
+    cgl.currentTextureEffect.bind();
 
-  cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
+    cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
 
-  cgl.currentTextureEffect.finish();
-  cgl.popShader();
+    cgl.currentTextureEffect.finish();
+    cgl.popShader();
 
-  trigger.trigger();
+    trigger.trigger();
 };

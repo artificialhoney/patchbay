@@ -1,12 +1,15 @@
-const value = op.inValue("Value"),
-  trigger = op.outTrigger("Trigger");
+const
+    value = op.inValue("Value"),
+    trigger = op.outTrigger("Trigger");
 
 let lastValue = -Number.MAX_VALUE;
 
-value.onChange = function () {
-  const v = value.get();
-  if (v < lastValue) {
-    trigger.trigger();
-  }
-  lastValue = v;
+value.onChange = function ()
+{
+    const v = value.get();
+    if (v < lastValue)
+    {
+        trigger.trigger();
+    }
+    lastValue = v;
 };

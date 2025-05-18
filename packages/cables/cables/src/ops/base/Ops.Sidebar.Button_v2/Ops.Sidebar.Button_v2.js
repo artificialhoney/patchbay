@@ -34,59 +34,74 @@ greyOut.classList.add("sidebar__greyout");
 el.appendChild(greyOut);
 greyOut.style.display = "none";
 
-inGreyOut.onChange = function () {
-  greyOut.style.display = inGreyOut.get() ? "block" : "none";
+inGreyOut.onChange = function ()
+{
+    greyOut.style.display = inGreyOut.get() ? "block" : "none";
 };
 
-inVisible.onChange = function () {
-  el.style.display = inVisible.get() ? "block" : "none";
+inVisible.onChange = function ()
+{
+    el.style.display = inVisible.get() ? "block" : "none";
 };
 
-function onButtonClick() {
-  buttonPressedPort.trigger();
+function onButtonClick()
+{
+    buttonPressedPort.trigger();
 }
 
-function onButtonTextChanged() {
-  const buttonText = buttonTextPort.get();
-  input.textContent = buttonText;
+function onButtonTextChanged()
+{
+    const buttonText = buttonTextPort.get();
+    input.textContent = buttonText;
 
-  input.setAttribute("aria-label", "button " + buttonTextPort.get());
+    input.setAttribute("aria-label", "button " + buttonTextPort.get());
 
-  if (CABLES.UI) op.setUiAttrib({ extendTitle: buttonText });
+    if (CABLES.UI) op.setUiAttrib({ "extendTitle": buttonText });
 }
 
-function onParentChanged() {
-  siblingsPort.set(null);
-  const parent = parentPort.get();
-  if (parent && parent.parentElement) {
-    parent.parentElement.appendChild(el);
-    siblingsPort.set(parent);
-  } else {
-    // detach
-    if (el.parentElement) {
-      el.parentElement.removeChild(el);
+function onParentChanged()
+{
+    siblingsPort.set(null);
+    const parent = parentPort.get();
+    if (parent && parent.parentElement)
+    {
+        parent.parentElement.appendChild(el);
+        siblingsPort.set(parent);
     }
-  }
+    else
+    { // detach
+        if (el.parentElement)
+        {
+            el.parentElement.removeChild(el);
+        }
+    }
 }
 
-function showElement(el) {
-  if (el) {
-    el.style.display = "block";
-  }
+function showElement(el)
+{
+    if (el)
+    {
+        el.style.display = "block";
+    }
 }
 
-function hideElement(el) {
-  if (el) {
-    el.style.display = "none";
-  }
+function hideElement(el)
+{
+    if (el)
+    {
+        el.style.display = "none";
+    }
 }
 
-function onDelete() {
-  removeElementFromDOM(el);
+function onDelete()
+{
+    removeElementFromDOM(el);
 }
 
-function removeElementFromDOM(el) {
-  if (el && el.parentNode && el.parentNode.removeChild) {
-    el.parentNode.removeChild(el);
-  }
+function removeElementFromDOM(el)
+{
+    if (el && el.parentNode && el.parentNode.removeChild)
+    {
+        el.parentNode.removeChild(el);
+    }
 }

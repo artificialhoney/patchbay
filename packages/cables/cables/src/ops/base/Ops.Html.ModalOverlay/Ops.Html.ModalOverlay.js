@@ -1,11 +1,12 @@
-const inEle = op.inObject("Content Element"),
-  inShow = op.inTriggerButton("Show"),
-  inClose = op.inTriggerButton("Close"),
-  closeButton = op.inBool("Show Closebutton", true),
-  inOpacity = op.inFloatSlider("Opacity", 0.5),
-  outVisible = op.outBool("Visible"),
-  outClosed = op.outTrigger("Closed"),
-  outElement = op.outObject("Element");
+const
+    inEle = op.inObject("Content Element"),
+    inShow = op.inTriggerButton("Show"),
+    inClose = op.inTriggerButton("Close"),
+    closeButton = op.inBool("Show Closebutton", true),
+    inOpacity = op.inFloatSlider("Opacity", 0.5),
+    outVisible = op.outBool("Visible"),
+    outClosed = op.outTrigger("Closed"),
+    outElement = op.outObject("Element");
 
 const eleContainer = document.createElement("div");
 const eleClose = document.createElement("div");
@@ -13,7 +14,8 @@ const eleClose = document.createElement("div");
 eleClose.innerHTML = "&times;";
 eleClose.style.color = "white";
 eleClose.style.position = "fixed";
-eleClose.style.top = eleClose.style.right = "25px";
+eleClose.style.top =
+eleClose.style.right = "25px";
 eleClose.style["line-height"] = "25px";
 eleClose.style["z-index"] = "9999";
 eleClose.style.cursor = "pointer";
@@ -29,40 +31,43 @@ inClose.onTriggered = hide;
 
 closeButton.onChange = updateCloseButton;
 
-function updateCloseButton() {
-  if (!eleClose) return;
-  if (closeButton.get()) eleClose.style.display = "block";
-  else eleClose.style.display = "none";
+function updateCloseButton()
+{
+    if (!eleClose) return;
+    if (closeButton.get()) eleClose.style.display = "block";
+    else eleClose.style.display = "none";
 }
 
-inEle.onChange = function () {
-  let ele = inEle.get();
-  if (ele && eleContainer) eleContainer.appendChild(ele);
+inEle.onChange = function ()
+{
+    let ele = inEle.get();
+    if (ele && eleContainer) eleContainer.appendChild(ele);
 };
 
-function hide() {
-  outVisible.set(false);
-  eleContainer.style.display = "none";
-  outClosed.trigger();
+function hide()
+{
+    outVisible.set(false);
+    eleContainer.style.display = "none";
+    outClosed.trigger();
 }
 
-function updateBgColor() {
-  eleContainer.style["background-color"] =
-    "rgba(0,0,0," + inOpacity.get() + ")";
+function updateBgColor()
+{
+    eleContainer.style["background-color"] = "rgba(0,0,0," + inOpacity.get() + ")";
 }
 
-function show() {
-  outVisible.set(true);
-  updateCloseButton();
-  eleContainer.style.display = "block";
+function show()
+{
+    outVisible.set(true);
+    updateCloseButton();
+    eleContainer.style.display = "block";
 
-  eleContainer.dataset.op = op.id;
-  let parent = op.patch.cgl.canvas.parentElement;
+    eleContainer.dataset.op = op.id;
+    let parent = op.patch.cgl.canvas.parentElement;
 
-  eleContainer.style =
-    "overflow:auto;top:0;width:100%;height:100%;position:absolute;z-index:9999";
-  updateBgColor();
+    eleContainer.style = "overflow:auto;top:0;width:100%;height:100%;position:absolute;z-index:9999";
+    updateBgColor();
 
-  parent.appendChild(eleContainer);
-  outElement.set(eleContainer);
+    parent.appendChild(eleContainer);
+    outElement.set(eleContainer);
 }

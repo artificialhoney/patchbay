@@ -10,7 +10,8 @@ height.onChange = sizeChanged;
 
 sizeChanged();
 
-function sizeChanged() {
-  tex.setSize(width.get(), height.get());
-  textureOut.set(tex);
+function sizeChanged()
+{
+    tex.setSize(width.get(), height.get());
+    textureOut.set(tex);
 }

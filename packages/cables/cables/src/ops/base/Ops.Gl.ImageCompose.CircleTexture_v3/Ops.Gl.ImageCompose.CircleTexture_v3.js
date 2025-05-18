@@ -1,21 +1,22 @@
-const render = op.inTrigger("render"),
-  amount = op.inValueSlider("Amount", 1),
-  blendMode = CGL.TextureEffect.AddBlendSelect(op, "Blend Mode", "normal"),
-  inSize = op.inValueSlider("size"),
-  inInner = op.inValueSlider("Inner"),
-  inStretch = op.inValueSlider("Stretch"),
-  inX = op.inValue("Pos X", 0),
-  inY = op.inValue("Pos Y", 0),
-  fallOff = op.inValueSelect("fallOff", ["Linear", "SmoothStep"], "Linear"),
-  inFadeOut = op.inValueSlider("fade Out"),
-  warnOverflow = op.inValueBool("warn overflow", false);
+const
+    render = op.inTrigger("render"),
+    amount = op.inValueSlider("Amount", 1),
+    blendMode = CGL.TextureEffect.AddBlendSelect(op, "Blend Mode", "normal"),
+    inSize = op.inValueSlider("size"),
+    inInner = op.inValueSlider("Inner"),
+    inStretch = op.inValueSlider("Stretch"),
+    inX = op.inValue("Pos X", 0),
+    inY = op.inValue("Pos Y", 0),
+    fallOff = op.inValueSelect("fallOff", ["Linear", "SmoothStep"], "Linear"),
+    inFadeOut = op.inValueSlider("fade Out"),
+    warnOverflow = op.inValueBool("warn overflow", false);
 
 const r = op.inValueSlider("r", 1);
 const g = op.inValueSlider("g", 1);
 const b = op.inValueSlider("b", 1);
 const a = op.inValueSlider("a", 1);
 
-r.setUiAttribs({ colorPick: true });
+r.setUiAttribs({ "colorPick": true });
 
 op.setPortGroup("Size", [inSize, inInner, inStretch]);
 op.setPortGroup("Position", [inX, inY]);
@@ -40,46 +41,48 @@ inSize.set(0.25);
 setFallOf();
 setWarnOverflow();
 
-let uniformR = new CGL.Uniform(shader, "f", "r", r),
-  uniformG = new CGL.Uniform(shader, "f", "g", g),
-  uniformB = new CGL.Uniform(shader, "f", "b", b),
-  uniformA = new CGL.Uniform(shader, "f", "a", a),
-  uniformX = new CGL.Uniform(shader, "f", "x", inX),
-  uniformY = new CGL.Uniform(shader, "f", "y", inY);
+let
+    uniformR = new CGL.Uniform(shader, "f", "r", r),
+    uniformG = new CGL.Uniform(shader, "f", "g", g),
+    uniformB = new CGL.Uniform(shader, "f", "b", b),
+    uniformA = new CGL.Uniform(shader, "f", "a", a),
+    uniformX = new CGL.Uniform(shader, "f", "x", inX),
+    uniformY = new CGL.Uniform(shader, "f", "y", inY);
 
 fallOff.onChange = setFallOf;
 warnOverflow.onChange = setWarnOverflow;
 
 CGL.TextureEffect.setupBlending(op, shader, blendMode, amount);
 
-function setFallOf() {
-  shader.removeDefine("FALLOFF_LINEAR");
-  shader.removeDefine("FALLOFF_SMOOTHSTEP");
+function setFallOf()
+{
+    shader.removeDefine("FALLOFF_LINEAR");
+    shader.removeDefine("FALLOFF_SMOOTHSTEP");
 
-  if (fallOff.get() == "Linear") shader.define("FALLOFF_LINEAR");
-  if (fallOff.get() == "SmoothStep") shader.define("FALLOFF_SMOOTHSTEP");
+    if (fallOff.get() == "Linear") shader.define("FALLOFF_LINEAR");
+    if (fallOff.get() == "SmoothStep") shader.define("FALLOFF_SMOOTHSTEP");
 }
 
-function setWarnOverflow() {
-  if (warnOverflow.get()) shader.define("WARN_OVERFLOW");
-  else shader.removeDefine("WARN_OVERFLOW");
+function setWarnOverflow()
+{
+    if (warnOverflow.get()) shader.define("WARN_OVERFLOW");
+    else shader.removeDefine("WARN_OVERFLOW");
 }
 
-render.onTriggered = function () {
-  if (!CGL.TextureEffect.checkOpInEffect(op)) return;
+render.onTriggered = function ()
+{
+    if (!CGL.TextureEffect.checkOpInEffect(op)) return;
 
-  let a =
-    cgl.currentTextureEffect.getCurrentSourceTexture().height /
-    cgl.currentTextureEffect.getCurrentSourceTexture().width;
-  aspect.set(a);
+    let a = cgl.currentTextureEffect.getCurrentSourceTexture().height / cgl.currentTextureEffect.getCurrentSourceTexture().width;
+    aspect.set(a);
 
-  cgl.pushShader(shader);
-  cgl.currentTextureEffect.bind();
+    cgl.pushShader(shader);
+    cgl.currentTextureEffect.bind();
 
-  cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
+    cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
 
-  cgl.currentTextureEffect.finish();
-  cgl.popShader();
+    cgl.currentTextureEffect.finish();
+    cgl.popShader();
 
-  trigger.trigger();
+    trigger.trigger();
 };

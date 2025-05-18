@@ -1,22 +1,25 @@
-const canvasOnly = op.inBool("canvas only", false),
-  noteNumberPort = op.outNumber("Note Number"),
-  velocityPort = op.outNumber("Velocity"),
-  channelPort = op.outNumber("Channel"),
-  commandPort = op.outNumber("Command");
+const
+    canvasOnly = op.inBool("canvas only", false),
+    noteNumberPort = op.outNumber("Note Number"),
+    velocityPort = op.outNumber("Velocity"),
+    channelPort = op.outNumber("Channel"),
+    commandPort = op.outNumber("Command");
 
 let cgl = op.patch.cgl;
 
-function midiMessageReceived(msgs) {
-  for (let i = 0; i < msgs.length; i++) {
-    let cmd = msgs[i].data[0] >> 4;
-    let channel = msgs[i].data[0] & 0xf;
-    let noteNumber = msgs[i].data[1];
-    let velocity = msgs[i].data[2];
+function midiMessageReceived(msgs)
+{
+    for (let i = 0; i < msgs.length; i++)
+    {
+        let cmd = msgs[i].data[0] >> 4;
+        let channel = msgs[i].data[0] & 0xf;
+        let noteNumber = msgs[i].data[1];
+        let velocity = msgs[i].data[2];
 
-    noteNumberPort.set(noteNumber);
-    velocityPort.set(velocity);
-    channelPort.set(channel);
-    commandPort.set(cmd);
+        noteNumberPort.set(noteNumber);
+        velocityPort.set(velocity);
+        channelPort.set(channel);
+        commandPort.set(cmd);
 
     /*
     if (cmd==8) {
@@ -25,7 +28,7 @@ function midiMessageReceived(msgs) {
       //myNode.noteOn(0);
     }
     */
-  }
+    }
 }
 
 /*
@@ -75,44 +78,51 @@ map[191] = 76; // / E5
 // send messages repeatedly until keyup.
 let flags = {};
 
-function sendMessage(e, command) {
-  // Check the event key against the midi map.
-  let note = map[typeof e.which === "number" ? e.which : e.keyCode];
+function sendMessage(e, command)
+{
+    // Check the event key against the midi map.
+    let note = map[(typeof e.which === "number") ? e.which : e.keyCode];
 
-  // If the key doesn't exist in the midi map, or we're trying to send a
-  // noteOn event without having most recently sent a noteOff, end here.
-  if (note === undefined || (flags[note] && command === 0x9)) {
-    return false;
-  }
+    // If the key doesn't exist in the midi map, or we're trying to send a
+    // noteOn event without having most recently sent a noteOff, end here.
+    if (note === undefined || (flags[note] && command === 0x9))
+    {
+        return false;
+    }
 
-  // Build the data
-  let data = new Uint8Array(3);
+    // Build the data
+    let data = new Uint8Array(3);
 
-  data[0] = (command << 4) + 0x00; // Send the command on channel 0
-  data[1] = note; // Attach the midi note
-  data[2] = 127; // Keyboard keys default to 127 velocity.
+    data[0] = (command << 4) + 0x00; // Send the command on channel 0
+    data[1] = note; // Attach the midi note
+    data[2] = 127; // Keyboard keys default to 127 velocity.
 
-  // Package the message
-  let msg = {
-    data: data,
-    timestamp: 0,
-  };
+    // Package the message
+    let msg = {
+        "data": data,
+        "timestamp": 0
+    };
 
-  // Send it
-  api.onmessage.call(window, [msg]);
+    // Send it
+    api.onmessage.call(window, [msg]);
 
-  // Update the flag table
-  if (command === 0x9) {
-    flags[note] = true;
-  } else {
-    flags[note] = false;
-  }
+    // Update the flag table
+    if (command === 0x9)
+    {
+        flags[note] = true;
+    }
+    else
+    {
+        flags[note] = false;
+    }
 }
 
 // MIDIKeys api object, to be exposed as window.Keys
 let api = {
-  // Expose the onmessage parameter like on a MIDIInput object
-  onmessage: null,
+
+    // Expose the onmessage parameter like on a MIDIInput object
+    "onmessage": null
+
 };
 
 let MIDIKeys = api;
@@ -122,42 +132,52 @@ let MIDIKeys = api;
 
 MIDIKeys.onmessage = midiMessageReceived;
 
-function onKeyDown(e) {
-  sendMessage(e, 0x09);
+function onKeyDown(e)
+{
+    sendMessage(e, 0x09);
 }
 
-function onKeyUp(e) {
-  sendMessage(e, 0x08);
+function onKeyUp(e)
+{
+    sendMessage(e, 0x08);
 }
 
-function addListener() {
-  if (canvasOnly.get()) {
-    addCanvasListener();
-  } else {
-    addDocumentListener();
-  }
+function addListener()
+{
+    if (canvasOnly.get())
+    {
+        addCanvasListener();
+    }
+    else
+    {
+        addDocumentListener();
+    }
 }
 
-function removeListeners() {
-  document.removeEventListener("keydown", onKeyDown, false);
-  document.removeEventListener("keyup", onKeyUp, false);
-  cgl.canvas.removeEventListener("keydown", onKeyDown, false);
-  cgl.canvas.removeEventListener("keyup", onKeyUp, false);
+function removeListeners()
+{
+    document.removeEventListener("keydown", onKeyDown, false);
+    document.removeEventListener("keyup", onKeyUp, false);
+    cgl.canvas.removeEventListener("keydown", onKeyDown, false);
+    cgl.canvas.removeEventListener("keyup", onKeyUp, false);
 }
 
-function addCanvasListener() {
-  cgl.canvas.addEventListener("keydown", onKeyDown, false);
-  cgl.canvas.addEventListener("keyup", onKeyUp, false);
+function addCanvasListener()
+{
+    cgl.canvas.addEventListener("keydown", onKeyDown, false);
+    cgl.canvas.addEventListener("keyup", onKeyUp, false);
 }
 
-function addDocumentListener() {
-  document.addEventListener("keydown", onKeyDown, false);
-  document.addEventListener("keyup", onKeyUp, false);
+function addDocumentListener()
+{
+    document.addEventListener("keydown", onKeyDown, false);
+    document.addEventListener("keyup", onKeyUp, false);
 }
 
-canvasOnly.onChange = function () {
-  removeListeners();
-  addListener();
+canvasOnly.onChange = function ()
+{
+    removeListeners();
+    addListener();
 };
 
 canvasOnly.set(true);

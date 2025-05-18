@@ -1,7 +1,9 @@
-const inTs = op.inFloat("Timestamp"),
-  result = op.outString("ISO Date");
+const
+    inTs = op.inFloat("Timestamp"),
+    result = op.outString("ISO Date");
 
-inTs.onChange = () => {
-  const d = new Date(inTs.get()).toISOString();
-  result.set(d);
+inTs.onChange = () =>
+{
+    const d = new Date(inTs.get()).toISOString();
+    result.set(d);
 };

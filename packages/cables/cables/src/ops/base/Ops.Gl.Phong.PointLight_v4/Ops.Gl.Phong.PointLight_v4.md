@@ -1,1 +1,1 @@
-The point light illuminates in every possible direction.
+The point light illuminates in every possible direction. 

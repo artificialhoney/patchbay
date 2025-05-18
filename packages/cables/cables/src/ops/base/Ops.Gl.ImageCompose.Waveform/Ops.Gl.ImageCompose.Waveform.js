@@ -1,11 +1,7 @@
 const render = op.inTrigger("render");
 const blendMode = CGL.TextureEffect.AddBlendSelect(op, "Blend Mode", "normal");
 const amount = op.inValueSlider("Amount", 1);
-const waveSelect = op.inValueSelect(
-  "Waveform",
-  ["Sine", "Sawtooth", "Triangle", "Square"],
-  "Sine",
-);
+const waveSelect = op.inValueSelect("Waveform", ["Sine", "Sawtooth", "Triangle", "Square"], "Sine");
 
 const amplitude = op.inValueSlider("Amplitude", 0.5);
 const frequency = op.inValue("Frequency", 2.0);
@@ -23,7 +19,7 @@ const b = op.inValueSlider("b", 1.0);
 
 const trigger = op.outTrigger("trigger");
 
-r.setUiAttribs({ colorPick: true });
+r.setUiAttribs({ "colorPick": true });
 
 const cgl = op.patch.cgl;
 const shader = new CGL.Shader(cgl, "waveform");
@@ -50,25 +46,27 @@ const rotateUniform = new CGL.Uniform(shader, "f", "uRotate", rotate);
 waveSelect.onChange = updateWaveForm;
 updateWaveForm();
 
-function updateWaveForm() {
-  if (waveSelect.get() == "Sine") waveSelectUniform.setValue(0);
-  else if (waveSelect.get() == "Sawtooth") waveSelectUniform.setValue(1);
-  else if (waveSelect.get() == "Triangle") waveSelectUniform.setValue(2);
-  else waveSelectUniform.setValue(3);
+function updateWaveForm()
+{
+    if (waveSelect.get() == "Sine") waveSelectUniform.setValue(0);
+    else if (waveSelect.get() == "Sawtooth") waveSelectUniform.setValue(1);
+    else if (waveSelect.get() == "Triangle") waveSelectUniform.setValue(2);
+    else waveSelectUniform.setValue(3);
 }
 
 CGL.TextureEffect.setupBlending(op, shader, blendMode, amount);
 
-render.onTriggered = function () {
-  if (!CGL.TextureEffect.checkOpInEffect(op)) return;
+render.onTriggered = function ()
+{
+    if (!CGL.TextureEffect.checkOpInEffect(op)) return;
 
-  cgl.pushShader(shader);
-  cgl.currentTextureEffect.bind();
+    cgl.pushShader(shader);
+    cgl.currentTextureEffect.bind();
 
-  cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
+    cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
 
-  cgl.currentTextureEffect.finish();
-  cgl.popShader();
+    cgl.currentTextureEffect.finish();
+    cgl.popShader();
 
-  trigger.trigger();
+    trigger.trigger();
 };

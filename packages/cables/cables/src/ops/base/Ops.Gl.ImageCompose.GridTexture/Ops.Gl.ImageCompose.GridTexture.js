@@ -15,7 +15,7 @@ const r = op.inValueSlider("Line red", Math.random());
 const g = op.inValueSlider("Line green", Math.random());
 const b = op.inValueSlider("Line Blue", Math.random());
 
-r.setUiAttribs({ colorPick: true });
+r.setUiAttribs({ "colorPick": true });
 
 op.setPortGroup("LineThickness", [lineThicknessX, lineThicknessY]);
 op.setPortGroup("Cells", [cellsX, cellsY]);
@@ -32,18 +32,8 @@ const textureUniform = new CGL.Uniform(shader, "t", "tex", 0);
 const amountUniform = new CGL.Uniform(shader, "f", "amount", amount);
 
 const uniInvertColor = new CGL.Uniform(shader, "b", "invertColor", invertColor);
-const unilineThicknessX = new CGL.Uniform(
-  shader,
-  "f",
-  "lineThicknessX",
-  lineThicknessX,
-);
-const unilineThicknessY = new CGL.Uniform(
-  shader,
-  "f",
-  "lineThicknessY",
-  lineThicknessY,
-);
+const unilineThicknessX = new CGL.Uniform(shader, "f", "lineThicknessX", lineThicknessX);
+const unilineThicknessY = new CGL.Uniform(shader, "f", "lineThicknessY", lineThicknessY);
 const unicellsX = new CGL.Uniform(shader, "f", "cellsX", cellsX);
 const unicellsY = new CGL.Uniform(shader, "f", "cellsY", cellsY);
 const rotateUniform = new CGL.Uniform(shader, "f", "rotate", inRotate);
@@ -56,16 +46,17 @@ const uniformLineB = new CGL.Uniform(shader, "f", "lineB", b);
 
 CGL.TextureEffect.setupBlending(op, shader, blendMode, amount);
 
-render.onTriggered = function () {
-  if (!CGL.TextureEffect.checkOpInEffect(op)) return;
+render.onTriggered = function ()
+{
+    if (!CGL.TextureEffect.checkOpInEffect(op)) return;
 
-  cgl.pushShader(shader);
-  cgl.currentTextureEffect.bind();
+    cgl.pushShader(shader);
+    cgl.currentTextureEffect.bind();
 
-  cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
+    cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
 
-  cgl.currentTextureEffect.finish();
-  cgl.popShader();
+    cgl.currentTextureEffect.finish();
+    cgl.popShader();
 
-  trigger.trigger();
+    trigger.trigger();
 };

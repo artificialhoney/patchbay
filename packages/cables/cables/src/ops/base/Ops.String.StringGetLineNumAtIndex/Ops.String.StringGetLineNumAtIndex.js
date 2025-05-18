@@ -1,29 +1,35 @@
-const inStr = op.inStringEditor("String"),
-  inIdx = op.inInt("Index", 0),
-  outIdx = op.outNumber("Line"),
-  outFound = op.outBoolNum("Found");
+const
+    inStr = op.inStringEditor("String"),
+    inIdx = op.inInt("Index", 0),
 
-inStr.onChange = inIdx.onChange = () => {
-  let str = inStr.get() || "";
-  let idx = inIdx.get() || 0;
-  let line = 0;
+    outIdx = op.outNumber("Line"),
+    outFound = op.outBoolNum("Found");
 
-  if (idx < 0) idx = 0;
+inStr.onChange = inIdx.onChange = () =>
+{
+    let str = inStr.get() || "";
+    let idx = inIdx.get() || 0;
+    let line = 0;
 
-  let off = 0;
-  let found = false;
+    if (idx < 0)idx = 0;
 
-  for (let i = 0; i < str.length; i++) {
-    if (i == idx) {
-      found = true;
-      break;
+    let off = 0;
+    let found = false;
+
+    for (let i = 0; i < str.length; i++)
+    {
+        if (i == idx)
+        {
+            found = true;
+            break;
+        }
+        if (str.charAt(i) == "\n")
+        {
+            line++;
+            // off++;
+        }
     }
-    if (str.charAt(i) == "\n") {
-      line++;
-      // off++;
-    }
-  }
 
-  outFound.set(found);
-  outIdx.set(line);
+    outFound.set(found);
+    outIdx.set(line);
 };

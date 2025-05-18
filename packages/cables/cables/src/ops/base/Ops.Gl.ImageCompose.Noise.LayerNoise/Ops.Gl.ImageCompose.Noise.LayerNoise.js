@@ -2,14 +2,14 @@ const cgl = op.patch.cgl;
 
 // inputs
 const inTrigger = op.inTrigger("render"),
-  blendMode = CGL.TextureEffect.AddBlendSelect(op, "Blend Mode", "normal"),
-  amount = op.inValueSlider("Amount", 1);
+    blendMode = CGL.TextureEffect.AddBlendSelect(op, "Blend Mode", "normal"),
+    amount = op.inValueSlider("Amount", 1);
 
-const inLayerMode = op.inValueSelect(
-  "mode",
-  ["exponential", "logarithmic", "linear"],
-  "exponential",
-);
+const inLayerMode = op.inValueSelect("mode", [
+    "exponential",
+    "logarithmic",
+    "linear"
+], "exponential");
 const inRGBA = op.inValueBool("RGBA");
 const inScale = op.inValue("scale", 4);
 const inNumLayers = op.inValueInt("layers", 3);
@@ -45,59 +45,63 @@ CGL.TextureEffect.setupBlending(op, shader, blendMode, amount);
 
 let needsUpdate = false;
 // events
-inTrigger.onTriggered = function () {
-  if (!CGL.TextureEffect.checkOpInEffect(op)) return;
+inTrigger.onTriggered = function ()
+{
+    if (!CGL.TextureEffect.checkOpInEffect(op)) return;
 
-  if (needsUpdate) {
-    attribs[0] = inScale.get();
-    attribs[1] = inNumLayers.get();
+    if (needsUpdate)
+    {
+        attribs[0] = inScale.get();
+        attribs[1] = inNumLayers.get();
 
-    const layerMode = inLayerMode.get();
-    if (layerMode == "linear") uniMode.set(0);
-    else if (layerMode == "exponential") uniMode.set(1);
-    else uniMode.set(2);
+        const layerMode = inLayerMode.get();
+        if (layerMode == "linear")
+            uniMode.set(0);
+        else if (layerMode == "exponential")
+            uniMode.set(1);
+        else
+            uniMode.set(2);
 
-    attribs[2] = inFactor.get();
-    attribs[3] = inExponent.get();
-    uniRGBA.set(inRGBA.get());
-    scroll[0] = inScrollX.get();
-    scroll[1] = inScrollY.get();
-    scroll[2] = inScrollZ.get();
-    uniScroll.set(scroll);
-    // new line here
-    attributes.set(attribs);
+        attribs[2] = inFactor.get();
+        attribs[3] = inExponent.get();
+        uniRGBA.set(inRGBA.get());
+        scroll[0] = inScrollX.get();
+        scroll[1] = inScrollY.get();
+        scroll[2] = inScrollZ.get();
+        uniScroll.set(scroll);
+        // new line here
+        attributes.set(attribs);
 
-    needsUpdate = false;
-  }
+        needsUpdate = false;
+    }
 
-  cgl.setTexture(
-    TEX_SLOT,
-    cgl.currentTextureEffect.getCurrentSourceTexture().tex,
-  );
+    cgl.setTexture(TEX_SLOT, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
 
-  cgl.pushShader(shader);
-  cgl.currentTextureEffect.bind();
-  cgl.currentTextureEffect.finish();
-  cgl.popShader();
-  outTrigger.trigger();
+    cgl.pushShader(shader);
+    cgl.currentTextureEffect.bind();
+    cgl.currentTextureEffect.finish();
+    cgl.popShader();
+    outTrigger.trigger();
 };
 
 const tile = op.inValueBool("Tileable", false);
 tile.onChange = updateTileable;
-function updateTileable() {
-  if (tile.get()) shader.define("DO_TILEABLE");
-  else shader.removeDefine("DO_TILEABLE");
+function updateTileable()
+{
+    if (tile.get())shader.define("DO_TILEABLE");
+    else shader.removeDefine("DO_TILEABLE");
 }
 
 inScale.onChange =
-  inNumLayers.onChange =
-  inLayerMode.onChange =
-  inExponent.onChange =
-  inFactor.onChange =
-  inRGBA.onChange =
-  inScrollX.onChange =
-  inScrollY.onChange =
-  inScrollZ.onChange =
-    function () {
-      needsUpdate = true;
-    };
+inNumLayers.onChange =
+inLayerMode.onChange =
+inExponent.onChange =
+inFactor.onChange =
+inRGBA.onChange =
+inScrollX.onChange =
+inScrollY.onChange =
+inScrollZ.onChange =
+function ()
+{
+    needsUpdate = true;
+};

@@ -1,4 +1,4 @@
-This op is designed to work with the Ops.Trigger.TriggerReceive op
+This op is designed to work with the Ops.Trigger.TriggerReceive op 
 
 You must assign the TriggerSend op a variable name and make sure that the other TriggerReceive op has the same variable name.
 

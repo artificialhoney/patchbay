@@ -1,16 +1,21 @@
-const inArr = op.inArray("Array"),
-  outArr = op.outArray("Result");
+const inArr=op.inArray("Array"),
+ outArr=op.outArray("Result");
 
-inArr.onChange = function () {
-  var arr = inArr.get();
-  outArr.set(null);
+ inArr.onChange=function()
+ {
+     var arr=inArr.get();
+    outArr.set(null);
 
-  if (!arr) {
-    return;
-  }
+     if(!arr)
+     {
+         return;
+     }
 
-  var newArr = arr.slice(0);
-  newArr = newArr.flat(Infinity);
 
-  outArr.set(newArr);
-};
+    var newArr=arr.slice(0);
+    newArr=newArr.flat(Infinity);
+
+    outArr.set(newArr);
+
+
+ };

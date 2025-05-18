@@ -5,11 +5,7 @@ const useVPSize = op.inValueBool("use viewport size");
 
 const width = op.inValueInt("texture width");
 const height = op.inValueInt("texture height");
-const tfilter = op.inValueSelect(
-  "Filter",
-  ["nearest", "linear", "mipmap"],
-  "none",
-);
+const tfilter = op.inValueSelect("Filter", ["nearest", "linear", "mipmap"], "none");
 
 const tex0 = op.outTexture("texture 0");
 const tex1 = op.outTexture("texture 1");
@@ -35,83 +31,89 @@ render.onTriggered = doRender;
 useVPSize.onChange = updateVpSize;
 
 tfilter.onChange =
-  fpTexture.onChange =
-  depth.onChange =
-  clear.onChange =
-  msaa.onChange =
-    reInitLater;
+    fpTexture.onChange =
+    depth.onChange =
+    clear.onChange =
+    msaa.onChange = reInitLater;
 
 updateVpSize();
 
-function updateVpSize() {
-  if (useVPSize.get()) {
-    width.setUiAttribs({ hidePort: true, greyout: true });
-    height.setUiAttribs({ hidePort: true, greyout: true });
-  } else {
-    width.setUiAttribs({ hidePort: false, greyout: false });
-    height.setUiAttribs({ hidePort: false, greyout: false });
-  }
+function updateVpSize()
+{
+    if (useVPSize.get())
+    {
+        width.setUiAttribs({ "hidePort": true, "greyout": true });
+        height.setUiAttribs({ "hidePort": true, "greyout": true });
+    }
+    else
+    {
+        width.setUiAttribs({ "hidePort": false, "greyout": false });
+        height.setUiAttribs({ "hidePort": false, "greyout": false });
+    }
 }
 
-function reInitLater() {
-  reInitFb = true;
+function reInitLater()
+{
+    reInitFb = true;
 }
 
-function doRender() {
-  if (!fb || reInitFb) {
-    if (fb) fb.delete();
-    if (cgl.glVersion >= 2) {
-      let ms = true;
-      let msSamples = 4;
+function doRender()
+{
+    if (!fb || reInitFb)
+    {
+        if (fb) fb.delete();
+        if (cgl.glVersion >= 2)
+        {
+            let ms = true;
+            let msSamples = 4;
 
-      if (msaa.get() == "none") {
-        msSamples = 0;
-        ms = false;
-      }
-      if (msaa.get() == "2x") msSamples = 2;
-      if (msaa.get() == "4x") msSamples = 4;
-      if (msaa.get() == "8x") msSamples = 8;
+            if (msaa.get() == "none")
+            {
+                msSamples = 0;
+                ms = false;
+            }
+            if (msaa.get() == "2x")msSamples = 2;
+            if (msaa.get() == "4x")msSamples = 4;
+            if (msaa.get() == "8x")msSamples = 8;
 
-      fb = new CGL.Framebuffer2(cgl, 8, 8, {
-        numRenderBuffers: 4,
-        isFloatingPointTexture: fpTexture.get(),
-        multisampling: ms,
-        depth: depth.get(),
-        multisamplingSamples: msSamples,
-        clear: clear.get(),
-      });
-    } else {
-      fb = new CGL.Framebuffer(cgl, 8, 8, {
-        isFloatingPointTexture: fpTexture.get(),
-      });
+            fb = new CGL.Framebuffer2(cgl, 8, 8,
+                {
+                    "numRenderBuffers": 4,
+                    "isFloatingPointTexture": fpTexture.get(),
+                    "multisampling": ms,
+                    "depth": depth.get(),
+                    "multisamplingSamples": msSamples,
+                    "clear": clear.get()
+                });
+        }
+        else
+        {
+            fb = new CGL.Framebuffer(cgl, 8, 8, { "isFloatingPointTexture": fpTexture.get() });
+        }
+
+        if (tfilter.get() == "nearest") fb.setFilter(CGL.Texture.FILTER_NEAREST);
+        else if (tfilter.get() == "linear") fb.setFilter(CGL.Texture.FILTER_LINEAR);
+        else if (tfilter.get() == "mipmap") fb.setFilter(CGL.Texture.FILTER_MIPMAP);
+
+        tex0.set(fb.getTextureColorNum(0));
+        tex1.set(fb.getTextureColorNum(1));
+        tex2.set(fb.getTextureColorNum(2));
+        tex3.set(fb.getTextureColorNum(3));
+        texDepth.set(fb.getTextureDepth());
+        reInitFb = false;
     }
 
-    if (tfilter.get() == "nearest") fb.setFilter(CGL.Texture.FILTER_NEAREST);
-    else if (tfilter.get() == "linear") fb.setFilter(CGL.Texture.FILTER_LINEAR);
-    else if (tfilter.get() == "mipmap") fb.setFilter(CGL.Texture.FILTER_MIPMAP);
+    if (useVPSize.get())
+    {
+        width.set(cgl.getViewPort()[2]);
+        height.set(cgl.getViewPort()[3]);
+    }
 
-    tex0.set(fb.getTextureColorNum(0));
-    tex1.set(fb.getTextureColorNum(1));
-    tex2.set(fb.getTextureColorNum(2));
-    tex3.set(fb.getTextureColorNum(3));
-    texDepth.set(fb.getTextureDepth());
-    reInitFb = false;
-  }
+    if (fb.getWidth() != Math.ceil(width.get()) || fb.getHeight() != Math.ceil(height.get())) fb.setSize(width.get(), height.get());
 
-  if (useVPSize.get()) {
-    width.set(cgl.getViewPort()[2]);
-    height.set(cgl.getViewPort()[3]);
-  }
+    fb.renderStart(cgl);
+    trigger.trigger();
+    fb.renderEnd(cgl);
 
-  if (
-    fb.getWidth() != Math.ceil(width.get()) ||
-    fb.getHeight() != Math.ceil(height.get())
-  )
-    fb.setSize(width.get(), height.get());
-
-  fb.renderStart(cgl);
-  trigger.trigger();
-  fb.renderEnd(cgl);
-
-  cgl.resetViewPort();
+    cgl.resetViewPort();
 }

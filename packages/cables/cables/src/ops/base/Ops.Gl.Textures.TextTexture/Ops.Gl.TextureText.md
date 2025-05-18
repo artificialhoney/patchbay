@@ -1,6 +1,6 @@
 # TextureText
 
-_Ops.Gl.TextureText_
+*Ops.Gl.TextureText*
 
 Print text on to a texture
 
@@ -8,63 +8,64 @@ Print text on to a texture
 
 ### Text
 
-_Type: Value_
+*Type: Value*
 
 The text to be rendered
 
 ### FontSize
 
-_Type: Value_
+*Type: Value*
 
 Size of the font
 
 ### Texture Width
 
-_Type: Value_
+*Type: Value*
 
 Width in pixels of the texture
 
 ### Texture Height
 
-_Type: Value_
+*Type: Value*
 
 Height in pixels of the texture
 
 ### Align
 
-_Type: Value_
+*Type: Value*
 
 Horizontal alignment of the text
 
 ### Vetical Align
 
-_Type: Value_
+*Type: Value*
 
 Vertical alignment of the text
 
 ### Font
 
-_Type: Value_
+*Type: Value*
 
 Font name
 
 ### Line distance
 
-_Type: Value_
+*Type: Value*
 
 Line distance
 
 ### Border
 
-_Type: Value_
+*Type: Value*
 
 Renders a border to the texture. Usefull for positioning and sizing
+
 
 ## Output
 
 ### Texture
 
-_Type: Object_
+*Type: Object*
 
 generated texture
 

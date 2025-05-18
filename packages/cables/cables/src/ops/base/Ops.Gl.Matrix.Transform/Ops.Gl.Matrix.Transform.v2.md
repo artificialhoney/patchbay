@@ -1,6 +1,6 @@
 # Transform
 
-_Ops.Gl.Matrix.Transform_
+*Ops.Gl.Matrix.Transform*
 
 Can be used to move or rotate objects. All elements which are drawn afterwards will be affected by this. If you use multiple transforms in a row the transformations will be stacked on top of each other (added).
 
@@ -8,49 +8,49 @@ Can be used to move or rotate objects. All elements which are drawn afterwards w
 
 ### Render
 
-_Type: Function_
+*Type: Function*
 Red color value, between `0.0` and `1.0`
 
 ### Position X
 
-_Type: Value_
+*Type: Value*
 X-position change
 
 ### Position Y
 
-_Type: Value_
+*Type: Value*
 Y-position change
 
 ### Position Z
 
-_Type: Value_
+*Type: Value*
 Z-position change
 
 ### Scale
 
-_Type: Value_
+*Type: Value*
 Changes the scale of the objects drawn afterwards – when smaller than `1` the object will be drawn smaller, when bigger than `1` the object will be drawn bigger.
 
 ### Rotation X
 
-_Type: Value_
+*Type: Value*
 X-rotation change
 
 ### Rotation Y
 
-_Type: Value_
+*Type: Value*
 Y-rotation change
 
 ### Rotation Z
 
-_Type: Value_
+*Type: Value*
 Z-rotation change
 
 ## Output
 
 ### Trigger
 
-_Type: Function_
+*Type: Function*
 Every time `Transform` is triggered, it will also trigger all connected ops.
 
 ## Examples

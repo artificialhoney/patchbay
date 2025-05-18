@@ -1,5 +1,7 @@
-const inExec = op.inTriggerButton("Close");
+const
+    inExec=op.inTriggerButton("Close");
 
-inExec.onTriggered = function () {
-  window.close();
+inExec.onTriggered=function()
+{
+    window.close();
 };

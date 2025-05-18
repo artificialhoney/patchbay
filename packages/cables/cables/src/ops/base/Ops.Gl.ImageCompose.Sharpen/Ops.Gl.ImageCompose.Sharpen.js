@@ -12,19 +12,20 @@ const amountUniform = new CGL.Uniform(shader, "f", "amount", amount);
 const uniPx = new CGL.Uniform(shader, "f", "pX", 1 / 1024);
 const uniPy = new CGL.Uniform(shader, "f", "pY", 1 / 1024);
 
-render.onTriggered = function () {
-  if (!CGL.TextureEffect.checkOpInEffect(op)) return;
+render.onTriggered = function ()
+{
+    if (!CGL.TextureEffect.checkOpInEffect(op)) return;
 
-  uniPx.setValue(1 / cgl.currentTextureEffect.getCurrentSourceTexture().width);
-  uniPy.setValue(1 / cgl.currentTextureEffect.getCurrentSourceTexture().height);
+    uniPx.setValue(1 / cgl.currentTextureEffect.getCurrentSourceTexture().width);
+    uniPy.setValue(1 / cgl.currentTextureEffect.getCurrentSourceTexture().height);
 
-  cgl.pushShader(shader);
-  cgl.currentTextureEffect.bind();
+    cgl.pushShader(shader);
+    cgl.currentTextureEffect.bind();
 
-  cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
+    cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
 
-  cgl.currentTextureEffect.finish();
-  cgl.popShader();
+    cgl.currentTextureEffect.finish();
+    cgl.popShader();
 
-  trigger.trigger();
+    trigger.trigger();
 };

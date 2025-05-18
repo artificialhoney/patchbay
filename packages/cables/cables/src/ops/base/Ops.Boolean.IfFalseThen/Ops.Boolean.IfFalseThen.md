@@ -1,4 +1,4 @@
-Basically the same as Ops.Boolean.IfTrueThen, the only difference is that the output ports are switched.
+Basically the same as Ops.Boolean.IfTrueThen, the only difference is that the output ports are switched. 
 
 You can also input non-boolean values, `0`, `0.0`, `''` (empty string) will all evaluate to `false`. On the contrary `1.234`, '5' or 'lalala' will evaluate to `true`.
 

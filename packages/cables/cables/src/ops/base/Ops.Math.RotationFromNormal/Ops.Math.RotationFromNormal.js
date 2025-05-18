@@ -13,13 +13,19 @@ const tmpQuat = quat.create();
 
 outRotation.set(identMat);
 
-inRecalculate.onTriggered = function () {
-  vec3.set(tmpVec, inNormalX.get(), inNormalY.get(), inNormalZ.get());
+inRecalculate.onTriggered = function ()
+{
+    vec3.set(
+        tmpVec,
+        inNormalX.get(),
+        inNormalY.get(),
+        inNormalZ.get()
+    );
 
-  vec3.normalize(tmpVec, tmpVec);
-  quat.identity(tmpQuat);
-  quat.rotationTo(tmpQuat, upVec, tmpVec);
-  mat4.fromQuat(outMat, tmpQuat);
-  outRotation.set(identMat);
-  outRotation.set(outMat);
+    vec3.normalize(tmpVec, tmpVec);
+    quat.identity(tmpQuat);
+    quat.rotationTo(tmpQuat, upVec, tmpVec);
+    mat4.fromQuat(outMat, tmpQuat);
+    outRotation.set(identMat);
+    outRotation.set(outMat);
 };

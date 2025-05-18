@@ -1,4 +1,4 @@
-Can be used as a switch. If the input `Boolean` is `true`/ `1` the output port `Then` will be triggered. If `Boolean` is `false` / `0` the output port `Else` will be triggered.
+Can be used as a switch. If the input `Boolean` is `true`/ `1` the output port `Then` will be triggered. If `Boolean` is `false` / `0` the output port `Else` will be triggered.  
 
 You can also input non-boolean values, `0`, `0.0`, `''` (empty string) will all evaluate to `false`. On the contrary `1.234`, '5' or 'lalala' will evaluate to `true`.
 

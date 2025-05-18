@@ -14,20 +14,21 @@ let textureUniform = new CGL.Uniform(shader, "t", "tex", 0);
 let strengthUniform = new CGL.Uniform(shader, "f", "exponent", strength);
 let texSizeUniform = new CGL.Uniform(shader, "2f", "texSize", tsize);
 
-render.onTriggered = function () {
-  if (!CGL.TextureEffect.checkOpInEffect(op)) return;
+render.onTriggered = function ()
+{
+    if (!CGL.TextureEffect.checkOpInEffect(op)) return;
 
-  tsize[0] = cgl.currentTextureEffect.getCurrentSourceTexture().width;
-  tsize[1] = cgl.currentTextureEffect.getCurrentSourceTexture().height;
-  texSizeUniform.setValue(tsize);
+    tsize[0] = cgl.currentTextureEffect.getCurrentSourceTexture().width;
+    tsize[1] = cgl.currentTextureEffect.getCurrentSourceTexture().height;
+    texSizeUniform.setValue(tsize);
 
-  cgl.pushShader(shader);
-  cgl.currentTextureEffect.bind();
+    cgl.pushShader(shader);
+    cgl.currentTextureEffect.bind();
 
-  cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
+    cgl.setTexture(0, cgl.currentTextureEffect.getCurrentSourceTexture().tex);
 
-  cgl.currentTextureEffect.finish();
-  cgl.popShader();
+    cgl.currentTextureEffect.finish();
+    cgl.popShader();
 
-  trigger.trigger();
+    trigger.trigger();
 };

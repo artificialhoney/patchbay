@@ -1,3 +1,4 @@
+
 // input ports
 const chromeFilePort = op.inUrl("Chrome File");
 const firefoxFilePort = op.inUrl("Firefox File");
@@ -30,29 +31,30 @@ const isEdge = pf.name === "Microsoft Edge";
 const isChrome = pf.name === "Chrome" || pf.name === "Chrome Mobile";
 const isFirefox = pf.name === "Firefox" || pf.name === "Firefox Mobile";
 
+
 checkBrowserAndSetOutput();
 
 function checkBrowserAndSetOutput() {
-  if (isOpera) {
-    outFile.set(operaFilePort.get() || defaultFilePort.get());
-  } else if (isFirefox) {
-    detectedBrowserPort.set("Firefox");
-    outFile.set(firefoxFilePort.get() || defaultFilePort.get());
-  } else if (isSafari) {
-    detectedBrowserPort.set("Safari");
-    outFile.set(safariFilePort.get() || defaultFilePort.get());
-  } else if (isIE) {
-    detectedBrowserPort.set("IE");
-    outFile.set(ieFilePort.get() || defaultFilePort.get());
-  } else if (isEdge) {
-    detectedBrowserPort.set("Edge");
-    outFile.set(edgeFilePort.get() || defaultFilePort.get());
-  } else if (isChrome) {
-    detectedBrowserPort.set("Chrome");
-    outFile.set(chromeFilePort.get() || defaultFilePort.get());
-  } else {
+    if(isOpera) {
+        outFile.set(operaFilePort.get() || defaultFilePort.get());
+    } else if(isFirefox) {
+        detectedBrowserPort.set("Firefox");
+        outFile.set(firefoxFilePort.get() || defaultFilePort.get());
+    } else if(isSafari) {
+        detectedBrowserPort.set("Safari");
+        outFile.set(safariFilePort.get() || defaultFilePort.get());
+    } else if(isIE) {
+        detectedBrowserPort.set("IE");
+        outFile.set(ieFilePort.get() || defaultFilePort.get());
+    } else if(isEdge) {
+        detectedBrowserPort.set("Edge");
+        outFile.set(edgeFilePort.get() || defaultFilePort.get());
+    } else if(isChrome) {
+        detectedBrowserPort.set("Chrome");
+        outFile.set(chromeFilePort.get() || defaultFilePort.get());
+    } else {
+        detectedBrowserPort.set(pf.name);
+        outFile.set(defaultFilePort.get());
+    }
     detectedBrowserPort.set(pf.name);
-    outFile.set(defaultFilePort.get());
-  }
-  detectedBrowserPort.set(pf.name);
 }

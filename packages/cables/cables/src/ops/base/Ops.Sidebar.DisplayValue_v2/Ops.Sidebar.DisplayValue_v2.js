@@ -30,52 +30,66 @@ op.onDelete = onDelete;
 
 // functions
 
-function onValueChanged() {
-  value.textContent = valuePort.get();
+function onValueChanged()
+{
+    value.textContent = valuePort.get();
 }
 
-function onLabelTextChanged() {
-  const labelText = labelPort.get();
-  label.textContent = labelText;
-  if (CABLES.UI) {
-    op.setUiAttrib({ extendTitle: labelText });
+function onLabelTextChanged()
+{
+    const labelText = labelPort.get();
+    label.textContent = labelText;
+    if (CABLES.UI)
+    {
+        op.setUiAttrib({ "extendTitle": labelText });
 
-    // op.setTitle("Value: " + labelText);
-  }
-}
-
-function onParentChanged() {
-  siblingsPort.set(null);
-  const parent = parentPort.get();
-  if (parent && parent.parentElement) {
-    parent.parentElement.appendChild(el);
-    siblingsPort.set(parent);
-  } else {
-    // detach
-    if (el.parentElement) {
-      el.parentElement.removeChild(el);
+        // op.setTitle("Value: " + labelText);
     }
-  }
 }
 
-function showElement(element) {
-  if (element) {
-    element.style.display = "block";
-  }
+function onParentChanged()
+{
+    siblingsPort.set(null);
+    const parent = parentPort.get();
+    if (parent && parent.parentElement)
+    {
+        parent.parentElement.appendChild(el);
+        siblingsPort.set(parent);
+    }
+    else
+    { // detach
+        if (el.parentElement)
+        {
+            el.parentElement.removeChild(el);
+        }
+    }
 }
 
-function hideElement(element) {
-  if (element) {
-    element.style.display = "none";
-  }
+function showElement(element)
+{
+    if (element)
+    {
+        element.style.display = "block";
+    }
 }
 
-function onDelete() {
-  removeElementFromDOM(el);
+function hideElement(element)
+{
+    if (element)
+    {
+        element.style.display = "none";
+    }
 }
 
-function removeElementFromDOM(element) {
-  if (element && element.parentNode && element.parentNode.removeChild) {
-    element.parentNode.removeChild(element);
-  }
+function onDelete()
+{
+    removeElementFromDOM(el);
+}
+
+function removeElementFromDOM(element)
+{
+    if (element && element.parentNode && element.parentNode.removeChild)
+    {
+        element.parentNode.removeChild(element);
+    }
 }
