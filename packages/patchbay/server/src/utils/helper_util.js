@@ -5,7 +5,6 @@ import { fileURLToPath, pathToFileURL } from "url";
 export default class HelperUtil extends SharedHelperUtil {
   constructor(utilProvider) {
     super(utilProvider);
-    this._settings = this._cables.settings;
   }
 
   fileURLToPath(url, convertRelativeToProject = false) {
@@ -57,7 +56,7 @@ export default class HelperUtil extends SharedHelperUtil {
   }
 
   isLocalAssetPath(thePath) {
-    const currentProjectDir = this._settings.getCurrentProjectDir();
+    const currentProjectDir = this._cables.settings.getCurrentProjectDir();
     return currentProjectDir && thePath.startsWith(currentProjectDir);
   }
 }

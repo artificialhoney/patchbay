@@ -189,6 +189,7 @@ setHtmlDefaultListeners();
 
 CABLES.Op = UiOp;
 CABLES.Patch = UiPatch;
+CABLES.EMBED = EMBED;
 
 CABLES.UI.startUi = startUi;
 

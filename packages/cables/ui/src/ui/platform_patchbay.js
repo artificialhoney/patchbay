@@ -206,4 +206,8 @@ export default class PlatformPatchbay extends Platform {
     if (this.config.previewMode) url += "?preview=true";
     return url;
   }
+
+  getUrlApiPrefix() {
+    return this._cfg.urlCables + "/api/cables/";
+  }
 }

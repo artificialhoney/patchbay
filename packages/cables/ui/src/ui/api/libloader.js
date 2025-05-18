@@ -77,7 +77,9 @@ export default class LibLoader {
             module.src.replace(".", "");
         } else {
           const basePath =
-            module.type === "corelib" ? "/api/corelib/" : "/api/lib/";
+            module.type === "corelib"
+              ? "/api/cables/corelib/"
+              : "/api/cables/lib/";
           scriptSrc = platform.getSandboxUrl() + basePath + module.src;
         }
 

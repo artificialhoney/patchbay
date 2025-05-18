@@ -137,8 +137,6 @@ export default class Gui extends Events {
     if (cfg.patchConfig)
       patchConfig = Object.assign(patchConfig, cfg.patchConfig);
 
-    //CABLES.EMBED.addPatch("cablescanvas", patchConfig);
-
     /** @type {UiPatch} */
     // @ts-ignore
     this._corePatch = new UiPatch(patchConfig);
@@ -394,7 +392,7 @@ export default class Gui extends Events {
   }
 
   isGuestEditor() {
-    return this.user.username == "guest";
+    return this.user?.username == "guest";
   }
 
   getParamPanelEleId() {

@@ -6,7 +6,6 @@ import { escapeHTML } from "../../utils/helper.js";
 import namespace from "../../namespaceutils.js";
 import opNames from "../../opnameutils.js";
 import Gui from "../../gui.js";
-import { UiOp } from "../../core_extend_op.js";
 
 /**
  * tab panel for searching through the patch

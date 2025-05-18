@@ -9,7 +9,6 @@ import fs from "fs";
 export default class ProjectsUtil extends SharedProjectsUtil {
   constructor(utilProvider) {
     super(utilProvider);
-    this._settings = this._cables.settings;
     this.CABLES_PROJECT_FILE_EXTENSION = "cables";
 
     this._dirInfos = null;
@@ -17,11 +16,11 @@ export default class ProjectsUtil extends SharedProjectsUtil {
   }
 
   getAssetPath(projectId) {
-    return this._cables.getAssetPath();
+    return `/examples/${projectId}/assets`;
   }
 
   getAssetPathUrl(projectId) {
-    return "./assets/";
+    return `/examples/${projectId}/assets`;
   }
 
   getScreenShotPath(pId) {
@@ -38,11 +37,11 @@ export default class ProjectsUtil extends SharedProjectsUtil {
   }
 
   generateNewProject(owner) {
-    if (!owner) owner = this._settings.getCurrentUser();
+    if (!owner) owner = this._cables.settings.getCurrentUser();
     const now = Date.now();
     const projectId = this._helperUtil.generateRandomId();
     const shortId = this._helperUtil.generateShortId(projectId, now);
-    const randomize = this._settings.getUserSetting(
+    const randomize = this._cables.settings.getUserSetting(
       "randomizePatchName",
       false,
     );
@@ -80,7 +79,7 @@ export default class ProjectsUtil extends SharedProjectsUtil {
   ) {
     let opsDirs = [];
 
-    const projectDir = this._settings.getCurrentProjectDir();
+    const projectDir = this._cables.settings.getCurrentProjectDir();
     if (projectDir) {
       const currentDir = path.join(projectDir, "ops");
       opsDirs.push(currentDir);
@@ -107,7 +106,7 @@ export default class ProjectsUtil extends SharedProjectsUtil {
   }
 
   isFixedPositionOpDir(dir) {
-    const projectDir = this._settings.getCurrentProjectDir();
+    const projectDir = this._cables.settings.getCurrentProjectDir();
     if (projectDir) if (dir === path.join(projectDir, "ops/")) return false;
     if (dir === "./ops") return true;
     if (dir === this._cables.getOsOpsDir()) return true;
@@ -157,9 +156,9 @@ export default class ProjectsUtil extends SharedProjectsUtil {
       .createHash("sha1")
       .update(JSON.stringify(project.ops))
       .digest("hex");
-    project.buildInfo = this._settings.getBuildInfo();
+    project.buildInfo = this._cables.settings.getBuildInfo();
     jsonfile.writeFileSync(projectFile, project, this._opsUtil.OPJSON_FORMAT);
-    this._settings.addToRecentProjects(projectFile, project);
+    this._cables.settings.addToRecentProjects(projectFile, project);
   }
 
   getUsedAssetFilenames(project, includeLibraryAssets = false) {
@@ -244,7 +243,7 @@ export default class ProjectsUtil extends SharedProjectsUtil {
   }
 
   reorderOpDirs(currentProject, order) {
-    const currentProjectFile = this._settings.getCurrentProjectFile();
+    const currentProjectFile = this._cables.settings.getCurrentProjectFile();
     const newOrder = [];
     order.forEach((opDir) => {
       if (fs.existsSync(opDir)) newOrder.push(opDir);
@@ -263,7 +262,7 @@ export default class ProjectsUtil extends SharedProjectsUtil {
   }
 
   getAbsoluteOpDirFromHierarchy(opName) {
-    const currentProject = this._settings.getCurrentProject();
+    const currentProject = this._cables.settings.getCurrentProject();
     if (currentProject && !this._dirInfos) {
       this._log.debug("rebuilding opdir-cache, changed by:", opName);
       this._dirInfos = this.getOpDirs(currentProject);

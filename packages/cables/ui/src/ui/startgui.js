@@ -24,6 +24,12 @@ export default function startUi(cfg) {
   if (window.logStartup) logStartup("Init UI");
   HandlebarsHelper.initHandleBarsHelper();
 
+  // ele.byId("cablescanvas").innerHTML = "";
+  // cfg.glCanvas = CABLES.EMBED.addPatch(
+  //   ele.byId("cablescanvas"),
+  //   cfg.patchConfig,
+  // );
+
   window.CABLES.GLGUI = window.gui = new Gui(cfg);
   window.Gui = Gui;
   window.Gui.gui = window.gui;

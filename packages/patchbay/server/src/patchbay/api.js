@@ -21,6 +21,8 @@ export default class PatchbayApi {
     this._helperUtil = utilProvider.getUtil(UtilProvider.HELPER_UTIL);
     this._docsUtil = utilProvider.getUtil(UtilProvider.DOCS_UTIL);
     this._projectsUtil = utilProvider.getUtil(UtilProvider.PROJECTS_UTIL);
+    this._subPatchOpUtil = utilProvider.getUtil(UtilProvider.SUBPATCH_OP_UTIL);
+    this._utilProvider = utilProvider;
   }
 
   init() {
@@ -293,13 +295,13 @@ export default class PatchbayApi {
     let projectNamespaces = [];
     let usedOpIds = [];
     // add all ops that are used in the toplevel of the project, save them as used
-    project.ops.forEach((projectOp) => {
+    project.ops?.forEach((projectOp) => {
       projectOps.push(this._opsUtil.getOpNameById(projectOp.opId));
       usedOpIds.push(projectOp.opId);
     });
 
     // add all ops in any of the project op directory
-    const otherDirsOps = projectsUtil
+    const otherDirsOps = this._projectsUtil
       .getOpDocsInProjectDirs(project, true, true)
       .map((opDoc) => {
         return opDoc.name;
@@ -440,9 +442,10 @@ export default class PatchbayApi {
         reasons.push(link);
       });
 
-      if (isOnline()) {
+      //  if (isOnline()) {
+      if (!true) {
         const getOpEnvironmentDocs = promisify(
-          this._opsUtil.getOpEnvironmentDocs.bind(opsUtil),
+          this._opsUtil.getOpEnvironmentDocs.bind(this._opsUtil),
         );
         try {
           const envDocs = await getOpEnvironmentDocs(data);
@@ -1628,7 +1631,7 @@ export default class PatchbayApi {
   }
 
   async exportPatch() {
-    const service = new HtmlExportElectron(utilProvider, null, null, this._app);
+    const service = new HtmlExportElectron(this._utilProvider, null, null);
 
     const exportPromise = promisify(service.doExport.bind(service));
 
@@ -1641,12 +1644,7 @@ export default class PatchbayApi {
   }
 
   async exportPatchBundle() {
-    const service = new PatchExportElectron(
-      utilProvider,
-      null,
-      null,
-      this._app,
-    );
+    const service = new PatchExportElectron(this._utilProvider, null, null);
 
     const exportPromise = promisify(service.doExport.bind(service));
 

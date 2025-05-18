@@ -337,7 +337,7 @@ export default class SharedExportService extends SharedUtil {
     const callbacks = [];
     const functions = [];
 
-    for (let o = 0; o < proj.ops.length; o++) {
+    for (let o = 0; o < proj.ops?.length; o++) {
       const op = proj.ops[o];
       const opName = this._opsUtil.getOpNameById(op.opId) || op.objName;
       if (this._opsUtil.isVariableSetter(opName)) {
@@ -979,11 +979,12 @@ export default class SharedExportService extends SharedUtil {
     this.append(licence.join("\n"), { name: "LICENCE" });
 
     // add info file
-    const nfofile = fs.readFileSync(
-      path.join(this._cables.getApiPath(), "/cables.txt"),
-      "utf8",
-    );
-    this.append(nfofile, { name: "cables.txt" });
+    // TODO: Patchbay Banner
+    // const nfofile = fs.readFileSync(
+    //   path.join(this._cables.getApiPath(), "/cables.txt"),
+    //   "utf8",
+    // );
+    // this.append(nfofile, { name: "cables.txt" });
 
     // add legal txt
     const legal = this._projectsUtil.getLicenceTextArray(proj);

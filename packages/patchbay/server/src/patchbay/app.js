@@ -65,7 +65,7 @@ export default class PatchbayApp extends Cables {
     } else {
       assetPath = path.join(currentProjectDir);
     }
-    if (!fs.existsSync(assetPath)) mkdirp.sync(assetPath);
+    // if (!fs.existsSync(assetPath)) mkdirp.sync(assetPath);
     return assetPath;
   }
 

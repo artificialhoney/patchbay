@@ -17,6 +17,7 @@ import { existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { EventEmitter } from "node:events";
+import path from "node:path";
 
 const metaUrl = new URL(".", import.meta.url);
 const __dirname = fileURLToPath(metaUrl.href);
@@ -31,34 +32,42 @@ if (!existsSync(configLocation)) {
   process.exit(1);
 }
 
+const EXAMPLE_PATH = path.join(
+  __dirname,
+  "../../public/examples/jungle-jungle",
+);
+
 const appConfig = {
-  getPath: (path) => path,
+  getPath: (p) => path.join("/examples/jungle-jungle", p),
+  patchId: "jungle-jungle",
+  patchFile: path.join(EXAMPLE_PATH, "jungle-jungle.cables"),
+  currentPatchDir: "/examples/jungle-jungle",
 };
 
 const eventEmitter = new EventEmitter();
 const utilProvider = new UtilProvider();
 
 new Logger(utilProvider);
+new HelperUtil(utilProvider);
+new ProjectsUtil(utilProvider);
 
 const patchbaySettings = new PatchbaySettings(
   utilProvider,
-  tmpdir(),
+  EXAMPLE_PATH,
   appConfig,
 );
 const patchbayApp = new PatchbayApp(
   utilProvider,
   __dirname,
-  appConfig.getPath("userData"),
+  tmpdir(),
   configLocation,
   patchbaySettings,
 );
 
 new DocUtil(utilProvider);
 new FilesUtil(utilProvider);
-new HelperUtil(utilProvider);
 new LibsUtil(utilProvider);
 new OpsUtil(utilProvider);
-new ProjectsUtil(utilProvider);
 new SubPatchOpUtil(utilProvider);
 
 const patchbayApi = new PatchbayApi(utilProvider, eventEmitter, patchbayApp);
@@ -95,7 +104,7 @@ export default defineEventHandler(async (event) => {
       slugElements[0],
       {},
       slugElements[1],
-      body,
+      body.data,
       body.topicConfig,
     );
     return await result;

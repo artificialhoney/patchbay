@@ -5,10 +5,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 export default class HtmlExportElectron extends SharedExportService {
-  constructor(provider, _exportOptions, user, app) {
+  constructor(provider, _exportOptions, user) {
     super(provider, {}, user);
-    this._app = app;
-    this._settings = app.settings;
     this.archive = archiver.create("zip", {});
 
     this.options.logLevel = "info";
@@ -67,7 +65,7 @@ export default class HtmlExportElectron extends SharedExportService {
         callbackFinished(result);
       });
     } else {
-      electronApp
+      this._cables
         .exportProjectFileDialog(zipFileName)
         .then((chosenFileName) => {
           if (chosenFileName) {
@@ -99,7 +97,7 @@ export default class HtmlExportElectron extends SharedExportService {
     options,
     next,
   ) {
-    const project = settings.getCurrentProject();
+    const project = this._cables.settings.getCurrentProject();
     this._log.info("...export");
     if (project) {
       options.handleAssets = options.handleAssets || "auto";
@@ -119,11 +117,11 @@ export default class HtmlExportElectron extends SharedExportService {
   }
 
   getExportTargetPath(project) {
-    return settings.getDownloadPath();
+    return this._cables.settings.getDownloadPath();
   }
 
   _getFilesForProjects(theProjects, options, cb) {
-    const user = settings.getCurrentUser();
+    const user = this._cables.settings.getCurrentUser();
     if (!theProjects) {
       cb([]);
       return;

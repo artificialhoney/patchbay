@@ -2159,7 +2159,7 @@ export default class ServerOps {
           allIdentifiers.forEach((identifier) => {
             let url =
               CABLESUILOADER.noCacheUrl(
-                platform.getCablesUrl() + "/api/op/" + identifier,
+                platform.getCablesUrl() + "/api/cables/op/" + identifier,
               ) +
               "?p=" +
               this._patchId;

@@ -21,9 +21,6 @@ import { platform } from "../platform.js";
 
 import UserSettings from "./usersettings.js";
 import { PortDir, portType } from "../core_constants.js";
-import GlPatch from "../glpatch/glpatch.js";
-import { UiOp } from "../core_extend_op.js";
-import { UiPatch } from "../core_extend_patch.js";
 import namespaceutils from "../namespaceutils.js";
 
 /**

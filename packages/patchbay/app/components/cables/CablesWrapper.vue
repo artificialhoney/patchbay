@@ -20,7 +20,7 @@ const patchbay = {
     async invoke(context, command, data, topicConfig) {
       return useFetch(`/api/cables/${context}/${command}`, {
         method: "POST",
-        body: { ...data, topicConfig },
+        body: JSON.stringify({ data, topicConfig }),
       })
         .then((result) => result.data.value && JSON.parse(result.data.value))
         .then((data) => {

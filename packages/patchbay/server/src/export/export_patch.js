@@ -3,8 +3,8 @@ import path from "path";
 import HtmlExportElectron from "./export_html.js";
 
 export default class PatchExportElectron extends HtmlExportElectron {
-  constructor(provider, _exportOptions, user, app) {
-    super(provider, {}, user, app);
+  constructor(provider, _exportOptions, user) {
+    super(provider, {}, user);
 
     this.options.combineJS = false;
     this.options.addOpCode = true;

@@ -7,13 +7,16 @@ import { UtilProvider } from "@cables/api";
 export default class PatchbaySettings {
   constructor(utilProvider, storageDir, config) {
     this._log = utilProvider.getUtil(UtilProvider.LOGGER);
+    this._helperUtil = utilProvider.getUtil(UtilProvider.HELPER_UTIL);
+    this._projectsUtil = utilProvider.getUtil(UtilProvider.PROJECTS_UTIL);
+
     this._config = config;
     this.SESSION_PARTITION = "persist:cables:standalone";
 
-    if (storageDir && !fs.existsSync(storageDir)) {
-      mkdirp.sync(storageDir);
-    }
-    this.MAIN_CONFIG_NAME = "cables-electron-preferences";
+    // if (storageDir && !fs.existsSync(storageDir)) {
+    //   mkdirp.sync(storageDir);
+    // }
+    this.MAIN_CONFIG_NAME = "jungle-jungle";
     this.PATCHID_FIELD = "patchId";
     this.PROJECTFILE_FIELD = "patchFile";
     this.CURRENTPROJECTDIR_FIELD = "currentPatchDir";
@@ -40,7 +43,12 @@ export default class PatchbaySettings {
     this.data = this.opts.defaults;
     this.settingsFile = path.join(
       this.data[this.STORAGEDIR_FIELD],
-      this.opts.configName + ".json",
+      this.opts.configName + ".cables",
+    );
+
+    this.setProject(
+      this.settingsFile,
+      JSON.parse(fs.readFileSync(this.settingsFile)),
     );
 
     this.refresh();
@@ -82,9 +90,9 @@ export default class PatchbaySettings {
       const dir = this.get(this.CURRENTPROJECTDIR_FIELD);
       const id = this.get(this.PATCHID_FIELD);
       if (dir && id) {
-        this.data.paths.assetPath = path.join(dir, "assets", id, "/");
+        this.data.paths.assetPath = path.join(dir, id, "assets");
       } else if (id) {
-        this.data.paths.assetPath = path.join(".", "assets", id, "/");
+        this.data.paths.assetPath = path.join(".", id, "assets", id);
       }
       if (process.platform === "win32") {
         this.data.paths.recent = this._config.getPath("recent");
@@ -102,7 +110,7 @@ export default class PatchbaySettings {
   set(key, val, silent) {
     this.data[key] = val;
     if (!silent) {
-      fs.writeFileSync(this.settingsFile, JSON.stringify(this.data));
+      // fs.writeFileSync(this.settingsFile, JSON.stringify(this.data));
       this.refresh();
     }
   }
@@ -130,7 +138,7 @@ export default class PatchbaySettings {
     let username = this.getUserSetting("authorName", "") || "";
     return {
       username: username,
-      //_id: helper.generateRandomId(),
+      _id: this._helperUtil.generateRandomId(),
       profile_theme: "dark",
       isStaff: false,
       usernameLowercase: username.toLowerCase(),
@@ -154,9 +162,8 @@ export default class PatchbaySettings {
   getCurrentProjectFile() {
     const projectFile = this.get(this.PROJECTFILE_FIELD);
     if (
-      projectFile
-      // projectFile &&
-      // projectFile.endsWith(projectsUtil.CABLES_PROJECT_FILE_EXTENSION)
+      projectFile &&
+      projectFile.endsWith(this._projectsUtil.CABLES_PROJECT_FILE_EXTENSION)
     )
       return projectFile;
     return null;
@@ -246,36 +253,36 @@ export default class PatchbaySettings {
   }
 
   _updateRecentProjects() {
-    // const recents = this.get(this.RECENT_PROJECTS_FIELD) || {};
-    // let files = Object.keys(recents);
-    // files = files.filter((f) => {
-    //   return fs.existsSync(f);
-    // });
-    // files = files.sort((f1, f2) => {
-    //   const p1 = recents[f1];
-    //   const p2 = recents[f2];
-    //   if (!p1 || !p1.updated) return 1;
-    //   if (!p2 || !p2.updated) return -1;
-    //   return p2.updated - p1.updated;
-    // });
-    // files = helper.uniqueArray(files);
-    // const newRecents = {};
-    // for (let i = 0; i < 10; i++) {
-    //   if (i > files.length) break;
-    //   const key = files[i];
-    //   if (key) {
-    //     try {
-    //       const project = jsonfile.readFileSync(key);
-    //       newRecents[key] = this._toRecentProjectInfo(project);
-    //     } catch (e) {
-    //       this._log.info(
-    //         "failed to parse project file for recent projects, ignoring",
-    //         key,
-    //       );
-    //     }
-    //   }
-    // }
-    // this.setRecentProjects(newRecents);
+    const recents = this.get(this.RECENT_PROJECTS_FIELD) || {};
+    let files = Object.keys(recents);
+    files = files.filter((f) => {
+      return fs.existsSync(f);
+    });
+    files = files.sort((f1, f2) => {
+      const p1 = recents[f1];
+      const p2 = recents[f2];
+      if (!p1 || !p1.updated) return 1;
+      if (!p2 || !p2.updated) return -1;
+      return p2.updated - p1.updated;
+    });
+    files = this._helperUtil.uniqueArray(files);
+    const newRecents = {};
+    for (let i = 0; i < 10; i++) {
+      if (i > files.length) break;
+      const key = files[i];
+      if (key) {
+        try {
+          const project = jsonfile.readFileSync(key);
+          newRecents[key] = this._toRecentProjectInfo(project);
+        } catch (e) {
+          this._log.info(
+            "failed to parse project file for recent projects, ignoring",
+            key,
+          );
+        }
+      }
+    }
+    this.setRecentProjects(newRecents);
   }
 
   _setCurrentProjectFile(value) {
@@ -300,24 +307,24 @@ export default class PatchbaySettings {
   }
 
   _setCurrentProject(projectFile, project) {
-    // this._currentProject = project;
-    // projectsUtil.invalidateProjectCaches();
-    // if (project) {
-    //   this.set(this.PATCHID_FIELD, project._id);
-    // }
-    // if (projectFile && project) {
-    //   const projectName = path.basename(
-    //     projectFile,
-    //     "." + projectsUtil.CABLES_PROJECT_FILE_EXTENSION,
-    //   );
-    //   if (project.name !== projectName) {
-    //     project.name = projectName;
-    //     project.summary = project.summary || {};
-    //     project.summary.title = project.name;
-    //     projectsUtil.writeProjectToFile(projectFile, project);
-    //   }
-    //   this._updateRecentProjects();
-    // }
+    this._currentProject = project;
+    this._projectsUtil.invalidateProjectCaches();
+    if (project) {
+      this.set(this.PATCHID_FIELD, project._id);
+    }
+    if (projectFile && project) {
+      const projectName = path.basename(
+        projectFile,
+        "." + this._projectsUtil.CABLES_PROJECT_FILE_EXTENSION,
+      );
+      if (project.name !== projectName) {
+        project.name = projectName;
+        project.summary = project.summary || {};
+        project.summary.title = project.name;
+        // this._projectsUtil.writeProjectToFile(projectFile, project);
+      }
+      this._updateRecentProjects();
+    }
     // electronApp.updateTitle();
   }
 
