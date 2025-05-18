@@ -22,7 +22,9 @@ import path from "node:path";
 const metaUrl = new URL(".", import.meta.url);
 const __dirname = fileURLToPath(metaUrl.href);
 
-const configLocation = useRuntimeConfig().cables.configLocation;
+const config = useRuntimeConfig().cables;
+
+const configLocation = config.configLocation;
 if (!existsSync(configLocation)) {
   console.error(
     "custom config set to ",
@@ -32,10 +34,7 @@ if (!existsSync(configLocation)) {
   process.exit(1);
 }
 
-const EXAMPLE_PATH = path.join(
-  __dirname,
-  "../../public/examples/jungle-jungle",
-);
+const EXAMPLE_PATH = config.examplePath;
 
 const appConfig = {
   getPath: (p) => path.join("/examples/jungle-jungle", p),
