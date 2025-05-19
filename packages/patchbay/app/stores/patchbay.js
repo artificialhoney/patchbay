@@ -5,24 +5,6 @@ const CONSTANTS = {
   LOCAL_STORAGE_KEY: "patchbay",
 };
 
-const loadFromLocalStorage = (key) => {
-  const item = localStorage.getItem(key);
-  if (!item) {
-    return undefined;
-  } else {
-    return JSON.parse(item);
-  }
-};
-
-const saveToLocalStorage = (key, value) => {
-  const item = JSON.stringify(value);
-  if (!item) {
-    return undefined;
-  } else {
-    return localStorage.setItem(key, item);
-  }
-};
-
 export const usePatchbayStore = defineStore("patchbay", {
   state: () => ({
     token: undefined,
@@ -34,39 +16,81 @@ export const usePatchbayStore = defineStore("patchbay", {
       patch: undefined,
     },
   }),
+  getters: {
+    loggedIn: (state) => !!state.token,
+  },
   actions: {
+    loadFromLocalStorage(key) {
+      const item = localStorage.getItem(key);
+      if (!item) {
+        return undefined;
+      } else {
+        return JSON.parse(item);
+      }
+    },
+
+    saveToLocalStorage(key, value) {
+      const item = JSON.stringify(value);
+      if (!item) {
+        return undefined;
+      } else {
+        return localStorage.setItem(key, item);
+      }
+    },
     async sendSync(token, data) {
       let query = "";
       if (data) {
         query = `?${new URLSearchParams(Object.entries(data)).toString()}`;
       }
       return useFetch(`/api/cables/${token}${query}`).then(
-        (result) => result.data.value && JSON.parse(result.data.value),
+        (result) => result?.data?.value && JSON.parse(result.data.value),
       );
     },
     async invoke(context, command, data, topicConfig) {
       return useFetch(`/api/cables/${context}/${command}`, {
         method: "POST",
         body: JSON.stringify({ data, topicConfig }),
-      }).then((result) => result.data.value && JSON.parse(result.data.value));
+      }).then((result) => result?.data?.value && JSON.parse(result.data.value));
     },
     loadSettingsFromLocalStorage() {
-      const { token } = loadFromLocalStorage(CONSTANTS.LOCAL_STORAGE_KEY);
-      this.token = token;
-    },
-    saveSettingsToLocalStorage() {
-      saveToLocalStorage(CONSTANTS.LOCAL_STORAGE_KEY, { token: this.token });
+      const store = usePatchbayStore();
+      const result = store.loadFromLocalStorage(CONSTANTS.LOCAL_STORAGE_KEY);
+
+      this.token = result?.token;
     },
     login(token) {
+      const store = usePatchbayStore();
       this.token = token;
-      this.saveSettingsToLocalStorage();
+      store.saveSettingsToLocalStorage();
     },
-    logout() {
+    async logout() {
+      const store = usePatchbayStore();
+
+      await useFetch(`/patchbay/auth/logout`, {
+        method: "POST",
+        body: JSON.stringify({
+          mode: "session",
+        }),
+      }).then((result) => result?.data?.value && JSON.parse(result.data.value));
       this.token = null;
-      this.saveSettingsToLocalStorage();
+      store.saveToLocalStorage(CONSTANTS.LOCAL_STORAGE_KEY, {
+        token: this.token,
+      });
     },
-    isLoggedIn() {
-      return !!this.token;
+    async refresh() {
+      const store = usePatchbayStore();
+      const { refresh_token } = await useFetch(`/patchbay/auth/refresh`, {
+        method: "POST",
+        body: JSON.stringify({
+          refresh_token: this.token,
+          mode: "cookie",
+        }),
+      }).then((result) => result?.data?.value && JSON.parse(result.data.value));
+      store.login(refresh_token);
+    },
+    async init() {
+      const store = usePatchbayStore();
+      store.loadSettingsFromLocalStorage();
     },
   },
 });

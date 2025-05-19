@@ -41,7 +41,7 @@ services:
       ADMIN_PASSWORD: "${PATCHBAY_ADMIN_PASSWORD:-patchbay}"
 
       PUBLIC_URL: "http://localhost:3000/patchbay"
-      ROOT_REDIRECT: "/patchbay"
+      ROOT_REDIRECT: "/patch"
   app:
     container_name: patchbay_app
     image: artificialhoney/patchbay:latest

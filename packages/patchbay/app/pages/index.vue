@@ -18,10 +18,12 @@ definePageMeta({
 </script>
 
 <template>
-  <Hero
-    logo
-    :heading="title"
-    :description="description"
-    :buttons="buttons"
-  ></Hero>
+  <div>
+    <Hero
+      logo
+      :heading="title"
+      :description="description"
+      :buttons="buttons"
+    ></Hero>
+  </div>
 </template>
