@@ -2,6 +2,7 @@
 const route = useRoute();
 definePageMeta({
   layout: "app",
+  middleware: ["auth"],
 });
 </script>
 

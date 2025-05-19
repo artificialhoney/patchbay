@@ -90,7 +90,9 @@ export const usePatchbayStore = defineStore("patchbay", {
     },
     async init() {
       const store = usePatchbayStore();
-      store.loadSettingsFromLocalStorage();
+      if (store.loggedIn) {
+        console.log(store);
+      }
     },
   },
 });

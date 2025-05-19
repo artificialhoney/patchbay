@@ -1,13 +1,16 @@
 <script setup lang="js">
+import { storeToRefs } from "pinia";
 import { usePatchbayStore } from "./stores/patchbay";
 
-if (process.client) {
-  onMounted(async () => {
-    const { init } = usePatchbayStore();
+const cookieToken = useCookie("directus_session_token");
+const store = usePatchbayStore();
+const { token } = storeToRefs(store);
 
-    await init();
-  });
-}
+token.value = cookieToken.value;
+
+onMounted(async () => {
+  await store.init();
+});
 </script>
 <template>
   <NuxtLayout>
