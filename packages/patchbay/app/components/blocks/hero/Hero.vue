@@ -1,12 +1,9 @@
 <script setup lang="js">
-import ProjectLogo from "~/assets/icons/project-logo.svg";
-
 import { Button } from "@/components/ui/button";
 
 const { badge, heading, description, buttons } = defineProps({
   logo: {
-    type: Boolean,
-    required: true,
+    type: String,
   },
   heading: {
     type: String,
@@ -36,7 +33,7 @@ const { badge, heading, description, buttons } = defineProps({
         <div
           class="flex flex-col items-center text-center lg:items-start lg:text-left"
         >
-          <ProjectLogo v-if="logo" class="text-7xl text-primary"></ProjectLogo>
+          <img v-if="logo" :src="logo" :alt="heading" class="w-16" />
           <h1 class="my-6 text-4xl font-bold text-pretty lg:text-6xl">
             {{ heading }}
           </h1>

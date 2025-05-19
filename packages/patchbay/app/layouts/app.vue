@@ -19,8 +19,8 @@ import { usePatchbayStore } from "@/stores/patchbay";
 const { t } = useI18n({ useScope: "global" });
 const store = usePatchbayStore();
 
-const title = t("title");
-const description = t("description");
+const title = t("patchbay.title");
+const description = t("patchbay.description");
 
 useSeoMeta({
   title,

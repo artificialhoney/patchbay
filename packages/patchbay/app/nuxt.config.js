@@ -16,7 +16,7 @@ const publicDir = fileURLToPath(new URL("./public", import.meta.url));
 // eslint-disable-next-line no-undef
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
-  devtools: { enabled: false },
+  devtools: { enabled: !prod },
   modules: [
     "@nuxt/content",
     "shadcn-nuxt",

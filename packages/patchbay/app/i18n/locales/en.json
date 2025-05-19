@@ -1,6 +1,11 @@
 {
-  "title": "Patchbay",
-  "description": "Cables, You and the Patchbay",
+  "patchbay": {
+    "title": "Patchbay",
+    "description": "Cables, You and the Patchbay",
+    "logo": "/icon/favicon.png",
+    "color": "#07F78C"
+  },
+
   "patch": "Patch",
   "admin": "Admin",
   "error": {

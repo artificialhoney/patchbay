@@ -1,11 +1,12 @@
 <script setup lang="js">
+import { usePatchbayStore } from "../stores/patchbay";
 import { useI18n } from "vue-i18n";
 const { t } = useI18n({ useScope: "global" });
 
 import Hero from "@/components/blocks/hero/Hero.vue";
 
-const title = t("title");
-const description = t("description");
+const store = usePatchbayStore();
+const { project } = storeToRefs(store);
 
 const buttons = {
   primary: { text: t("patch"), url: "/patch" },
@@ -20,9 +21,10 @@ definePageMeta({
 <template>
   <div>
     <Hero
-      logo
-      :heading="title"
-      :description="description"
+      v-if="project"
+      :logo="project.logo"
+      :heading="project.name"
+      :description="project.description"
       :buttons="buttons"
     ></Hero>
   </div>
