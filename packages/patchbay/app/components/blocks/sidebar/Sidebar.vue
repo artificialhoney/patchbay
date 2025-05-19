@@ -25,6 +25,9 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 
+const store = usePatchbayStore();
+const { user, loggedIn } = storeToRefs(store);
+
 // This is sample data.
 const data = {
   user: {
@@ -166,7 +169,16 @@ const data = {
       <ProjectsNav :projects="data.projects" />
     </SidebarContent>
     <SidebarFooter>
-      <UserNav :user="data.user" />
+      <UserNav
+        :user="{
+          name: user.first_name,
+          email: user.email,
+          avatar:
+            (user.avatar && `/patchbay/assets/${user.avatar}`) || undefined,
+          id: user.id,
+        }"
+        v-if="user && loggedIn"
+      />
     </SidebarFooter>
     <SidebarRail />
   </Sidebar>

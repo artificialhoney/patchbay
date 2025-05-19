@@ -5,7 +5,11 @@
     "logo": "/icon/favicon.png",
     "color": "#07F78C"
   },
-
+  "sidebar": {
+    "admin": "Admin",
+    "account": "Account",
+    "logout": "Logout"
+  },
   "patch": "Patch",
   "admin": "Admin",
   "error": {

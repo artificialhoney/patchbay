@@ -25,6 +25,8 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
+const store = usePatchbayStore();
+
 const { user } = defineProps({
   user: {
     type: Object,
@@ -50,7 +52,9 @@ const { isMobile } = useSidebar();
                 :alt="user.name"
                 v-if="user.avatar"
               />
-              <AvatarFallback class="rounded-lg">P</AvatarFallback>
+              <AvatarFallback class="rounded-lg">{{
+                user.name[0]
+              }}</AvatarFallback>
             </Avatar>
             <div class="grid flex-1 text-left text-sm leading-tight">
               <span class="truncate font-semibold">{{ user.name }}</span>
@@ -68,8 +72,14 @@ const { isMobile } = useSidebar();
           <DropdownMenuLabel class="p-0 font-normal">
             <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
               <Avatar class="h-8 w-8 rounded-lg">
-                <AvatarImage :src="user.avatar" :alt="user.name" />
-                <AvatarFallback class="rounded-lg">P</AvatarFallback>
+                <AvatarImage
+                  :src="user.avatar"
+                  :alt="user.name"
+                  v-if="user.avatar"
+                />
+                <AvatarFallback class="rounded-lg">{{
+                  user.name[0]
+                }}</AvatarFallback>
               </Avatar>
               <div class="grid flex-1 text-left text-sm leading-tight">
                 <span class="truncate font-semibold">{{ user.name }}</span>
@@ -81,15 +91,24 @@ const { isMobile } = useSidebar();
           <DropdownMenuGroup>
             <DropdownMenuItem>
               <Sparkles />
-              Upgrade to Pro
+              <NuxtLink target="_blank" to="/patchbay/admin" external>
+                {{ $t("sidebar.admin") }}
+              </NuxtLink>
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem>
               <BadgeCheck />
-              Account
+              <NuxtLink
+                target="_blank"
+                :to="`/patchbay/admin/users/${user.id}`"
+                external
+              >
+                {{ $t("sidebar.account") }}
+              </NuxtLink>
             </DropdownMenuItem>
+            <!--
             <DropdownMenuItem>
               <CreditCard />
               Billing
@@ -98,11 +117,15 @@ const { isMobile } = useSidebar();
               <Bell />
               Notifications
             </DropdownMenuItem>
+
+            -->
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
             <LogOut />
-            Log out
+            <NuxtLink to="/patchbay/admin/logout" external>
+              {{ $t("sidebar.logout") }}
+            </NuxtLink>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
