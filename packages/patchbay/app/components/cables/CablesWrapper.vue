@@ -33,11 +33,16 @@ if (process.client) {
   const settings = Object.assign(DEFAULT_SETTINGS, props.settings);
 
   const cablesUi = useTemplateRef("cables-ui");
-  const store = usePatchbayStore();
+  const { cablesGet, cablesRun } = usePatchbayStore();
 
   onMounted(async () => {
     const cablesPatchbay = new CablesPatchbay(
-      { ipcRenderer: store },
+      {
+        ipcRenderer: {
+          sendSync: cablesGet,
+          invoke: cablesRun,
+        },
+      },
       cablesUi.value,
       settings,
     );
