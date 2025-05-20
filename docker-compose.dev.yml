@@ -3,6 +3,8 @@ services:
     extends:
       file: docker-compose.yml
       service: db
+    volumes:
+      - ./assets/db:/docker-entrypoint-initdb.d
   cache:
     extends:
       file: docker-compose.yml
@@ -17,3 +19,7 @@ services:
       - 8055:8055
     volumes:
       - ./packages/patchbay/bundle:/directus/extensions/patchbay
+      - ./assets/api/uploads:/directus/uploads
+volumes:
+  extensions:
+  snapshots:

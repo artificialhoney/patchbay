@@ -58,7 +58,7 @@ CREATE EXTENSION IF NOT EXISTS fuzzystrmatch WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION fuzzystrmatch; Type: COMMENT; Schema: -; Owner:
+-- Name: EXTENSION fuzzystrmatch; Type: COMMENT; Schema: -; Owner: 
 --
 
 COMMENT ON EXTENSION fuzzystrmatch IS 'determine similarities and distance between strings';
@@ -72,7 +72,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner:
+-- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: 
 --
 
 COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
@@ -86,7 +86,7 @@ CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder WITH SCHEMA tiger;
 
 
 --
--- Name: EXTENSION postgis_tiger_geocoder; Type: COMMENT; Schema: -; Owner:
+-- Name: EXTENSION postgis_tiger_geocoder; Type: COMMENT; Schema: -; Owner: 
 --
 
 COMMENT ON EXTENSION postgis_tiger_geocoder IS 'PostGIS tiger geocoder and reverse geocoder';
@@ -100,7 +100,7 @@ CREATE EXTENSION IF NOT EXISTS postgis_topology WITH SCHEMA topology;
 
 
 --
--- Name: EXTENSION postgis_topology; Type: COMMENT; Schema: -; Owner:
+-- Name: EXTENSION postgis_topology; Type: COMMENT; Schema: -; Owner: 
 --
 
 COMMENT ON EXTENSION postgis_topology IS 'PostGIS topology spatial types and functions';
@@ -1059,6 +1059,14 @@ COPY public.directus_activity (id, action, "user", "timestamp", ip, user_agent, 
 44	create	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-19 20:09:33.768+00	127.0.0.1	Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0	directus_files	88641ad9-249e-46e2-ac12-4bfade85a30c	http://localhost:3000
 45	create	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-19 20:09:41.872+00	127.0.0.1	Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0	directus_files	ee1fc4eb-be60-4822-b795-5a101e27f009	http://localhost:3000
 47	update	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-19 20:10:58.419+00	127.0.0.1	Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0	directus_settings	1	http://localhost:3000
+48	login	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-20 13:46:06.421+00	127.0.0.1	Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0	directus_users	c98c06cc-00a7-4916-b81f-e6d192d57165	http://localhost:3000
+49	update	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-20 13:46:18.241+00	127.0.0.1	Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0	directus_settings	1	http://localhost:3000
+50	delete	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-20 13:46:32.381+00	127.0.0.1	Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0	directus_files	b18b4c5a-71fe-4ae1-b4c4-9b2593cc2aab	http://localhost:3000
+51	create	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-20 13:48:26.116+00	127.0.0.1	Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0	directus_files	b0b05e84-acb9-402f-a4bc-a0b740baf07f	http://localhost:3000
+52	create	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-20 13:48:26.124+00	127.0.0.1	Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0	directus_files	e22c691d-393a-46cf-97b0-e83cf348537e	http://localhost:3000
+53	update	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-20 13:49:39.974+00	127.0.0.1	Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0	directus_settings	1	http://localhost:3000
+54	delete	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-20 13:50:11.806+00	127.0.0.1	Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0	directus_files	ee1fc4eb-be60-4822-b795-5a101e27f009	http://localhost:3000
+55	delete	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-20 13:50:11.807+00	127.0.0.1	Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0	directus_files	88641ad9-249e-46e2-ac12-4bfade85a30c	http://localhost:3000
 \.
 
 
@@ -1119,9 +1127,8 @@ COPY public.directus_fields (id, collection, field, special, interface, options,
 --
 
 COPY public.directus_files (id, storage, filename_disk, filename_download, title, type, folder, uploaded_by, created_on, modified_by, modified_on, charset, filesize, width, height, duration, embed, description, location, tags, metadata, focal_point_x, focal_point_y, tus_id, tus_data, uploaded_on) FROM stdin;
-88641ad9-249e-46e2-ac12-4bfade85a30c	local	88641ad9-249e-46e2-ac12-4bfade85a30c.svg	project-logo.svg	Project Logo	image/svg+xml	1cdbdd65-b1a5-468d-8cfc-3c733b10c57c	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-19 20:09:33.767+00	\N	2025-05-19 20:09:33.773+00	\N	943	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	2025-05-19 20:09:33.772+00
-ee1fc4eb-be60-4822-b795-5a101e27f009	local	ee1fc4eb-be60-4822-b795-5a101e27f009.svg	public-favicon.svg	Public Favicon	image/svg+xml	1cdbdd65-b1a5-468d-8cfc-3c733b10c57c	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-19 20:09:41.871+00	\N	2025-05-19 20:09:41.877+00	\N	946	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	2025-05-19 20:09:41.876+00
-b18b4c5a-71fe-4ae1-b4c4-9b2593cc2aab	local	b18b4c5a-71fe-4ae1-b4c4-9b2593cc2aab.svg	public-favicon.svg	Public Favicon	image/svg+xml	\N	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-19 20:10:14.914+00	\N	2025-05-19 20:10:14.919+00	\N	946	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	2025-05-19 20:10:14.918+00
+e22c691d-393a-46cf-97b0-e83cf348537e	local	e22c691d-393a-46cf-97b0-e83cf348537e.svg	project-logo.svg	Project Logo	image/svg+xml	59a4908b-d34d-4e0a-80e4-77a979bbab42	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-20 13:48:26.122+00	\N	2025-05-20 13:48:26.156+00	\N	943	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	2025-05-20 13:48:26.155+00
+b0b05e84-acb9-402f-a4bc-a0b740baf07f	local	b0b05e84-acb9-402f-a4bc-a0b740baf07f.svg	public-favicon.svg	Public Favicon	image/svg+xml	59a4908b-d34d-4e0a-80e4-77a979bbab42	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-20 13:48:26.113+00	\N	2025-05-20 13:48:26.157+00	\N	946	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	2025-05-20 13:48:26.155+00
 \.
 
 
@@ -1340,6 +1347,10 @@ COPY public.directus_revisions (id, activity, collection, item, data, delta, par
 34	45	directus_files	ee1fc4eb-be60-4822-b795-5a101e27f009	{"folder":"1cdbdd65-b1a5-468d-8cfc-3c733b10c57c","title":"Public Favicon","filename_download":"public-favicon.svg","type":"image/svg+xml","storage":"local"}	{"folder":"1cdbdd65-b1a5-468d-8cfc-3c733b10c57c","title":"Public Favicon","filename_download":"public-favicon.svg","type":"image/svg+xml","storage":"local"}	\N	\N
 35	46	directus_files	b18b4c5a-71fe-4ae1-b4c4-9b2593cc2aab	{"title":"Public Favicon","filename_download":"public-favicon.svg","type":"image/svg+xml","storage":"local"}	{"title":"Public Favicon","filename_download":"public-favicon.svg","type":"image/svg+xml","storage":"local"}	\N	\N
 36	47	directus_settings	1	{"id":1,"project_name":"Patchbay","project_url":null,"project_color":"#07F78C","project_logo":"88641ad9-249e-46e2-ac12-4bfade85a30c","public_foreground":null,"public_background":null,"public_note":"The brilliant [cables.gl](https://cables.gl) app on a state of the art full-stack platform.","auth_login_attempts":25,"auth_password_policy":null,"storage_asset_transform":"all","storage_asset_presets":null,"custom_css":null,"storage_default_folder":null,"basemaps":null,"mapbox_key":null,"module_bar":null,"project_descriptor":"Cables, You and the Patchbay","default_language":"en-US","custom_aspect_ratios":null,"public_favicon":"b18b4c5a-71fe-4ae1-b4c4-9b2593cc2aab","default_appearance":"dark","default_theme_light":null,"theme_light_overrides":null,"default_theme_dark":"@patchbay/theme","theme_dark_overrides":null,"report_error_url":null,"report_bug_url":null,"report_feature_url":null,"public_registration":false,"public_registration_verify_email":true,"public_registration_role":null,"public_registration_email_filter":null,"visual_editor_urls":null}	{"project_logo":"88641ad9-249e-46e2-ac12-4bfade85a30c","public_note":"The brilliant [cables.gl](https://cables.gl) app on a state of the art full-stack platform.","public_favicon":"b18b4c5a-71fe-4ae1-b4c4-9b2593cc2aab"}	\N	\N
+37	49	directus_settings	1	{"id":1,"project_name":"Patchbay","project_url":null,"project_color":"#07F78C","project_logo":null,"public_foreground":null,"public_background":null,"public_note":"The brilliant [cables.gl](https://cables.gl) app on a state of the art full-stack platform.","auth_login_attempts":25,"auth_password_policy":null,"storage_asset_transform":"all","storage_asset_presets":null,"custom_css":null,"storage_default_folder":null,"basemaps":null,"mapbox_key":null,"module_bar":null,"project_descriptor":"Cables, You and the Patchbay","default_language":"en-US","custom_aspect_ratios":null,"public_favicon":null,"default_appearance":"dark","default_theme_light":null,"theme_light_overrides":null,"default_theme_dark":"@patchbay/theme","theme_dark_overrides":null,"report_error_url":null,"report_bug_url":null,"report_feature_url":null,"public_registration":false,"public_registration_verify_email":true,"public_registration_role":null,"public_registration_email_filter":null,"visual_editor_urls":null}	{"project_logo":null,"public_favicon":null}	\N	\N
+38	51	directus_files	b0b05e84-acb9-402f-a4bc-a0b740baf07f	{"folder":"59a4908b-d34d-4e0a-80e4-77a979bbab42","title":"Public Favicon","filename_download":"public-favicon.svg","type":"image/svg+xml","storage":"local"}	{"folder":"59a4908b-d34d-4e0a-80e4-77a979bbab42","title":"Public Favicon","filename_download":"public-favicon.svg","type":"image/svg+xml","storage":"local"}	\N	\N
+39	52	directus_files	e22c691d-393a-46cf-97b0-e83cf348537e	{"folder":"59a4908b-d34d-4e0a-80e4-77a979bbab42","title":"Project Logo","filename_download":"project-logo.svg","type":"image/svg+xml","storage":"local"}	{"folder":"59a4908b-d34d-4e0a-80e4-77a979bbab42","title":"Project Logo","filename_download":"project-logo.svg","type":"image/svg+xml","storage":"local"}	\N	\N
+40	53	directus_settings	1	{"id":1,"project_name":"Patchbay","project_url":null,"project_color":"#07F78C","project_logo":"e22c691d-393a-46cf-97b0-e83cf348537e","public_foreground":null,"public_background":null,"public_note":"The brilliant [cables.gl](https://cables.gl) app on a state of the art full-stack platform.","auth_login_attempts":25,"auth_password_policy":null,"storage_asset_transform":"all","storage_asset_presets":null,"custom_css":null,"storage_default_folder":null,"basemaps":null,"mapbox_key":null,"module_bar":null,"project_descriptor":"Cables, You and the Patchbay","default_language":"en-US","custom_aspect_ratios":null,"public_favicon":"b0b05e84-acb9-402f-a4bc-a0b740baf07f","default_appearance":"dark","default_theme_light":null,"theme_light_overrides":null,"default_theme_dark":"@patchbay/theme","theme_dark_overrides":null,"report_error_url":null,"report_bug_url":null,"report_feature_url":null,"public_registration":false,"public_registration_verify_email":true,"public_registration_role":null,"public_registration_email_filter":null,"visual_editor_urls":null}	{"project_logo":"e22c691d-393a-46cf-97b0-e83cf348537e","public_favicon":"b0b05e84-acb9-402f-a4bc-a0b740baf07f"}	\N	\N
 \.
 
 
@@ -1357,8 +1368,8 @@ COPY public.directus_roles (id, name, icon, description, parent) FROM stdin;
 --
 
 COPY public.directus_sessions (token, "user", expires, ip, user_agent, share, origin, next_token) FROM stdin;
-k7nf4CFHdVZIsurDL0sY3DgkpyWCN-a79jLptz5H4PBnoabV_WZ96mntollyENT6	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-19 19:36:56.399+00	127.0.0.1	Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0	\N	http://localhost:3000	5FguzKgAFw3Vyn_rH_Z8uMrkV_J-PMzFbnZBWgdYz8aDwsevR8a5u_BgiKGXy6ad
 5FguzKgAFw3Vyn_rH_Z8uMrkV_J-PMzFbnZBWgdYz8aDwsevR8a5u_BgiKGXy6ad	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-20 19:36:46.399+00	127.0.0.1	Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0	\N	http://localhost:3000	\N
+AK-uL2KSxde-ThP4sy9zi6rfFEH20UmtGN_pAjs_HlMoBN1VlBMMT9ydgHKSZYo4	c98c06cc-00a7-4916-b81f-e6d192d57165	2025-05-27 13:46:06.37+00	127.0.0.1	Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0	\N	http://localhost:3000	\N
 \.
 
 
@@ -1367,7 +1378,7 @@ k7nf4CFHdVZIsurDL0sY3DgkpyWCN-a79jLptz5H4PBnoabV_WZ96mntollyENT6	c98c06cc-00a7-4
 --
 
 COPY public.directus_settings (id, project_name, project_url, project_color, project_logo, public_foreground, public_background, public_note, auth_login_attempts, auth_password_policy, storage_asset_transform, storage_asset_presets, custom_css, storage_default_folder, basemaps, mapbox_key, module_bar, project_descriptor, default_language, custom_aspect_ratios, public_favicon, default_appearance, default_theme_light, theme_light_overrides, default_theme_dark, theme_dark_overrides, report_error_url, report_bug_url, report_feature_url, public_registration, public_registration_verify_email, public_registration_role, public_registration_email_filter, visual_editor_urls) FROM stdin;
-1	Patchbay	\N	#07F78C	88641ad9-249e-46e2-ac12-4bfade85a30c	\N	\N	The brilliant [cables.gl](https://cables.gl) app on a state of the art full-stack platform.	25	\N	all	\N	\N	\N	\N	\N	\N	Cables, You and the Patchbay	en-US	\N	b18b4c5a-71fe-4ae1-b4c4-9b2593cc2aab	dark	\N	\N	@patchbay/theme	\N	\N	\N	\N	f	t	\N	\N	\N
+1	Patchbay	\N	#07F78C	e22c691d-393a-46cf-97b0-e83cf348537e	\N	\N	The brilliant [cables.gl](https://cables.gl) app on a state of the art full-stack platform.	25	\N	all	\N	\N	\N	\N	\N	\N	Cables, You and the Patchbay	en-US	\N	b0b05e84-acb9-402f-a4bc-a0b740baf07f	dark	\N	\N	@patchbay/theme	\N	\N	\N	\N	f	t	\N	\N	\N
 \.
 
 
@@ -1392,7 +1403,7 @@ COPY public.directus_translations (id, language, key, value) FROM stdin;
 --
 
 COPY public.directus_users (id, first_name, last_name, email, password, location, title, description, tags, avatar, language, tfa_secret, status, role, token, last_access, last_page, provider, external_identifier, auth_data, email_notifications, appearance, theme_dark, theme_light, theme_light_overrides, theme_dark_overrides) FROM stdin;
-c98c06cc-00a7-4916-b81f-e6d192d57165	Admin	User	admin@patchbay.io	$argon2id$v=19$m=65536,t=3,p=4$nKQOujMqpGhnLfQUPIl5Jw$1wBi19y6x1rvw/waVtefgOYZxjbcEagIabxZ5zHFp2g	\N	\N	\N	\N	\N	\N	\N	active	4b92eda1-d0dd-4c1c-9d61-bd4c6c0760d5	\N	2025-05-19 19:36:46.411+00	/settings/appearance	default	\N	\N	t	\N	\N	\N	\N	\N
+c98c06cc-00a7-4916-b81f-e6d192d57165	Admin	User	admin@patchbay.io	$argon2id$v=19$m=65536,t=3,p=4$nKQOujMqpGhnLfQUPIl5Jw$1wBi19y6x1rvw/waVtefgOYZxjbcEagIabxZ5zHFp2g	\N	\N	\N	\N	\N	\N	\N	active	4b92eda1-d0dd-4c1c-9d61-bd4c6c0760d5	\N	2025-05-20 13:46:06.445+00	/files/folders/1cdbdd65-b1a5-468d-8cfc-3c733b10c57c	default	\N	\N	t	\N	\N	\N	\N	\N
 \.
 
 
@@ -1480,7 +1491,7 @@ COPY topology.layer (topology_id, layer_id, schema_name, table_name, feature_col
 -- Name: directus_activity_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.directus_activity_id_seq', 47, true);
+SELECT pg_catalog.setval('public.directus_activity_id_seq', 55, true);
 
 
 --
@@ -1522,7 +1533,7 @@ SELECT pg_catalog.setval('public.directus_relations_id_seq', 1, true);
 -- Name: directus_revisions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.directus_revisions_id_seq', 36, true);
+SELECT pg_catalog.setval('public.directus_revisions_id_seq', 40, true);
 
 
 --
@@ -2173,3 +2184,4 @@ ALTER TABLE ONLY public.patches
 --
 -- PostgreSQL database dump complete
 --
+
