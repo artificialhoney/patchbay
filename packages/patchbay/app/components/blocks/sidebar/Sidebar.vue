@@ -26,32 +26,10 @@ import {
 } from "@/components/ui/sidebar";
 
 const store = usePatchbayStore();
-const { user, loggedIn } = storeToRefs(store);
+const { user, loggedIn, project } = storeToRefs(store);
 
 // This is sample data.
 const data = {
-  user: {
-    name: "admin",
-    email: "admin@patchbay.io",
-    // avatar: "/avatars/shadcn.jpg",
-  },
-  teams: [
-    {
-      name: "Patchbay",
-      logo: ProjectLogo,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
   main: [
     {
       title: "Playground",
@@ -162,11 +140,26 @@ const data = {
 <template>
   <Sidebar collapsible="icon">
     <SidebarHeader>
-      <TeamSwitcher :teams="data.teams" :active-team="data.teams[0]" />
+      <SidebarMenuButton
+        v-if="project"
+        size="lg"
+        class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+      >
+        <div
+          class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
+        >
+          <img :src="project.logo" :alt="project.name" class="size-4" />
+        </div>
+        <div class="grid flex-1 text-left text-sm leading-tight">
+          <span class="truncate font-semibold">{{ project.name }}</span>
+          <span class="truncate text-xs">{{ project.description }}</span>
+        </div>
+        <!-- <ChevronsUpDown class="ml-auto" /> -->
+      </SidebarMenuButton>
     </SidebarHeader>
     <SidebarContent>
-      <MainNav :items="data.main" />
-      <ProjectsNav :projects="data.projects" />
+      <!-- <MainNav :items="data.main" /> -->
+      <!-- <ProjectsNav :projects="data.projects" /> -->
     </SidebarContent>
     <SidebarFooter>
       <UserNav
@@ -179,6 +172,11 @@ const data = {
         }"
         v-if="user && loggedIn"
       />
+      <Button>
+        <NuxtLink to="/patchbay/admin/login" external>
+          {{ $t("sidebar.login") }}
+        </NuxtLink>
+      </Button>
     </SidebarFooter>
     <SidebarRail />
   </Sidebar>
