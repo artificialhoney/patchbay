@@ -18,6 +18,7 @@ import { usePatchbayStore } from "@/stores/patchbay";
 
 const { t } = useI18n({ useScope: "global" });
 const store = usePatchbayStore();
+const route = useRoute();
 
 const title = t("patchbay.title");
 const description = t("patchbay.description");
@@ -45,13 +46,14 @@ useSeoMeta({
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem class="hidden md:block">
-                <BreadcrumbLink href="#"
-                  >Building Your Application</BreadcrumbLink
-                >
+                {{ $t(`patch.${route.params.id ? "edit" : "new"}`) }}
               </BreadcrumbItem>
-              <BreadcrumbSeparator class="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+              <BreadcrumbSeparator
+                class="hidden md:block"
+                v-if="route.params.id"
+              />
+              <BreadcrumbItem v-if="route.params.id">
+                <BreadcrumbPage>{{ route.params.id }}</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
