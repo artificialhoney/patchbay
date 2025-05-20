@@ -9,8 +9,8 @@ const store = usePatchbayStore();
 const { project } = storeToRefs(store);
 
 const buttons = {
-  primary: { text: t("patch"), url: "/patch" },
-  secondary: { text: t("admin"), url: "/patchbay/admin" },
+  primary: { text: t("patch.patch"), url: "/patch" },
+  secondary: { text: t("patch.admin"), url: "/patchbay/admin" },
 };
 
 definePageMeta({

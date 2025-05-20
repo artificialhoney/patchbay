@@ -64,19 +64,23 @@ export const usePatchbayStore = defineStore("patchbay", {
       }
 
       this.project = {
-        name: store.info?.project.project_name || t("patchbay.title"),
+        name: this.info.project.project_name || t("patchbay.title"),
         description:
-          store.info?.project.project_descriptor || t("patchbay.description"),
+          this.info.project.project_descriptor || t("patchbay.description"),
         logo:
-          (store.info?.project.project_logo &&
-            `/patchbay/assets/${store.info?.project.project_logo}`) ||
+          (this.info.project.project_logo &&
+            `/patchbay/assets/${this.info.project.project_logo}`) ||
           t("patchbay.logo"),
-        color: store.info?.project.project_color || t("patchbay.color"),
+        color: this.info.project.project_color || t("patchbay.color"),
+        appearance:
+          this.user?.appearance ||
+          this.info.project.default_appearance ||
+          "dark",
       };
 
       this.theme = generateTheme(
-        store.info?.project.project_color || t("patchbay.color"),
-        true,
+        this.project.color,
+        this.project.appearance === "dark",
       );
     },
   },

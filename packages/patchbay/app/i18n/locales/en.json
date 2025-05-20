@@ -12,6 +12,8 @@
     "login": "Login"
   },
   "patch": {
+    "patch": "Patch",
+    "admin": "Admin",
     "new": "New",
     "edit": "Edit"
   },
