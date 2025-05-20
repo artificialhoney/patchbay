@@ -38,10 +38,10 @@ const { user, loggedIn, project } = storeToRefs(store);
           <SidebarMenuButton
             v-if="project"
             size="lg"
-            class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+            class="data-[state=open]:bg-sidebar-primary data-[state=open]:text-sidebar-primary-foreground"
           >
             <div
-              class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
+              class="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground"
             >
               <img :src="project.logo" :alt="project.name" class="size-4" />
             </div>

@@ -1,3 +1,4 @@
+import { generateTheme } from "@/lib/theme";
 import { useFetch } from "@vueuse/core";
 import { defineStore } from "pinia";
 import { useI18n } from "vue-i18n";
@@ -16,6 +17,7 @@ export const usePatchbayStore = defineStore("patchbay", {
       ops: undefined,
       patch: undefined,
     },
+    theme: undefined,
   }),
   getters: {
     loggedIn: (state) => !!state.token,
@@ -54,10 +56,13 @@ export const usePatchbayStore = defineStore("patchbay", {
     async init() {
       const store = usePatchbayStore();
       const { t } = useI18n({ useScope: "global" });
+
       await store.directusInfo();
+
       if (store.loggedIn) {
         await store.directusUser();
       }
+
       this.project = {
         name: store.info?.project.project_name || t("patchbay.title"),
         description:
@@ -68,6 +73,11 @@ export const usePatchbayStore = defineStore("patchbay", {
           t("patchbay.logo"),
         color: store.info?.project.project_color || t("patchbay.color"),
       };
+
+      this.theme = generateTheme(
+        store.info?.project.project_color || t("patchbay.color"),
+        true,
+      );
     },
   },
 });

@@ -21,25 +21,24 @@ export default class PlatformPatchbay extends Platform {
     this.frontendOptions.npm = false;
     this.frontendOptions.isElectron = false;
 
-    this.frontendOptions.openLocalFiles =
-      this.frontendOptions.selectableDownloadPath =
-      this.frontendOptions.dragDropLocalFiles =
-      this.frontendOptions.showLocalAssetDirOpen =
-      this.frontendOptions.showLocalOpDirButton =
-      this.frontendOptions.editOpSummary =
-      this.frontendOptions.hasOpDirectories =
-      this.frontendOptions.hasAssetDirectories =
-      this.frontendOptions.showWelcome =
-      this.frontendOptions.showBuildInfoMenuLink =
-      this.frontendOptions.opDependencies =
-      this.frontendOptions.showOpenPatch =
-      this.frontendOptions.showExport =
-      this.frontendOptions.showExportPatch =
-      this.frontendOptions.opRenameInEditor =
-      this.frontendOptions.opDeleteInEditor =
-      this.frontendOptions.showSetProjectTitle =
-      this.frontendOptions.showStartUpLog =
-        true;
+    this.frontendOptions.openLocalFiles = true;
+    this.frontendOptions.selectableDownloadPath = false;
+    this.frontendOptions.dragDropLocalFiles = true;
+    this.frontendOptions.showLocalAssetDirOpen = false;
+    this.frontendOptions.showLocalOpDirButton = false;
+    this.frontendOptions.editOpSummary = true;
+    this.frontendOptions.hasOpDirectories = false;
+    this.frontendOptions.hasAssetDirectories = false;
+    this.frontendOptions.showWelcome = true;
+    this.frontendOptions.showBuildInfoMenuLink = true;
+    this.frontendOptions.opDependencies = false;
+    this.frontendOptions.showOpenPatch = true;
+    this.frontendOptions.showExport = false;
+    this.frontendOptions.showExportPatch = true;
+    this.frontendOptions.opRenameInEditor = false;
+    this.frontendOptions.opDeleteInEditor = false;
+    this.frontendOptions.showSetProjectTitle = false;
+    this.frontendOptions.showStartUpLog = true;
     this.frontendOptions.showFormatCodeButton = true;
 
     // this.bindHrTimer();
