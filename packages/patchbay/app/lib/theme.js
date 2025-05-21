@@ -1,4 +1,9 @@
-import { converter, interpolate, formatCss } from "culori";
+import {
+  converter,
+  interpolate,
+  formatCss,
+  interpolatorSplineBasis,
+} from "culori";
 
 const defaults = {
   light: {
@@ -76,5 +81,14 @@ export const generateTheme = (rgb, isDark = false) => {
 
   return Object.entries({
     ...d,
-  }).map(([k, v]) => [k, formatCss(interpolate([v, primary])(0.99))]);
+    primary,
+  }).map(([k, v]) => [
+    k,
+    formatCss(
+      interpolate([primary, v], "oklch", {
+        // spline instead of linear interpolation:
+        h: interpolatorSplineBasis,
+      })(0.99),
+    ),
+  ]);
 };

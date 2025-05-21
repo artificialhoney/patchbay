@@ -21,6 +21,7 @@ export const usePatchbayStore = defineStore("patchbay", {
   }),
   getters: {
     loggedIn: (state) => !!state.token,
+    ready: (state) => !!state.project,
   },
   actions: {
     async cablesGet(token, data) {
@@ -39,49 +40,20 @@ export const usePatchbayStore = defineStore("patchbay", {
       }).then((result) => result?.data?.value && JSON.parse(result.data.value));
     },
     async directusInfo() {
-      return useFetch(`/patchbay/server/info`)
-        .then((result) => result?.data?.value && JSON.parse(result.data.value))
-        .then((data) => (this.info = data?.data));
-    },
-    async directusSettings() {
-      return useFetch(`/patchbay/settings`)
-        .then((result) => result?.data?.value && JSON.parse(result.data.value))
-        .then((data) => (this.settings = data?.data));
+      return $fetch(`/patchbay/server/info`)
+        .then((data) => data?.data?.project)
+        .then((data) => {
+          return (this.info = data);
+        });
     },
     async directusUser() {
-      return useFetch(`/patchbay/users/me?fields[]=*&fields[]=role.id`)
-        .then((result) => result?.data?.value && JSON.parse(result.data.value))
-        .then((data) => (this.user = data?.data));
-    },
-    async init() {
-      const store = usePatchbayStore();
-      const { t } = useI18n({ useScope: "global" });
-
-      await store.directusInfo();
-
-      if (store.loggedIn) {
-        await store.directusUser();
-      }
-
-      this.project = {
-        name: this.info.project.project_name || t("patchbay.title"),
-        description:
-          this.info.project.project_descriptor || t("patchbay.description"),
-        logo:
-          (this.info.project.project_logo &&
-            `/patchbay/assets/${this.info.project.project_logo}`) ||
-          t("patchbay.logo"),
-        color: this.info.project.project_color || t("patchbay.color"),
-        appearance:
-          this.user?.appearance ||
-          this.info.project.default_appearance ||
-          "dark",
-      };
-
-      this.theme = generateTheme(
-        this.project.color,
-        this.project.appearance === "dark",
-      );
+      return $fetch(
+        `/patchbay/users/me?fields[]=*&fields[]=role.id&access_token=${this.token}`,
+      )
+        .then((data) => data?.data)
+        .then((data) => {
+          return (this.user = data);
+        });
     },
   },
 });

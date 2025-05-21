@@ -3,7 +3,6 @@ import Sidebar from "@/components/blocks/sidebar/Sidebar.vue";
 import {
   Breadcrumb,
   BreadcrumbItem,
-  BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
@@ -14,10 +13,8 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { usePatchbayStore } from "@/stores/patchbay";
 
 const { t } = useI18n({ useScope: "global" });
-const store = usePatchbayStore();
 const route = useRoute();
 
 const title = t("patchbay.title");
@@ -61,7 +58,7 @@ useSeoMeta({
       </header>
       <div class="flex flex-1 flex-col gap-4 p-4 pt-0">
         <div class="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min">
-          <slot></slot>>
+          <slot></slot>
         </div>
       </div>
     </SidebarInset>

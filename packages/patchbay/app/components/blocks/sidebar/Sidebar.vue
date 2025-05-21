@@ -14,10 +14,7 @@ import {
   LogIn,
 } from "lucide-vue-next";
 
-import MainNav from "@/components/blocks/nav/MainNav.vue";
-import ProjectsNav from "@/components/blocks/nav/ProjectsNav.vue";
 import UserNav from "@/components/blocks/nav/UserNav.vue";
-import TeamSwitcher from "@/components/blocks/nav/TeamSwitcher.vue";
 import {
   Sidebar,
   SidebarContent,
@@ -36,15 +33,16 @@ const { user, loggedIn, project } = storeToRefs(store);
       <SidebarMenu>
         <SidebarMenuItem>
           <SidebarMenuButton
-            v-if="project"
             size="lg"
             class="data-[state=open]:bg-sidebar-primary data-[state=open]:text-sidebar-primary-foreground"
           >
-            <div
-              class="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground"
-            >
-              <img :src="project.logo" :alt="project.name" class="size-4" />
-            </div>
+            <NuxtLink to="/">
+              <div
+                class="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground"
+              >
+                <img :src="project.logo" :alt="project.name" class="size-4" />
+              </div>
+            </NuxtLink>
             <div class="grid flex-1 text-left text-sm leading-tight">
               <span class="truncate font-semibold">{{ project.name }}</span>
               <span class="truncate text-xs">{{ project.description }}</span>
@@ -60,7 +58,7 @@ const { user, loggedIn, project } = storeToRefs(store);
           <SidebarMenu>
             <SidebarMenuItem
               class="flex items-center gap-2"
-              v-if="!user && !loggedIn"
+              v-if="!user || !loggedIn"
             >
               <SidebarMenuButton :tooltip="$t('sidebar.login')">
                 <LogIn />

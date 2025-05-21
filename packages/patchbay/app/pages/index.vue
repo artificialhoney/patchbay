@@ -21,10 +21,9 @@ definePageMeta({
 <template>
   <div>
     <Hero
-      v-if="project"
-      :logo="project.logo"
-      :heading="project.name"
-      :description="project.description"
+      :logo="project?.logo"
+      :heading="project?.name"
+      :description="project?.description"
       :buttons="buttons"
     ></Hero>
   </div>

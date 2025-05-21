@@ -7,11 +7,9 @@ const { badge, heading, description, buttons } = defineProps({
   },
   heading: {
     type: String,
-    required: true,
   },
   description: {
     type: String,
-    required: true,
   },
   buttons: {
     primary: {
@@ -34,10 +32,16 @@ const { badge, heading, description, buttons } = defineProps({
           class="flex flex-col items-center text-center lg:items-start lg:text-left"
         >
           <img v-if="logo" :src="logo" :alt="heading" class="w-16" />
-          <h1 class="my-6 text-4xl font-bold text-pretty lg:text-6xl">
+          <h1
+            class="my-6 text-4xl font-bold text-pretty lg:text-6xl"
+            v-if="heading"
+          >
             {{ heading }}
           </h1>
-          <p class="mb-8 max-w-xl text-muted-foreground lg:text-xl">
+          <p
+            class="mb-8 max-w-xl text-muted-foreground lg:text-xl"
+            v-if="description"
+          >
             {{ description }}
           </p>
           <div
