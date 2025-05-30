@@ -1,7 +1,69 @@
 <script setup lang="js">
-import { usePatchbayStore } from "@/stores/patchbay";
-import CablesPatchbay from "@patchbay/client";
-import { useTemplateRef, onMounted } from "vue";
+import { TalkerAPI } from "@cables/client";
+import { useTemplateRef, onMounted, onUnmounted } from "vue";
+
+window.CABLES = Window.CABLES || {};
+
+const talkerTopics = {
+  requestPatchData: { needsProjectFile: true },
+  getOpInfo: {},
+  savePatch: { needsProjectFile: true },
+  getPatch: {},
+  newPatch: {},
+  getAllProjectOps: {},
+  getOpDocsAll: {},
+  getOpDocs: {},
+  saveOpCode: {},
+  getOpCode: {},
+  opAttachmentGet: {},
+  formatOpCode: {},
+  saveUserSettings: {},
+  checkProjectUpdated: {},
+  opAddLib: {},
+  opAddCoreLib: {},
+  opAttachmentAdd: {},
+  opAttachmentDelete: {},
+  opRemoveLib: {},
+  opRemoveCoreLib: {},
+  getChangelog: {},
+  opAttachmentSave: {},
+  setIconSaved: {},
+  setIconUnsaved: {},
+  saveScreenshot: {},
+  getFilelist: {},
+  getFileDetails: {},
+  getLibraryFileInfo: {},
+  checkOpName: {},
+  getRecentPatches: {},
+  opCreate: { needsProjectFile: true },
+  opRename: {},
+  opUpdate: {},
+  opDelete: {},
+  opClone: {},
+  opSaveLayout: {},
+  opSetSummary: {},
+  checkNumAssetPatches: {},
+  saveProjectAs: {},
+  gotoPatch: {},
+  getProjectOpDirs: {},
+  openDir: {},
+  selectFile: {},
+  selectDir: {},
+  setProjectName: { needsProjectFile: true },
+  collectAssets: { needsProjectFile: true },
+  collectOps: { needsProjectFile: true },
+  getCollectionOpDocs: {},
+  patchCreateBackup: { needsProjectFile: true },
+  addOpDependency: {},
+  removeOpDependency: {},
+  saveProjectOpDirOrder: { needsProjectFile: true },
+  removeProjectOpDir: { needsProjectFile: true },
+  exportPatch: { needsProjectFile: true },
+  exportPatchBundle: { needsProjectFile: true },
+  addProjectOpDir: { needsProjectFile: true },
+  uploadFileToOp: {},
+  errorReport: {},
+};
 
 const props = defineProps({
   settings: {
@@ -11,42 +73,29 @@ const props = defineProps({
 
 if (process.client) {
   const DEFAULT_SETTINGS = {
-    isTrustedPatch: true,
-    platformClass: "PlatformPatchbay",
-    urlCables: window.location.protocol + "//" + window.location.host,
-    urlSandbox: window.location.protocol + "//" + window.location.host,
-    communityUrl: "https://cables.gl",
-    user: undefined,
-    usersettings: { settings: undefined },
-    isDevEnv: process.env.NODE_ENV !== "production",
-    env: "patchbay",
-    patchVersion: "",
-    socketcluster: {},
-    remoteClient: false,
-    buildInfo: undefined,
-    patchConfig: {
-      allowEdit: false,
-    },
     uiIndexHtml: "/cables/ui/index.html",
   };
 
   const settings = Object.assign(DEFAULT_SETTINGS, props.settings);
-
   const cablesUi = useTemplateRef("cables-ui");
-  const { cablesGet, cablesRun } = usePatchbayStore();
 
-  onMounted(async () => {
-    const cablesPatchbay = new CablesPatchbay(
-      {
-        ipcRenderer: {
-          sendSync: cablesGet,
-          invoke: cablesRun,
-        },
-      },
-      cablesUi.value,
-      settings,
-    );
-    await cablesPatchbay.init();
+  const receiveMessage = (event) => {
+    console.log("Received message from Cables UI:", event);
+  };
+
+  onMounted(() => {
+    cablesUi.value.src = settings.uiIndexHtml;
+
+    const talker = new TalkerAPI(cablesUi.value.contentWindow);
+    talker.logEvents(true, "Patchbay Cables UI");
+
+    Object.keys(talkerTopics).forEach((talkerTopic) => {
+      talker.on(talkerTopic, receiveMessage);
+    });
+  });
+
+  onUnmounted(() => {
+    window.removeEventListener("message", receiveMessage);
   });
 }
 </script>

@@ -41,17 +41,19 @@ if (process.server) {
   }
 }
 
-useHead({
-  style: [
-    {
-      children: `:root {
+if (theme?.value) {
+  useHead({
+    style: [
+      {
+        children: `:root {
       ${theme.value
         .map(([k, v]) => "--" + k + ": " + v + " !important;")
         .join("\n")}
     }`,
-    },
-  ],
-});
+      },
+    ],
+  });
+}
 </script>
 <template>
   <NuxtLayout>

@@ -13,7 +13,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@cables/api": "workspace:*",
+    "@cables/client": "workspace:*",
     "@cables/ui": "workspace:*",
     "@nuxt/content": "3.5.1",
     "@nuxtjs/i18n": "9.5.4",
